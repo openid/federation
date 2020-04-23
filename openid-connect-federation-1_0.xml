@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Connect Federation">OpenID Connect Federation 1.0 -
-      draft 10
+      draft 11
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -75,7 +75,7 @@
       </address>
     </author>
 
-    <date day="7" month="November" year="2019"/>
+    <date day="23" month="April" year="2020"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -124,6 +124,11 @@
         federation.
       </t>
       <t>
+        Note that this specification only concerns itself with how two entities
+        in a federation gets to know about each other it does not change
+        any other functionality in OpenID Connect.
+      </t>
+      <t>
         Note that a company, as with any real-world organization, may be
         represented by more than one entity in a federation.
       </t>
@@ -162,6 +167,10 @@
               Something that has a separate and distinct existence and that can
               be identified in a context. All entities in an OpenID Connect
               federation MUST have a globally unique identifier.
+            </t>
+            <t hangText="Entity identifier">
+              <vspace/>
+              An URI which is globally unique and which is bound to one Entity.
             </t>
             <t hangText="Entity statement">
               <vspace/>
@@ -275,6 +284,10 @@
               points to the same entity as the <spanx style="verb">sub</spanx>
               then the entity statement MUST contain a
               <spanx style="verb">metadata</spanx> claim.
+              If <spanx style="verb">iss</spanx> and
+              <spanx style="verb">sub</spanx> are not the same
+              then the entity statement MUST NOT contain a
+              <spanx style="verb">metadata</spanx> claim.
             </t>
             <t hangText="metadata_policy">
               <vspace/>
@@ -385,7 +398,8 @@
       "id_token_signing_alg_values_supported":
         {"subset_of": ["RS256", "RS384", "RS512"]},
       "op_policy_uri": {
-        "regexp": "^https:\/\/[\w-]+\.example\.com\/[\w-]+\.html"}
+        "regexp":
+          "^https:\/\/[\\w-]+\\.example\\.com\/[\\w-]+\\.html"}
     },
     "openid_relying_party": {
       "organization_name": {"value": "NTNU"},
@@ -397,7 +411,7 @@
   },
   "constraints": {
     "max_path_length": 2
-  }
+  },
   "jwks": {
     "keys": [
       {
@@ -680,21 +694,28 @@
               OPTIONAL. URL to a generic home page
               representing this entity.
             </t>
+            <t hangText="trust_marks">
+              <vspace/>
+              OPTIONAL. A JSON array of signed JSON Web Token each representing
+              a certification mark. More about certification marks in
+              <xref target="trust_marks"/>
+            </t>
           </list>
         </t>
         <t>Example</t>
         <figure>
             <artwork><![CDATA[
 "federation_entity": {
-    "federation_api_endpoint":
-        "https://example.com/federation_api_endpoint",
-    "name": "The example cooperation",
-    "homepage_uri": "https://www.example.com"
+  "federation_api_endpoint":
+    "https://example.com/federation_api_endpoint",
+  "name": "The example cooperation",
+  "homepage_uri": "https://www.example.com"
 }
 ]]></artwork>
         </figure>
       </section>
     </section>
+    <section title="Federation Policy" anchor="federation_policy">
     <section title="Applying Policy to Metadata">
       <t>
         The metadata for a specific entity can be constructed by
@@ -741,6 +762,11 @@
   "response_types": ["code", "code id_token"]
 ]]></artwork>
           </figure>
+          <t>
+            If an entity tries to register a value that is not in the
+            <spanx style="verb">subset_of</spanx> set of values,
+            applying the policy MUST lead to a failure.
+          </t>
         </section>
 
         <section title="one_of" anchor="one_of">
@@ -786,7 +812,7 @@
           <figure>
             <artwork><![CDATA[
  "request_object_signing_alg_values_supported": {
-    "superset": ["ES256", "RS256"]}
+    "superset_of": ["ES256", "RS256"]}
                 ]]></artwork>
           </figure>
           <t>is applied to the metadata statement</t>
@@ -923,8 +949,7 @@
           <t>
             If 'true' then claim MUST have a value.
             <spanx style="verb">essential</spanx>
-            can be
-            combined with all the other types.
+            can be merged with all the other types.
           </t>
           <figure>
             <artwork><![CDATA[
@@ -943,21 +968,21 @@
       <section title="Policy Type Combinations" anchor="policy_type_combo">
         <t>
           An entity may use more then one policy type when expressing a policy
-          for a claim. These are the policy types that can be combined in a
+          for a claim. These are the policy types that can be merged in a
           metadata_policy statement:
           <list style="hanging">
             <t hangText="essential">
               <vspace/>
-              Can be combined with all the others. If
+              Can be merged with all the others. If
               <spanx style="verb">essential</spanx>
               is not present that is the same as stating essential=true.
             </t>
             <t hangText="default">
               <vspace/>
-              Can be combined with <spanx style="verb">one_of</spanx>,
+              Can be merged with <spanx style="verb">one_of</spanx>,
               <spanx style="verb">subset_of</spanx>
               and <spanx style="verb">superset_of</spanx>.
-              If a <spanx style="verb">default</spanx> policy is combined
+              If a <spanx style="verb">default</spanx> policy is merged
               with <spanx style="verb">one_of</spanx>,
               <spanx style="verb">subset_of</spanx>
               or
@@ -971,7 +996,7 @@
             </t>
             <t hangText="superset_of">
               <vspace/>
-              Can be combined with <spanx style="verb">subset_of</spanx>.
+              Can be merged with <spanx style="verb">subset_of</spanx>.
               If <spanx style="verb">subset_of</spanx> and
               <spanx style="verb">superset_of</spanx>
               both appears in a
@@ -981,7 +1006,7 @@
             </t>
             <t hangText="subset_of">
               <vspace/>
-              Can be combined with <spanx style="verb">superset_of</spanx>.
+              Can be merged with <spanx style="verb">superset_of</spanx>.
               If <spanx style="verb">superset_of</spanx> and
               <spanx style="verb">subset_of</spanx>
               both appears in a metadata_policy statement for a claim
@@ -990,7 +1015,7 @@
             </t>
             <t hangText="value">
               <vspace/>
-              Can be combined with <spanx style="verb">one_of</spanx>,
+              Can be merged with <spanx style="verb">one_of</spanx>,
               <spanx style="verb">subset_of</spanx>
               and <spanx style="verb">superset_of</spanx>.
               Here the order matters. If <spanx style="verb">value</spanx>
@@ -1023,7 +1048,7 @@
           adhere to the rules defined in <xref target="policy_type_combo"/>.
         </t>
         <t>
-          These are the policy types that can be combined when combining two
+          These are the policy types that can be merged when combining two
           policies:
           <list style="hanging">
             <t hangText="subset_of">
@@ -1079,15 +1104,33 @@
             </preamble>
             <artwork><![CDATA[
 {
-    "scopes": {
-        "subset_of": ["openid", "eduperson", "phone"],
-        "superset_of": ["openid"],
-        "default": ["openid", "eduperson"]},
-    "id_token_signed_response_alg": {
-        "one_of": ["ES256", "ES384", "ES512"]},
-    "contacts": {
-        "add": "helpdesk@federation.example.org"},
-    "application_type": {"value": "web"}
+  "scopes": {
+    "subset_of": [
+      "openid",
+      "eduperson",
+      "phone"
+    ],
+    "superset_of": [
+      "openid"
+    ],
+    "default": [
+      "openid",
+      "eduperson"
+    ]
+  },
+  "id_token_signed_response_alg": {
+    "one_of": [
+      "ES256",
+      "ES384",
+      "ES512"
+    ]
+  },
+  "contacts": {
+    "add": "helpdesk@federation.example.org"
+  },
+  "application_type": {
+    "value": "web"
+  }
 }
 ]]></artwork>
           </figure>
@@ -1097,14 +1140,27 @@
             </preamble>
             <artwork><![CDATA[
 {
-    "scopes": {
-        "subset_of": ["openid", "eduperson", "address"],
-        "default": ["openid", "eduperson"]},
-    "id_token_signed_response_alg": {
-        "one_of": ["ES256", "ES384"],
-        "default": "ES256"},
-    "contacts": {
-        "add": "helpdesk@org.example.org"}
+  "scopes": {
+    "subset_of": [
+      "openid",
+      "eduperson",
+      "address"
+    ],
+    "default": [
+      "openid",
+      "eduperson"
+    ]
+  },
+  "id_token_signed_response_alg": {
+    "one_of": [
+      "ES256",
+      "ES384"
+    ],
+    "default": "ES256"
+  },
+  "contacts": {
+    "add": "helpdesk@org.example.org"
+  }
 }
 ]]></artwork>
           </figure>
@@ -1114,18 +1170,35 @@
             </preamble>
             <artwork><![CDATA[
 {
-    "scopes": {
-        "subset_of": ["openid", "eduperson"],
-        "superset_of": ["openid"],
-        "default": ["openid", "eduperson"]},
-    "id_token_signed_response_alg": {
-        "one_of": ["ES256", "ES384"],
-        "default": "ES256"},
-    "contacts": {
-        "add": ["helpdesk@federation.example.org",
-                "helpdesk@org.example.org"]},
-    "application_type": {
-        "value": "web"}
+  "scopes": {
+    "subset_of": [
+      "openid",
+      "eduperson"
+    ],
+    "superset_of": [
+      "openid"
+    ],
+    "default": [
+      "openid",
+      "eduperson"
+    ]
+  },
+  "id_token_signed_response_alg": {
+    "one_of": [
+      "ES256",
+      "ES384"
+    ],
+    "default": "ES256"
+  },
+  "contacts": {
+    "add": [
+      "helpdesk@federation.example.org",
+      "helpdesk@org.example.org"
+    ]
+  },
+  "application_type": {
+    "value": "web"
+  }
 }
 ]]></artwork>
           </figure>
@@ -1164,9 +1237,15 @@
           </preamble>
           <artwork><![CDATA[
 {
-  "contacts": ["rp_admins@cs.example.com"],
-  "redirect_uris": ["https://cs.example.com/rp1"],
-  "response_types": ["code"]
+  "contacts": [
+    "rp_admins@cs.example.com"
+  ],
+  "redirect_uris": [
+    "https://cs.example.com/rp1"
+  ],
+  "response_types": [
+    "code"
+  ]
 }
 ]]></artwork>
         </figure>
@@ -1176,12 +1255,22 @@
           </preamble>
           <artwork><![CDATA[
 {
-    "scopes": {
-        "superset_of": ["openid", "eduperson"],
-        "default": ["openid", "eduperson"]
-    },
-    "response_types": {
-        "subset_of": ["code", "code id_token"]}
+  "scopes": {
+    "superset_of": [
+      "openid",
+      "eduperson"
+    ],
+    "default": [
+      "openid",
+      "eduperson"
+    ]
+  },
+  "response_types": {
+    "subset_of": [
+      "code",
+      "code id_token"
+    ]
+  }
 }
 ]]></artwork>
         </figure>
@@ -1192,16 +1281,21 @@
           <artwork><![CDATA[
 {
   "contacts": {
-    "add": "helpdesk@example.com"},
+    "add": "helpdesk@example.com"
+  },
   "logo_uri": {
-    "one_of": ["https://example.com/logo_small.jpg",
-               "https://example.com/logo_big.jpg"],
+    "one_of": [
+      "https://example.com/logo_small.jpg",
+      "https://example.com/logo_big.jpg"
+    ],
     "default": "https://example.com/logo_small.jpg"
   },
   "policy_uri": {
-    "value": "https://example.com/policy.html"},
+    "value": "https://example.com/policy.html"
+  },
   "tos_uri": {
-    "value": "https://example.com/tos.html"}
+    "value": "https://example.com/tos.html"
+  }
 }
 ]]></artwork>
         </figure>
@@ -1210,17 +1304,233 @@
           above, would then become:
         </t>
         <figure>
-          <artwork><![CDATA[{
-  "contacts": ["rp_admins@cs.example.com", "helpdesk@example.com"],
+          <artwork><![CDATA[
+{
+  "contacts": [
+    "rp_admins@cs.example.com",
+    "helpdesk@example.com"
+  ],
   "logo_uri": "https://example.com/logo_small.jpg",
   "policy_uri": "https://example.com/policy.html",
   "tos_uri": "https://example.com/tos.html",
-  "scopes": ["openid", "eduperson"],
-  "response_types": ["code"],
-  "redirect_uris": ["https://cs.example.com/rp1"]
+  "scopes": [
+    "openid",
+    "eduperson"
+  ],
+  "response_types": [
+    "code"
+  ],
+  "redirect_uris": [
+    "https://cs.example.com/rp1"
+  ]
 }
 ]]></artwork>
         </figure>
+      </section>
+    </section>
+      <section title="Applying Constraints" anchor="chain_constraints">
+        <t>A constraint specification can contain the following claims:</t>
+        <t>
+          <list style="hanging">
+            <t hangText="max_path_length">
+              <vspace/>
+              OPTIONAL. Integer. The maximum number of entities statements
+              between this entity statement and the last entity statement in
+              the trust chain.
+            </t>
+            <t hangText="naming_constraints">
+              <vspace/>
+              OPTIONAL. JSON object. Restriction on the entity identifiers of the
+              entities below this entity. The behavior of this claim mimics
+              what is defined in Section 4.2.1.10 in <xref target="RFC5280"/>.
+              Restrictions are defined in terms of permitted or excluded name
+              subtrees.
+            </t>
+          </list>
+        </t>
+        <t>The following is a non-normative example of such a specification:</t>
+        <figure>
+          <artwork><![CDATA[
+{
+  "naming_constraints": {
+    "permitted": [
+      "https://.example.com"
+    ],
+    "excluded": [
+      "https://east.example.com"
+    ]
+  },
+  "max_path_length": 2
+}
+]]></artwork>
+        </figure>
+        <t>
+          If a subordinate entity statement contains a constraint specification
+          that is more restrictive then the one in effect, then the more
+          restrictive constraint is in effect from here on.
+        </t>
+        <t>
+          If a subordinate entity statement contains a constraint specification
+          that is less restrictive then the one in effect, then it MUST be
+          ignored.
+        </t>
+        <section title="Max Path Length" anchor="max_path_length">
+          <t>
+            The <spanx style="verb">max_path_length</spanx> constraint specifies the maximum number of
+            entity statement a trust chain can have between the entity statement
+            that contains the constraint specification and the leaf's entity
+            statement.
+          </t>
+          <t>
+            A <spanx style="verb">max_path_length</spanx> constraint of zero indicates that no
+            entity statement may appear between this entity statement and the
+            leaf entity statement. Where it appears, the <spanx style="verb">max_path_length</spanx> constraint
+            MUST have a value that is greater than or equal to zero.
+            Where <spanx style="verb">max_path_length</spanx> does not appear, no limit is imposed.
+          </t>
+          <t>
+            Assuming that we have a trust chain with four entity statements:
+            <list style="numbers">
+              <t>Leaf entity (LE)</t>
+              <t>Intermediate 1 (I1)</t>
+              <t>Intermediate 2 (I2)</t>
+              <t>Trust Anchor (TA)</t>
+            </list>
+          </t>
+          <t>
+            Then the trust chain fulfills the constraints if:
+            <list style="symbols">
+              <t>
+                The TA specifies a <spanx style="verb">max_path_length</spanx> that is equal to or bigger
+                then 2.
+              </t>
+              <t>
+                TA specifies <spanx style="verb">max_path_length</spanx> of 2, I2 specifies <spanx style="verb">max_path_length</spanx> of 1,
+                and I1 specifies no <spanx style="verb">max_path_length</spanx> constraint.
+              </t>
+              <t>Neither TA nor I2 specifies any <spanx style="verb">max_path_length</spanx> constraint
+                while I1 specifies <spanx style="verb">max_path_length</spanx> of 0.</t>
+            </list>
+          </t>
+          <t>
+            The trust chain does not fulfill the constraints if:
+            <list style="symbols">
+              <t>TA has specified <spanx style="verb">max_path_length</spanx> of 1.</t>
+            </list>
+          </t>
+        </section>
+        <section title="Naming Constraints" anchor="naming_constraints">
+        <t>
+          The name constraints indicates a name space within which all subject
+          entity identifiers in subordinate entity statements in a trust chain
+          MUST be located.
+        </t>
+          <t>
+            Restrictions are defined in terms of permitted or excluded name
+            subtrees.  Any name matching a restriction in the excluded
+            claim is invalid regardless of information appearing in the
+            permitted claim.
+          </t>
+          <t>
+            The constraint MUST be specified as a fully qualified domain name
+            and MAY specify a host or a domain.  Examples would be
+            "host.example.com" and ".example.com".  When the constraint begins
+            with a period, it MAY be expanded with one or more labels.
+            That is, the constraint ".example.com" is satisfied by both
+            host.example.com and my.host.example.com.  However, the constraint
+            ".example.com" is not satisfied by "example.com".  When the
+            constraint does not begin with a period, it specifies a host.
+          </t>
+        </section>
+      </section>
+      <section title="Trust Marks" anchor="trust_marks">
+        <t>In this specification we use the US NSTIC definition</t>
+        <t>"A trustmark is used to indicate that a product or service provider
+          has met the requirements of the Identity Ecosystem, as determined
+          by an accreditation authority"</t>
+        <t>Technically trust marks as used by this specification are signed
+        JWTs that represents a statement of conformance to a well-scoped
+          set of trust and/or interoperability requirements.</t>
+        <t>The trust marks are signed by a federation accredited
+        authority. The validation of such a signed statement is performed
+        in the same way as a self-signed entity statement is validated.</t>
+        <t>Note that a federation may allow an entity to self-signed
+          some trust marks.</t>
+        <section title="Trust mark properties" anchor="trust_prop">
+          <t>These are the properties that can occur in a trust mark:</t>
+          <t>
+          <list style="hanging">
+            <t hangText="iss">
+              <vspace/>
+              REQUIRED. String. The issuer of the trust mark.
+            </t>
+            <t hangText="sub">
+              <vspace/>
+              REQUIRED. String. The entity this trust mark applies to.
+            </t>
+            <t hangText="id">
+              REQUIRED. String. An identifier of the trust mark.
+            </t>
+            <t hangText="iat">
+              REQUIRED. INT. When this trust mark was issued. Expressed as
+              seconds since epoch.
+            </t>
+            <t hangText="mark">
+              OPTIONAL. String. An URL that points to a mark/logo that the
+              subject is allowed to display to a user of the entity.
+            </t>
+            <t hangText="exp">
+              OPTIONAL. INT. When this trust mark is not valid anymore.
+              Expresses as seconds since epoch. If not present it means that
+              the trust mark is valid forever.
+            </t>
+            <t hangText="ref">
+              OPTIONAL. String. URL that points to information connected to
+              the issuance of this trust mark.
+            </t>
+          </list>
+        </t>
+        </section>
+        <section title="Validating a trust mark" anchor="trust_valid">
+          <t>An entity should not try to validate a trust mark until
+          it knows which trust anchors it wants to use.</t>
+          <t>validating a trust mark follows the procedure set out in
+            <xref target="resolving_trust" />
+          </t>
+          <t>Note that the entity representing the accreditation authority
+          MUST be immediately below the trust anchor. There can not be any
+          intermediate between it and the trust anchor.</t>
+        </section>
+        <section title="Trust mark example" anchor="trust_example">
+          <figure>
+            <preamble>An example of a self-signed certification mark</preamble>
+            <artwork><![CDATA[
+{
+  "iss": "https://example.com/op",
+  "sub": "https://example.com/op",
+  "iat": 1579621160,
+  "id": "https://openid.net/certification/op",
+  "mark": "http://openid.net/wordpress-content/uploads/2016/
+    05/oid-l-certification-mark-l-cmyk-150dpi-90mm.jpg",
+  "ref": "https://openid.net/wordpress-content/uploads/2015/
+    09/RolandHedberg-pyoidc-0.7.7-Basic-26-Sept-2015.zip"
+}
+]]></artwork>
+          </figure>
+          <figure>
+            <preamble>An example of a 3rd party accreditation authority</preamble>
+            <artwork><![CDATA[
+{
+  "iss": "https://swamid.sunet.se",
+  "sub": "https://umu.se/op",
+  "iat": 1577833200,
+  "exp": 1609369200,
+  "id":
+    "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf"
+}
+]]></artwork>
+          </figure>
+        </section>
       </section>
     </section>
     <section
@@ -1313,16 +1623,19 @@ Content-Type: application/jose
       "federation_api_endpoint":
         "https://example.com/federation_api_endpoint",
       "name": "The example cooperation",
-      "homepage_uri": "https://www.example.com",
+      "homepage_uri": "https://www.example.com"
     }
   },
+  "authority_hints": ["https://federation.example.com"],
   "jwks": {
     "keys": [
       {
         "alg": "RS256",
         "e": "AQAB",
         "ext": true,
-        "key_ops": ["verify"],
+        "key_ops": [
+          "verify"
+        ],
         "kid": "key1",
         "kty": "RSA",
         "n": "pnXBOusEANuug6ewezb9J_...",
@@ -1330,7 +1643,8 @@ Content-Type: application/jose
       }
     ]
   }
-}]]></artwork>
+}
+]]></artwork>
           </figure>
         </t>
       </section>
@@ -1341,7 +1655,7 @@ Content-Type: application/jose
         entities MUST expose a Federation API endpoint.
       </t>
       <t>
-        The federation API endpoint of an entity can be found the in the
+        The federation API endpoint of an entity can be found in the
         configuration response as described in
         <xref target="federation_configuration"/>
         or by other means.
@@ -1456,10 +1770,15 @@ Content-Type: application/jose
   "metadata": {
     "openid_relying_party": {
       "application_type": "web",
-      "redirect_uris": [ "https://openid.sunet.se/rp/callback" ],
+      "redirect_uris": [
+        "https://openid.sunet.se/rp/callback"
+      ],
       "organization_name": "SUNET",
       "logo_uri": "https://www.sunet.se/sunet/images/32x32.png",
-      "grant_types": ["authorization_code", "implicit"],
+      "grant_types": [
+        "authorization_code",
+        "implicit"
+      ],
       "jwks_uri": "https://openid.sunet.se/rp/jwks.json"
     }
   },
@@ -1469,7 +1788,9 @@ Content-Type: application/jose
         "alg": "RS256",
         "e": "AQAB",
         "ext": true,
-        "key_ops": ["verify"],
+        "key_ops": [
+          "verify"
+        ],
         "kid": "key1",
         "kty": "RSA",
         "n": "pnXBOusEANuug6ewezb9J_...",
@@ -1478,7 +1799,7 @@ Content-Type: application/jose
     ]
   },
   "authority_hints": [
-      "https://edugain.org/federation"
+    "https://edugain.org/federation"
   ]
 }
 ]]></artwork>
@@ -1568,8 +1889,11 @@ Last-Modified: Wed, 22 Jul 2018 19:15:56 GMT
 Content-Type: application/json
 
 {
-  "organization": "University of Ume?",
-  "contacts": ["legal@umu.se", "technical@umu.se"],
+  "organization": "University of Umea",
+  "contacts": [
+    "legal@umu.se",
+    "technical@umu.se"
+  ],
   "logo_uri":
     "https://www.umu.se/SRWStatic/img/umu-logo-left-neg-SE.svg",
   "policy_uri":
@@ -1577,14 +1901,24 @@ Content-Type: application/json
   "authorization_endpoint":
     "https://idp.umu.se/openid/authorization",
   "token_endpoint": "https://idp.umu.se/openid/token",
-  "response_types_supported": ["code", "code id_token", "token"],
+  "response_types_supported": [
+    "code",
+    "code id_token",
+    "token"
+  ],
   "grant_types_supported": [
     "authorization_code",
     "implicit",
     "urn:ietf:params:oauth:grant-type:jwt-bearer"
   ],
-  "subject_types_supported": ["pairwise"],
-  "id_token_signing_alg_values_supported": ["RS256"]
+  "subject_types_supported": [
+    "pairwise"
+  ],
+  "id_token_signing_alg_values_supported": [
+    "RS256"
+  ],
+  "issuer": "https://idp.umu.se/openid",
+  "jwks_uri": "https://idp.umu.se/openid/jwks_uri.json"
 }
 ]]></artwork>
           </figure>
@@ -1838,120 +2172,6 @@ Content-Type: application/json
           <xref target="trust_lifetime"/>.
         </t>
       </section>
-      <section title="Applying Constraints" anchor="chain_constraints">
-        <t>A constraint specification can contain the following claims:</t>
-        <t>
-          <list style="hanging">
-            <t hangText="max_path_length">
-              <vspace/>
-              OPTIONAL. Integer. The maximum number of entities statements
-              between this entity statement and the last entity statement in
-              the trust chain.
-            </t>
-            <t hangText="naming_constraints">
-              <vspace/>
-              OPTIONAL. JSON object. Restriction on the entity identifiers of the
-              entities below this entity. The behavior of this claim mimics
-              what is defined in Section 4.2.1.10 in <xref target="RFC5280"/>.
-              Restrictions are defined in terms of permitted or excluded name
-              subtrees.
-            </t>
-          </list>
-        </t>
-        <t>The following is a non-normative example of such a specification:</t>
-        <figure>
-          <artwork><![CDATA[
-{
-  "naming_constraints": {
-    "permitted": [
-      "https://.example.com"
-    ],
-    "excluded": [
-      "https://east.example.com"
-    ]
-  },
-  "max_path_length": 2
-}]]></artwork>
-        </figure>
-        <t>
-          If a subordinate entity statement contains a constraint specification
-          that is more restrictive then the one in effect, then the more
-          restrictive constraint is in effect from here on.
-        </t>
-        <t>
-          If a subordinate entity statement contains a constraint specification
-          that is less restrictive then the one in effect, then it MUST be
-          ignored.
-        </t>
-        <section title="Max Path Length" anchor="max_path_length">
-          <t>
-            The <spanx style="verb">max_path_length</spanx> constraint specifies the maximum number of
-            entity statement a trust chain can have between the entity statement
-            that contains the constraint specification and the leaf's entity
-            statement.
-          </t>
-          <t>
-            A <spanx style="verb">max_path_length</spanx> constraint of zero indicates that no
-            entity statement may appear between this entity statement and the
-            leaf entity statement. Where it appears, the <spanx style="verb">max_path_length</spanx> constraint
-            MUST have a value that is greater than or equal to zero.
-            Where <spanx style="verb">max_path_length</spanx> does not appear, no limit is imposed.
-          </t>
-          <t>
-            Assuming that we have a trust chain with four entity statements:
-            <list style="numbers">
-              <t>Leaf entity (LE)</t>
-              <t>Intermediate 1 (I1)</t>
-              <t>Intermediate 2 (I2)</t>
-              <t>Trust Anchor (TA)</t>
-            </list>
-          </t>
-          <t>
-            Then the trust chain fulfills the constraints if:
-            <list style="symbols">
-              <t>
-                The TA specifies a <spanx style="verb">max_path_length</spanx> that is equal to or bigger
-                then 2.
-              </t>
-              <t>
-                TA specifies <spanx style="verb">max_path_length</spanx> of 2, I2 specifies <spanx style="verb">max_path_length</spanx> of 1,
-                and I1 specifies no <spanx style="verb">max_path_length</spanx> constraint.
-              </t>
-              <t>Neither TA nor I2 specifies any <spanx style="verb">max_path_length</spanx> constraint
-                while I1 specifies <spanx style="verb">max_path_length</spanx> of 0.</t>
-            </list>
-          </t>
-          <t>
-            The trust chain does not fulfill the constraints if:
-            <list style="symbols">
-              <t>TA has specified <spanx style="verb">max_path_length</spanx> of 1.</t>
-            </list>
-          </t>
-        </section>
-        <section title="Naming Constraints" anchor="naming_constraints">
-        <t>
-          The name constraints indicates a name space within which all subject
-          entity identifiers in subordinate entity statements in a trust chain
-          MUST be located.
-        </t>
-          <t>
-            Restrictions are defined in terms of permitted or excluded name
-            subtrees.  Any name matching a restriction in the excluded
-            claim is invalid regardless of information appearing in the
-            permitted claim.
-          </t>
-          <t>
-            The constraint MUST be specified as a fully qualified domain name
-            and MAY specify a host or a domain.  Examples would be
-            "host.example.com" and ".example.com".  When the constraint begins
-            with a period, it MAY be expanded with one or more labels.
-            That is, the constraint ".example.com" is satisfied by both
-            host.example.com and my.host.example.com.  However, the constraint
-            ".example.com" is not satisfied by "example.com".  When the
-            constraint does not begin with a period, it specifies a host.
-          </t>
-        </section>
-      </section>
       <section title="Choosing One of the Valid Trust Chains">
         <t>
           If multiple valid trust chains are found, the Consumer will
@@ -2074,8 +2294,7 @@ Content-Type: application/json
         <t>
           Without a registration process, the RP does not have a
           client_secret. Instead the automatic registration model requires the
-          RP
-          to make use of asymmetric cryptography.
+          RP to make use of asymmetric cryptography.
         </t>
         <t>
           The RP MUST host a Federation API that allows the OP to fetch the
@@ -2088,10 +2307,18 @@ Content-Type: application/json
             Core.
           </t>
           <t>
-            The RP MUST authenticate at the authentication endpoint
+            The RP MUST authenticate at the authorization endpoint
             using the private_key_jwt method described in the client
             authentication section of
             <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
+            The private_key_jwt JWT used here diverge from what is described in
+            that section on a couple of points:
+            <list>
+              <t>The Audience (aud) SHOULD be the URL of the Authorization
+                Server's Authorization Endpoint. NOT the Token Endpoint.</t>
+              <t>The claim iss MUST contain the entity ID of the OAuth client</t>
+              <t>The claim sub MUST contain the entity ID of the OAuth client</t>
+            </list>
           </t>
           <figure>
             <preamble>
@@ -2636,57 +2863,65 @@ HTTP/1.1 302 Found
             <preamble>The result is this entity statement.</preamble>
             <artwork><![CDATA[
 {
-    "authority_hints": [
-        "https://umu.se"
-    ],
-    "exp": 1568397247,
-    "iat": 1568310847,
-    "iss": "https://op.umu.se",
-    "jwks": {
-        "keys": [
-            {
-                "e": "AQAB",
-                "kid": "dEEtRjlzY3djcENuT01wOGxrZlkxb3RIQVJlMTY0...",
-                "kty": "RSA",
-                "n": "x97YKqc9Cs-DNtFrQ7_vhXoH9bwkDWW6En2jJ044yH..."
-            }
-        ]
-    },
-    "metadata": {
-        "openid_provider": {
-            "authorization_endpoint":
-              "https://op.umu.se/openid/authorization",
-            "federation_types_supported": [
-                "automatic",
-                "explicit"
-            ],
-            "grant_types_supported": [
-                "authorization_code",
-                "implicit",
-                "urn:ietf:params:oauth:grant-type:jwt-bearer"
-            ],
-            "id_token_signing_alg_values_supported": [
-                "ES256"
-            ],
-            "logo_uri":
-              "https://www.umu.se/img/umu-logo-left-neg-SE.svg",
-            "policy_uri":
-              "https://www.umu.se/en/website/legal-information/",
-            "response_types_supported": [
-                "code",
-                "code id_token",
-                "token"
-            ],
-            "subject_types_supported": [
-                "pairwise",
-                "public"
-            ],
-            "token_endpoint": "https://op.umu.se/openid/token",
-            "federation_registration_endpoint":
-              "https://op.umu.se/openid/fedreg"
-        }
-    },
-    "sub": "https://op.umu.se"
+  "authority_hints": [
+    "https://umu.se"
+  ],
+  "exp": 1568397247,
+  "iat": 1568310847,
+  "iss": "https://op.umu.se",
+  "jwks": {
+    "keys": [
+      {
+        "e": "AQAB",
+        "kid": "dEEtRjlzY3djcENuT01wOGxrZlkxb3RIQVJlMTY0...",
+        "kty": "RSA",
+        "n": "x97YKqc9Cs-DNtFrQ7_vhXoH9bwkDWW6En2jJ044yH..."
+      }
+    ]
+  },
+  "metadata": {
+    "openid_provider": {
+      "issuer": "https://op.umu.se/openid",
+      "jwks_uri": "https://op.umu.se/openid/jwks_uri.json",
+      "authorization_endpoint":
+        "https://op.umu.se/openid/authorization",
+      "federation_types_supported": [
+        "automatic",
+        "explicit"
+      ],
+      "grant_types_supported": [
+        "authorization_code",
+        "implicit",
+        "urn:ietf:params:oauth:grant-type:jwt-bearer"
+      ],
+      "id_token_signing_alg_values_supported": [
+        "ES256", "RS256"
+      ],
+      "logo_uri":
+        "https://www.umu.se/img/umu-logo-left-neg-SE.svg",
+      "policy_uri":
+        "https://www.umu.se/en/website/legal-information/",
+      "response_types_supported": [
+        "code",
+        "code id_token",
+        "token"
+      ],
+      "subject_types_supported": [
+        "pairwise",
+        "public"
+      ],
+      "token_endpoint": "https://op.umu.se/openid/token",
+      "federation_registration_endpoint":
+        "https://op.umu.se/openid/fedreg",
+      "token_endpoint_auth_methods_supported": [
+        "client_secret_post",
+        "client_secret_basic",
+        "client_secret_jwt",
+        "private_key_jwt"
+      ]
+    }
+  },
+  "sub": "https://op.umu.se"
 }
 ]]></artwork>
           </figure>
@@ -2707,31 +2942,31 @@ HTTP/1.1 302 Found
           <figure>
             <artwork><![CDATA[
 {
-    "authority_hints": [
-        "https://swamid.se"
-    ],
-    "exp": 1568397247,
-    "iat": 1568310847,
-    "iss": "https://umu.se",
-    "jwks": {
-        "keys": [
-            {
-                "e": "AQAB",
-                "kid": "endwNUZrNTJsX2NyQlp4bjhVcTFTTVltR2gxV2RV...",
-                "kty": "RSA",
-                "n": "vXdXzZwQo0hxRSmZEcDIsnpg-CMEkor50SOG-1XUlM..."
-            }
-        ]
-    },
-    "metadata": {
-        "federation_entity": {
-            "contacts": "ops@umu.se",
-            "federation_api_endpoint": "https://umu.se/oidc/fedapi",
-            "homepage_uri": "https://www.umu.se",
-            "name": "UmU"
-        }
-    },
-    "sub": "https://umu.se"
+  "authority_hints": [
+    "https://swamid.se"
+  ],
+  "exp": 1568397247,
+  "iat": 1568310847,
+  "iss": "https://umu.se",
+  "jwks": {
+    "keys": [
+      {
+        "e": "AQAB",
+        "kid": "endwNUZrNTJsX2NyQlp4bjhVcTFTTVltR2gxV2RV...",
+        "kty": "RSA",
+        "n": "vXdXzZwQo0hxRSmZEcDIsnpg-CMEkor50SOG-1XUlM..."
+      }
+    ]
+  },
+  "metadata": {
+    "federation_entity": {
+      "contacts": "ops@umu.se",
+      "federation_api_endpoint": "https://umu.se/oidc/fedapi",
+      "homepage_uri": "https://www.umu.se",
+      "name": "UmU"
+    }
+  },
+  "sub": "https://umu.se"
 }
 ]]></artwork>
           </figure>
@@ -2754,52 +2989,52 @@ HTTP/1.1 302 Found
           <figure>
             <artwork><![CDATA[
 {
-    "authority_hints": [
-        "https://swamid.se"
-    ],
-    "exp": 1568397247,
-    "iat": 1568310847,
-    "iss": "https://umu.se",
-    "jwks": {
-        "keys": [
-            {
-                "e": "AQAB",
-                "kid": "dEEtRjlzY3djcENuT01wOGxrZlkxb3RIQVJlMTY0...",
-                "kty": "RSA",
-                "n": "x97YKqc9Cs-DNtFrQ7_vhXoH9bwkDWW6En2jJ044yH..."
-            }
+  "authority_hints": [
+    "https://swamid.se"
+  ],
+  "exp": 1568397247,
+  "iat": 1568310847,
+  "iss": "https://umu.se",
+  "jwks": {
+    "keys": [
+      {
+        "e": "AQAB",
+        "kid": "dEEtRjlzY3djcENuT01wOGxrZlkxb3RIQVJlMTY0...",
+        "kty": "RSA",
+        "n": "x97YKqc9Cs-DNtFrQ7_vhXoH9bwkDWW6En2jJ044yH..."
+      }
+    ]
+  },
+  "metadata_policy": {
+    "openid_provider": {
+      "contacts": {
+        "add": [
+          "ops@swamid.se"
         ]
-    },
-    "metadata_policy": {
-        "openid_provider": {
-            "contacts": {
-                "add": [
-                    "ops@swamid.se"
-                ]
-            },
-            "organization": {
-                "value": "University of Ume\u00e5"
-            },
-            "subject_types_supported": {
-                "value": [
-                    "pairwise"
-                ]
-            },
-            "token_endpoint_auth_methods_supported": {
-                "default": [
-                    "private_key_jwt"
-                ],
-                "subset_of": [
-                    "private_key_jwt",
-                    "client_secret_jwt"
-                ],
-                "superset_of": [
-                    "private_key_jwt"
-                ]
-            }
-        }
-    },
-    "sub": "https://op.umu.se"
+      },
+      "organization": {
+        "value": "University of Ume\u00e5"
+      },
+      "subject_types_supported": {
+        "value": [
+          "pairwise"
+        ]
+      },
+      "token_endpoint_auth_methods_supported": {
+        "default": [
+          "private_key_jwt"
+        ],
+        "subset_of": [
+          "private_key_jwt",
+          "client_secret_jwt"
+        ],
+        "superset_of": [
+          "private_key_jwt"
+        ]
+      }
+    }
+  },
+  "sub": "https://op.umu.se"
 }
 ]]></artwork>
           </figure>
@@ -2821,32 +3056,32 @@ HTTP/1.1 302 Found
           <figure>
             <artwork><![CDATA[
 {
-    "authority_hints": [
-        "https://edugain.geant.org"
-    ],
-    "exp": 1568397247,
-    "iat": 1568310847,
-    "iss": "https://swamid.se",
-    "jwks": {
-        "keys": [
-            {
-                "e": "AQAB",
-                "kid": "N1pQTzFxUXZ1RXVsUkVuMG5uMnVDSURGRVdhUzdO...",
-                "kty": "RSA",
-                "n": "3EQc6cR_GSBq9km9-WCHY_lWJZWkcn0M05TGtH6D9S..."
-            }
-        ]
-    },
-    "metadata": {
-        "federation_entity": {
-            "contacts": "ops@swamid.se",
-            "federation_api_endpoint":
-              "https://swamid.sunet.se/fedapi",
-            "homepage_uri": "https://www.sunet.se/swamid/",
-            "name": "SWAMID"
-        }
-    },
-    "sub": "https://swamid.se"
+  "authority_hints": [
+    "https://edugain.geant.org"
+  ],
+  "exp": 1568397247,
+  "iat": 1568310847,
+  "iss": "https://swamid.se",
+  "jwks": {
+    "keys": [
+      {
+        "e": "AQAB",
+        "kid": "N1pQTzFxUXZ1RXVsUkVuMG5uMnVDSURGRVdhUzdO...",
+        "kty": "RSA",
+        "n": "3EQc6cR_GSBq9km9-WCHY_lWJZWkcn0M05TGtH6D9S..."
+      }
+    ]
+  },
+  "metadata": {
+    "federation_entity": {
+      "contacts": "ops@swamid.se",
+      "federation_api_endpoint":
+        "https://swamid.sunet.se/fedapi",
+      "homepage_uri": "https://www.sunet.se/swamid/",
+      "name": "SWAMID"
+    }
+  },
+  "sub": "https://swamid.se"
 }
 ]]></artwork>
           </figure>
@@ -2870,48 +3105,48 @@ HTTP/1.1 302 Found
           <figure>
             <artwork><![CDATA[
 {
-    "authority_hints": [
-        "https://edugain.geant.org"
-    ],
-    "exp": 1568397247,
-    "iat": 1568310847,
-    "iss": "https://swamid.se",
-    "jwks": {
-        "keys": [
-            {
-                "e": "AQAB",
-                "kid": "endwNUZrNTJsX2NyQlp4bjhVcTFTTVltR2gxV2RV...",
-                "kty": "RSA",
-                "n": "vXdXzZwQo0hxRSmZEcDIsnpg-CMEkor50SOG-1XUlM..."
-            }
+  "authority_hints": [
+    "https://edugain.geant.org"
+  ],
+  "exp": 1568397247,
+  "iat": 1568310847,
+  "iss": "https://swamid.se",
+  "jwks": {
+    "keys": [
+      {
+        "e": "AQAB",
+        "kid": "endwNUZrNTJsX2NyQlp4bjhVcTFTTVltR2gxV2RV...",
+        "kty": "RSA",
+        "n": "vXdXzZwQo0hxRSmZEcDIsnpg-CMEkor50SOG-1XUlM..."
+      }
+    ]
+  },
+  "metadata_policy": {
+    "openid_provider": {
+      "id_token_signing_alg_values_supported": {
+        "subset_of": [
+          "RS256",
+          "ES256",
+          "ES384",
+          "ES512"
         ]
-    },
-    "metadata_policy": {
-        "openid_provider": {
-            "id_token_signing_alg_values_supported": {
-                "subset_of": [
-                    "RS256",
-                    "ES256",
-                    "ES384",
-                    "ES512"
-                ]
-            },
-            "token_endpoint_auth_methods_supported": {
-                "subset_of": [
-                    "client_secret_jwt",
-                    "private_key_jwt"
-                ]
-            },
-            "userinfo_signing_alg_values_supported": {
-                "subset_of": [
-                    "ES256",
-                    "ES384",
-                    "ES512"
-                ]
-            }
-        }
-    },
-    "sub": "https://umu.se"
+      },
+      "token_endpoint_auth_methods_supported": {
+        "subset_of": [
+          "client_secret_jwt",
+          "private_key_jwt"
+        ]
+      },
+      "userinfo_signing_alg_values_supported": {
+        "subset_of": [
+          "ES256",
+          "ES384",
+          "ES512"
+        ]
+      }
+    }
+  },
+  "sub": "https://umu.se"
 }
 ]]></artwork>
           </figure>
@@ -2934,27 +3169,27 @@ HTTP/1.1 302 Found
           <figure>
             <artwork><![CDATA[
 {
-    "exp": 1568397247,
-    "iat": 1568310847,
-    "iss": "https://edugain.geant.org",
-    "jwks": {
-        "keys": [
-            {
-                "e": "AQAB",
-                "kid": "Sl9DcjFxR3hrRGdabUNIR21KT3dvdWMyc2VUM2Fr...",
-                "kty": "RSA",
-                "n": "xKlwocDXUw-mrvDSO4oRrTRrVuTwotoBFpozvlq-1q..."
-            }
-        ]
-    },
-    "metadata": {
-        "federation_entity": {
-            "federation_api_endpoint":
-              "https://geant.org/edugain/api"
-        }
-    },
-    "sub": "https://edugain.geant.org"
+  "exp": 1568397247,
+  "iat": 1568310847,
+  "iss": "https://edugain.geant.org",
+  "jwks": {
+    "keys": [
+      {
+        "e": "AQAB",
+        "kid": "Sl9DcjFxR3hrRGdabUNIR21KT3dvdWMyc2VUM2Fr...",
+        "kty": "RSA",
+        "n": "xKlwocDXUw-mrvDSO4oRrTRrVuTwotoBFpozvlq-1q..."
+      }
+    ]
+  },
+  "metadata": {
+    "federation_entity": {
+      "federation_api_endpoint": "https://geant.org/edugain/api"
+    }
+  },
+  "sub": "https://edugain.geant.org"
 }
+
 ]]></artwork>
           </figure>
           <t>
@@ -2980,32 +3215,32 @@ HTTP/1.1 302 Found
           <figure>
             <artwork><![CDATA[
 {
-    "exp": 1568397247,
-    "iat": 1568310847,
-    "iss": "https://edugain.geant.org",
-    "jwks": {
-        "keys": [
-            {
-                "e": "AQAB",
-                "kid": "N1pQTzFxUXZ1RXVsUkVuMG5uMnVDSURGRVdhUzdO...",
-                "kty": "RSA",
-                "n": "3EQc6cR_GSBq9km9-WCHY_lWJZWkcn0M05TGtH6D9S..."
-            }
-        ]
+  "exp": 1568397247,
+  "iat": 1568310847,
+  "iss": "https://edugain.geant.org",
+  "jwks": {
+    "keys": [
+      {
+        "e": "AQAB",
+        "kid": "N1pQTzFxUXZ1RXVsUkVuMG5uMnVDSURGRVdhUzdO...",
+        "kty": "RSA",
+        "n": "3EQc6cR_GSBq9km9-WCHY_lWJZWkcn0M05TGtH6D9S..."
+      }
+    ]
+  },
+  "metadata_policy": {
+    "openid_provider": {
+      "contacts": {
+        "add": "ops@edugain.geant.org"
+      }
     },
-    "metadata_policy": {
-        "openid_provider": {
-            "contacts": {
-                "add": "ops@edugain.geant.org"
-            }
-        },
-        "openid_relying_part": {
-            "contacts": {
-                "add": "ops@edugain.geant.org"
-            }
-        }
-    },
-    "sub": "https://swamid.se"
+    "openid_relying_part": {
+      "contacts": {
+        "add": "ops@edugain.geant.org"
+      }
+    }
+  },
+  "sub": "https://swamid.se"
 }
 ]]></artwork>
           </figure>
@@ -3051,38 +3286,53 @@ HTTP/1.1 302 Found
           <figure>
             <artwork><![CDATA[
 {
-    "authorization_endpoint":
-      "https://op.umu.se/openid/authorization",
-    "contacts": "ops@edugain.geant.org",
-    "federation_types_supported": [
-        "automatic",
-        "explicit"
-    ],
-    "grant_types_supported": [
-        "authorization_code",
-        "implicit",
-        "urn:ietf:params:oauth:grant-type:jwt-bearer"
-    ],
-    "id_token_signing_alg_values_supported": [
-        "ES256"
-    ],
-    "logo_uri":
-      "https://www.umu.se/img/umu-logo-left-neg-SE.svg",
-    "policy_uri":
-      "https://www.umu.se/en/website/legal-information/",
-    "response_types_supported": [
-        "code",
-        "code id_token",
-        "token"
-    ],
-    "subject_types_supported": [
-        "pairwise",
-        "public"
-    ],
-    "token_endpoint": "https://op.umu.se/openid/token",
-    "federation_registration_endpoint":
-        "https://op.umu.se/openid/fedreg"
+  "authorization_endpoint":
+    "https://op.umu.se/openid/authorization",
+  "claims_parameter_supported": false,
+  "contacts": [
+    "ops@swamid.se"
+  ],
+  "federation_registration_endpoint":
+    "https://op.umu.se/openid/fedreg",
+  "federation_types_supported": [
+    "automatic",
+    "explicit"
+  ],
+  "grant_types_supported": [
+    "authorization_code",
+    "implicit",
+    "urn:ietf:params:oauth:grant-type:jwt-bearer"
+  ],
+  "id_token_signing_alg_values_supported": [
+    "RS256",
+    "ES256"
+  ],
+  "issuer": "https://op.umu.se/openid",
+  "jwks_uri": "https://op.umu.se/openid/jwks_uri.json",
+  "logo_uri":
+    "https://www.umu.se/img/umu-logo-left-neg-SE.svg",
+  "organization": "University of Ume\u00e5",
+  "policy_uri":
+    "https://www.umu.se/en/website/legal-information/",
+  "request_parameter_supported": false,
+  "request_uri_parameter_supported": true,
+  "require_request_uri_registration": true,
+  "response_types_supported": [
+    "code",
+    "code id_token",
+    "token"
+  ],
+  "subject_types_supported": [
+    "pairwise"
+  ],
+  "token_endpoint": "https://op.umu.se/openid/token",
+  "token_endpoint_auth_methods_supported": [
+    "private_key_jwt",
+    "client_secret_jwt"
+  ],
+  "version": "3.0"
 }
+
 ]]></artwork>
           </figure>
           <t>
@@ -3196,43 +3446,43 @@ Host: op.umu.se
               <t hangText="edugain.geant.org">
                 <figure>
                   <artwork><![CDATA[
-    "metadata_policy": {
-        "openid_provider": {
-            "contacts": {
-                "add": "ops@edugain.geant.org"
-            }
-        },
-        "openid_relying_party": {
-            "contacts": {
-                "add": "ops@edugain.geant.org"
-            }
-        }
+"metadata_policy": {
+  "openid_provider": {
+    "contacts": {
+      "add": "ops@edugain.geant.org"
     }
+  },
+  "openid_relying_party": {
+    "contacts": {
+      "add": "ops@edugain.geant.org"
+    }
+  }
+}
                 ]]></artwork>
                 </figure>
               </t>
               <t hangText="incommon.org">
                 <figure>
                   <artwork><![CDATA[
-    "metadata_policy": {
-        "openid_relying_party": {
-            "application_type": {
-                "one_of": [
-                    "web",
-                    "native"
-                ]
-            },
-            "contacts": {
-                "add": "ops@incommon.org"
-            },
-            "grant_types": {
-                "subset_of": [
-                    "authorization_code",
-                    "refresh_token"
-                ]
-            }
-        }
+"metadata_policy": {
+  "openid_relying_party": {
+    "application_type": {
+      "one_of": [
+        "web",
+        "native"
+      ]
+    },
+    "contacts": {
+      "add": "ops@incommon.org"
+    },
+    "grant_types": {
+      "subset_of": [
+        "authorization_code",
+        "refresh_token"
+      ]
     }
+  }
+}
                 ]]></artwork>
                 </figure>
               </t>
@@ -3245,29 +3495,27 @@ Host: op.umu.se
           <figure>
             <artwork><![CDATA[
 "metadata": {
-    "openid_relying_party": {
-        "application_type": "web",
-        "client_name": "LIGO Wiki",
-        "contacts": [
-            "ops@ligo.org"
-        ],
-        "grant_types": [
-            "authorization_code",
-            "refresh_token"
-        ],
-        "id_token_signing_alg_values_supported": [
-            "RS256",
-            "RS512"
-        ],
-        "jwks_uri": "https://wiki.ligo.org/jwks.json",
-        "redirect_uris": [
-            "https://wiki.ligo.org/callback"
-        ],
-        "response_types": [
-            "code"
-        ],
-        "subject_type": "public"
-    }
+  "application_type": "web",
+  "client_name": "LIGO Wiki",
+  "contacts": [
+    "ops@ligo.org"
+  ],
+  "grant_types": [
+    "authorization_code",
+    "refresh_token"
+  ],
+  "id_token_signing_alg_values_supported": [
+    "RS256",
+    "RS512"
+  ],
+  "jwks_uri": "https://wiki.ligo.org/jwks.json",
+  "redirect_uris": [
+    "https://wiki.ligo.org/callback"
+  ],
+  "response_types": [
+    "code"
+  ],
+  "subject_type": "public"
 }
 ]]></artwork>
           </figure>
@@ -3277,30 +3525,31 @@ Host: op.umu.se
           <figure>
             <artwork><![CDATA[
 {
-    "application_type": "web",
-    "client_name": "LIGO Wiki",
-    "contacts": [
-        "ops@ligo.org",
-        "ops@incommon.org",
-        "ops@edugain.geant.org"
-    ],
-    "grant_types": [
-        "authorization_code",
-        "refresh_token"
-    ],
-    "id_token_signing_alg_values_supported": [
-        "RS256",
-        "RS512"
-    ],
-    "jwks_uri": "https://wiki.ligo.org/jwks.json",
-    "redirect_uris": [
-        "https://wiki.ligo.org/callback"
-    ],
-    "response_types": [
-        "code"
-    ],
-    "subject_type": "public"
-}]]></artwork>
+  "application_type": "web",
+  "client_name": "LIGO Wiki",
+  "contacts": [
+    "ops@ligo.org",
+    "ops@edugain.geant.org",
+    "ops@incommon.org"
+  ],
+  "grant_types": [
+    "refresh_token",
+    "authorization_code"
+  ],
+  "id_token_signing_alg_values_supported": [
+    "RS256",
+    "RS512"
+  ],
+  "jwks_uri": "https://wiki.ligo.org/jwks.json",
+  "redirect_uris": [
+    "https://wiki.ligo.org/callback"
+  ],
+  "response_types": [
+    "code"
+  ],
+  "subject_type": "public"
+}
+]]></artwork>
           </figure>
           <t>
             Having that, the "registration" is done, and the OP must now use
@@ -3331,19 +3580,21 @@ Host: op.umu.se
             RP's metadata.
           </t>
           <t>
-            If we assume that the OP has a bit more strict view on which type
-            of crypto keys to use, it may want to add a metadata policy that says:
+            If we assume that the OP does not support refresh tokens,
+            it may want to add a metadata policy that says:
           </t>
           <figure>
             <artwork><![CDATA[
-"metadata_policy":
-   {
-      "openid_relying_party": {
-         "id_token_signing_alg_values_supported": [
-            "RS512"
-        ]
-      }
-}]]></artwork>
+"metadata_policy": {
+  "openid_relying_party": {
+    "grant_types": {
+      "subset_of": [
+        "authorization_code"
+      ]
+    }
+  }
+}
+]]></artwork>
           </figure>
           <t>
             In which case the metadata used by the RP should be described like
@@ -3352,29 +3603,30 @@ Host: op.umu.se
           <figure>
             <artwork><![CDATA[
 {
-    "application_type": "web",
-    "client_name": "LIGO Wiki",
-    "contacts": [
-        "ops@ligo.org",
-        "ops@incommon.org",
-        "ops@edugain.geant.org"
-    ],
-    "grant_types": [
-        "authorization_code",
-        "refresh_token"
-    ],
-    "id_token_signing_alg_values_supported": [
-        "RS512"
-    ],
-    "jwks_uri": "https://wiki.ligo.org/jwks.json",
-    "redirect_uris": [
-        "https://wiki.ligo.org/callback"
-    ],
-    "response_types": [
-        "code"
-    ],
-    "subject_type": "public"
-}]]></artwork>
+  "application_type": "web",
+  "client_name": "LIGO Wiki",
+  "contacts": [
+    "ops@edugain.geant.org",
+    "ops@incommon.org",
+    "ops@ligo.org"
+  ],
+  "grant_types": [
+    "authorization_code"
+  ],
+  "id_token_signing_alg_values_supported": [
+    "RS256",
+    "RS512"
+  ],
+  "jwks_uri": "https://wiki.ligo.org/jwks.json",
+  "redirect_uris": [
+    "https://wiki.ligo.org/callback"
+  ],
+  "response_types": [
+    "code"
+  ],
+  "subject_type": "public"
+}
+]]></artwork>
           </figure>
 
         </section>
@@ -3382,7 +3634,7 @@ Host: op.umu.se
     </section>
     <section anchor="Notices" title="Notices">
       <t>
-        Copyright (c) 2019 The OpenID Foundation.
+        Copyright (c) 2020 The OpenID Foundation.
       </t>
       <t>
         The OpenID Foundation (OIDF) grants to any Contributor, developer,
@@ -3425,8 +3677,11 @@ Host: op.umu.se
       <t>
         The authors wish to acknowledge the contributions of the following
         individuals and organizations to this specification:
+	Vladimir Dzhuvinov,
         Heather Flanagan,
+        Jouke Roorda,
         Misha Salle,
+        Marcos Sanz,
         Peter Schober,
         Michael Schwartz,
         and
@@ -3483,6 +3738,23 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+      <t>
+	-11
+	<list style="symbols">
+	  <t>
+	    Added section on trust marks.
+	  </t>
+	  <t>
+	    Clarified private_key_jwt usage in the authentication request.
+	  </t>
+	  <t>
+	    Fixed Bitbucket issues #1150 and #1155 by Vladimir Dzhuvinov.
+	  </t>
+	  <t>
+	    Fixed some examples to make them syntactically correct.
+	  </t>
+	</list>
+      </t>
       <t>
         -10
         <list style="symbols">
