@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Connect Federation">OpenID Connect Federation 1.0 -
-      draft 12
+      draft 13
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -75,7 +75,7 @@
       </address>
     </author>
 
-    <date day="30" month="June" year="2020"/>
+    <date day="01" month="December" year="2020"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -258,6 +258,7 @@
               This claim is only optional for the entity statement returned
               from an OP when the client is doing explicit registration.
               In all other cases it is REQUIRED.
+              Every JWK in the JWKS MUST have a key id (kid).
             </t>
             <t hangText="aud">
               <vspace/>
@@ -371,13 +372,22 @@
               <spanx style="verb">[]</spanx>
               as the <spanx style="verb">policy_language_crit</spanx> value.
             </t>
+            <t hangText="trust_marks">
+              <vspace/>
+              OPTIONAL. JSON object that describes a set of trust marks.
+              More about this in
+              <xref target="trust_marks"/>
+            </t>
           </list>
         </t>
 
         <t>
           The entity statement is signed using the private key of the issuer
           entity, in the form of a <xref target="RFC7515">JSON Web Signature
-          (JWS)</xref>.
+          (JWS)</xref>. Entities MUST support signing Entity Statements with
+          the RSA SHA-256 algorithm (an alg value of RS256). Consequently
+          entities MUST support signature verification where the statement was
+          signed using RS256.
         </t>
 
         <figure>
@@ -1036,7 +1046,7 @@
           <t>
             If 'true' then claim MUST have a value.
             <spanx style="verb">essential</spanx>
-            can be merged with all the other types.
+            can be combined with all the other types.
           </t>
           <figure>
             <artwork><![CDATA[
@@ -1055,21 +1065,21 @@
       <section title="Policy Type Combinations" anchor="policy_type_combo">
         <t>
           An entity may use more then one policy type when expressing a policy
-          for a claim. These are the policy types that can be merged in a
+          for a claim. These are the policy types that can be combined in a
           metadata_policy statement:
           <list style="hanging">
             <t hangText="essential">
               <vspace/>
-              Can be merged with all the others. If
+              Can be combined with all the others. If
               <spanx style="verb">essential</spanx>
               is not present that is the same as stating essential=true.
             </t>
             <t hangText="default">
               <vspace/>
-              Can be merged with <spanx style="verb">one_of</spanx>,
+              Can be combined with <spanx style="verb">one_of</spanx>,
               <spanx style="verb">subset_of</spanx>
               and <spanx style="verb">superset_of</spanx>.
-              If a <spanx style="verb">default</spanx> policy is merged
+              If a <spanx style="verb">default</spanx> policy is combined
               with <spanx style="verb">one_of</spanx>,
               <spanx style="verb">subset_of</spanx>
               or
@@ -1083,7 +1093,7 @@
             </t>
             <t hangText="superset_of">
               <vspace/>
-              Can be merged with <spanx style="verb">subset_of</spanx>.
+              Can be combined with <spanx style="verb">subset_of</spanx>.
               If <spanx style="verb">subset_of</spanx> and
               <spanx style="verb">superset_of</spanx>
               both appears in a
@@ -1093,7 +1103,7 @@
             </t>
             <t hangText="subset_of">
               <vspace/>
-              Can be merged with <spanx style="verb">superset_of</spanx>.
+              Can be combined with <spanx style="verb">superset_of</spanx>.
               If <spanx style="verb">superset_of</spanx> and
               <spanx style="verb">subset_of</spanx>
               both appears in a metadata_policy statement for a claim
@@ -1102,7 +1112,7 @@
             </t>
             <t hangText="value">
               <vspace/>
-              Can be merged with <spanx style="verb">one_of</spanx>,
+              Can be combined with <spanx style="verb">one_of</spanx>,
               <spanx style="verb">subset_of</spanx>
               and <spanx style="verb">superset_of</spanx>.
               Here the order matters. If <spanx style="verb">value</spanx>
@@ -1140,38 +1150,38 @@
           <list style="hanging">
             <t hangText="subset_of">
               <vspace/>
-              The result of combining two <spanx style="verb">subset_of</spanx> policies
+              The result of merging two <spanx style="verb">subset_of</spanx> policies
               is the intersection of the values.
             </t>
             <t hangText="one_of">
               <vspace/>
-              The result of combining two <spanx style="verb">one_of</spanx> policies
+              The result of merging two <spanx style="verb">one_of</spanx> policies
               is the intersection of the values.
             </t>
             <t hangText="superset_of">
               <vspace/>
-              The result of combining two
+              The result of merging two
               <spanx style="verb">superset_of</spanx>
               policies is the intersection of the values.
             </t>
             <t hangText="add">
               <vspace/>
-              The result of combining two <spanx style="verb">add</spanx> policies
+              The result of merging two <spanx style="verb">add</spanx> policies
               is the union of the values.
             </t>
             <t hangText="value">
               <vspace/>
-              The result of combining two <spanx style="verb">value</spanx> policies
+              The result of merging two <spanx style="verb">value</spanx> policies
               is NOT allowed unless the two values are equal.
             </t>
             <t hangText="default">
               <vspace/>
-              The result of combining two <spanx style="verb">default</spanx> policies
+              The result of merging two <spanx style="verb">default</spanx> policies
               is NOT allowed unless the two values are equal.
             </t>
             <t hangText="essential">
               <vspace/>
-              The result of combining two <spanx style="verb">essential</spanx> policies
+              The result of merging two <spanx style="verb">essential</spanx> policies
               is True if any of the values are True otherwise it is False.
               Note that a missing <spanx style="verb">essential</spanx> specification
               is to be treated as an essential=true statement.
@@ -1654,8 +1664,11 @@
         (even though this violates <xref target="RFC8615"/>).
       </t>
       <t>
-        Federation Entities MUST make an Entity Configuration Document available
-        at the configuration endpoint.
+        Federation Entities SHOULD make an Entity Configuration Document available
+        at the configuration endpoint. There is only one exception to this
+        rule and that is for an RP that only does explicit registration. Since it
+        posts the self-signed entity statement to the OP during client
+        registration, the OP has everything it needs from the RP.
       </t>
       <section title="Federation Entity Configuration Request">
         <t>
@@ -2429,18 +2442,17 @@ Content-Type: application/json
               <t hangText="aud">
                 <vspace/>
                 REQUIRED. The Audience (aud) MUST be the URL of the
-                Authorization
-                Server's Authorization Endpoint.
+                Authorization Server's Authorization Endpoint.
               </t>
               <t hangText="iss">
                 <vspace/>
-                REQUIRED. The claim iss MUST contain the entity ID of the OpenID
-                Connect provider.
+                REQUIRED. The claim iss MUST contain the client identifier.
               </t>
               <t hangText="sub">
                 <vspace/>
-                REQUIRED. The claim sub MUST contain the entity ID of the OpenID
-                Connect provider.
+                MUST NOT be present. This together with the value of aud should
+                make reuse of the statement for private_key_jwt client
+                authentication not feasible.
               </t>
               <t hangText="jti">
                 <vspace/>
@@ -2733,8 +2745,10 @@ HTTP/1.1 302 Found
                   The RP will now construct a self-signed entity statement
                   where the metadata statement chosen is influenced by the OPs
                   metadata and the <spanx style="verb">authority_hints</spanx> included
-                  are picked by the
-                  process described above.
+                  are picked by the process described above.
+                  Note that the <spanx style="verb">aud</spanx> claim in the
+                  entity statement is REQUIRED
+                  in this case and MUST be set to the OP issuer identifier.
                 </t>
                 <t>
                   The entity statement is sent, using POST, to the
@@ -2748,6 +2762,10 @@ HTTP/1.1 302 Found
 
           <section anchor="cliregresp" title="Client Registration Response">
             <section title="The OP Constructing the Response">
+              <t>
+                The trust chains MUST be constructed using the received
+                entity statement.
+              </t>
               <t>
                 <list style="numbers">
                   <t>
@@ -3025,7 +3043,7 @@ HTTP/1.1 302 Found
         </front>
       </reference>
       <reference anchor="PAR"
-                 target="https://tools.ietf.org/id/draft-lodderstedt-oauth-par-00.html">
+                 target="https://tools.ietf.org/id/draft-ietf-oauth-par-04.html">
         <front>
           <title>OAuth 2.0 Pushed Authorization Requests</title>
           <author fullname="Torsten Lodderstedt" initials="T."
@@ -3622,7 +3640,7 @@ Host: geant.org
           <t>Having verified the chain, the LIGO Wiki RP can proceed with the
             next step.
           </t>
-          <t>Merging the metadata policies from the tree entity statements we
+          <t>Combining the metadata policies from the tree entity statements we
             have, by
             a superior about its subordinate, and applying the combined policy
             to the
@@ -4096,6 +4114,35 @@ Host: op.umu.se
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
       <t>
+	-13
+	<list style="symbols">
+    <t>
+      Added 'trust_marks' as a parameter in the entity statement.
+    </t>
+    <t>
+      An RP's self-signed entity statement MUST have the OP's issuer identifier
+      as the value of 'aud'.
+    </t>
+    <t>
+      Added RS256 as default signing algorithm for entity statements.
+    </t>
+    <t>
+      Specified that the value of 'aud' in the entity statement use in
+      automatic client registration MUST have the ASs authorization endpoint
+      URL as value. Also the 'sub' claim MUST NOT be present.
+    </t>
+    <t>
+      Separating the usage of merge and combine as proposed by Vladimir
+      Dzhuvinov in Bitbucket issue #1157.
+    </t>
+    <t>
+      An RP doing only explicit client registration are not required to
+      publish and support a .well-known/openid-federation endpoint.
+    </t>
+	  <t>
+	    Every key in a JWKS in an entity statement MUST have a kid.
+	  </t>
+  </list>
 	-12
 	<list style="symbols">
 	  <t>
