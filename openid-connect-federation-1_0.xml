@@ -75,7 +75,7 @@
       </address>
     </author>
 
-    <date day="2" month="April" year="2021"/>
+    <date day="3" month="April" year="2021"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -309,7 +309,8 @@
               metadata policy statements, but only one for each metadata type.
               Only non-leaf entities MAY contain a
               <spanx style="verb">metadata_policy</spanx>
-              claim. Leaf entities MUST NOT contain a metadata_policy claim.
+              claim. Leaf entities MUST NOT contain a
+	      <spanx style="verb">metadata_policy</spanx> claim.
             </t>
             <t hangText="constraints">
               <vspace/>
@@ -445,7 +446,6 @@
       {
         "alg": "RS256",
         "e": "AQAB",
-        "ext": true,
         "key_ops": ["verify"],
         "kid": "key1",
         "kty": "RSA",
@@ -856,6 +856,10 @@
           </list>
         </t>
         <t>
+          It should be noted that claim names without language tags are different
+          from the same claim but with language tags.
+        </t>
+        <t>
           <figure>
             <preamble>
               An example of a policy entry:
@@ -1140,7 +1144,7 @@
                 Do the essential check. If <spanx style="verb">essential</spanx> is
                 missing as an operator
                 <spanx style="verb">essential</spanx>
-                is to be treated as if set to <spanx style="verb">true</spanx>.
+                is to be treated as if set to <spanx style="verb">false</spanx>.
                 If <spanx style="verb">essential</spanx> is defined to be
 		<spanx style="verb">true</spanx>,
                 then the claim
@@ -1736,7 +1740,6 @@ Content-Type: application/jose
       {
         "alg": "RS256",
         "e": "AQAB",
-        "ext": true,
         "key_ops": [
           "verify"
         ],
@@ -1893,7 +1896,6 @@ Content-Type: application/jose
       {
         "alg": "RS256",
         "e": "AQAB",
-        "ext": true,
         "key_ops": [
           "verify"
         ],
@@ -2216,7 +2218,7 @@ Content-Type: application/json
         </t>
       </section>
 
-      <section title="Validating the Trust Chains"
+      <section title="Validating a Trust Chain"
                anchor="trust_chain_validation">
         <t>
           As described in <xref target="trust_chain"/>,
@@ -2254,11 +2256,11 @@ Content-Type: application/json
               For j=0,...,i-1: Verify that ES[j]['iss'] == ES[j+1]['sub']
             </t>
             <t>
-              For j=0,...,i-1: Verify the signature of ES[j] using the public
+              For j=0,...,i-1: Verify the signature of ES[j] using a public
               key carried in ES[j+1]['jwks'].
             </t>
             <t>
-              For j == 0 verify the signature of ES[0] using the public
+              For j == 0 verify the signature of ES[0] using a public
               key carried in ES[0]['jwks'].
             </t>
             <t>
@@ -2277,6 +2279,12 @@ Content-Type: application/json
         <t>Consumers MAY cache Entity Statements or signature verification
           results for a given time until they expire
           <xref target="trust_lifetime"/>.
+        </t>
+        <t>
+          Note that the second bullet point means that, at each step in the
+          trust chain resolution, it must be verified that the signing JWK is
+          also present in the <spanx style="verb">jwks</spanx>
+	  statement claim issued by the superior.
         </t>
       </section>
       <section title="Choosing One of the Valid Trust Chains">
@@ -3987,7 +3995,8 @@ Host: op.umu.se
                 title="Client Starts with Registration (Explicit Client Registration)">
           <t>
             Here the LIGO Wiki RP sends a client registration request to the
-            federation_registration_endpoint of the OP (op.umu.se).
+            <spanx style="verb">federation_registration_endpoint</spanx>
+	    of the OP (op.umu.se).
             What it sends is a self-signed entity statement.
           </t>
           <t>
@@ -4257,6 +4266,10 @@ Host: op.umu.se
           <t>
             Made a distinction between parameters and claims.
           </t>
+	  <t>
+	    Corrected the description of the intended behavior when
+	    <spanx style="verb">essential</spanx> is absent.
+	  </t>
         </list>
       </t>
       <t>
