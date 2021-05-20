@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Connect Federation">OpenID Connect Federation 1.0 -
-      draft 14
+      draft 15
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -75,7 +75,7 @@
       </address>
     </author>
 
-    <date day="3" month="April" year="2021"/>
+    <date day="19" month="May" year="2021"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -94,7 +94,7 @@
       </t>
       <t>
         In an identity federation context, this is not sufficient. The
-        participants of the federation must be able to trust information
+        participants of the federation MUST be able to trust information
         provided about other participants in the federation. OpenID
         Connect Federations specifies how trust can be dynamically
         obtained by resolving trust from a common trusted third party.
@@ -129,7 +129,7 @@
         any other functionality in OpenID Connect.
       </t>
       <t>
-        Note that a company, as with any real-world organization, may be
+        Note that a company, as with any real-world organization, MAY be
         represented by more than one entity in a federation.
       </t>
       <t>
@@ -254,23 +254,23 @@
               used by leaf entities to sign entity statements about themselves,
               and intermediate entities to sign statements about other entities.
               The keys that can be found here are primarily intended to sign
-              entity statements and should not be used in other protocols.
-              This claim is only optional for the entity statement returned
+              entity statements and SHOULD NOT be used in other protocols.
+              This claim is only OPTIONAL for the entity statement returned
               from an OP when the client is doing explicit registration.
               In all other cases it is REQUIRED.
-              Every JWK in the JWKS MUST have a key id (kid).
+              Every JWK in the JWK Set MUST have a Key ID (kid).
             </t>
             <t hangText="aud">
               <vspace/>
               OPTIONAL.
-              The entity statement may be specifically created for an entity.
+              The entity statement MAY be specifically created for an entity.
               The entity identifier for that entity MUST appear in this claim.
             </t>
             <t hangText="authority_hints">
               <vspace/>
               OPTIONAL. Array of strings representing
               the entity identifiers of intermediate entities or trust anchors
-              that may issue an entity statement about the issuer entity.
+              that MAY issue an entity statement about the issuer entity.
               For all entities except for trust anchors that do not have any
               superiors this is REQUIRED and MUST NOT be the empty list [].
               This claim MUST be absent from an
@@ -283,7 +283,7 @@
               Each key of the JSON object represents a metadata type
               identifier, and each value MUST be a JSON object representing
               the metadata according to the metadata schema of that metadata
-              type. An entity statement may contain multiple
+              type. An entity statement MAY contain multiple
               metadata statements, but only one for each metadata type.
               If the <spanx style="verb">iss</spanx> of an entity statement
               points to the same entity as the
@@ -305,7 +305,7 @@
               Each key of the JSON object represents a metadata type
               identifier, and each value MUST be a JSON object representing
               the metadata policy according to the metadata schema of that
-              metadata type. An entity statement may contain multiple
+              metadata type. An entity statement MAY contain multiple
               metadata policy statements, but only one for each metadata type.
               Only non-leaf entities MAY contain a
               <spanx style="verb">metadata_policy</spanx>
@@ -598,8 +598,83 @@
               OPTIONAL. A human-readable
               name representing the organization owning the RP.
             </t>
+            <t hangText="signed_jwks_uri">
+              <vspace/>
+              OPTIONAL. A URI pointing to a signed JWT having the entity's
+              JWK Set as payload. The JWT is signed with a key that was included
+              in the JWK that the entity published in its self-signed entity
+              statement.
+              A signed JWT can contain the following claims, all except
+              <spanx style="verb">keys</spanx> defined in
+              <xref target="RFC7519"/>:
+              <list style="hanging">
+                <t hangText="keys">
+                  <vspace/>
+                  REQUIRED. List of JWKs.
+                </t>
+                <t hangText="iss">
+                  <vspace/>
+                  REQUIRED. The "iss" (issuer) claim identifies the principal
+                  that issued the JWT.
+                </t>
+                <t hangText="sub">
+                  <vspace/>
+                  REQUIRED. This claim identifies the owner of the keys.
+                  It SHOULD be the same as the issuer.
+                </t>
+                <t hangText="iat">
+                  <vspace/>
+                  OPTIONAL. This claim identifies the time at which the JWT was
+                  issued.
+                </t>
+                <t hangText="exp">
+                  <vspace/>
+                  OPTIONAL. This claim identifies the time at which the JWT is
+                  no longer valid.
+                </t>
+              </list>
+              There are more claims defined in <xref target="RFC7519"/>; of
+              these, <spanx style="verb">aud</spanx> SHOULD NOT be used, since
+              the issuer can not know who the audience is.
+              <spanx style="verb">nbf</spanx> and <spanx style="verb">jti</spanx>
+              are deemed to not be very useful in this context and are therefore
+              to be omitted.
+            </t>
           </list>
         </t>
+	<figure>
+          <preamble>
+            The following is a non-normative example of a signed JWKS
+            before serialization and adding a signature.
+          </preamble>
+          <artwork><![CDATA[
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "kid": "SUdtUndEWVY2cUFDeDV5NVlBWDhvOXJodVl2am1mNGNtR0pmd",
+      "n": "y_Zc8rByfeRIC9fFZrDZ2MGH2ZnxLrc0ZNNwkNet5rwCPYeRF3Sv
+            5nihZA9NHkDTEX97dN8hG6ACfeSo6JB2P7heJtmzM8oOBZbmQ90n
+            EA_JCHszkejHaOtDDfxPH6bQLrMlItF4JSUKua301uLB7C8nzTxm
+            tF3eAhGCKn8LotEseccxsmzApKRNWhfKDLpKPe9i9PZQhhJaurwD
+            kMwbWTAeZbqCScU1o09piuK1JDf2PaDFevioHncZcQO74Obe4nN3
+            oNPNAxrMClkZ9s9GMEd5vMqOD4huXlRpHwm9V3oJ3LRutOTxqQLV
+            yPucu7eHA7her4FOFAiUk-5SieXL9Q",
+      "e": "AQAB"
+    },
+    {
+      "kty": "EC",
+      "kid": "MFYycG1raTI4SkZvVDBIMF9CNGw3VEZYUmxQLVN2T21nSWlkd3",
+      "crv": "P-256",
+      "x": "qAOdPQROkHfZY1daGofOmSNQWpYK8c9G2m2Rbkpbd4c",
+      "y": "G_7fF-T8n2vONKM15Mzj4KR_shvHBxKGjMosF6FdoPY"
+    }
+  ],
+  "iss": "https://example.org/op",
+  "iat": 1618410883
+}
+]]></artwork>
+        </figure>
       </section>
 
       <section title="OP Metadata" anchor="OP_metadata">
@@ -708,6 +783,13 @@
               can be
               used.
             </t>
+            <t hangText="signed_jwks_uri">
+              <vspace/>
+              OPTIONAL. A URI pointing to a signed JWT having the entity's
+              JWK Set as payload. The JWT is signed with a key that was included
+              in the JWK that the entity published in its self-signed entity
+              statement.
+            </t>
           </list>
         </t>
         <t>
@@ -720,7 +802,7 @@
   "authorization_endpoint":
     "https://server.example.com/authorization",
   "token_endpoint": "https://server.example.com/token",
-  "jwks_uri": "https://server.example.com/jwks.json",
+  "signed_jwks_uri": "https://server.example.com/jws.json",
   "response_types_supported": ["code", "id_token", "id_token token"],
   "subject_types_supported": ["public"],
   "id_token_signing_alg_values_supported": ["RS256", "ES256"],
@@ -794,14 +876,14 @@
             <t hangText="name">
               <vspace/>
               OPTIONAL. String. The human-readable name
-              describing the subject entity. This may be, for example, the
+              describing the subject entity. This MAY be, for example, the
               name of an organization.
             </t>
             <t hangText="contacts">
               <vspace/>
               OPTIONAL. JSON array with one or more
               strings representing contact persons at the entity.
-              These may contain names, e-mail addresses, descriptions, phone
+              These MAY contain names, e-mail addresses, descriptions, phone
               numbers, etc.
             </t>
             <t hangText="policy_uri">
@@ -856,7 +938,7 @@
           </list>
         </t>
         <t>
-          It should be noted that claim names without language tags are different
+          It SHOULD be noted that claim names without language tags are different
           from the same claim but with language tags.
         </t>
         <t>
@@ -1454,7 +1536,7 @@
           <t>
             A <spanx style="verb">max_path_length</spanx> constraint of zero
             indicates that no
-            entity statement may appear between this entity statement and the
+            entity statement MAY appear between this entity statement and the
             leaf entity statement. Where it appears, the
 	    <spanx style="verb">max_path_length</spanx> constraint
             MUST have a value that is greater than or equal to zero.
@@ -1544,7 +1626,7 @@
           in the same way that a self-signed entity statement is validated.
         </t>
         <t>
-	  Note that a federation may allow an entity to self-sign
+	  Note that a federation MAY allow an entity to self-sign
           some trust marks.
         </t>
         <section title="Trust Mark Properties" anchor="trust_prop">
@@ -1589,7 +1671,7 @@
           </t>
         </section>
         <section title="Validating a Trust Mark" anchor="trust_valid">
-          <t>An entity should not try to validate a trust mark until
+          <t>An entity SHOULD NOT try to validate a trust mark until
             it knows which trust anchors it wants to use.
           </t>
           <t>validating a trust mark follows the procedure set out in
@@ -1768,15 +1850,15 @@ Content-Type: application/jose
         or by other means.
       </t>
       <t>
-        The Federation API is an HTTPS API that may support multiple
+        The Federation API is an HTTPS API that MAY support multiple
         operations. Fetching entity statements is one of the operations, and the
         only one that all Federation API endpoints are REQUIRED to support.
         All the other operations are OPTIONAL. The list of defined
-        operations may be extended in the future.
+        operations MAY be extended in the future.
       </t>
       <t>
         While all operations on the federation API endpoint make use of a
-        GET request, other operations may choose to use other HTTP methods. If
+        GET request, other operations MAY choose to use other HTTP methods. If
         the
         <spanx style="verb">operation</spanx>
         parameter is left out, it is treated as a
@@ -1815,7 +1897,7 @@ Content-Type: application/jose
                 <vspace/>
                 REQUIRED. The entity identifier of the issuer
                 from which you want an entity statement issued. Because of the
-                normalization of the URL, multiple issuers may resolve to a
+                normalization of the URL, multiple issuers MAY resolve to a
                 shared federation API. This parameter makes it explicit exactly
                 which issuer we want entity statements from.
               </t>
@@ -1917,7 +1999,7 @@ Content-Type: application/jose
 
       <section title="Trust Negotiation (OPTIONAL)">
         <t>
-          An entity may use the trust negotiation operation to fetch
+          An entity MAY use the trust negotiation operation to fetch
           resolved metadata about itself as seen/trusted by a remote peer.
           The result may, for instance, tell an RP what operations, scopes and
           claims an OP would allow the RP to use if a specific trust anchor
@@ -1948,7 +2030,7 @@ Content-Type: application/jose
               <t hangText="peer">
                 <vspace/>
                 REQUIRED. The entity identifier of the entity
-                the information is requested for. This must be a leaf entity.
+                the information is requested for. This MUST be a leaf entity.
               </t>
               <t hangText="type">
                 <vspace/>
@@ -2035,10 +2117,10 @@ Content-Type: application/json
 
       <section title="Entity Listings (OPTIONAL)">
         <t>
-          An entity may query another entity for a list of all the
+          An entity MAY query another entity for a list of all the
           entities immediately subordinate to that entity and about which
           that entity is prepared to issue statements about.
-          (In some cases, this may be a very large list.)
+          (In some cases, this MAY be a very large list.)
         </t>
 
         <section title="Entity Listings Request">
@@ -2067,9 +2149,9 @@ Content-Type: application/json
                 OPTIONAL. If left out, the result should
                 include both leaf entities and intermediate nodes. If set to
                 <spanx style="verb">true</spanx>,
-                the response should contain only leaf entities. If set to
+                the response SHOULD contain only leaf entities. If set to
                 <spanx style="verb">false</spanx>, the
-                response should contain only intermediate nodes.
+                response SHOULD contain only intermediate nodes.
               </t>
             </list>
           </t>
@@ -2115,7 +2197,7 @@ Content-Type: application/json
         <t>
           If the request was malformed, or some error occurred during
           processing of the request, the following standardized error format
-          should be used regardless of the operation specified.
+          SHOULD be used regardless of the operation specified.
         </t>
         <t>
           The HTTP response code MUST be something in 400/500-range, giving an
@@ -2165,7 +2247,7 @@ Content-Type: application/json
              title="Resolving Trust Chain and Metadata">
       <t>
         An entity (e.g., the Consumer) that wants to establish trust with a
-        remote peer, must have the remote peer's entity identifier and a list of
+        remote peer, MUST have the remote peer's entity identifier and a list of
         entity identifiers of trust anchors together with the public version
         of their signing keys. The Consumer will first have to fetch
         sufficient entity statements to establish at least one chain of trust
@@ -2178,7 +2260,7 @@ Content-Type: application/json
       <section anchor="fetching-es"
                title="Fetching Entity Statements to Establish a Trust Chain">
         <t>
-          Depending on the circumstances, the Consumer may either be
+          Depending on the circumstances, the Consumer MAY either be
           handed the remote peer's self-issued entity statement, or it may
           have to fetch it by itself. If it needs to fetch it, it will use the
           process described in
@@ -2224,11 +2306,11 @@ Content-Type: application/json
           As described in <xref target="trust_chain"/>,
           a trust chain consists of an ordered list of entity
           statements. So whichever way the Consumer has acquired the set of
-          entity statements, it must now verify that it is a proper trust chain
+          entity statements, it MUST now verify that it is a proper trust chain
           using the rules laid out in that section.
         </t>
         <t>
-          To validate the chain, the following must be done:
+          To validate the chain, the following MUST be done:
         </t>
         <t>
           <list style="symbols">
@@ -2282,7 +2364,7 @@ Content-Type: application/json
         </t>
         <t>
           Note that the second bullet point means that, at each step in the
-          trust chain resolution, it must be verified that the signing JWK is
+          trust chain resolution, it MUST be verified that the signing JWK is
           also present in the <spanx style="verb">jwks</spanx>
 	  statement claim issued by the superior.
         </t>
@@ -2318,7 +2400,7 @@ Content-Type: application/json
         each trust chain has an expiration time.
         A consumer of metadata using this specification MUST support
         refreshing a trust chain when it expires.
-        How often a consumer should re-evaluate the trust chain depends on
+        How often a consumer SHOULD re-evaluate the trust chain depends on
         how quickly the consumer wants to find out that something has changed
         in the trust chain.
       </t>
@@ -2336,7 +2418,7 @@ Content-Type: application/json
       <section title="Key Rollover for a Trust Anchor"
                anchor="key_rollover_anchor">
         <t>
-          A trust anchor must publish a self-signed entity statement about
+          A trust anchor MUST publish a self-signed entity statement about
           itself. The trust anchor SHOULD set a reasonable expiration
           time on that statement, such that the consumers will re-fetch the
           entity statement at reasonable intervals. If the trust anchor wants to
@@ -2365,7 +2447,7 @@ Content-Type: application/json
           </list>
         </t>
         <t>
-          It must be taken into consideration that clients may have
+          It MUST be taken into consideration that clients MAY have
           manually configured public keys as part of their configuration.
         </t>
       </section>
@@ -2374,7 +2456,7 @@ Content-Type: application/json
         <t>
           Since the consumers are expected to check the trust chain at regular,
           reasonably frequent times, this specification does not specify a
-          standard revocation process. Specific federations may make a
+          standard revocation process. Specific federations MAY make a
           different choice and will then have to add such a process.
         </t>
       </section>
@@ -2390,8 +2472,8 @@ Content-Type: application/json
         There are two alternative approaches to establish trust between an
         RP and an OP, which we call automatic and explicit
         registration. Members of a federation or a community
-        should agree upon which one to use. While implementations should
-        support both methods, deployments may choose to disable the use of one
+        SHOULD agree upon which one to use. While implementations should
+        support both methods, deployments MAY choose to disable the use of one
         of them.
       </t>
       <t>
@@ -2413,7 +2495,7 @@ Content-Type: application/json
           to one of the public keys the RP published through its metadata.
         </t>
         <t>
-          For automatic registration to work a number of things must be valid:
+          For automatic registration to work a number of things MUST be valid:
           <list style="symbols">
             <t>
               The Client ID of the RP
@@ -2423,7 +2505,7 @@ Content-Type: application/json
               Without a registration process, the RP does not have a
               client secret. Instead, the automatic registration model requires
               the
-              RP to make use of asymmetric cryptography. Bascially, the RP must
+              RP to make use of asymmetric cryptography. Basically, the RP must
               prove that it has control of the RP's private keys.
             </t>
             <t>
@@ -2472,7 +2554,7 @@ Content-Type: application/json
                   <vspace/>
                   MUST NOT be present. This together with the value of
 		  <spanx style="verb">aud</spanx>
-                  should make reuse of the statement for
+                  SHOULD make reuse of the statement for
 		  <spanx style="verb">private_key_jwt</spanx>
 		  client authentication not feasible.
                 </t>
@@ -2552,7 +2634,7 @@ https://server.example.com/authorize?
                 Client ID
                 is a valid URL, and the OP does not have the Client ID
                 registered as a known
-                client, then the OP should try to resolve and fetch trust
+                client, then the OP SHOULD try to resolve and fetch trust
                 chains starting with the RP's entity
                 statement as described in <xref target="fetching-es"/>.
               </t>
@@ -2564,7 +2646,7 @@ https://server.example.com/authorize?
                 <spanx style="verb">openid_relying_party</spanx>.
               </t>
               <t>
-                The OP should furthermore consider the resolved metadata of the
+                The OP SHOULD furthermore consider the resolved metadata of the
                 RP,
                 and verify that it complies with the client metadata
                 specification
@@ -2603,7 +2685,7 @@ https://server.example.com/authorize?
                   based on self-signed certificates.
                   In this case the self-signed certificate MUST be present as
                   the value of an <spanx style="verb">x5c</spanx>
-		  claim for one key in the JWKS describing
+		  claim for one key in the JWK Set describing
                   the RP's keys.
                 </t>
                 <t>
@@ -2612,7 +2694,7 @@ https://server.example.com/authorize?
                   based on public key infrastructure (PKI).
                 </t>
               </list>
-              Note that if mTLS is used, TLS client authentication must be
+              Note that if mTLS is used, TLS client authentication MUST be
               configured and, in case of self-signed certificates, the server must
               omit trust chain validation (optional_no_ca).
             </t>
@@ -2649,7 +2731,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
             </figure>
             <section title="Processing the Authentication Request">
               <t>
-                There are three different paths the OP must follow when
+                There are three different paths the OP MUST follow when
                 processing the Authentication Request depending on which
                 request authentication
                 method that was used. It all starts the same though.
@@ -2658,19 +2740,19 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                 Client ID
                 is a valid URL, the OP does not have the Client ID
                 registered as a known client and the OP supports the request
-                authentication method used then the OP should try to resolve and
+                authentication method used then the OP SHOULD try to resolve and
                 fetch trust chains starting with the RP's entity
                 statement as described in <xref target="fetching-es"/>.
               </t>
               <t>
-                The OP should validate the possible trust chains, as described
+                The OP SHOULD validate the possible trust chains, as described
                 in
                 <xref target="trust_chain_validation"/>,
                 and resolve the RP metadata with type
                 <spanx style="verb">openid_relying_party</spanx>.
               </t>
               <t>
-                The OP should consider the resolved metadata of the RP, and
+                The OP SHOULD consider the resolved metadata of the RP, and
                 verify that it complies with the client metadata specification
                 in
                 <xref target="OpenID.Registration">OpenID Connect Dynamic Client
@@ -2701,7 +2783,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                     certificate, then the certificate MUST be present as the
                     value
                     of an <spanx style="verb">x5c</spanx>
-		    claim for one key in the JWKS describing the RP's
+		    claim for one key in the JWK Set describing the RP's
                     keys.
                   </t>
                 </list>
@@ -2711,7 +2793,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
         </section>
         <section title="Authentication Error Response">
           <t>
-            If the OP fails to establish trust with the RP, it should use an
+            If the OP fails to establish trust with the RP, it SHOULD use an
             appropriate error code, and an
             <spanx style="verb">error_description</spanx>
             that aids the RP to understand what is wrong.
@@ -2920,8 +3002,8 @@ HTTP/1.1 302 Found
                   Starting with the OP's entity statement, resolve and verify
                   the trust chains it chooses to use when constructing the
                   registration request. If those trust chains do not exist
-                  anymore or do not verify, then the registration should be
-                  regarded as invalid and a new registration process should be
+                  anymore or do not verify, then the registration SHOULD be
+                  regarded as invalid and a new registration process SHOULD be
                   started.
                 </t>
                 <t>
@@ -2929,8 +3011,8 @@ HTTP/1.1 302 Found
                   now verify that the entity statement it received about itself
                   from the OP is still valid.
                   Again, if that is not the case the registration
-                  should be regarded as invalid and a new registration process
-                  should be started.
+                  SHOULD be regarded as invalid and a new registration process
+                  SHOULD be started.
                 </t>
               </list>
             </t>
@@ -3162,7 +3244,7 @@ HTTP/1.1 302 Found
         discovery service to find the home identity provider (op.umu.se)
       </t>
       <t>
-        Once the RP-part of the Wiki knows which OP it should talk to it has
+        Once the RP-part of the Wiki knows which OP it SHOULD talk to it has
         to find out a couple of things about the OP. All if those things
         can be found in the metadata. But finding the metadata is not enough;
         the RP also has to trust the metadata.
@@ -3595,8 +3677,8 @@ Host: edugain.geant.org
             <spanx style="verb">federation_api_endpoint</spanx>.
             As described in
             <xref target="key_rollover_anchor"/>,
-            note should also be
-            taken to <spanx style="verb">jwks</spanx> as the trust anchor may be
+            note SHOULD also be
+            taken to <spanx style="verb">jwks</spanx> as the trust anchor MAY be
             performing a key rollover.
           </t>
         </section>
@@ -3761,7 +3843,7 @@ Host: geant.org
             <t hangText="Automatic">
               <vspace/>
               No negotiation between the RP and the OP is made regarding
-              what features the client should use in future communication are
+              what features the client SHOULD use in future communication are
               done. The RP's published metadata filtered by the chosen trust
               chain's
               metadata policies defines the metadata that is to be used.
@@ -3891,7 +3973,7 @@ Host: op.umu.se
 	      </list>
 	    </t>
 	    <t>
-	      <list>
+	      <list style="hanging">
                 <t hangText="incommon.org">
                   <figure>
                     <artwork><![CDATA[
@@ -3983,7 +4065,7 @@ Host: op.umu.se
 ]]></artwork>
             </figure>
             <t>
-              Having that, the registration is done, and the OP must now use
+              Having that, the registration is done, and the OP MUST now use
               the keys found at the URL specified in
               <spanx style="verb">jwks_uri</spanx>
               to verify the signature on the Request Object in the
@@ -4013,7 +4095,7 @@ Host: op.umu.se
           </t>
           <t>
             If we assume that the OP does not support refresh tokens,
-            it may want to add a metadata policy that says:
+            it MAY want to add a metadata policy that says:
           </t>
           <figure>
             <artwork><![CDATA[
@@ -4029,7 +4111,7 @@ Host: op.umu.se
 ]]></artwork>
           </figure>
           <t>
-            Thus, the entity statement returned by the OP to the RP may look
+            Thus, the entity statement returned by the OP to the RP MAY look
             like this:
           </t>
           <figure>
@@ -4181,7 +4263,7 @@ Host: op.umu.se
         claims against other contributors and against implementers. The OpenID
         Foundation invites any interested party to bring to its attention any
         copyrights, patents, patent applications, or other proprietary rights
-        that may cover technology that may be required to practice this
+        that MAY cover technology that MAY be required to practice this
         specification.
       </t>
     </section>
@@ -4220,10 +4302,10 @@ Host: op.umu.se
             for long-term security and maintainability of federations.
           </t>
           <t>
-            A mechanism may be needed for bounding key lifetimes.
+            A mechanism MAY be needed for bounding key lifetimes.
           </t>
           <t>
-            Discuss that key IDs may be chosen as the JWK Thumbprint [RFC 7638]
+            Discuss that Key IDs MAY be chosen as the JWK Thumbprint [RFC 7638]
             of the key.
           </t>
           <t>
@@ -4251,6 +4333,14 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+      <t>
+        -15
+        <list style="symbols">
+          <t>
+            Added signed_jwks_uri, which had be lost somewhere along the road.
+          </t>
+        </list>
+      </t>
       <t>
         -14
         <list style="symbols">
@@ -4301,13 +4391,13 @@ Host: op.umu.se
             publish and support a .well-known/openid-federation endpoint.
           </t>
           <t>
-            Every key in a JWKS in an entity statement MUST have a kid.
+            Every key in a JWK Set in an entity statement MUST have a kid.
           </t>
         </list>
         -12
         <list style="symbols">
           <t>
-            Made JWKS optional in an entity statement returned by OP as response
+            Made JWK Set OPTIONAL in an entity statement returned by OP as response
             of an explicit client registration
           </t>
           <t>
