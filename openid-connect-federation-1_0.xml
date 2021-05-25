@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Connect Federation">OpenID Connect Federation 1.0 -
-      draft 15
+      draft 16
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -75,7 +75,7 @@
       </address>
     </author>
 
-    <date day="19" month="May" year="2021"/>
+    <date day="25" month="May" year="2021"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -2115,7 +2115,7 @@ Content-Type: application/json
         </section>
       </section>
 
-      <section title="Entity Listings (OPTIONAL)">
+      <section title="Entity Listings (OPTIONAL)" anchor="entity_listings">
         <t>
           An entity MAY query another entity for a list of all the
           entities immediately subordinate to that entity and about which
@@ -3070,7 +3070,13 @@ HTTP/1.1 302 Found
 
     <section anchor="Security" title="Security Considerations">
       <t>
-        TBD
+        Some of the interfaces defined in this specification could be used for
+        Denial of Service attacks (DOS), most notably, Entity Listings
+        (<xref target="entity_listings"/>) and
+        automatic client registration (<xref target="automatic"/>).
+        If you plan to provide these interfaces as a service, you should consider
+        applying normal defense methods, such as those described in
+        <xref target="RFC4732"/>.
       </t>
     </section>
   </middle>
@@ -3080,12 +3086,12 @@ HTTP/1.1 302 Found
     <references title="Normative References">
       <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"?>
       <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.3339.xml"?>
+      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4732.xml"?>
       <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5280.xml"?>
       <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8615.xml"?>
       <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7515.xml"?>
       <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7517.xml"?>
       <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7519.xml"?>
-      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7523.xml"?>
       <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7591.xml"?>
       <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8414.xml"?>
       <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8705.xml"?>
@@ -4143,17 +4149,18 @@ Host: op.umu.se
         "value": "nLe19cJ5e9SXXiPqnRRuxpjyWI73bDhD"
       },
       "client_id": {
-        "value": "m3GyHwVlyld3"
+        "value": "m3GyHw"
       },
       "client_secret_expires_at": {
         "value": 1604049619
       },
       "registration_client_uri": {
         "value":
-          "https://op.umu.se/openid/registration_api?client_id=m3GyHwVl"
+          "https://op.umu.se/openid/registration?client_id=m3GyHw"
       },
       "client_secret": {
-        "value": "cb44eed577f3b5edf3e08362d47a0dc44630b3dc6ea99f7a79205"
+        "value":
+          "cb44eed577f3b5edf3e08362d47a0dc44630b3dc6ea99f7a79205"
       },
       "client_id_issued_at": {
         "value": 1601457619
@@ -4170,16 +4177,15 @@ Host: op.umu.se
         "kty": "RSA",
         "use": "sig",
         "kid":
-          "U2JTWHY0VFg0a2FEVVdTaHptVDJsNDNiSDk5MXRBVEtNSFVkeXZwbTZ2QQ",
+          "U2JTWHY0VFg0a2FEVVdTaHptVDJsNDNiSDk5MXRBVEtNSFVkeXZwb",
         "e": "AQAB",
         "n":
-          "4AZjgqFwMhTVSLrpzzNcwaCyVD88C_Hb3Bmor97vH-2AzldhuVb8Ka..."
+          "4AZjgqFwMhTVSLrpzzNcwaCyVD88C_Hb3Bmor97vH-2AzldhuVb8K..."
       },
       {
         "kty": "EC",
         "use": "sig",
-        "kid":
-          "LWtFcklLOGdrWXdvN1hjS2tjSUEzbG5VYTRrd0djdHgyQjVGUVB1MXBCdw",
+        "kid": "LWtFcklLOGdrW",
         "crv": "P-256",
         "x": "X2S1dFE7zokQDST0bfHdlOWxOc8FC1l4_sG1Kwa4l4s",
         "y": "812nU6OCKxgc2ZgSPt_dkXbYldG_smHJi4wXByDHc6g"
@@ -4333,6 +4339,14 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+      <t>
+        -16
+        <list style="symbols">
+          <t>
+            Added Security Considerations section on Denial of Service attacks.
+          </t>
+        </list>
+      </t>
       <t>
         -15
         <list style="symbols">
