@@ -2377,29 +2377,27 @@ Content-Type: application/json
                title="Fetching Entity Statements to Establish a Trust Chain">
         <t>
           Depending on the circumstances, the Consumer MAY either be
-          handed the remote peer's self-issued entity statement, or it may
+          handed the remote peer's entity configuration, or it may
           have to fetch it by itself. If it needs to fetch it, it will use the
-          process described in
-          <xref target="fetch_statement"/>
-          with both <spanx style="verb">iss</spanx> and
-          <spanx style="verb">sub</spanx>
-          containing the entity identifier
-          of the remote peer.
+          process described in <xref target="federation_configuration"/>
+          based on the entity identifier of the remote peer.
         </t>
         <t>
           The next step is to iterate through the list of
           intermediates listed in
           <spanx style="verb">authority_hints</spanx>, ignoring the authority
           hints that end in an unknown trust anchor, requesting an entity
-          statement about the remote peer from each of the intermediates.
-          If the received entity statement contains an authority hint this
-          process is repeated. This time with the
-          <spanx style="verb">iss</spanx>
-          set to the
-          intermediate's entity identifier and the <spanx style="verb">sub</spanx> to
-          be
-          the <spanx style="verb">iss</spanx> of the previous query.
-          The Consumer SHOULD NOT attempt to fetch
+          configuration from each of the intermediates.
+          If the received entity configuration contains an authority hint this
+          process is repeated. 
+        </t>
+        <t>
+         With the list of all intermediates and the trust anchor, the respective
+         federation API (see <xref target="federation_api"/>) is used to fetch entity 
+         statements about the intermediates and the remote peer. 
+        </t>
+        <t> 
+         Note: The Consumer SHOULD NOT attempt to fetch
           entity statements it already has fetched during this
           process (loop prevention).
         </t>
