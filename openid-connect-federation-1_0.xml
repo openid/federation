@@ -1094,6 +1094,40 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
 ]]></artwork>
         </figure>
       </section>
+      <section title="Trust Mark Issuer">
+        <t>
+          The metadata type identifier is
+          <spanx style="verb">trust_mark_issuer</spanx>.
+        </t>
+        <t>
+          All entities participating in a federation may be of this type.
+        </t>
+
+        <t>
+          The following properties are allowed:
+          <list style="hanging">
+            <t hangText="status_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The endpoint for the status operation described in
+              <xref target="status_endpoint"/>. Issuers of trust marks
+              MAY publish a <spanx style="verb">status_endpoint</spanx>.
+            </t>
+          </list>
+        </t>
+        <t>Example</t>
+        <figure>
+          <artwork><![CDATA[
+"trust_mark_issuer": {
+  "status_endpoint": "https://trust_marks_are_us.example.com/status"
+}
+]]></artwork>
+        </figure>
+        <t>
+          The communication with the status endpoint is described in
+          <xref target="status_endpoint"/>
+        </t>
+      </section>
     </section>
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
@@ -1827,7 +1861,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
                 REQUIRED. Number. When this trust mark was issued.
 		Expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
               </t>
-              <t hangText="mark">
+              <t hangText="logo_uri">
                 <vspace/>
                 OPTIONAL. String. An URL that points to a mark/logo that the
                 subject is allowed to display to a user of the entity.
@@ -1856,8 +1890,9 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
           <t>An entity SHOULD NOT try to validate a trust mark until
             it knows which trust anchors it wants to use.
           </t>
-          <t>Validating a trust mark follows the procedure set out in
-            <xref target="resolving_trust"/>.
+          <t>Validating a trust mark issuer follows the procedure set out in
+            <xref target="resolving_trust"/>. Validating the trust mark
+            itself is described in <xref target="status_endpoint"/>
           </t>
           <t>
             Note that the entity representing the accreditation authority
@@ -2441,6 +2476,106 @@ Content-Type: application/json
 ]
 ]]></artwork>
           </figure>
+        </section>
+      </section>
+
+      <section title="Trust Mark Status" anchor="status_endpoint">
+        <t>
+          This is to allow an entity to check whether a trust mark is still
+          active or not. The query MUST be sent to the trust mark issuer.
+        </t>
+        <section title="Status request">
+          <t>
+            The request MUST be an HTTP request using the GET method and
+            the https scheme to a resolved federation API endpoint with the
+            following query string parameters:
+          </t>
+          <t>
+            <list style="hanging">
+              <t hangText="operation">
+                <vspace/>
+                REQUIRED. MUST be set to
+                <spanx style="verb">trust_mark</spanx>.
+              </t>
+              <t hangText="sub">
+                <vspace/>
+                OPTIONAL. The entity_id for the entity to which the trust mark
+                was issued.
+              </t>
+              <t hangText="id">
+                <vspace/>
+                OPTIONAL. Identifier of the trust mark.
+              </t>
+              <t hangText="iat">
+                <vspace/>
+                OPTIONAL. When the trust mark was issued. If
+                <spanx style="verb">iat</spanx> is not specified and the
+                trust issuer have issued several trust marks with the
+                <spanx style="verb">id</spanx> specified in the request to the
+                entity identified by <spanx style="verb">sub</spanx>. Then the
+                last last one is assumed.
+              </t>
+              <t hangText="trust_mark">
+                <vspace/>
+                OPTIONAL. The whole trust mark
+              </t>
+            </list>
+          </t>
+          <t>
+            If <spanx style="verb">trust_mark</spanx> is used then
+            <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>
+            are not needed. If <spanx style="verb">trust_mark</spanx> is not used
+            then <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>
+            are required.
+          </t>
+          <t>
+            <figure>
+              <preamble>
+                The following is a non-normative example of a request using
+                <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>:
+              </preamble>
+              <artwork><![CDATA[
+GET /federation_api?
+operation=trust_mark
+&sub=https%3A%2F%2Fopenid.sunet.se%2FRP
+&id=https%3A%2F%2Frefeds.org%2Fsirtfi
+HTTP/1.1
+Host: operations.swamid.se
+]]></artwork>
+            </figure>
+
+          </t>
+        </section>
+        <section title="Status Response">
+          <t>
+            The HTTP response body MUST be a JSON
+            object containing the claims below and the content type MUST
+            be set to <spanx style="verb">application/json</spanx>.
+          </t>
+          <t>
+            <list style="hanging">
+              <t hangText="active">
+                <vspace/>
+                REQUIRED. Boolean. Whether the trust mark is active or not.
+              </t>
+            </list>
+          </t>
+          <t>
+            <figure>
+              <preamble>
+                The following is a non-normative example of a response:
+              </preamble>
+              <artwork><![CDATA[
+200 OK
+Last-Modified: Wed, 22 Jul 2018 19:15:56 GMT
+Content-Type: application/json
+
+{
+  "active"=true
+}
+]]></artwork>
+            </figure>
+          </t>
         </section>
       </section>
 
