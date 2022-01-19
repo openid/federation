@@ -608,7 +608,7 @@
         specification to utilize.
       </t>
       <t>
-        The metadata document MUST be a JSON document. Beyond that there is
+        The metadata document MUST be a JSON object. Beyond that there is
         no restriction.
       </t>
       <t>
@@ -2071,7 +2071,8 @@ Content-Type: application/jose
       <section title="Trust Negotiation (OPTIONAL)">
         <t>
           An entity MAY use the trust negotiation operation to fetch
-          resolved metadata about itself as seen/trusted by a remote peer.
+          resolved metadata about itself as seen/trusted by another entity
+          (the peer).
           The result may, for instance, tell an RP what operations, scopes and
           claims an OP would allow the RP to use if a specific trust anchor
           was used.
@@ -2101,7 +2102,7 @@ Content-Type: application/jose
               <t hangText="peer">
                 <vspace/>
                 REQUIRED. The entity identifier of the entity
-                the information is requested for. This MUST be a leaf entity.
+                that will collect the information.
               </t>
               <t hangText="type">
                 <vspace/>
@@ -2111,9 +2112,9 @@ Content-Type: application/jose
               </t>
               <t hangText="anchor">
                 <vspace/>
-                REQUIRED. The trust anchor that the remote peer
-                MUST use when resolving the metadata. The value is an entity
-                identifier.
+                REQUIRED. The trust anchor that the entity, defined by the
+                <spanx style="verb">peer</spanx> parameter, MUST use when
+                resolving the metadata. The value is an entity identifier.
               </t>
             </list>
           </t>
