@@ -1909,36 +1909,18 @@ Content-Type: application/jose
         </t>
       </section>
     </section>
-    <section title="Federation API" anchor="federation_api">
+    <section title="Federation Endpoints" anchor="federation_endpoints">
       <t>
-        All entities that are expected to publish entity statements about other
-        entities MUST expose a Federation API endpoint.
-      </t>
-      <t>
-        The federation API endpoint of an entity can be found in the
+        The federation endpoints of an entity can be found in the
         configuration response as described in
         <xref target="federation_configuration"/>
         or by other means.
       </t>
-      <t>
-        The Federation API is an HTTPS API that MAY support multiple
-        operations. Fetching entity statements is one of the operations, and the
-        only one that all Federation API endpoints are REQUIRED to support.
-        All the other operations are OPTIONAL. The list of defined
-        operations MAY be extended in the future.
-      </t>
-      <t>
-        While all operations on the federation API endpoint make use of a
-        GET request, other operations MAY choose to use other HTTP methods. If
-        the
-        <spanx style="verb">operation</spanx>
-        parameter is left out, it is treated as a
-        fetch entity statements request. Unless otherwise mentioned or agreed
-        upon, requests to the federation API do not need to be
-        authenticated.
-      </t>
-
       <section title="Fetching Entity Statements (REQUIRED)">
+        <t>
+          All entities that are expected to publish entity statements about other
+          entities MUST expose a Fetch endpoint.
+        </t>
         <t>
           Fetching entity statements is performed to collect entity statements
           one by one to gather trust chains.
@@ -1954,16 +1936,11 @@ Content-Type: application/jose
                  anchor="fetch_statement">
           <t>
             The request MUST be an HTTP request using the GET method and
-            the https scheme to a resolved federation API endpoint with the
+            the https scheme to a resolved federation endpoint with the
             following query string parameters:
           </t>
           <t>
             <list style="hanging">
-              <t hangText="operation">
-                <vspace/>
-                OPTIONAL. If not present, MUST be treated as
-                <spanx style="verb">fetch</spanx>.
-              </t>
               <t hangText="iss">
                 <vspace/>
                 REQUIRED. The entity identifier of the issuer
@@ -1984,20 +1961,19 @@ Content-Type: application/jose
                 <vspace/>
                 OPTIONAL. The entity identifier of the
                 requester. If the <spanx style="verb">aud</spanx>
-		parameter is present in the request,
+		            parameter is present in the request,
                 the <spanx style="verb">aud</spanx> claim SHOULD be present in
                 the entity statement response and take exactly that value.
               </t>
             </list>
           </t>
-
           <figure>
             <preamble>
               The following is a non-normative example of an API
               request for an entity statement:
             </preamble>
             <artwork><![CDATA[
-GET /federation_api_endpoint?
+GET /fetch?
 iss=https%3A%2F%2Fopenid.sunet.se%2Ffederation HTTP/1.1
 Host: openid.sunet.se
 ]]></artwork>
@@ -2068,17 +2044,16 @@ Content-Type: application/jose
         </section>
       </section>
 
-      <section title="Trust Negotiation (OPTIONAL)">
+      <section title="Evaluate Entity Statement" anchor="evaluate">
         <t>
-          An entity MAY use the trust negotiation operation to fetch
-          resolved metadata about itself as seen/trusted by another entity
-          (the peer).
+          An entity MAY use the evaluate endpoint to fetch
+          resolved metadata about itself as seen/trusted by a remote peer.
           The result may, for instance, tell an RP what operations, scopes and
           claims an OP would allow the RP to use if a specific trust anchor
           was used.
         </t>
 
-        <section title="Trust Negotiation Request">
+        <section title="Evaluate Request">
           <t>
             The request MUST be an HTTP request using the GET method and
             the https scheme to a resolved federation API endpoint with the
@@ -2086,23 +2061,13 @@ Content-Type: application/jose
           </t>
           <t>
             <list style="hanging">
-              <t hangText="operation">
-                <vspace/>
-                REQUIRED. MUST be set to
-                <spanx style="verb">resolve_metadata</spanx>.
-              </t>
-              <t hangText="respondent">
+              <t hangText="sub">
                 <vspace/>
                 REQUIRED. The entity identifier of the
                 entity whose metadata are requested. Because of the
                 normalization of the URL, multiple entity identifiers may
                 resolve to a shared federation API. This parameter makes it
                 explicit exactly which entity is expected.
-              </t>
-              <t hangText="peer">
-                <vspace/>
-                REQUIRED. The entity identifier of the entity
-                that will collect the information.
               </t>
               <t hangText="type">
                 <vspace/>
@@ -2112,9 +2077,9 @@ Content-Type: application/jose
               </t>
               <t hangText="anchor">
                 <vspace/>
-                REQUIRED. The trust anchor that the entity, defined by the
-                <spanx style="verb">peer</spanx> parameter, MUST use when
-                resolving the metadata. The value is an entity identifier.
+                REQUIRED. The trust anchor that the remote peer
+                MUST use when resolving the metadata. The value is an entity
+                identifier.
               </t>
             </list>
           </t>
@@ -2124,18 +2089,16 @@ Content-Type: application/jose
               request for trust negotiation:
             </preamble>
             <artwork><![CDATA[
-GET /federation_api_endpoint?
-operation=resolve_metadata&
-respondent=https%3A%2F%2Fopenid.sunet.se%2Ffederation&
+GET /evaluate?
+sub=https%3A%2F%2Fopenid.sunet.se%2Ffederation&
 type=openid_provider&
-anchor=https%3A%2F%2Fswamid.se&
-peer=https%3A%2F%2Fidp.umu.se%2Fopenid HTTP/1.1
+anchor=https%3A%2F%2Fswamid.se HTTP/1.1
 Host: openid.sunet.se
 ]]></artwork>
           </figure>
         </section>
 
-        <section title="Trust Negotiation Response">
+        <section title="Evaluate Response">
           <t>
             The response is a metadata statement that is the result of
             applying the metadata policies in the trust chain on the entity's
@@ -2187,7 +2150,7 @@ Content-Type: application/json
         </section>
       </section>
 
-      <section title="Entity Listings (OPTIONAL)" anchor="entity_listings">
+      <section title="Entity Listings" anchor="entity_listings">
         <t>
           An entity MAY query another entity for a list of all the
           entities immediately subordinate to that entity and about which
@@ -2203,19 +2166,6 @@ Content-Type: application/json
           </t>
           <t>
             <list style="hanging">
-              <t hangText="operation">
-                <vspace/>
-                REQUIRED. MUST be set to
-                <spanx style="verb">listing</spanx>.
-              </t>
-              <t hangText="iss">
-                <vspace/>
-                REQUIRED. The entity identifier of the entity
-                from which an entity listing is requested. Because of the
-                normalization of the URL, multiple entity identifiers may
-                resolve to a shared federation API. This parameter makes it
-                explicit exactly which entity is expected.
-              </t>
               <t hangText="is_leaf">
                 <vspace/>
                 OPTIONAL. If left out, the result should
@@ -2233,9 +2183,7 @@ Content-Type: application/json
               request for trust negotiation:
             </preamble>
             <artwork><![CDATA[
-GET /federation_api_endpoint?
-operation=listing&
-iss=https%3A%2F%2Fopenid.sunet.se%2Ffederation HTTP/1.1
+GET /list HTTP/1.1
 Host: openid.sunet.se
 ]]></artwork>
           </figure>
