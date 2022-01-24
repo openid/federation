@@ -291,14 +291,16 @@
             </t>
             <t hangText="jwks">
               <vspace/>
-              OPTIONAL. A
+              REQUIRED Conditional. A
               <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
               representing the public part of the subject
               entity's signing keys. The corresponding private key is
               used by leaf entities to sign entity statements about themselves,
               and intermediate entities to sign statements about other entities.
-              The keys that can be found here are primarily intended to sign
-              entity statements and SHOULD NOT be used in other protocols.
+              The keys that can be found here are intended to sign
+              entity statements and SHOULD NOT be used in other protocols. Keys 
+              to be used in other protocols, such as OpenID Connect, are conveyed
+              in the  <spanx style="verb">metadata</spanx> element of the respective entity statement. 
               This claim is only OPTIONAL for the entity statement returned
               from an OP when the client is doing explicit registration.
               In all other cases it is REQUIRED.
@@ -616,7 +618,7 @@
         specification to utilize.
       </t>
       <t>
-        The metadata document MUST be a JSON document. Beyond that there is
+        The metadata document MUST be a JSON object. Beyond that there is
         no restriction.
       </t>
       <t>
@@ -740,6 +742,60 @@
 }
 ]]></artwork>
         </figure>
+
+<figure>
+<preamble>
+            The following is a non-normative example of a RP's entity statement:
+          </preamble>
+
+          <artwork><![CDATA[
+{
+  "iss": "https://openid.sunet.se",
+  "sub": "https://openid.sunet.se",
+  "iat": 1516239022,
+  "exp": 1516298022,
+  "metadata": {
+    "openid_relying_party": {
+      "application_type": "web",
+      "redirect_uris": [
+        "https://openid.sunet.se/rp/callback"
+      ],
+      "organization_name": "SUNET",
+      "logo_uri": "https://www.sunet.se/sunet/images/32x32.png",
+      "grant_types": [
+        "authorization_code",
+        "implicit"
+      ],
+      "jwks_uri": "https://openid.sunet.se/rp/jwks.json"
+    }
+  },
+  "jwks": {
+    "keys": [
+      {
+        "alg": "RS256",
+        "e": "AQAB",
+        "key_ops": [
+          "verify"
+        ],
+        "kid": "key1",
+        "kty": "RSA",
+        "n": "pnXBOusEANuug6ewezb9J_...",
+        "use": "sig"
+      }
+    ]
+  },
+  "authority_hints": [
+    "https://edugain.org/federation"
+  ]
+}
+]]></artwork>
+        </figure>
+<t>
+Note: An OpenID Connect RP MUST only use the keys published in a suitable element, such as <spanx style="verb">jwks</spanx> 
+or <spanx style="verb">jwks_uri</spanx> or <spanx style="verb">signed_jwks_uri</spanx>, underneath the 
+<spanx style="verb">metadata/openid_relying_party</spanx> element of the respective entity statement for the OpenID Connect protocol.
+The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose. 
+</t>
       </section>
 
       <section title="OP Metadata" anchor="OP_metadata">
@@ -857,33 +913,90 @@
             </t>
           </list>
         </t>
+
         <t>
-          The following is a non-normative example of OP metadata:'
+          The following is a non-normative example of an OP's entity statement:
         </t>
         <figure>
           <artwork><![CDATA[
 {
-  "issuer": "https://server.example.com",
-  "authorization_endpoint":
-    "https://server.example.com/authorization",
-  "token_endpoint": "https://server.example.com/token",
-  "signed_jwks_uri": "https://server.example.com/jws.json",
-  "response_types_supported": ["code", "id_token", "id_token token"],
-  "subject_types_supported": ["public"],
-  "id_token_signing_alg_values_supported": ["RS256", "ES256"],
-  "token_endpoint_auth_methods_supported": ["private_key_jwt"],
-  "pushed_authorization_request_endpoint":
-    "https://server.example.com/par",
-  "client_registration_types_supported": ["automatic", "explicit"],
-  "federation_registration_endpoint":
-    "https://server.example.com/fedreg",
-  "request_authentication_methods_supported": {
-    "ar": ["request_object"],
-    "par": ["private_key_jwt", "self_signed_tls_client_auth"]
-  }
+   "iss":"https://op.umu.se",
+   "sub":"https://op.umu.se",
+   "exp":1568397247,
+   "iat":1568310847,
+   "metadata":{
+      "openid_provider":{
+         "issuer":"https://op.umu.se/openid",
+         "jwks_uri":"https://op.umu.se/openid/jwks_uri.json",
+         "authorization_endpoint":"https://op.umu.se/openid/authorization",
+         "client_registration_type":[
+            "automatic",
+            "explicit"
+         ],
+         "grant_types_supported":[
+            "authorization_code",
+            "implicit",
+            "urn:ietf:params:oauth:grant-type:jwt-bearer"
+         ],
+         "id_token_signing_alg_values_supported":[
+            "ES256",
+            "RS256"
+         ],
+         "logo_uri":"https://www.umu.se/img/umu-logo-left-neg-SE.svg",
+         "op_policy_uri":"https://www.umu.se/en/website/legal-information/",
+         "response_types_supported":[
+            "code",
+            "code id_token",
+            "token"
+         ],
+         "subject_types_supported":[
+            "pairwise",
+            "public"
+         ],
+         "token_endpoint":"https://op.umu.se/openid/token",
+         "federation_registration_endpoint":"https://op.umu.se/openid/fedreg",
+         "token_endpoint_auth_methods_supported":[
+            "client_secret_post",
+            "client_secret_basic",
+            "client_secret_jwt",
+            "private_key_jwt"
+         ],
+         "pushed_authorization_request_endpoint":"https://op.umu.se/openid/par",
+         "request_authentication_methods_supported":{
+            "ar":[
+               "request_object"
+            ],
+            "par":[
+               "private_key_jwt",
+               "self_signed_tls_client_auth"
+            ]
+         }
+      }
+   },
+   "authority_hints":[
+      "https://umu.se"
+   ],
+   "jwks":{
+      "keys":[
+         {
+            "e":"AQAB",
+            "kid":"dEEtRjlzY3djcENuT01wOGxrZlkxb3RIQVJlMTY0...",
+            "kty":"RSA",
+            "n":"x97YKqc9Cs-DNtFrQ7_vhXoH9bwkDWW6En2jJ044yH..."
+         }
+      ]
+   },
 }
 ]]></artwork>
         </figure>
+
+        <t>
+Note: An OpenID Connect OP MUST only use the keys published in a suitable element, such as <spanx style="verb">jwks</spanx> 
+or <spanx style="verb">jwks_uri</spanx> or <spanx style="verb">signed_jwks_uri</spanx>, underneath the 
+<spanx style="verb">metadata/openid_provider</spanx> element of the respective entity statement for the OpenID Connect protocol. 
+The example above uses a <spanx style="verb">jwks_uri</spanx> element for that purpose. 
+</t>
+
       </section>
       <section title="OAuth Authorization Server">
         <t>
@@ -1761,9 +1874,36 @@
             an appropriate level of trust to such trust marks.
           </t>
         </section>
-        <section title="Trust Mark Example" anchor="trust_example">
+        <section title="Trust Mark Examples" anchor="trust_example">
           <figure>
-            <preamble>An example of a self-signed certification mark:</preamble>
+            <preamble>A non normative example of a trust mark claim inside an entity statement:</preamble>
+            <artwork><![CDATA[
+{
+  "iss": "https://rp.example.it/spid",
+  "sub": "https://rp.example.it/spid",
+  "iat": 1516239022,
+  "exp": 1516298022,
+  "trust_marks": [
+    {"id": "https://www.spid.gov.it/certification/rp",
+     "trust_mark":
+"eyJhbGciOiJSUzI1NiIsImtpZCI6ImRGRTFjMFF4UzBFdFFrWmxNRXR3ZWxOQlExSjRaVmxGTlhWUU1IcEZYelZ1Y0V4c1FuZzRlbXMxYXcifQ.eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJpZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJtYXJrIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWNuaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9.r2SZDNlYvPAuCq8HnGSkCF17gvexEz_UhqPHfX0js5bjz_n_3QAbr8IVE6_5Um9grYfcc1YUwUGs_-s-_AN8uMsS6P3fL0zpjoEMIOMmkCMsn8F68zisNZ2SEJN_JEIp_FmG5Yf0ONHq9bCtc32fvCSo0daEGTQdMMCEfNSoIZNTMxsB8-bA4hVn9dkNYzGTvg7FHiHOP-_fEyFDlJr1AzgepIwRiApViRVVqX920GY624nHHbEXqv3xleX7mSE6uXSGqRMlVz6XFXLmceJsYvcaC0haC-JfOn2GR7D3C07Lt4TlBUVMM0f2DvZcC1CqWlxoXr3WxzdGD_CxGkYTIg"
+    }
+  ],
+  "metadata": {
+    "openid_relying_party": {
+    "application_type": "web",
+    “client_registration_types”: [“automatic”],
+    "client_name": "https://rp.example.it/spid",
+  "contacts": [
+    "ops@rp.example.it"
+  ],
+
+  ... follows other entity statement claims ...
+
+]]></artwork>
+          </figure>
+          <figure>
+            <preamble>An example of a decoded self-signed certification mark:</preamble>
             <artwork><![CDATA[
 {
   "iss": "https://example.com/op",
@@ -1948,36 +2088,18 @@ Content-Type: application/jose
         </t>
       </section>
     </section>
-    <section title="Federation API" anchor="federation_api">
+    <section title="Federation Endpoints" anchor="federation_endpoints">
       <t>
-        All entities that are expected to publish entity statements about other
-        entities MUST expose a Federation API endpoint.
-      </t>
-      <t>
-        The federation API endpoint of an entity can be found in the
+        The federation endpoints of an entity can be found in the
         configuration response as described in
         <xref target="federation_configuration"/>
         or by other means.
       </t>
-      <t>
-        The Federation API is an HTTPS API that MAY support multiple
-        operations. Fetching entity statements is one of the operations, and the
-        only one that all Federation API endpoints are REQUIRED to support.
-        All the other operations are OPTIONAL. The list of defined
-        operations MAY be extended in the future.
-      </t>
-      <t>
-        While all operations on the federation API endpoint make use of a
-        GET request, other operations MAY choose to use other HTTP methods. If
-        the
-        <spanx style="verb">operation</spanx>
-        parameter is left out, it is treated as a
-        fetch entity statements request. Unless otherwise mentioned or agreed
-        upon, requests to the federation API do not need to be
-        authenticated.
-      </t>
-
       <section title="Fetching Entity Statements (REQUIRED)">
+        <t>
+          All entities that are expected to publish entity statements about other
+          entities MUST expose a Fetch endpoint.
+        </t>
         <t>
           Fetching entity statements is performed to collect entity statements
           one by one to gather trust chains.
@@ -1993,16 +2115,11 @@ Content-Type: application/jose
                  anchor="fetch_statement">
           <t>
             The request MUST be an HTTP request using the GET method and
-            the https scheme to a resolved federation API endpoint with the
+            the https scheme to a resolved federation endpoint with the
             following query string parameters:
           </t>
           <t>
             <list style="hanging">
-              <t hangText="operation">
-                <vspace/>
-                OPTIONAL. If not present, MUST be treated as
-                <spanx style="verb">fetch</spanx>.
-              </t>
               <t hangText="iss">
                 <vspace/>
                 REQUIRED. The entity identifier of the issuer
@@ -2023,13 +2140,12 @@ Content-Type: application/jose
                 <vspace/>
                 OPTIONAL. The entity identifier of the
                 requester. If the <spanx style="verb">aud</spanx>
-		parameter is present in the request,
+		            parameter is present in the request,
                 the <spanx style="verb">aud</spanx> claim SHOULD be present in
                 the entity statement response and take exactly that value.
               </t>
             </list>
           </t>
-
           <figure>
             <preamble>
               The following is a non-normative example of an API
@@ -2113,16 +2229,16 @@ Content-Type: application/jose
         </section>
       </section>
 
-      <section title="Trust Negotiation (OPTIONAL)">
+      <section title="Evaluate Entity Statement" anchor="evaluate">
         <t>
-          An entity MAY use the trust negotiation operation to fetch
+          An entity MAY use the evaluate endpoint to fetch
           resolved metadata about itself as seen/trusted by a remote peer.
           The result may, for instance, tell an RP what operations, scopes and
           claims an OP would allow the RP to use if a specific trust anchor
           was used.
         </t>
 
-        <section title="Trust Negotiation Request">
+        <section title="Evaluate Request">
           <t>
             The request MUST be an HTTP request using the GET method and
             the https scheme to a resolved federation API endpoint with the
@@ -2130,23 +2246,13 @@ Content-Type: application/jose
           </t>
           <t>
             <list style="hanging">
-              <t hangText="operation">
-                <vspace/>
-                REQUIRED. MUST be set to
-                <spanx style="verb">resolve_metadata</spanx>.
-              </t>
-              <t hangText="respondent">
+              <t hangText="sub">
                 <vspace/>
                 REQUIRED. The entity identifier of the
                 entity whose metadata are requested. Because of the
                 normalization of the URL, multiple entity identifiers may
                 resolve to a shared federation API. This parameter makes it
                 explicit exactly which entity is expected.
-              </t>
-              <t hangText="peer">
-                <vspace/>
-                REQUIRED. The entity identifier of the entity
-                the information is requested for. This MUST be a leaf entity.
               </t>
               <t hangText="type">
                 <vspace/>
@@ -2168,18 +2274,16 @@ Content-Type: application/jose
               request for trust negotiation:
             </preamble>
             <artwork><![CDATA[
-GET /federation_api_endpoint?
-operation=resolve_metadata&
-respondent=https%3A%2F%2Fopenid.sunet.se%2Ffederation&
+GET /evaluate?
+sub=https%3A%2F%2Fopenid.sunet.se%2Ffederation&
 type=openid_provider&
-anchor=https%3A%2F%2Fswamid.se&
-peer=https%3A%2F%2Fidp.umu.se%2Fopenid HTTP/1.1
+anchor=https%3A%2F%2Fswamid.se HTTP/1.1
 Host: openid.sunet.se
 ]]></artwork>
           </figure>
         </section>
 
-        <section title="Trust Negotiation Response">
+        <section title="Evaluate Response">
           <t>
             The response is a metadata statement that is the result of
             applying the metadata policies in the trust chain on the entity's
@@ -2231,7 +2335,7 @@ Content-Type: application/json
         </section>
       </section>
 
-      <section title="Entity Listings (OPTIONAL)" anchor="entity_listings">
+      <section title="Entity Listings" anchor="entity_listings">
         <t>
           An entity MAY query another entity for a list of all the
           entities immediately subordinate to that entity and about which
@@ -2247,19 +2351,6 @@ Content-Type: application/json
           </t>
           <t>
             <list style="hanging">
-              <t hangText="operation">
-                <vspace/>
-                REQUIRED. MUST be set to
-                <spanx style="verb">listing</spanx>.
-              </t>
-              <t hangText="iss">
-                <vspace/>
-                REQUIRED. The entity identifier of the entity
-                from which an entity listing is requested. Because of the
-                normalization of the URL, multiple entity identifiers may
-                resolve to a shared federation API. This parameter makes it
-                explicit exactly which entity is expected.
-              </t>
               <t hangText="is_leaf">
                 <vspace/>
                 OPTIONAL. If left out, the result should
@@ -2277,9 +2368,7 @@ Content-Type: application/json
               request for trust negotiation:
             </preamble>
             <artwork><![CDATA[
-GET /federation_api_endpoint?
-operation=listing&
-iss=https%3A%2F%2Fopenid.sunet.se%2Ffederation HTTP/1.1
+GET /list HTTP/1.1
 Host: openid.sunet.se
 ]]></artwork>
           </figure>
@@ -2772,7 +2861,8 @@ https://server.example.com/authorize?
                 Once the OP has the RP's metadata, it can verify that the client
                 was actually the one sending the Authorization Request by
                 verifying the signature of the Request Object using the key
-                material the client published through its metadata.
+                material the client published through its metadata (underneath 
+                <spanx style="verb">metadata/openid_relying_party</spanx>).
               </t>
             </section>
           </section>
@@ -2873,7 +2963,9 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                   Registration 1.0</xref>.
               </t>
               <t>
-                Once the OP has the RP's metadata, it can verify the client.
+                Once the OP has the RP's metadata, it can verify the client 
+                using the keys published underneath the
+                <spanx style="verb">metadata/openid_relying_party</spanx> element.
                 This is where it diverges depending on which client
                 authentication method was used.
                 <list style="hanging">
@@ -3166,6 +3258,14 @@ HTTP/1.1 302 Found
             chain's expiration time.
           </t>
         </section>
+      </section>
+      <section title="ID Token Validation">
+        <t>
+            The RP MUST validate any ID token as defined in Section 3.1.3.7. of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>. If the
+            trust relationship between RP and OP was estabished using OpenID Federation, the key material used for ID Token signature validation MUST 
+            be obtained from the OP's metadata the RP obtained as a result of trust chain validation as defined in <xref target="resolving_trust"/> 
+            and combining the metadata policies from the entity statements of the trust chain as described in <xref target="metadata_policy"/>.
+        </t>
       </section>
     </section>
 
