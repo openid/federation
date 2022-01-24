@@ -921,13 +921,13 @@
         <t>
           The following properties are allowed:
           <list style="hanging">
-            <t hangText="federation_api_endpoint">
+            <t hangText="federation_fetch_endpoint">
               <vspace/>
               OPTIONAL.
-              The endpoint for the Federation API described in
-              <xref target="federation_api"/>. Intermediate entities and
+              The fetch endpoint described in
+              <xref target="fetch_endpoint"/>. Intermediate entities and
               trust anchors MUST publish a
-	      <spanx style="verb">federation_api_endpoint</spanx>.
+	            <spanx style="verb">federation_fetch_endpoint</spanx>.
               Leaf entities MUST NOT.
             </t>
             <t hangText="name">
@@ -1985,7 +1985,7 @@ Content-Type: application/jose
         <xref target="federation_configuration"/>
         or by other means.
       </t>
-      <section title="Fetching Entity Statements (REQUIRED)">
+      <section title="Fetching Entity Statements" anchor="fetch_endpoint">
         <t>
           All entities that are expected to publish entity statements about other
           entities MUST expose a Fetch endpoint.
@@ -1996,7 +1996,7 @@ Content-Type: application/jose
         </t>
         <t>
           To fetch an entity statement, an entity needs to know the
-          identifier of the entity to ask (the issuer), the federation API
+          identifier of the entity to ask (the issuer), the fetch
           endpoint of that entity and the identifier of the entity that you
           want the statement to be about (the subject).
         </t>
@@ -2015,7 +2015,7 @@ Content-Type: application/jose
                 REQUIRED. The entity identifier of the issuer
                 from which you want an entity statement issued. Because of the
                 normalization of the URL, multiple issuers MAY resolve to a
-                shared federation API. This parameter makes it explicit exactly
+                shared fetch endpoint. This parameter makes it explicit exactly
                 which issuer we want entity statements from.
               </t>
               <t hangText="sub">
@@ -2125,7 +2125,7 @@ Content-Type: application/jose
         <section title="Evaluate Request">
           <t>
             The request MUST be an HTTP request using the GET method and
-            the https scheme to a resolved federation API endpoint with the
+            the https scheme to a resolved evaluate endpoint with the
             following query string parameters:
           </t>
           <t>
@@ -2135,7 +2135,7 @@ Content-Type: application/jose
                 REQUIRED. The entity identifier of the
                 entity whose metadata are requested. Because of the
                 normalization of the URL, multiple entity identifiers may
-                resolve to a shared federation API. This parameter makes it
+                resolve to a shared endpoint. This parameter makes it
                 explicit exactly which entity is expected.
               </t>
               <t hangText="type">
@@ -2230,7 +2230,7 @@ Content-Type: application/json
         <section title="Entity Listings Request">
           <t>
             The request MUST be an HTTP request using the GET method and
-            the https scheme to a resolved federation API endpoint with the
+            the https scheme to a resolved list endpoint with the
             following query string parameters:
           </t>
           <t>
@@ -2290,16 +2290,11 @@ Content-Type: application/json
         <section title="Status request">
           <t>
             The request MUST be an HTTP request using the GET method and
-            the https scheme to a resolved federation API endpoint with the
+            the https scheme to a resolved status endpoint with the
             following query string parameters:
           </t>
           <t>
             <list style="hanging">
-              <t hangText="operation">
-                <vspace/>
-                REQUIRED. MUST be set to
-                <spanx style="verb">trust_mark</spanx>.
-              </t>
               <t hangText="sub">
                 <vspace/>
                 OPTIONAL. The entity_id for the entity to which the trust mark
@@ -3517,11 +3512,9 @@ HTTP/1.1 302 Found
               <xref target="federation_configuration"/>
             </t>
             <t>
-              Using the federation API endpoint of the superiors do
-              a fetch request
-              <xref target="fetch_statement"/>
-              on the endpoint asking for information about the subordinate
-              entity.
+              Using the fetch endpoint of the superiors to
+              ask for information about the subordinate entity
+              <xref target="fetch_statement"/>.
             </t>
           </list>
         </t>
@@ -3674,11 +3667,10 @@ Host: umu.se
         <section
                 title="Entity Statement Published by 'https://umu.se' about 'https://op.umu.se'">
           <t>
-            The RP uses the federation API and the "fetch" command as defined in
-            <xref target="fetch_statement"/>
+            The RP uses the fetch endpoint provided by https://umu.se
+            as defined in <xref target="fetch_statement"/>
             to fetch information about
-            "https://op.umu.se" from the API endpoint published in
-            https://umu.se's configuration.
+            "https://op.umu.se".
           </t>
           <t>The request will look like this:</t>
           <figure>
@@ -3804,12 +3796,11 @@ Host: swamid.se
         <section
                 title="Entity Statement Published by 'https://swamid.se' about 'https://umu.se'">
           <t>
-            The LIGO Wiki RP uses the federation API and the "fetch" command as
-            defined in
+            The LIGO Wiki RP uses the fetch endpoint provided by
+            "https://swamid.se" as defined in
             <xref target="fetch_statement"/>
             to fetch information about
-            "https://umu.se" from the API endpoint published in
-            https://swamid.se's configuration.
+            "https://umu.se".
           </t>
           <t>The request will look like this:</t>
           <figure>
@@ -3931,12 +3922,11 @@ Host: edugain.geant.org
         <section
                 title="Entity Statement Published by 'https://edugain.geant.org' about 'https://swamid.se'">
           <t>
-            The LIGO Wiki RP uses the federation API and the "fetch" command as
-            defined in
-            <xref target="fetch_statement"/>
+            The LIGO Wiki RP uses the fetch endpoint of
+            https://edugain.geant.org as
+            defined in <xref target="fetch_statement"/>
             to fetch information about
-            "https://swamid.se" from the API endpoint published in
-            https://edugain.geant.org's configuration.
+            "https://swamid.se".
           </t>
           <t>The request will look like this:</t>
           <figure>
@@ -4579,6 +4569,14 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+      <t>
+        -17
+        <list style="symbols">
+          <t>
+            Moved from federation API to separate endpoints per operation.
+          </t>
+        </list>
+      </t>
       <t>
         -17
         <list style="symbols">
