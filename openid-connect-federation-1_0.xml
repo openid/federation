@@ -172,8 +172,14 @@
             <t hangText="Entity statement">
               <vspace/>
               An entity statement is
-              issued by an entity, which pertains to a subject entity and leaf
-              entities. An entity statement is always a signed JWT.
+              issued by an entity, which pertains to a subject entity. An entity 
+              statement is always a signed JWT.
+            </t>
+            <t hangText="Entity configuration">
+              <vspace/>
+              An entity statement issued by an entity about itself. It contains
+              the entities' signing keys and further data used to control the 
+              trust chain resolution process, such as authority hints. 
             </t>
             <t hangText="Intermediate entity">
               <vspace/>
@@ -202,12 +208,16 @@
     <section title="Overall Architecture" anchor="architecture">
       <t>
         The basic component is the entity statement, which is a cryptographically
-        signed <xref target="RFC7519">JSON Web Token (JWT)</xref>.
+        signed <xref target="RFC7519">JSON Web Token (JWT)</xref>.  
         A set of entity statements can form a path from a leaf entity to
-        a trust anchor. This is done by having authority hints in an entity
-        statement pointing to its nearest superiors. Starting with an entity
-        statement, you can then find the next level of entity statements by following
-        the authority hints. And then repeat this until you hit a trust anchor.
+        a trust anchor. Entity configurations as self-signed entity statements 
+        issued by federation entities about themselves control the trust chain 
+        resolution process.</t> 
+      <t>Starting with the entity configuration of the leaf entity, you can find 
+        the next level of entity configuration by following the authority hints. 
+        And then repeat this until you hit a trust anchor. Using the federation APIs
+        exposed by the intermediate entities and the trust anchor, you can then 
+        fetch the entity statements for the intermediate entities and the leaf entity.  
       </t>
       <t>
         Once you have followed a path, you have collected a set of entity statements
@@ -256,7 +266,8 @@
               REQUIRED. The entity identifier of the issuer of
               the statement. If the <spanx style="verb">iss</spanx> and
               the <spanx style="verb">sub</spanx> are identical, the
-              issuer is making a statement about itself.
+              issuer is making a statement about itself and this entity statement 
+              is an entity configuration.
             </t>
             <t hangText="sub">
               <vspace/>
@@ -313,29 +324,28 @@
             </t>
             <t hangText="metadata">
               <vspace/>
-              OPTIONAL. JSON object including protocol
+              REQUIRED Conditional. JSON object including protocol
               specific metadata claims that represent the entity's metadata.
               Each key of the JSON object represents a metadata type
               identifier, and each value MUST be a JSON object representing
               the metadata according to the metadata schema of that metadata
               type. An entity statement MAY contain multiple
               metadata statements, but only one for each metadata type.
-              If the <spanx style="verb">iss</spanx> of an entity statement
-              points to the same entity as the
-              <spanx style="verb">sub</spanx>,
+              If the entity statement is an entity configuration,
               then the entity statement MUST contain a
               <spanx style="verb">metadata</spanx>
               claim.
               If <spanx style="verb">iss</spanx> and
               <spanx style="verb">sub</spanx>
               are not the same,
-              then the entity statement MUST NOT contain a
+              then the entity statement MAY contain a
               <spanx style="verb">metadata</spanx>
-              claim.
+              claim containing metadata asserted by a superior about the 
+              entity identified by <spanx style="verb">sub</spanx>.
             </t>
             <t hangText="metadata_policy">
               <vspace/>
-              OPTIONAL. JSON object that describes
+              REQUIRED Conditional. JSON object that describes
               a metadata policy.
               Each key of the JSON object represents a metadata type
               identifier, and each value MUST be a JSON object representing
@@ -425,19 +435,6 @@
               being an array of trusted entities representing the accreditation authority.
               A special value of <spanx style="verb">*</spanx> allows for self-signed trust marks.
               There is more about certification marks in <xref target="trust_marks"/>.
-              <figure>
-              <preamble>
-                The following is a non-normative example of
-                a <spanx style="verb">trust_marks_issuers</spanx> claim value:
-              </preamble>
-              <artwork><![CDATA[
-{
-  "https://openid.net/certification/op": ["*"],
-  "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf":
-    ["https://swamid.sunet.se"]
-}
-              ]]></artwork>
-              </figure>
             </t>
             <t hangText="trust_anchor_id">
               <vspace/>
@@ -458,6 +455,20 @@
           entities MUST support signature verification where the statement was
           signed using RS256.
         </t>
+
+                      <figure>
+              <preamble>
+                The following is a non-normative example of
+                a <spanx style="verb">trust_marks_issuers</spanx> claim value:
+              </preamble>
+              <artwork><![CDATA[
+{
+  "https://openid.net/certification/op": ["*"],
+  "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf":
+    ["https://swamid.sunet.se"]
+}
+              ]]></artwork>
+              </figure>
 
         <figure>
           <preamble>
@@ -512,10 +523,7 @@
         "use": "sig"
       }
     ]
-  },
-  "authority_hints": [
-    "https://edugain.org/federation"
-  ]
+  }
 }
 ]]></artwork>
 
@@ -1930,6 +1938,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
             title="Obtaining Federation Entity Configuration Information"
             anchor="federation_configuration">
       <t>
+        The entity configuration of every federation entity SHOULD be exposed at a well known endpoint.  
         The configuration endpoint is found using the
         <xref target="RFC8615">Well-Known URIs</xref>
         specification, with the suffix
@@ -1984,7 +1993,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
             <artwork><![CDATA[
 
   GET /.well-known/openid-federation HTTP/1.1
-  Host: example.com
+  Host: openid.sunet.se
 ]]></artwork>
           </figure>
         </t>
@@ -2015,19 +2024,46 @@ Last-Modified: Thu, 29 Aug 2019 08:54:26 GMT
 Content-Type: application/jose
 
 {
-  "iss": "https://example.com",
-  "sub": "https://example.com",
+  "iss": "https://openid.sunet.se",
+  "sub": "https://openid.sunet.se",
   "iat": 1516239022,
   "exp": 1516298022,
   "metadata": {
-    "federation_entity": {
-      "federation_api_endpoint":
-        "https://example.com/federation_api_endpoint",
-      "name": "The example cooperation",
-      "homepage_uri": "https://www.example.com"
+    "openid_provider": {
+      "issuer": "https://openid.sunet.se",
+      "jwks_uri": "https://openid.sunet.se/jwks_uri.json",
+      "authorization_endpoint":
+        "https://openid.sunet.se/authorization",
+      "client_registration_type": [
+        "automatic",
+        "explicit"
+      ],
+      "grant_types_supported": [
+        "authorization_code"
+      ],
+      "id_token_signing_alg_values_supported": [
+        "ES256", "RS256"
+      ],
+      "logo_uri":
+        "https://www.umu.se/img/umu-logo-left-neg-SE.svg",
+      "op_policy_uri":
+        "https://www.umu.se/en/website/legal-information/",
+      "response_types_supported": [
+        "code"
+      ],
+      "subject_types_supported": [
+        "pairwise",
+        "public"
+      ],
+      "token_endpoint": "https://openid.sunet.se/token",
+      "federation_registration_endpoint":
+        "https://op.umu.se/openid/fedreg",
+      "token_endpoint_auth_methods_supported": [
+        "private_key_jwt"
+      ]
+    
     }
   },
-  "authority_hints": ["https://federation.example.com"],
   "jwks": {
     "keys": [
       {
@@ -2042,7 +2078,10 @@ Content-Type: application/jose
         "use": "sig"
       }
     ]
-  }
+  },
+  "authority_hints": [
+    "https://edugain.org/federation"
+  ]
 }
 ]]></artwork>
           </figure>
@@ -2113,9 +2152,10 @@ Content-Type: application/jose
               request for an entity statement:
             </preamble>
             <artwork><![CDATA[
-GET /fetch?
-iss=https%3A%2F%2Fopenid.sunet.se%2Ffederation HTTP/1.1
-Host: openid.sunet.se
+GET /federation_api_endpoint?
+iss=https%3A%2F%2Fedugain.org%2Ffederation&
+sub=https%3A%2F%2Fopenid%2Esunet%2Ese HTTP/1.1
+Host: edugain.org
 ]]></artwork>
           </figure>
         </section>
@@ -2140,44 +2180,49 @@ Host: openid.sunet.se
 Last-Modified: Mon, 17 Dec 2018 11:15:56 GMT
 Content-Type: application/jose
 
+200 OK
+Last-Modified: Mon, 17 Dec 2018 11:15:56 GMT
+Content-Type: application/jose
+
 {
-  "iss": "https://openid.sunet.se",
-  "sub": "https://openid.sunet.se",
-  "iat": 1516239022,
-  "exp": 1516298022,
-  "metadata": {
-    "openid_relying_party": {
-      "application_type": "web",
-      "redirect_uris": [
-        "https://openid.sunet.se/rp/callback"
-      ],
-      "organization_name": "SUNET",
-      "logo_uri": "https://www.sunet.se/sunet/images/32x32.png",
-      "grant_types": [
-        "authorization_code",
-        "implicit"
-      ],
-      "jwks_uri": "https://openid.sunet.se/rp/jwks.json"
-    }
-  },
+  "iss": "https://edugain.org/federation",
+  "sub": "https://openid.sunet.se"
+  "exp": 1568397247,
+  "iat": 1568310847,
   "jwks": {
     "keys": [
       {
-        "alg": "RS256",
         "e": "AQAB",
-        "key_ops": [
-          "verify"
-        ],
-        "kid": "key1",
+        "kid": "dEEtRjlzY3djcENuT01wOGxrZlkxb3RIQVJlMTY0...",
         "kty": "RSA",
-        "n": "pnXBOusEANuug6ewezb9J_...",
-        "use": "sig"
+        "n": "x97YKqc9Cs-DNtFrQ7_vhXoH9bwkDWW6En2jJ044yH..."
       }
     ]
   },
-  "authority_hints": [
-    "https://edugain.org/federation"
-  ]
+  "metadata":{
+    "organization_name":"SUNET"
+  }
+  "metadata_policy": {
+    "openid_provider": {
+      "subject_types_supported": {
+        "value": [
+          "pairwise"
+        ]
+      },
+      "token_endpoint_auth_methods_supported": {
+        "default": [
+          "private_key_jwt"
+        ],
+        "subset_of": [
+          "private_key_jwt",
+          "client_secret_jwt"
+        ],
+        "superset_of": [
+          "private_key_jwt"
+        ]
+      }
+    }
+  }
 }
 ]]></artwork>
           </figure>
@@ -2421,29 +2466,27 @@ Content-Type: application/json
                title="Fetching Entity Statements to Establish a Trust Chain">
         <t>
           Depending on the circumstances, the Consumer MAY either be
-          handed the remote peer's self-issued entity statement, or it may
+          handed the remote peer's entity configuration, or it may
           have to fetch it by itself. If it needs to fetch it, it will use the
-          process described in
-          <xref target="fetch_statement"/>
-          with both <spanx style="verb">iss</spanx> and
-          <spanx style="verb">sub</spanx>
-          containing the entity identifier
-          of the remote peer.
+          process described in <xref target="federation_configuration"/>
+          based on the entity identifier of the remote peer.
         </t>
         <t>
           The next step is to iterate through the list of
           intermediates listed in
           <spanx style="verb">authority_hints</spanx>, ignoring the authority
           hints that end in an unknown trust anchor, requesting an entity
-          statement about the remote peer from each of the intermediates.
-          If the received entity statement contains an authority hint this
-          process is repeated. This time with the
-          <spanx style="verb">iss</spanx>
-          set to the
-          intermediate's entity identifier and the <spanx style="verb">sub</spanx> to
-          be
-          the <spanx style="verb">iss</spanx> of the previous query.
-          The Consumer SHOULD NOT attempt to fetch
+          configuration from each of the intermediates.
+          If the received entity configuration contains an authority hint this
+          process is repeated. 
+        </t>
+        <t>
+         With the list of all intermediates and the trust anchor, the respective
+         federation API (see <xref target="federation_api"/>) is used to fetch entity 
+         statements about the intermediates and the remote peer. 
+        </t>
+        <t> 
+         Note: The Consumer SHOULD NOT attempt to fetch
           entity statements it already has fetched during this
           process (loop prevention).
         </t>
@@ -3674,9 +3717,6 @@ Host: umu.se
           <figure>
             <artwork><![CDATA[
 {
-  "authority_hints": [
-    "https://swamid.se"
-  ],
   "exp": 1568397247,
   "iat": 1568310847,
   "iss": "https://umu.se",
@@ -3806,9 +3846,6 @@ Host: swamid.se
           <figure>
             <artwork><![CDATA[
 {
-  "authority_hints": [
-    "https://edugain.geant.org"
-  ],
   "exp": 1568397247,
   "iat": 1568310847,
   "iss": "https://swamid.se",
