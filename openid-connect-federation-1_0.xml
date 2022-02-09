@@ -2170,11 +2170,13 @@ Content-Type: application/jose
             <list style="hanging">
               <t hangText="iss">
                 <vspace/>
-                REQUIRED. The entity identifier of the issuer
+                OPTIONAL. The entity identifier of the issuer
                 from which you want an entity statement issued. Because of the
                 normalization of the URL, multiple issuers MAY resolve to a
                 shared fetch endpoint. This parameter makes it explicit exactly
-                which issuer we want entity statements from.
+                which issuer we want entity statements from. Without this
+                parameter the issuer matches to the entity at
+                which the request was made.
               </t>
               <t hangText="sub">
                 <vspace/>
@@ -2614,10 +2616,10 @@ Last-Modified: Wed, 22 Jul 2018 19:15:56 GMT
 Content-Type: application/json
 
 {
-  "operation": "fetch",
+  "operation": "resolve",
   "error": "invalid_request",
   "error_description":
-    "Required request parameter [iss] was missing."
+    "Required request parameter [sub] was missing."
 }
 ]]></artwork>
         </figure>
