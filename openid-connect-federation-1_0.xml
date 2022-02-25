@@ -75,7 +75,7 @@
       </address>
     </author>
 
-    <date day="4" month="February" year="2022"/>
+    <date day="24" month="February" year="2022"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -2054,7 +2054,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
         </t>
         <t>
           A positive response is a signed entity statement, where the content
-          type MUST be set to <spanx style="verb">application/jose</spanx>.
+          type MUST be set to <spanx style="verb">application/entity-statement+jwt</spanx>.
           In case of an error, the response
           will be a JSON object, the content type MUST be set to
           <spanx style="verb">application/json</spanx>,
@@ -2069,7 +2069,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
             <artwork><![CDATA[
 200 OK
 Last-Modified: Thu, 29 Aug 2019 08:54:26 GMT
-Content-Type: application/jose
+Content-Type: application/entity-statement+jwt
 
 {
   "iss": "https://openid.sunet.se",
@@ -2214,7 +2214,7 @@ Host: edugain.org
           <t>
             A positive response is a signed entity statement where
             the content type MUST be set to
-            <spanx style="verb">application/jose</spanx>.
+            <spanx style="verb">application/entity-statement+jwt</spanx>.
             If it is a negative response, it will be a JSON object and the
             content type MUST be set to
             <spanx style="verb">application/json</spanx>.
@@ -2228,7 +2228,7 @@ Host: edugain.org
             <artwork><![CDATA[
 200 OK
 Last-Modified: Mon, 17 Dec 2018 11:15:56 GMT
-Content-Type: application/jose
+Content-Type: application/entity-statement+jwt
 
 {
   "iss": "https://edugain.org/federation",
@@ -3262,7 +3262,7 @@ HTTP/1.1 302 Found
                   The entity statement is sent, using POST, to the
                   <spanx style="verb">federation_registration_endpoint</spanx>
                   defined in this document. The content type MUST be set to
-                  <spanx style="verb">application/jose</spanx>.
+                  <spanx style="verb">application/entity-statement+jwt</spanx>.
                 </t>
               </list>
             </t>
@@ -3444,16 +3444,232 @@ HTTP/1.1 302 Found
     </section>
 
     <section anchor="IANA" title="IANA Considerations">
-      <t>
-        TBD Register <spanx style="verb">federation_types_supported</spanx> for OP metadata with initial
-        values <spanx style="verb">automatic</spanx> and <spanx style="verb">explicit</spanx>.
-      </t>
-      <t>
-        TBD Register <spanx style="verb">federation_type</spanx> for RP registration metadata.
-      </t>
-      <t>
-        TBD Register <spanx style="verb">federation_registration_endpoint</spanx> for the OP metadata.
-      </t>
+
+      <section anchor="MetadataRegistry" title="OAuth Authorization Server Metadata Registry">
+	<t>
+	  This specification registers the following metadata names in the
+	  IANA "OAuth Authorization Server Metadata" registry <xref target="IANA.OAuth.Parameters"/>
+	  established by <xref target="RFC8414"/>.
+	</t>
+
+	<section anchor='MetadataContents' title='Registry Contents'>
+	  <t>
+	    <?rfc subcompact="yes"?>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">federation_types_supported</spanx>
+              </t>
+              <t>
+                Metadata Description:
+		Federation Types Supported
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): Section TBD of [[ this specification ]]
+              </t>
+	    </list>
+	  </t>
+	  <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">federation_registration_endpoint</spanx>
+              </t>
+              <t>
+                Metadata Description:
+		Federation Registration Endpoint
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="Cliregreq"/> of [[ this specification ]]
+              </t>
+	    </list>
+	  </t>
+	</section>
+	<?rfc subcompact="no"?>
+
+      </section>
+
+      <section anchor="DynRegRegistrations" title="OAuth Dynamic Client Registration Metadata Registration">
+	<t>
+	  This specification registers the following client metadata definition
+	  in the IANA "OAuth Dynamic Client Registration Metadata" registry
+	  <xref target="IANA.OAuth.Parameters"/>
+	  established by <xref target="RFC7591"/>.
+	</t>
+
+	<section anchor="DynRegContents" title="Registry Contents">
+	  <t> <?rfc subcompact="yes"?>
+	    <list style="symbols">
+	      <t>
+		Client Metadata Name: <spanx style="verb">federation_type</spanx>
+	      </t>
+	      <t>
+		Client Metadata Description: Federation Type
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section TBD of [[ this specification ]]
+	      </t>
+	    </list>
+	  </t>
+	</section>
+	<?rfc subcompact="no"?>
+      </section>
+
+      <section title="Media Type Registration" anchor="MediaReg">
+	<t>
+	  This section registers the following media types <xref target="RFC2046"/>
+	  in the "Media Types" registry <xref target="IANA.MediaTypes"/>
+	  in the manner described in <xref target="RFC6838"/>.
+	</t>
+
+	<section title="Registry Contents" anchor="MediaContents">
+	  <t>
+	    <?rfc subcompact="yes"?>
+	    <list style="symbols">
+	      <t>
+		Type name: application
+	      </t>
+	      <t>
+		Subtype name: entity-statement+jwt
+	      </t>
+	      <t>
+		Required parameters: n/a
+	      </t>
+	      <t>
+		Optional parameters: n/a
+	      </t>
+	      <t>
+		Encoding considerations: binary;
+		An entity statement is a JWT;
+		JWT values are encoded as a
+		series of base64url-encoded values (some of which may be the
+		empty string) separated by period ('.') characters.
+	      </t>
+	      <t>
+		Security considerations: See <xref target="Security"/> of [[ this specification ]]
+	      </t>
+	      <t>
+		Interoperability considerations: n/a
+	      </t>
+	      <t>
+		Published specification: [[ this specification ]]
+	      </t>
+	      <t>
+		Applications that use this media type:
+		Applications that use [[ this specification ]]
+	      </t>
+	      <t>
+		Fragment identifier considerations: n/a
+	      </t>
+	      <t>
+		Additional information:<list style="empty">
+	        <t>Magic number(s): n/a</t>
+		<t>File extension(s): n/a</t>
+		<t>Macintosh file type code(s): n/a </t></list>
+<vspace/>
+	      </t>
+	      <t>
+		Person &amp; email address to contact for further information:
+<vspace/>
+		Michael B.&nbsp;Jones, mbj@microsoft.com
+	      </t>
+	      <t>
+		Intended usage: COMMON
+	      </t>
+	      <t>
+		Restrictions on usage: none
+	      </t>
+	      <t>
+		Author: Michael B.&nbsp;Jones, mbj@microsoft.com
+	      </t>
+	      <t>
+		Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Provisional registration? No
+	      </t>
+	    </list>
+	    <?rfc subcompact="no"?>
+	  </t>
+
+	  <t>
+	    <?rfc subcompact="yes"?>
+	    <list style="symbols">
+	      <t>
+		Type name: application
+	      </t>
+	      <t>
+		Subtype name: trust-mark+jwt
+	      </t>
+	      <t>
+		Required parameters: n/a
+	      </t>
+	      <t>
+		Optional parameters: n/a
+	      </t>
+	      <t>
+		Encoding considerations: binary;
+		An trust mark is a JWT;
+		JWT values are encoded as a
+		series of base64url-encoded values (some of which may be the
+		empty string) separated by period ('.') characters.
+	      </t>
+	      <t>
+		Security considerations: See <xref target="Security"/> of [[ this specification ]]
+	      </t>
+	      <t>
+		Interoperability considerations: n/a
+	      </t>
+	      <t>
+		Published specification: [[ this specification ]]
+	      </t>
+	      <t>
+		Applications that use this media type:
+		Applications that use [[ this specification ]]
+	      </t>
+	      <t>
+		Fragment identifier considerations: n/a
+	      </t>
+	      <t>
+		Additional information:<list style="empty">
+	        <t>Magic number(s): n/a</t>
+		<t>File extension(s): n/a</t>
+		<t>Macintosh file type code(s): n/a </t></list>
+<vspace/>
+	      </t>
+	      <t>
+		Person &amp; email address to contact for further information:
+<vspace/>
+		Michael B.&nbsp;Jones, mbj@microsoft.com
+	      </t>
+	      <t>
+		Intended usage: COMMON
+	      </t>
+	      <t>
+		Restrictions on usage: none
+	      </t>
+	      <t>
+		Author: Michael B.&nbsp;Jones, mbj@microsoft.com
+	      </t>
+	      <t>
+		Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Provisional registration? No
+	      </t>
+	    </list>
+	    <?rfc subcompact="no"?>
+	  </t>
+	</section>
+      </section>
+
     </section>
 
     <section anchor="Security" title="Security Considerations">
@@ -3592,7 +3808,30 @@ HTTP/1.1 302 Found
     </references>
 
     <references title="Informative References">
+      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2046.xml"?>
+      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"?>
       <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8446.xml"?>
+
+      <reference anchor="IANA.OAuth.Parameters" target="http://www.iana.org/assignments/oauth-parameters">
+        <front>
+          <title>OAuth Parameters</title>
+          <author>
+            <organization>IANA</organization>
+          </author>
+	  <date/>
+        </front>
+      </reference>
+
+      <reference anchor="IANA.MediaTypes" target="http://www.iana.org/assignments/media-types">
+        <front>
+          <title>Media Types</title>
+          <author>
+            <organization>IANA</organization>
+          </author>
+	  <date/>
+        </front>
+      </reference>
+
     </references>
 
     <section
@@ -4768,10 +5007,25 @@ Host: op.umu.se
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
       <t>
-        -17
+        -18
         <list style="symbols">
           <t>
-            Moved from federation API to separate endpoints per operation.
+            Moved from a federation API to separate endpoints per operation.
+	  </t>
+	  <t>
+	    Registered the <spanx style="verb">federation_types_supported</spanx> and
+	    <spanx style="verb">federation_registration_endpoint</spanx>
+	    authorization server metadata parameters.
+	  </t>
+	  <t>
+	    Registered the <spanx style="verb">federation_type</spanx>
+	    dynamic client registration parameter.
+	  </t>
+	  <t>
+	    Registered and used the <spanx style="verb">application/entity-statement+jwt</spanx> media type.
+	  </t>
+	  <t>
+	    Registered the <spanx style="verb">application/trust-mark+jwt</spanx> media type.
           </t>
         </list>
       </t>
