@@ -504,7 +504,7 @@
       "organization_name": {"value": "NTNU"},
       "grant_types_supported": {
         "subset_of": ["authorization_code", "implicit"]},
-      "scopes": {
+      "scope": {
         "subset_of": ["openid", "profile", "email", "phone"]}
     }
   },
@@ -1051,6 +1051,30 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
 	            <spanx style="verb">federation_fetch_endpoint</spanx>.
               Leaf entities MUST NOT.
             </t>
+            <t hangText="federation_list_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The list endpoint described in
+              <xref target="entity_listing"/>. Intermediate entities and
+              trust anchors MUST publish a
+	            <spanx style="verb">federation_list_endpoint</spanx>.
+              Leaf entities MUST NOT.
+            </t>
+            <t hangText="federation_resolve_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The resolve endpoint described in
+              <xref target="resolve"/>. Any federation entity MAY publish a
+	            <spanx style="verb">federation_resolve_endpoint</spanx>.
+            </t>
+            <t hangText="federation_status_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The trust mark status endpoint described in
+              <xref target="status_endpoint"/>. Trust mark issuers SHOULD
+              publish a
+	            <spanx style="verb">federation_status_endpoint</spanx>.
+            </t>
             <t hangText="name">
               <vspace/>
               OPTIONAL. String. The human-readable name
@@ -1086,8 +1110,10 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
         <figure>
           <artwork><![CDATA[
 "federation_entity": {
-  "federation_api_endpoint":
-    "https://example.com/federation_api_endpoint",
+  "federation_fetch_endpoint":
+    "https://example.com/federation_fetch",
+  "federation_list_endpoint":
+    "https://example.com/federation_list",
   "name": "The example cooperation",
   "homepage_uri": "https://www.example.com"
 }
@@ -1462,7 +1488,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
             </preamble>
             <artwork><![CDATA[
 {
-  "scopes": {
+  "scope": {
     "subset_of": [
       "openid",
       "eduperson",
@@ -1498,7 +1524,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
             </preamble>
             <artwork><![CDATA[
 {
-  "scopes": {
+  "scope": {
     "subset_of": [
       "openid",
       "eduperson",
@@ -1528,7 +1554,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
             </preamble>
             <artwork><![CDATA[
 {
-  "scopes": {
+  "scope": {
     "subset_of": [
       "openid",
       "eduperson"
@@ -1574,10 +1600,8 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
           defined here. If that happens then the rule is that if
           software compliant with this specification
           encounters a keyword it does not understand,
-	  it MUST ignore it
-          unless it is listed in a
-          <spanx style="verb">policy_language_crit</spanx>
-          list,
+	        it MUST ignore it unless it is listed in a
+          <spanx style="verb">policy_language_crit</spanx> list,
           as is done for <xref target="RFC7515">JWS</xref> header parameters
           with the <spanx style="verb">crit</spanx> parameter.
           If the policy language extension keyword
@@ -1614,7 +1638,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
           </preamble>
           <artwork><![CDATA[
 {
-  "scopes": {
+  "scope": {
     "superset_of": [
       "openid",
       "eduperson"
@@ -1673,7 +1697,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
   "logo_uri": "https://example.com/logo_small.jpg",
   "policy_uri": "https://example.com/policy.html",
   "tos_uri": "https://example.com/tos.html",
-  "scopes": [
+  "scope": [
     "openid",
     "eduperson"
   ],
@@ -2412,9 +2436,16 @@ Host: openid.sunet.se
 ]]></artwork>
           </figure>
         </section>
+        <section title="Considerations">
+          <t>The service provided at this endpoint goes contrary to the main
+          parts of this specification. The basic assumption of this specification
+            is that you should trust no one except the trust anchor and your
+            own capabilities.</t>
+          <t>Even so there are benefits from having a service like this</t>
+        </section>
       </section>
 
-      <section title="Entity Listings" anchor="entity_listings">
+      <section title="Entity Listings" anchor="entity_listing">
         <t>
           An entity MAY query another entity for a list of all the
           entities immediately subordinate to that entity and about which
@@ -3457,11 +3488,11 @@ HTTP/1.1 302 Found
 	    <?rfc subcompact="yes"?>
             <list style='symbols'>
               <t>
-                Metadata Name: <spanx style="verb">federation_types_supported</spanx>
+                Metadata Name:
+                <spanx style="verb">client_registration_types_supported</spanx>
               </t>
               <t>
-                Metadata Description:
-		Federation Types Supported
+                Metadata Description: Federation Types Supported
               </t>
               <t>
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
@@ -3505,7 +3536,7 @@ HTTP/1.1 302 Found
 	  <t> <?rfc subcompact="yes"?>
 	    <list style="symbols">
 	      <t>
-		Client Metadata Name: <spanx style="verb">federation_type</spanx>
+		Client Metadata Name: <spanx style="verb">client_registration_type</spanx>
 	      </t>
 	      <t>
 		Client Metadata Description: Federation Type
@@ -3676,7 +3707,7 @@ HTTP/1.1 302 Found
       <t>
         Some of the interfaces defined in this specification could be used for
         Denial of Service attacks (DOS), most notably, Entity Listings
-        (<xref target="entity_listings"/>) and
+        (<xref target="entity_listing"/>) and
         automatic client registration (<xref target="automatic"/>).
         If you plan to provide these interfaces as a service, you should consider
         applying normal defense methods, such as those described in
@@ -5014,13 +5045,16 @@ Host: op.umu.se
           <t>
             Moved from a federation API to separate endpoints per operation.
 	  </t>
+    <t>
+      Added descriptions of the list, resolve and status federation endpoints.
+    </t>
 	  <t>
-	    Registered the <spanx style="verb">federation_types_supported</spanx> and
+	    Registered the <spanx style="verb">client_registration_types_supported</spanx> and
 	    <spanx style="verb">federation_registration_endpoint</spanx>
 	    authorization server metadata parameters.
 	  </t>
 	  <t>
-	    Registered the <spanx style="verb">federation_type</spanx>
+	    Registered the <spanx style="verb">client_registration_type</spanx>
 	    dynamic client registration parameter.
 	  </t>
 	  <t>
@@ -5218,9 +5252,9 @@ Host: op.umu.se
             since it was redundant.
           </t>
           <t>
-            Added <spanx style="verb">federation_type</spanx> RP registration
+            Added <spanx style="verb">client_registration_type</spanx> RP registration
             metadata value
-            and <spanx style="verb">federation_types_supported</spanx> OP
+            and <spanx style="verb">client_registration_types_supported</spanx> OP
             metadata value.
           </t>
           <t>
