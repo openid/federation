@@ -500,10 +500,10 @@
         "regexp":
           "^https:\/\/[\\w-]+\\.example\\.com\/[\\w-]+\\.html"}
     },
-    "openid_relying_party": {
+    "oauth_client": {
       "organization_name": {"value": "NTNU"},
-      "grant_types_supported": {
-        "subset_of": ["authorization_code", "implicit"]},
+      "grant_types": {
+        "subset_of": ["authorization_code", "client_credentials"]},
       "scope": {
         "subset_of": ["openid", "profile", "email", "phone"]}
     }
@@ -1266,6 +1266,12 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
               </t>
             </list>
           </t>
+          <t>
+            Note that when a parameter is defined to be a space-separated
+            list of strings like for <spanx style="verb">scope</spanx> in
+            <xref target="RFC7591">RFC7591</xref> subset_of, superset_of
+            and defaults are still expressed as lists of strings.
+          </t>
         </section>
         <section title="Restrictions on Policy Entries" anchor="policy_restr">
           <t>
@@ -1484,7 +1490,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
         <section title="Policy Combination Example">
           <figure>
             <preamble>
-              A federation's policy for RPs:
+              A federation's policy for OAUth2 clients:
             </preamble>
             <artwork><![CDATA[
 {
@@ -1502,25 +1508,21 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
       "eduperson"
     ]
   },
-  "id_token_signed_response_alg": {
+  "token_endpoint_auth_method": {
     "one_of": [
-      "ES256",
-      "ES384",
-      "ES512"
+      "client_secret_post",
+      "client_secret_basic"
     ]
   },
   "contacts": {
     "add": "helpdesk@federation.example.org"
-  },
-  "application_type": {
-    "value": "web"
   }
 }
 ]]></artwork>
           </figure>
           <figure>
             <preamble>
-              An organization's policy for RPs:
+              An organization's policy for OAuth2 clients:
             </preamble>
             <artwork><![CDATA[
 {
@@ -1535,12 +1537,12 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
       "eduperson"
     ]
   },
-  "id_token_signed_response_alg": {
+  "token_endpoint_auth_method": {
     "one_of": [
-      "ES256",
-      "ES384"
+      "client_secret_post",
+      "client_secret_basic"
     ],
-    "default": "ES256"
+    "default": "client_secret_basic"
   },
   "contacts": {
     "add": "helpdesk@org.example.org"
@@ -1567,21 +1569,18 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
       "eduperson"
     ]
   },
-  "id_token_signed_response_alg": {
+  "token_endpoint_auth_method": {
     "one_of": [
-      "ES256",
-      "ES384"
+      "client_secret_post",
+      "client_secret_basic"
     ],
-    "default": "ES256"
+    "default": "client_secret_basic"
   },
   "contacts": {
     "add": [
       "helpdesk@federation.example.org",
       "helpdesk@org.example.org"
     ]
-  },
-  "application_type": {
-    "value": "web"
   }
 }
 ]]></artwork>
@@ -1638,14 +1637,14 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
           </preamble>
           <artwork><![CDATA[
 {
-  "scope": {
+  "id_token_signing_alg": {
     "superset_of": [
-      "openid",
-      "eduperson"
+      "ES256",
+      "ES384"
     ],
     "default": [
-      "openid",
-      "eduperson"
+      "ES256",
+      "ES384"
     ]
   },
   "response_types": {
@@ -1697,9 +1696,9 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
   "logo_uri": "https://example.com/logo_small.jpg",
   "policy_uri": "https://example.com/policy.html",
   "tos_uri": "https://example.com/tos.html",
-  "scope": [
-    "openid",
-    "eduperson"
+  "id_token_signing_alg": [
+    "ES256",
+    "ES384"
   ],
   "response_types": [
     "code"
@@ -2438,10 +2437,11 @@ Host: openid.sunet.se
         </section>
         <section title="Considerations">
           <t>The service provided at this endpoint goes contrary to the main
-          parts of this specification. The basic assumption of this specification
+            parts of this specification. The basic assumption of this specification
             is that you should trust no one except the trust anchor and your
-            own capabilities.</t>
-          <t>Even so there are benefits from having a service like this</t>
+            own capabilities. If you use this service you basically trust
+            someone else to do the right thing.</t>
+          <t>Even so there are benefits from having a service like this.</t>
         </section>
       </section>
 
