@@ -904,6 +904,23 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
               can be
               used.
             </t>
+
+	    <t hangText="request_authentication_signing_alg_values_supported">
+	      <vspace/>
+	      OPTIONAL.
+	      JSON array containing a list of the JWS signing algorithms
+	      (<spanx style="verb">alg</spanx> values)
+	      supported for the signature on
+	      the JWT <xref target="JWT" /> used to authenticate the request
+	      using the <spanx style="verb">private_key_jwt</spanx>
+	      and <spanx style="verb">request_object</spanx> authentication methods.
+	      This entry MUST be present if either of these authentication methods are specified
+	      in the <spanx style="verb">request_authentication_methods_supported</spanx> entry.
+	      No default algorithms are implied if this entry is omitted.
+	      Servers SHOULD support <spanx style="verb">RS256</spanx>.
+	      The value <spanx style="verb">none</spanx> MUST NOT be used.
+	    </t>
+
             <t hangText="signed_jwks_uri">
               <vspace/>
               OPTIONAL. A URI pointing to a signed JWT having the entity's
@@ -5079,8 +5096,11 @@ Host: op.umu.se
             Trust Marks: added non normative examples.
           </t>
           <t>
-            expanded section 8.1: included entity configurations.
+            Expanded Section 8.1: Included entity configurations.
           </t>
+	  <t>
+	    Defined the <spanx style="verb">request_authentication_signing_alg_values_supported</spanx> OP metadata value.
+	  </t>
         </list>
       </t>
       <t>
