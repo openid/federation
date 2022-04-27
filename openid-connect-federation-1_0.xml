@@ -840,41 +840,28 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
               <vspace/>
               OPTIONAL.
               In OpenID Connect Core, no client authentication is performed at the authentication
-              endpoint. Instead, you can say that a request authentication is
-              performed. What it amounts to is that the OP maps
-              the information in the request to the information it has
+              endpoint. Instead, you can say that the request itself is authenticated.
+              What it amounts to is that the OP maps
+              the information in the request to the information it has gained
               on the client, through static or dynamic registration.
-              If the map is successful, then the request is permitted to proceed.
-              Something similar happens when automatic registration is used.
-              Since there has been no explicit registration, the OP will gather
+              If the map is successful, then the request is permitted to be processed.
+              If RP uses automatic registration as descibed in this specification
+              the OP has no prior knowledge
+              of the RP. Therefor the OP will start by gathering
               information about the RP using the process outlined in
               <xref target="federation_configuration"/>. Once it has the RP
-              metadata, the OP can verify the information the RP provides in the
-              request. We make this a bit more secure by demanding the use of
-              the request parameter or pushed authorization.
+              metadata, the OP can then verify the request in the same way
+              as if it had known the RP's metadata beforehand.
+              To make the request verification more secure we demand the use of
+              a client authentication or verification method that proves that
+              the RP is in possession of a key that appears in the RP's metadata.
               <vspace/>
-              The claim value is a JSON object with members representing
-              processes/endpoints and
-              as values lists of request authentication methods that are
-              supported by the authorization endpoint.
-              In this specification we use the processes/endpoints:
-              Authorization Request (AR) as described in Section 3 of
-              <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>
-              and
-              Pushed Authorization Request (PAR), as described in
-              <xref target="PAR"/>.
-              The request authentication methods are:
+              A client authentication method is for instance:
               <list style="hanging">
-                <t hangText="request_object">
-                  <vspace/>
-                  This uses a Request Object as described in
-                  <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
-                  There is more about this in
-                  <xref target="automatic"/>.
-                </t>
                 <t hangText="private_key_jwt">
                   <vspace/>
-                  The authentication process is described in Section 9 of
+                  <spanx style="verb">private_key_jwt</spanx>.
+                  This authentication process is described in Section 9 of
                   <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
                   Note that if <spanx style="verb">private_key_jwt</spanx> is
                   used, the audience of the signed JWT MUST be either the URL of
@@ -892,17 +879,39 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
                   <xref target="RFC8705"/>.
                 </t>
               </list>
-              The only request authentication method that can be used if
-              doing authentication as described in
+              <vspace/>
+              An client verification method on the other hand
+              is something like:
+              <list style="hanging">
+                <t hangText="request_object">
+                  <vspace/>
+                  This uses a Request Object as described in
+                  <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
+                  There is more about this in
+                  <xref target="automatic"/>.
+                  Here the verification is based on the fact that the request
+                  object is signed with a key the RP is in control of.
+                </t>
+              </list>
+              <vspace/>
+              The claim value of this parameter is a JSON object with members representing
+              authentication request methods and as values lists of client
+              authentication/verification methods that can be used together with the
+              authentication request method.
+              <vspace/>
+              Examples of authentication request methods are:
+              Authorization Request (AR) as described in Section 3 of
               <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>
-              is <spanx style="verb">request_object</spanx>.
-              If pushed authorization is used then one of
+              and Pushed Authorization Request (PAR), as described in
+              <xref target="PAR"/>.
+              The only client authentication/verification method that can be used if
+              AR is used is <spanx style="verb">request_object</spanx>.
+              If PAR is used then for instance
               <spanx style="verb">private_key_jwt</spanx>,
               <spanx style="verb">tls_client_auth</spanx>
               and
               <spanx style="verb">self_signed_tls_client_auth</spanx>
-              can be
-              used.
+              can be used.
             </t>
             <t hangText="signed_jwks_uri">
               <vspace/>
