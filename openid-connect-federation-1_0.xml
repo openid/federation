@@ -707,6 +707,15 @@
               are deemed to not be very useful in this context and are therefore
               to be omitted.
             </t>
+            <t hangText="jwks">
+              <vspace/>
+              OPTIONAL. JSON Web Key Set document, passed by value, as 
+              defined in <xref target="RFC7517"/>. This parameter is intended 
+              to be used by participants that, for some reason, are 
+              unable to use the signed_jwks_uri parameter. 
+              One significant downside of jwks is that it does not enable 
+              key rotation (which signed_jwks_uri and jwks_uri does).
+            </t>
           </list>
         </t>
 	<figure>
@@ -910,6 +919,15 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
               JWK Set as payload. The JWT is signed with a key that was included
               in the JWK that the entity published in its self-signed entity
               statement.
+            </t>
+            <t hangText="jwks">
+              <vspace/>
+              OPTIONAL. JSON Web Key Set document, passed by value, as 
+              defined in <xref target="RFC7517"/>. This parameter is intended 
+              to be used by participants that, for some reason, are 
+              unable to use the signed_jwks_uri parameter. 
+              One significant downside of jwks is that it does not enable 
+              key rotation (which signed_jwks_uri and jwks_uri does).
             </t>
           </list>
         </t>
@@ -5042,6 +5060,9 @@ Host: op.umu.se
       <t>
         -18
         <list style="symbols">
+         <t>
+            Metadata. Added jwks claim.
+         </t>
           <t>
             Moved from a federation API to separate endpoints per operation.
 	  </t>
