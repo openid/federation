@@ -424,8 +424,17 @@
             </t>
             <t hangText="trust_marks">
               <vspace/>
-              OPTIONAL. A JSON array of signed JSON Web Tokens, each representing
-              a certification mark. There is more about certification marks in
+              OPTIONAL. A JSON array of objects, each representing
+              a certification mark. Each object contains two claims:
+              <list style="hanging">
+                <t hangText="id">
+                  The trust mark identifier
+                </t>
+                <t hangText="trust_mark">
+                  A signed JSON Web Tokens, that represents a certification mark.
+                </t>
+              </list>
+              There is more about certification marks in
               <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_marks_issuers">
@@ -942,11 +951,11 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
             </t>
             <t hangText="jwks">
               <vspace/>
-              OPTIONAL. JSON Web Key Set document, passed by value, as 
-              defined in <xref target="RFC7517"/>. This parameter is intended 
-              to be used by participants that, for some reason, are 
-              unable to use the signed_jwks_uri parameter. 
-              One significant downside of jwks is that it does not enable 
+              OPTIONAL. JSON Web Key Set document, passed by value, as
+              defined in <xref target="RFC7517"/>. This parameter is intended
+              to be used by participants that, for some reason, are
+              unable to use the signed_jwks_uri parameter.
+              One significant downside of jwks is that it does not enable
               key rotation (which signed_jwks_uri and jwks_uri does).
             </t>
           </list>
