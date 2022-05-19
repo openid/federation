@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Connect Federation">OpenID Connect Federation 1.0 -
-      draft 18
+      draft 19
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -75,7 +75,7 @@
       </address>
     </author>
 
-    <date day="20" month="April" year="2022"/>
+    <date day="19" month="May" year="2022"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -916,6 +916,23 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
               <spanx style="verb">self_signed_tls_client_auth</spanx>
               can be used.
             </t>
+
+	    <t hangText="request_authentication_signing_alg_values_supported">
+	      <vspace/>
+	      OPTIONAL.
+	      JSON array containing a list of the JWS signing algorithms
+	      (<spanx style="verb">alg</spanx> values)
+	      supported for the signature on
+	      the JWT <xref target="RFC7519" /> used to authenticate the request
+	      using the <spanx style="verb">private_key_jwt</spanx>
+	      and <spanx style="verb">request_object</spanx> authentication methods.
+	      This entry MUST be present if either of these authentication methods are specified
+	      in the <spanx style="verb">request_authentication_methods_supported</spanx> entry.
+	      No default algorithms are implied if this entry is omitted.
+	      Servers SHOULD support <spanx style="verb">RS256</spanx>.
+	      The value <spanx style="verb">none</spanx> MUST NOT be used.
+	    </t>
+
             <t hangText="signed_jwks_uri">
               <vspace/>
               OPTIONAL. A URI pointing to a signed JWT having the entity's
@@ -5039,6 +5056,28 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+
+      <t>
+        -19
+        <list style="symbols">
+	  <t>
+	    Fixed #1497 - Removed <spanx style="verb">trust_mark</spanx> claim from federation entity metadata.
+	  </t>
+	  <t>
+	    Fixed #1446 - Added <spanx style="verb">trust_chain</spanx> and removed <spanx style="verb">is_leaf</spanx>.
+	  </t>
+	  <t>
+	    Fixed #1479 - Added <spanx style="verb">jwks</spanx> claim in OP metadata.
+	  </t>
+	  <t>
+	    Fixed #1477 - Added <spanx style="verb">request_authentication_methods_supported</spanx>.
+	  </t>
+          <t>
+	    Fixed #1474 - Added the <spanx style="verb">request_authentication_signing_alg_values_supported</spanx> OP metadata parameter.
+          </t>
+        </list>
+      </t>
+
       <t>
         -18
         <list style="symbols">
@@ -5082,7 +5121,7 @@ Host: op.umu.se
             Trust Marks: added non normative examples.
           </t>
           <t>
-            expanded section 8.1: included entity configurations.
+            Expanded Section 8.1: Included entity configurations.
           </t>
 	  <t>
 	    Fixed #1373 - More clearly defined the term Entity Statement,
