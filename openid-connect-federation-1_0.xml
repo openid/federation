@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Connect Federation">OpenID Connect Federation 1.0 -
-      draft 18
+      draft 19
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -75,7 +75,7 @@
       </address>
     </author>
 
-    <date day="24" month="February" year="2022"/>
+    <date day="19" month="May" year="2022"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -165,23 +165,24 @@
               be identified in a context. All entities in an OpenID Connect
               federation MUST have a globally unique identifier.
             </t>
-            <t hangText="Entity identifier">
+            <t hangText="Entity Identifier">
               <vspace/>
               An URI that is globally unique and that is bound to one Entity.
             </t>
-            <t hangText="Entity statement">
+            <t hangText="Entity Statement">
               <vspace/>
-              An entity statement is
-              issued by an entity, which pertains to a subject entity. An entity
-              statement is always a signed JWT.
+	      Signed JWT that contains the information needed
+	      for an entity to participate in federation(s),
+	      including metadata about itself
+	      and policies that apply to other entities that it is authoritative for.
             </t>
-            <t hangText="Entity configuration">
+            <t hangText="Entity Configuration">
               <vspace/>
               An entity statement issued by an entity about itself. It contains
               the entities' signing keys and further data used to control the
               trust chain resolution process, such as authority hints.
             </t>
-            <t hangText="Intermediate entity">
+            <t hangText="Intermediate Entity">
               <vspace/>
               An entity that issues
               an entity statement that appears somewhere in between those
@@ -249,12 +250,15 @@
     <section title="Components" anchor="components">
       <section anchor="entity-statement" title="Entity Statement">
         <t>
-          An entity statement is
-          issued by an entity and concerns a subject entity and leaf entities
-          in a federation. An entity statement is always a signed JWT.
+          An entity statement contains the information needed for the entity
+	  that is the subject of the entity statement to participate in federation(s).
+	  An entity statement is always a signed JWT.
+	  The subject of the JWT is the entity itself.
+	  The issuer of the JWT is the party that issued the Entity Statement,
+	  which will often be the entity itself.
           All entities in a federation SHOULD be prepared to publish an entity
-          statement about themselves. If they are not able to do so themselves
-          someone else MUST do it for them.
+          statement about themselves. If they are not able to do so themselves,
+          another issuer MUST do it for them.
         </t>
         <t>
           An entity statement is composed of the following claims:
@@ -840,41 +844,28 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
               <vspace/>
               OPTIONAL.
               In OpenID Connect Core, no client authentication is performed at the authentication
-              endpoint. Instead, you can say that a request authentication is
-              performed. What it amounts to is that the OP maps
-              the information in the request to the information it has
+              endpoint. Instead, you can say that the request itself is authenticated.
+              What it amounts to is that the OP maps
+              information in the request (like the redirect_uri) to information it has gained
               on the client, through static or dynamic registration.
-              If the map is successful, then the request is permitted to proceed.
-              Something similar happens when automatic registration is used.
-              Since there has been no explicit registration, the OP will gather
+              If the map is successful, then the request is permitted to be processed.
+              If the RP uses automatic registration as described in this specification
+              the OP has no prior knowledge
+              of the RP. Therefor the OP must start by gathering
               information about the RP using the process outlined in
-              <xref target="federation_configuration"/>. Once it has the RP
-              metadata, the OP can verify the information the RP provides in the
-              request. We make this a bit more secure by demanding the use of
-              the request parameter or pushed authorization.
+              <xref target="federation_configuration"/>. Once it has the RP's
+              metadata, the OP can then verify the request in the same way
+              as if it had known the RP's metadata beforehand.
+              To make the request verification more secure we demand the use of
+              a client authentication or verification method that proves that
+              the RP is in possession of a key that appears in the RP's metadata.
               <vspace/>
-              The claim value is a JSON object with members representing
-              processes/endpoints and
-              as values lists of request authentication methods that are
-              supported by the authorization endpoint.
-              In this specification we use the processes/endpoints:
-              Authorization Request (AR) as described in Section 3 of
-              <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>
-              and
-              Pushed Authorization Request (PAR), as described in
-              <xref target="PAR"/>.
-              The request authentication methods are:
+              Client authentication methods are for instance:
               <list style="hanging">
-                <t hangText="request_object">
-                  <vspace/>
-                  This uses a Request Object as described in
-                  <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
-                  There is more about this in
-                  <xref target="automatic"/>.
-                </t>
                 <t hangText="private_key_jwt">
                   <vspace/>
-                  The authentication process is described in Section 9 of
+                  <spanx style="verb">private_key_jwt</spanx>.
+                  This authentication process is described in Section 9 of
                   <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
                   Note that if <spanx style="verb">private_key_jwt</spanx> is
                   used, the audience of the signed JWT MUST be either the URL of
@@ -892,17 +883,38 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
                   <xref target="RFC8705"/>.
                 </t>
               </list>
-              The only request authentication method that can be used if
-              doing authentication as described in
+              <vspace/>
+              An client verification method on the other hand
+              is something like:
+              <list style="hanging">
+                <t hangText="request_object">
+                  <vspace/>
+                  This uses a Request Object as described in
+                  <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
+                  There is more about this in
+                  <xref target="automatic"/>.
+                  Here the verification is based on the fact that the request
+                  object is signed with a key the RP is in control of.
+                </t>
+              </list>
+              <vspace/>
+              The claim value of this parameter is a JSON object with members representing
+              authentication request methods and as values lists of client
+              authentication/verification methods that can be used together with the
+              authentication request method.
+              <vspace/>
+              Examples of authentication request methods are:
+              Authorization Request (AR) as described in Section 3 of
               <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>
-              is <spanx style="verb">request_object</spanx>.
-              If pushed authorization is used then one of
+              and Pushed Authorization Request (PAR), as described in
+              <xref target="PAR"/>.
+              If AR is used then a client verification method like
+              <spanx style="verb">request_object</spanx> can be used.
+              If PAR is used then client authentication methods like
               <spanx style="verb">private_key_jwt</spanx>,
-              <spanx style="verb">tls_client_auth</spanx>
-              and
+              <spanx style="verb">tls_client_auth</spanx> and
               <spanx style="verb">self_signed_tls_client_auth</spanx>
-              can be
-              used.
+              can be used.
             </t>
 
 	    <t hangText="request_authentication_signing_alg_values_supported">
@@ -911,7 +923,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
 	      JSON array containing a list of the JWS signing algorithms
 	      (<spanx style="verb">alg</spanx> values)
 	      supported for the signature on
-	      the JWT <xref target="JWT" /> used to authenticate the request
+	      the JWT <xref target="RFC7519" /> used to authenticate the request
 	      using the <spanx style="verb">private_key_jwt</spanx>
 	      and <spanx style="verb">request_object</spanx> authentication methods.
 	      This entry MUST be present if either of these authentication methods are specified
@@ -927,6 +939,15 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
               JWK Set as payload. The JWT is signed with a key that was included
               in the JWK that the entity published in its self-signed entity
               statement.
+            </t>
+            <t hangText="jwks">
+              <vspace/>
+              OPTIONAL. JSON Web Key Set document, passed by value, as 
+              defined in <xref target="RFC7517"/>. This parameter is intended 
+              to be used by participants that, for some reason, are 
+              unable to use the signed_jwks_uri parameter. 
+              One significant downside of jwks is that it does not enable 
+              key rotation (which signed_jwks_uri and jwks_uri does).
             </t>
           </list>
         </t>
@@ -1114,12 +1135,6 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
               <vspace/>
               OPTIONAL. URL to a generic home page
               representing this entity.
-            </t>
-            <t hangText="trust_marks">
-              <vspace/>
-              OPTIONAL. A JSON array of signed JSON Web Token each representing
-              a certification mark. There is more about certification marks in
-              <xref target="trust_marks"/>.
             </t>
           </list>
         </t>
@@ -2384,11 +2399,11 @@ Host: openid.sunet.se
         <section title="Resolve Response">
           <t>
             The response is a signed JWT containing resolved metadata and
-            verified trust marks. The keys used by the resolver should be the
-            same keys as it would use when it construct a self-signed
-            entity statement. This means that the issuer of the request can
-            easily find and verify the resolvers signing keys by collecting
-            and verifying the appropriate trust chain.
+            verified trust marks. The response MAY also contains
+            the sequence of the entity statements that compose the trust chain.
+            The keys used by the resolver MUST be the
+            same keys used to construct a self-signed
+            entity statement.
           </t>
           <figure>
             <preamble>
@@ -2397,22 +2412,21 @@ Host: openid.sunet.se
             </preamble>
             <artwork><![CDATA[
 {
-  "iss": "https://resolver.example.it/spid",
-  "sub": "https://op.example.it/spid",
-  "aud": ["https://foodle.uninett.no"],
+  "iss": "https://resolver.spid.gov.it/",
+  "sub": "https://op.example.it/spid/",
   "iat": 1516239022,
   "exp": 1516298022,
   "metadata": {
     "openid_provider": {
       "contacts": ["legal@example.it", "technical@example.it"],
       "logo_uri":
-        "https://op.example.it/spid/SRWStatic/img/umu-logo-left-neg-SE.svg",
+        "https://op.example.it/static/img/op-logo.svg",
       "op_policy_uri":
-        "https://op.example.it/spid/en/about-the-website/legal-information/",
-      "federation_registration_endpoint":"https://op.example.it/spid/fedreg",
+        "https://op.example.it/en/about-the-website/legal-information/",
+      "federation_registration_endpoint":"https://op.example.it/spid/fedreg/",
       "authorization_endpoint":
-        "https://op.example.it/spid/authorization",
-      "token_endpoint": "https://op.example.it/spid/token",
+        "https://op.example.it/spid/authorization/",
+      "token_endpoint": "https://op.example.it/spid/token/",
       "response_types_supported": [
         "code",
         "code id_token",
@@ -2425,28 +2439,28 @@ Host: openid.sunet.se
       ],
       "subject_types_supported": ["pairwise"],
       "id_token_signing_alg_values_supported": ["RS256"],
-      "issuer": "https://op.example.it/spid",
+      "issuer": "https://op.example.it/spid/",
       "jwks_uri": "https://op.example.it/spid/jwks_uri.json"
     }
   },
   "trust_marks": [
-    {"id": "https://www.spid.gov.it/certification/rp",
+    {"id": "https://www.spid.gov.it/certification/op/",
      "trust_mark":
        "eyJhbGciOiJSUzI1NiIsImtpZCI6ImRGRTFjMFF4UzBFdFFrWmxNRXR3ZWxOQl"
-       "ExSjRaVmxGTlhWUU1IcEZYelZ1Y0V4c1FuZzRlbXMxYXcifQ.eyJpc3MiOiJod"
-       "HRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAuZXhhbXB"
-       "sZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJpZCI6Imh0dHBzOi8vd3d3L"
-       "nNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJtYXJrIjoiaHR0cHM6Ly9"
-       "3d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwic"
-       "mVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJ"
-       "lZ29sZS10ZWNuaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9.r2SZ"
-       "DNlYvPAuCq8HnGSkCF17gvexEz_UhqPHfX0js5bjz_n_3QAbr8IVE6_5Um9grY"
-       "fcc1YUwUGs_-s-_AN8uMsS6P3fL0zpjoEMIOMmkCMsn8F68zisNZ2SEJN_JEIp"
-       "_FmG5Yf0ONHq9bCtc32fvCSo0daEGTQdMMCEfNSoIZNTMxsB8-bA4hVn9dkNYz"
-       "GTvg7FHiHOP-_fEyFDlJr1AzgepIwRiApViRVVqX920GY624nHHbEXqv3xleX7"
-       "mSE6uXSGqRMlVz6XFXLmceJsYvcaC0haC-JfOn2GR7D3C07Lt4TlBUVMM0f2Dv"
-       "ZcC1CqWlxoXr3WxzdGD_CxGkYTIg"
+       "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijh4c3VLV2lWZndTZ0hvZjFUZTRPVWRjeT"
+       "RxN2RKcktmRlJsTzV4aEhJYTAifQ.eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkL"
+       "mdvdi5pdCIsInN1YiI6Imh0dHBzOi8vb3AuZXhhbXBsZS5pdC9zcGlkLyIsIml"
+       "hdCI6MTU3OTYyMTE2MCwiaWQiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZ"
+       "XJ0aWZpY2F0aW9uL29wLyIsImxvZ29fdXJpIjoiaHR0cHM6Ly93d3cuYWdpZC5"
+       "nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0c"
+       "HM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWN"
+       "uaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9"
     }
+  ],
+  "trust_chain" : [
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6Ims1NEhRdERpYnlHY3M5WldWTWZ2aUhm ...",
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ...",
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ..."
   ]
 }
 ]]></artwork>
@@ -2473,21 +2487,7 @@ Host: openid.sunet.se
         <section title="Entity Listings Request">
           <t>
             The request MUST be an HTTP request using the GET method and
-            the https scheme to a resolved list endpoint with the
-            following query string parameters:
-          </t>
-          <t>
-            <list style="hanging">
-              <t hangText="is_leaf">
-                <vspace/>
-                OPTIONAL. If left out, the result should
-                include both leaf entities and intermediate nodes. If set to
-                <spanx style="verb">true</spanx>,
-                the response SHOULD contain only leaf entities. If set to
-                <spanx style="verb">false</spanx>, the
-                response SHOULD contain only intermediate nodes.
-              </t>
-            </list>
+            the https scheme to a resolve list endpoint.
           </t>
           <figure>
             <preamble>
@@ -3736,17 +3736,17 @@ HTTP/1.1 302 Found
   <back>
 
     <references title="Normative References">
-      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"?>
-      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.3339.xml"?>
-      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.4732.xml"?>
-      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.5280.xml"?>
-      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8615.xml"?>
-      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7515.xml"?>
-      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7517.xml"?>
-      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7519.xml"?>
-      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.7591.xml"?>
-      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8414.xml"?>
-      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8705.xml"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.3339.xml"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4732.xml"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5280.xml"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8615.xml"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7515.xml"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7517.xml"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7519.xml"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7591.xml"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8414.xml"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8705.xml"?>
 
       <reference anchor="OpenID.Core"
                  target="http://openid.net/specs/openid-connect-core-1_0.html">
@@ -3856,9 +3856,9 @@ HTTP/1.1 302 Found
     </references>
 
     <references title="Informative References">
-      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.2046.xml"?>
-      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"?>
-      <?rfc include="https://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.8446.xml"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2046.xml"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8446.xml"?>
 
       <reference anchor="IANA.OAuth.Parameters" target="http://www.iana.org/assignments/oauth-parameters">
         <front>
@@ -5056,9 +5056,34 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+
+      <t>
+        -19
+        <list style="symbols">
+	  <t>
+	    Fixed #1497 - Removed <spanx style="verb">trust_mark</spanx> claim from federation entity metadata.
+	  </t>
+	  <t>
+	    Fixed #1446 - Added <spanx style="verb">trust_chain</spanx> and removed <spanx style="verb">is_leaf</spanx>.
+	  </t>
+	  <t>
+	    Fixed #1479 - Added <spanx style="verb">jwks</spanx> claim in OP metadata.
+	  </t>
+	  <t>
+	    Fixed #1477 - Added <spanx style="verb">request_authentication_methods_supported</spanx>.
+	  </t>
+          <t>
+	    Fixed #1474 - Added the <spanx style="verb">request_authentication_signing_alg_values_supported</spanx> OP metadata parameter.
+          </t>
+        </list>
+      </t>
+
       <t>
         -18
         <list style="symbols">
+         <t>
+            Added the jwks claim name for OP Metadata.
+         </t>
           <t>
             Moved from a federation API to separate endpoints per operation.
 	  </t>
@@ -5099,7 +5124,8 @@ Host: op.umu.se
             Expanded Section 8.1: Included entity configurations.
           </t>
 	  <t>
-	    Defined the <spanx style="verb">request_authentication_signing_alg_values_supported</spanx> OP metadata value.
+	    Fixed #1373 - More clearly defined the term Entity Statement,
+	    both in the Terminology section and in the Entity Statement section.
 	  </t>
         </list>
       </t>
