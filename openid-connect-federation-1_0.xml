@@ -75,7 +75,7 @@
       </address>
     </author>
 
-    <date day="19" month="May" year="2022"/>
+    <date day="20" month="May" year="2022"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -167,7 +167,7 @@
             </t>
             <t hangText="Entity Identifier">
               <vspace/>
-              An URI that is globally unique and that is bound to one Entity.
+              A URI that is globally unique and that is bound to one Entity.
             </t>
             <t hangText="Entity Statement">
               <vspace/>
@@ -431,7 +431,7 @@
                   The trust mark identifier
                 </t>
                 <t hangText="trust_mark">
-                  A signed JSON Web Tokens, that represents a certification mark.
+                  A signed JSON Web Token that represents a certification mark.
                 </t>
               </list>
               There is more about certification marks in
@@ -464,7 +464,7 @@
           entity, in the form of a <xref target="RFC7515">JSON Web Signature
           (JWS)</xref>. Entities MUST support signing Entity Statements with
           the RSA SHA-256 algorithm (an <spanx style="verb">alg</spanx>
-	  value of <spanx style="verb">RS256</spanx>). Consequently
+	  value of <spanx style="verb">RS256</spanx>). Consequently,
           entities MUST support signature verification where the statement was
           signed using RS256.
         </t>
@@ -583,8 +583,7 @@
               an entity statement about the RP published by Organization A, and
             </t>
             <t>
-              an entity statement about Organization A published by Federation.
-              F
+              an entity statement about Organization A published by Federation F.
             </t>
           </list>
         </t>
@@ -758,7 +757,7 @@
 
 <figure>
 <preamble>
-            The following is a non-normative example of a RP's entity statement:
+            The following is a non-normative example of an RP's entity statement:
           </preamble>
 
           <artwork><![CDATA[
@@ -893,7 +892,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
                 </t>
               </list>
               <vspace/>
-              An client verification method on the other hand
+              A client verification method, on the other hand,
               is something like:
               <list style="hanging">
                 <t hangText="request_object">
@@ -912,12 +911,18 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
               authentication/verification methods that can be used together with the
               authentication request method.
               <vspace/>
-              Examples of authentication request methods are:
-              Authorization Request (AR) as described in Section 3 of
-              <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>
-              and Pushed Authorization Request (PAR), as described in
-              <xref target="PAR"/>.
-              If AR is used then a client verification method like
+              Examples of authentication request methods are
+	      <list style="symbols">
+		<t>
+		  Authorization Request (AR) as described in Section 3 of
+		  <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>, and
+		</t>
+		<t>
+		  Pushed Authorization Request (PAR), as described in <xref target="PAR"/>.
+		</t>
+	      </list>
+	      <vspace/>
+              If AR is used, then a client verification method like
               <spanx style="verb">request_object</spanx> can be used.
               If PAR is used then client authentication methods like
               <spanx style="verb">private_key_jwt</spanx>,
@@ -1074,7 +1079,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
           The metadata type identifier is
           <spanx style="verb">oauth_resource</spanx>.
           There is no standard that specifies what parameters can occur
-          in the metadata for this kind of entity. So for the time being, this
+          in the metadata for this kind of entity. So, for the time being, this
           can be regarded as a placeholder.
         </t>
       </section>
@@ -1176,7 +1181,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
             <t hangText="status_endpoint">
               <vspace/>
               OPTIONAL.
-              The endpoint for the status operation described in
+              The endpoint for the status operation is described in
               <xref target="status_endpoint"/>. Issuers of trust marks
               MAY publish a <spanx style="verb">status_endpoint</spanx>.
             </t>
@@ -1191,8 +1196,8 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
 ]]></artwork>
         </figure>
         <t>
-          The communication with the status endpoint is described in
-          <xref target="status_endpoint"/>
+          Communication with the status endpoint is described in
+          <xref target="status_endpoint"/>.
         </t>
       </section>
     </section>
@@ -1804,7 +1809,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
             The <spanx style="verb">max_path_length</spanx> constraint specifies
             the
             maximum number of
-            entity statement a trust chain can have between the entity statement
+            entity statements a trust chain can have between the entity statement
             that contains the constraint specification and the leaf's entity
             statement.
           </t>
@@ -1850,7 +1855,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
             </list>
           </t>
           <t>
-            The trust chain does not fulfill the constraints if:
+            The trust chain does not fulfil the constraints if:
             <list style="symbols">
               <t>TA has specified <spanx style="verb">max_path_length</spanx> of
                 1.
@@ -1927,7 +1932,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
               </t>
               <t hangText="logo_uri">
                 <vspace/>
-                OPTIONAL. String. An URL that points to a mark/logo that the
+                OPTIONAL. String. A URL that points to a mark/logo that the
                 subject is allowed to display to a user of the entity.
               </t>
               <t hangText="exp">
@@ -1975,7 +1980,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
         </section>
         <section title="Trust Mark Examples" anchor="trust_example">
           <figure>
-            <preamble>A non normative example of a trust mark claim inside an entity statement:</preamble>
+            <preamble>A non-normative example of a trust mark claim inside an entity statement is:</preamble>
             <artwork><![CDATA[
 {
   "iss": "https://rp.example.it/spid",
@@ -2050,7 +2055,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
             title="Obtaining Federation Entity Configuration Information"
             anchor="federation_configuration">
       <t>
-        The entity configuration of every federation entity SHOULD be exposed at a well known endpoint.
+        The entity configuration of every federation entity SHOULD be exposed at a well-known endpoint.
         The configuration endpoint is found using the
         <xref target="RFC8615">Well-Known URIs</xref>
         specification, with the suffix
@@ -2239,7 +2244,7 @@ Content-Type: application/entity-statement+jwt
                 normalization of the URL, multiple issuers MAY resolve to a
                 shared fetch endpoint. This parameter makes it explicit exactly
                 which issuer we want entity statements from. Without this
-                parameter the issuer matches to the entity at
+                parameter, the issuer matches to the entity at
                 which the request was made.
               </t>
               <t hangText="sub">
@@ -2343,14 +2348,14 @@ Content-Type: application/entity-statement+jwt
         <t>
           An entity MAY use the resolve endpoint to fetch
           resolved metadata and trust marks for an entity as seen/trusted by
-          the resolver. The resolver is supposed to fetch the subjects
+          the resolver. The resolver is supposed to fetch the subject's
           self-signed entity statement, collect a trust chain that starts
-          with the subjects entity statement and ends with the specified
+          with the subject's entity statement and ends with the specified
           trust anchor, verify the trust chain and then apply all the
           policies present in the trust chain to the entity statements
           metadata. The resolver is also expected to verify that the
           present trust marks are active. If it finds trust marks that are
-          not active then those should be left out of the response set.
+          not active, then those should be left out of the response set.
         </t>
 
         <section title="Resolve Request">
@@ -2377,14 +2382,14 @@ Content-Type: application/entity-statement+jwt
                 OPTIONAL. A specific metadata type to resolve.
                 In this document, we use the metadata types listed in
                 <xref target="metadata"/>.
-                If no value is given then all metadata types are expected to
+                If no value is given, then all metadata types are expected to
                 be returned.
               </t>
               <t hangText="iss">
                 <vspace/>
                 OPTIONAL. The entity identifier of the
                 entity who is requesting the information. If this parameter
-                is present in the request then it MUST be present in the
+                is present in the request, then it MUST be present in the
                 response in the
                 <spanx style="verb">aud/jose</spanx> parameter of the signed JWT.
               </t>
@@ -2479,7 +2484,7 @@ Host: openid.sunet.se
           <t>The service provided at this endpoint goes contrary to the main
             parts of this specification. The basic assumption of this specification
             is that you should trust no one except the trust anchor and your
-            own capabilities. If you use this service you basically trust
+            own capabilities. If you use this service, you basically trust
             someone else to do the right thing.</t>
           <t>Even so there are benefits from having a service like this.</t>
         </section>
@@ -2512,7 +2517,7 @@ Host: openid.sunet.se
 
         <section title="Entity Listing Response">
           <t>
-            The response MUST contain an JSON list with the known entity
+            The response MUST contain a JSON list with the known entity
             identifiers.
           </t>
           <figure>
@@ -2574,7 +2579,7 @@ Content-Type: application/json
           <t>
             If <spanx style="verb">trust_mark</spanx> is used then
             <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>
-            are not needed. If <spanx style="verb">trust_mark</spanx> is not used
+            are not needed. If <spanx style="verb">trust_mark</spanx> is not used,
             then <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>
             are required.
           </t>
@@ -2789,11 +2794,11 @@ Content-Type: application/json
         <t>
           Verifying the signature is a much more expensive
           operation then verifying the correctness of the statement and the
-          timestamps. An implementer MAY therefor chose to not verify the
+          timestamps. An implementer MAY therefore chose to not verify the
           signature until all the other checks have been done.
         </t>
         <t>Consumers MAY cache Entity Statements or signature verification
-          results for a given time until they expire
+          results for a given time until they expire, per
           <xref target="trust_lifetime"/>.
         </t>
         <t>
@@ -3167,9 +3172,9 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
             <section title="Processing the Authentication Request">
               <t>
                 There are three different paths the OP MUST follow when
-                processing the Authentication Request depending on which
+                processing the Authentication Request, depending on which
                 request authentication
-                method that was used. It all starts the same though.
+                method was used. It all starts the same though.
                 When the OP receives an incoming Authentication Request,
                 the OP supports OpenID Connect Federation, the incoming
                 Client ID
@@ -3187,7 +3192,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                 <spanx style="verb">openid_relying_party</spanx>.
               </t>
               <t>
-                The OP SHOULD consider the resolved metadata of the RP, and
+                The OP SHOULD consider the resolved metadata of the RP and
                 verify that it complies with the client metadata specification
                 in
                 <xref target="OpenID.Registration">OpenID Connect Dynamic Client
@@ -3493,7 +3498,7 @@ HTTP/1.1 302 Found
       <section title="ID Token Validation">
         <t>
             The RP MUST validate any ID token as defined in Section 3.1.3.7. of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>. If the
-            trust relationship between RP and OP was estabished using OpenID Federation, the key material used for ID Token signature validation MUST
+            trust relationship between RP and OP was established using OpenID Federation, the key material used for ID Token signature validation MUST
             be obtained from the OP's metadata the RP obtained as a result of trust chain validation as defined in <xref target="resolving_trust"/>
             and combining the metadata policies from the entity statements of the trust chain as described in <xref target="metadata_policy"/>.
         </t>
@@ -3673,7 +3678,7 @@ HTTP/1.1 302 Found
 	      </t>
 	      <t>
 		Encoding considerations: binary;
-		An trust mark is a JWT;
+		A trust mark is a JWT;
 		JWT values are encoded as a
 		series of base64url-encoded values (some of which may be the
 		empty string) separated by period ('.') characters.
@@ -3732,7 +3737,7 @@ HTTP/1.1 302 Found
     <section anchor="Security" title="Security Considerations">
       <t>
         Some of the interfaces defined in this specification could be used for
-        Denial of Service attacks (DOS), most notably, Entity Listings
+        Denial-of-Service attacks (DOS), most notably, Entity Listings
         (<xref target="entity_listing"/>) and
         automatic client registration (<xref target="automatic"/>).
         If you plan to provide these interfaces as a service, you should consider
@@ -3917,7 +3922,7 @@ HTTP/1.1 302 Found
       </figure>
       <t>
         Both SWAMID and InCommon are identity federations in their own right.
-        They also have in common that they both are members of
+        They also have in common that they are both members of
         the EduGAIN federation.
       </t>
       <t>
@@ -3935,7 +3940,7 @@ HTTP/1.1 302 Found
       </t>
       <t>
         Once the RP-part of the Wiki knows which OP it SHOULD talk to it has
-        to find out a couple of things about the OP. All if those things
+        to find out a couple of things about the OP. All of those things
         can be found in the metadata. But finding the metadata is not enough;
         the RP also has to trust the metadata.
       </t>
@@ -4030,7 +4035,7 @@ HTTP/1.1 302 Found
           self-signed entity statement issued by the leaf.
         </t>
         <t>
-          The self-signed entity statement concerning intermediates are not
+          The self-signed entity statement concerning intermediates is not
           part of the trust chain.
         </t>
         <section title="Configuration Information for op.umu.se">
@@ -4359,7 +4364,7 @@ Host: swamid.se
           </t>
           <t>
             If we assume that the issuer of this entity statement is not in the
-            list of trust anchors the LIGO Wiki RP has access to we have to go
+            list of trust anchors the LIGO Wiki RP has access to, we have to go
             one step further.
           </t>
         </section>
@@ -5084,6 +5089,9 @@ Host: op.umu.se
           <t>
 	    Fixed #1474 - Added the <spanx style="verb">request_authentication_signing_alg_values_supported</spanx> OP metadata parameter.
           </t>
+	  <t>
+	    Rewrote <spanx style="verb">trust_marks</spanx> definition.
+	  </t>
         </list>
       </t>
 
@@ -5124,10 +5132,10 @@ Host: op.umu.se
             New federation endpoint: Trust Mark Status.
           </t>
           <t>
-            Federation API, Fetch: <spanx style="verb">iss</spanx> paramenter is optional.
+            Federation API, Fetch: <spanx style="verb">iss</spanx> parameter is optional.
           </t>
           <t>
-            Trust Marks: added non normative examples.
+            Trust Marks: added non-normative examples.
           </t>
           <t>
             Expanded Section 8.1: Included entity configurations.
@@ -5153,7 +5161,7 @@ Host: op.umu.se
         -16
         <list style="symbols">
           <t>
-            Added Security Considerations section on Denial of Service attacks.
+            Added Security Considerations section on Denial-of-Service attacks.
           </t>
         </list>
       </t>
@@ -5205,7 +5213,7 @@ Host: op.umu.se
             Specified that the value of 'aud' in the entity statement use in
             automatic client registration MUST have the ASs authorization
             endpoint
-            URL as value. Also the 'sub' claim MUST NOT be present.
+            URL as value. Also, the 'sub' claim MUST NOT be present.
           </t>
           <t>
             Separating the usage of merge and combine as proposed by Vladimir
