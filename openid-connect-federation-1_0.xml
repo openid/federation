@@ -778,7 +778,7 @@
         "authorization_code",
         "implicit"
       ],
-      "jwks_uri": "https://openid.sunet.se/rp/jwks.json"
+      "signed_jwks_uri": "https://openid.sunet.se/rp/jwks.jose"
     }
   },
   "jwks": {
@@ -806,7 +806,7 @@
 Note: An OpenID Connect RP MUST only use the keys published in a suitable element, such as <spanx style="verb">jwks</spanx>
 or <spanx style="verb">jwks_uri</spanx> or <spanx style="verb">signed_jwks_uri</spanx>, underneath the
 <spanx style="verb">metadata/openid_relying_party</spanx> element of the respective entity statement for the OpenID Connect protocol.
-The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
+The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that purpose.
 </t>
       </section>
 
@@ -1046,7 +1046,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
 Note: An OpenID Connect OP MUST only use the keys published in a suitable element, such as <spanx style="verb">jwks</spanx>
 or <spanx style="verb">jwks_uri</spanx> or <spanx style="verb">signed_jwks_uri</spanx>, underneath the
 <spanx style="verb">metadata/openid_provider</spanx> element of the respective entity statement for the OpenID Connect protocol.
-The example above uses a <spanx style="verb">jwks_uri</spanx> element for that purpose.
+The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for that purpose.
 </t>
 
       </section>
@@ -1213,7 +1213,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
           <list style="symbols">
             <t>It consists of one or more policy entries.</t>
             <t>Each policy entry applies to one metadata parameter, such as
-              <spanx style="verb">id_token_signing_alg</spanx>.
+              <spanx style="verb">id_token_signed_response_alg</spanx>.
             </t>
             <t>Each policy entry consists of one or more operators, which can be
               value modifiers or value checks.
@@ -1231,7 +1231,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
               An example of a policy entry:
             </preamble>
             <artwork><![CDATA[
-"id_token_signing_alg": {
+"id_token_signed_response_alg": {
   "default": "ES256",
   "one_of" : ["ES256", "ES384", "ES512"]
 }
@@ -1246,7 +1246,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
             <artwork><![CDATA[
 "metadata_policy" : {
   "openid_relying_party": {
-    "id_token_signing_alg": {
+    "id_token_signed_response_alg": {
       "default": "ES256",
       "one_of" : ["ES256", "ES384", "ES512"]
     }
@@ -1683,7 +1683,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
           </preamble>
           <artwork><![CDATA[
 {
-  "id_token_signing_alg": {
+  "id_token_signed_response_alg": {
     "superset_of": [
       "ES256",
       "ES384"
@@ -1742,7 +1742,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
   "logo_uri": "https://example.com/logo_small.jpg",
   "policy_uri": "https://example.com/policy.html",
   "tos_uri": "https://example.com/tos.html",
-  "id_token_signing_alg": [
+  "id_token_signed_response_alg": [
     "ES256",
     "ES384"
   ],
@@ -2148,7 +2148,7 @@ Content-Type: application/entity-statement+jwt
   "metadata": {
     "openid_provider": {
       "issuer": "https://openid.sunet.se",
-      "jwks_uri": "https://openid.sunet.se/jwks_uri.json",
+      "signed_jwks_uri": "https://openid.sunet.se/jwks.jose",
       "authorization_endpoint":
         "https://openid.sunet.se/authorization",
       "client_registration_type": [
@@ -4076,7 +4076,7 @@ HTTP/1.1 302 Found
   "metadata": {
     "openid_provider": {
       "issuer": "https://op.umu.se/openid",
-      "jwks_uri": "https://op.umu.se/openid/jwks_uri.json",
+      "signed_jwks_uri": "https://op.umu.se/openid/jwks.jose",
       "authorization_endpoint":
         "https://op.umu.se/openid/authorization",
       "client_registration_type": [
@@ -4545,7 +4545,7 @@ Host: geant.org
     "ES256"
   ],
   "issuer": "https://op.umu.se/openid",
-  "jwks_uri": "https://op.umu.se/openid/jwks_uri.json",
+  "signed_jwks_uri": "https://op.umu.se/openid/jwks.jose",
   "logo_uri":
     "https://www.umu.se/img/umu-logo-left-neg-SE.svg",
   "organization_name": "University of Ume\u00e5",
@@ -4765,7 +4765,7 @@ Host: op.umu.se
     "RS256",
     "RS512"
   ],
-  "jwks_uri": "https://wiki.ligo.org/jwks.json",
+  "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
   "redirect_uris": [
     "https://wiki.ligo.org/callback"
   ],
@@ -4797,7 +4797,7 @@ Host: op.umu.se
     "RS256",
     "RS512"
   ],
-  "jwks_uri": "https://wiki.ligo.org/jwks.json",
+  "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
   "redirect_uris": [
     "https://wiki.ligo.org/callback"
   ],
@@ -4811,7 +4811,7 @@ Host: op.umu.se
             <t>
               Having that, the registration is done, and the OP MUST now use
               the keys found at the URL specified in
-              <spanx style="verb">jwks_uri</spanx>
+              <spanx style="verb">signed_jwks_uri</spanx>
               to verify the signature on the Request Object in the
               Authentication Request.
             </t>
@@ -4956,7 +4956,7 @@ Host: op.umu.se
     "RS256",
     "RS512"
   ],
-  "jwks_uri": "https://wiki.ligo.org/jwks.json",
+  "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
   "redirect_uris": [
     "https://wiki.ligo.org/callback"
   ],
