@@ -778,7 +778,7 @@
         "authorization_code",
         "implicit"
       ],
-      "jwks_uri": "https://openid.sunet.se/rp/jwks.json"
+      "signed_jwks_uri": "https://openid.sunet.se/rp/jwks.jose"
     }
   },
   "jwks": {
@@ -806,7 +806,7 @@
 Note: An OpenID Connect RP MUST only use the keys published in a suitable element, such as <spanx style="verb">jwks</spanx>
 or <spanx style="verb">jwks_uri</spanx> or <spanx style="verb">signed_jwks_uri</spanx>, underneath the
 <spanx style="verb">metadata/openid_relying_party</spanx> element of the respective entity statement for the OpenID Connect protocol.
-The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
+The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that purpose.
 </t>
       </section>
 
@@ -1046,7 +1046,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> for that purpose.
 Note: An OpenID Connect OP MUST only use the keys published in a suitable element, such as <spanx style="verb">jwks</spanx>
 or <spanx style="verb">jwks_uri</spanx> or <spanx style="verb">signed_jwks_uri</spanx>, underneath the
 <spanx style="verb">metadata/openid_provider</spanx> element of the respective entity statement for the OpenID Connect protocol.
-The example above uses a <spanx style="verb">jwks_uri</spanx> element for that purpose.
+The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for that purpose.
 </t>
 
       </section>
@@ -1213,7 +1213,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
           <list style="symbols">
             <t>It consists of one or more policy entries.</t>
             <t>Each policy entry applies to one metadata parameter, such as
-              <spanx style="verb">id_token_signing_alg</spanx>.
+              <spanx style="verb">id_token_signed_response_alg</spanx>.
             </t>
             <t>Each policy entry consists of one or more operators, which can be
               value modifiers or value checks.
@@ -1231,7 +1231,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
               An example of a policy entry:
             </preamble>
             <artwork><![CDATA[
-"id_token_signing_alg": {
+"id_token_signed_response_alg": {
   "default": "ES256",
   "one_of" : ["ES256", "ES384", "ES512"]
 }
@@ -1246,7 +1246,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
             <artwork><![CDATA[
 "metadata_policy" : {
   "openid_relying_party": {
-    "id_token_signing_alg": {
+    "id_token_signed_response_alg": {
       "default": "ES256",
       "one_of" : ["ES256", "ES384", "ES512"]
     }
@@ -1683,15 +1683,12 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
           </preamble>
           <artwork><![CDATA[
 {
-  "id_token_signing_alg": {
-    "superset_of": [
+  "id_token_signed_response_alg": {
+    "one_of": [
       "ES256",
       "ES384"
     ],
-    "default": [
-      "ES256",
-      "ES384"
-    ]
+    "default": "ES256",
   },
   "response_types": {
     "subset_of": [
@@ -1742,10 +1739,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
   "logo_uri": "https://example.com/logo_small.jpg",
   "policy_uri": "https://example.com/policy.html",
   "tos_uri": "https://example.com/tos.html",
-  "id_token_signing_alg": [
-    "ES256",
-    "ES384"
-  ],
+  "id_token_signed_response_alg": "ES256",
   "response_types": [
     "code"
   ],
@@ -1990,20 +1984,20 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
   "trust_marks": [
     {"id": "https://www.spid.gov.it/certification/rp",
      "trust_mark":
-       "eyJhbGciOiJSUzI1NiIsImtpZCI6ImRGRTFjMFF4UzBFdFFrWmxNRXR3ZWxOQl"
-       "ExSjRaVmxGTlhWUU1IcEZYelZ1Y0V4c1FuZzRlbXMxYXcifQ.eyJpc3MiOiJod"
-       "HRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAuZXhhbXB"
-       "sZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJpZCI6Imh0dHBzOi8vd3d3L"
-       "nNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJtYXJrIjoiaHR0cHM6Ly9"
-       "3d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwic"
-       "mVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJ"
-       "lZ29sZS10ZWNuaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9.r2SZ"
-       "DNlYvPAuCq8HnGSkCF17gvexEz_UhqPHfX0js5bjz_n_3QAbr8IVE6_5Um9grY"
-       "fcc1YUwUGs_-s-_AN8uMsS6P3fL0zpjoEMIOMmkCMsn8F68zisNZ2SEJN_JEIp"
-       "_FmG5Yf0ONHq9bCtc32fvCSo0daEGTQdMMCEfNSoIZNTMxsB8-bA4hVn9dkNYz"
-       "GTvg7FHiHOP-_fEyFDlJr1AzgepIwRiApViRVVqX920GY624nHHbEXqv3xleX7"
-       "mSE6uXSGqRMlVz6XFXLmceJsYvcaC0haC-JfOn2GR7D3C07Lt4TlBUVMM0f2Dv"
-       "ZcC1CqWlxoXr3WxzdGD_CxGkYTIg"
+       "eyJhbGciOiJSUzI1NiIsImtpZCI6Ing0VnduN0RzRE1ib0dBOHRNV2pleVVjT0"
+       "RTTVBua1luSVdJN3R6eVVnRmsifQ.eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkL"
+       "mdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF"
+       "0IjoxNTc5NjIxMTYwLCJpZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2Nlc"
+       "nRpZmljYXRpb24vcnAiLCJsb2dvX3VyaSI6Imh0dHBzOi8vd3d3LmFnaWQuZ29"
+       "2Lml0L3RoZW1lcy9jdXN0b20vYWdpZC9sb2dvLnN2ZyIsInJlZiI6Imh0dHBzO"
+       "i8vZG9jcy5pdGFsaWEuaXQvaXRhbGlhL3NwaWQvc3BpZC1yZWdvbGUtdGVjbml"
+       "jaGUtb2lkYy9pdC9zdGFiaWxlL2luZGV4Lmh0bWwifQ.vkYH4CZou-BhFRlZC3"
+       "eORbPbXUf9kIcqss5N5cI6GK7JsUzvxwYk5TNm8clSpV0YZtZN4RQwEf85Q_fi"
+       "FLPCPYimR-FtElWO-4Uxg44WQA1N7RbSmMNRzLfObBunMpuXcA8Trwf2d7FZ7n"
+       "Zi6mXKR8B1_YDQbLiW9q1paT-RmlrwqYyHzG9yewpIj_EQEX6WOjpWj4-Jk6sT"
+       "ZdCiu8r4d0Y7bpKt4GiGQTkVGdLyrLyMeX7FFcTI_yztKXbi8mV1-b1l7iOaJb"
+       "FyGfpHeuFCyI3y1B00LTI5GCzuQU_hyVntTnB7Qw7csLnA6B-wwaxsQa2l9-Q8"
+       "eAGXhfAlzqSqRQ"
     }
   ],
   "metadata": {
@@ -2027,7 +2021,7 @@ The example above uses a <spanx style="verb">jwks_uri</spanx> element for that p
   "sub": "https://example.com/op",
   "iat": 1579621160,
   "id": "https://openid.net/certification/op",
-  "mark": "http://openid.net/wordpress-content/uploads/2016/
+  "logo_uri": "http://openid.net/wordpress-content/uploads/2016/
     05/oid-l-certification-mark-l-cmyk-150dpi-90mm.jpg",
   "ref": "https://openid.net/wordpress-content/uploads/2015/
     09/RolandHedberg-pyoidc-0.7.7-Basic-26-Sept-2015.zip"
@@ -2148,7 +2142,7 @@ Content-Type: application/entity-statement+jwt
   "metadata": {
     "openid_provider": {
       "issuer": "https://openid.sunet.se",
-      "jwks_uri": "https://openid.sunet.se/jwks_uri.json",
+      "signed_jwks_uri": "https://openid.sunet.se/jwks.jose",
       "authorization_endpoint":
         "https://openid.sunet.se/authorization",
       "client_registration_type": [
@@ -2876,8 +2870,7 @@ Content-Type: application/json
           <list style="numbers">
             <t>
               Add the new keys to the <spanx style="verb">jwks</spanx> representing
-              the trust
-              anchors signing keys.
+              the trust anchors signing keys.
             </t>
             <t>
               Keep signing the entity statement using
@@ -4076,7 +4069,7 @@ HTTP/1.1 302 Found
   "metadata": {
     "openid_provider": {
       "issuer": "https://op.umu.se/openid",
-      "jwks_uri": "https://op.umu.se/openid/jwks_uri.json",
+      "signed_jwks_uri": "https://op.umu.se/openid/jwks.jose",
       "authorization_endpoint":
         "https://op.umu.se/openid/authorization",
       "client_registration_type": [
@@ -4545,7 +4538,7 @@ Host: geant.org
     "ES256"
   ],
   "issuer": "https://op.umu.se/openid",
-  "jwks_uri": "https://op.umu.se/openid/jwks_uri.json",
+  "signed_jwks_uri": "https://op.umu.se/openid/jwks.jose",
   "logo_uri":
     "https://www.umu.se/img/umu-logo-left-neg-SE.svg",
   "organization_name": "University of Ume\u00e5",
@@ -4765,7 +4758,7 @@ Host: op.umu.se
     "RS256",
     "RS512"
   ],
-  "jwks_uri": "https://wiki.ligo.org/jwks.json",
+  "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
   "redirect_uris": [
     "https://wiki.ligo.org/callback"
   ],
@@ -4797,7 +4790,7 @@ Host: op.umu.se
     "RS256",
     "RS512"
   ],
-  "jwks_uri": "https://wiki.ligo.org/jwks.json",
+  "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
   "redirect_uris": [
     "https://wiki.ligo.org/callback"
   ],
@@ -4811,7 +4804,7 @@ Host: op.umu.se
             <t>
               Having that, the registration is done, and the OP MUST now use
               the keys found at the URL specified in
-              <spanx style="verb">jwks_uri</spanx>
+              <spanx style="verb">signed_jwks_uri</spanx>
               to verify the signature on the Request Object in the
               Authentication Request.
             </t>
@@ -4956,7 +4949,7 @@ Host: op.umu.se
     "RS256",
     "RS512"
   ],
-  "jwks_uri": "https://wiki.ligo.org/jwks.json",
+  "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
   "redirect_uris": [
     "https://wiki.ligo.org/callback"
   ],
@@ -5022,6 +5015,7 @@ Host: op.umu.se
         Jouke Roorda,
         Mischa Sall&eacute;,
         Giuseppe De Marco,
+        Takahiko Kawasaki,
         Marcos Sanz,
         Peter Schober,
         Michael Schwartz,
