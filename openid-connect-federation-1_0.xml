@@ -146,7 +146,7 @@
           The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
           "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
           document are to be interpreted as described in
-          <xref target="RFC2119">RFC 2119</xref>.
+          <xref target="RFC2119"/>.
         </t>
       </section>
       <section title="Terminology">
@@ -277,14 +277,14 @@
             </t>
             <t hangText="sub">
               <vspace/>
-              REQUIRED. The entity identifier of the subject
+              REQUIRED. The entity identifier of the subject.
             </t>
             <t hangText="iat">
               <vspace/>
               REQUIRED. The time the statement was issued.
               Its value is a JSON number representing the number of seconds from
               1970-01-01T0:0:0Z as measured in UTC until the date/time.
-              See <xref target="RFC3339">RFC 3339</xref> for
+              See <xref target="RFC3339"/> for
               details regarding date/times in general and UTC in particular.
             </t>
             <t hangText="exp">
@@ -310,7 +310,7 @@
               This claim is only OPTIONAL for the entity statement returned
               from an OP when the client is doing explicit registration.
               In all other cases it is REQUIRED.
-              Every JWK in the JWK Set MUST have a Key ID (kid).
+              Every JWK in the JWK Set MUST have a Key ID (<spanx style="verb">kid</spanx>).
 	      It is RECOMMENDED that the Key ID be the JWK Thumbprint <xref target="RFC7638"/>
 	      using the SHA-256 hash function of the key.
             </t>
@@ -863,7 +863,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
               If the map is successful, then the request is permitted to be processed.
               If the RP uses automatic registration as described in this specification
               the OP has no prior knowledge
-              of the RP. Therefor the OP must start by gathering
+              of the RP. Therefore the OP must start by gathering
               information about the RP using the process outlined in
               <xref target="federation_configuration"/>. Once it has the RP's
               metadata, the OP can then verify the request in the same way
@@ -955,7 +955,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
               <vspace/>
               OPTIONAL. A URI pointing to a signed JWT having the entity's
               JWK Set as payload. The JWT is signed with a key that was included
-              in the JWK that the entity published in its self-signed entity
+              in the JWK Set that the entity published in its self-signed entity
               statement.
             </t>
             <t hangText="jwks">
@@ -963,9 +963,12 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
               OPTIONAL. JSON Web Key Set document, passed by value, as
               defined in <xref target="RFC7517"/>. This parameter is intended
               to be used by participants that, for some reason, are
-              unable to use the signed_jwks_uri parameter.
-              One significant downside of jwks is that it does not enable
-              key rotation (which signed_jwks_uri and jwks_uri does).
+              unable to use the <spanx style="verb">signed_jwks_uri</spanx>
+              parameter.
+              One significant downside of <spanx style="verb">jwks</spanx>
+              is that it does not enable key rotation
+              (which <spanx style="verb">signed_jwks_uri</spanx> and
+              <spanx style="verb">jwks_uri</spanx> do).
             </t>
           </list>
         </t>
@@ -983,7 +986,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
    "metadata":{
       "openid_provider":{
          "issuer":"https://op.umu.se/openid",
-         "signed_jwks_uri":"https://op.umu.se/openid/signed_jwks.json",
+         "signed_jwks_uri":"https://op.umu.se/openid/signed_jwks.jose",
          "authorization_endpoint":"https://op.umu.se/openid/authorization",
          "client_registration_type":[
             "automatic",
@@ -999,7 +1002,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
             "RS256"
          ],
          "logo_uri":"https://www.umu.se/img/umu-logo-left-neg-SE.svg",
-         "op_policy_uri":"https://www.umu.se/en/website/legal-information/",
+         "op_policy_uri":"https://www.umu.se/en/legal-information/",
          "response_types_supported":[
             "code",
             "code id_token",
@@ -1307,7 +1310,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
                 <vspace/>
                 The values of the parameter MUST contain the ones in the
                 directive.
-                We define superset the mathematical way, that is, equality is
+                We define superset in a mathematical way, that is, equality is
                 included.
               </t>
               <t hangText="essential">
@@ -1319,8 +1322,9 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           <t>
             Note that when a parameter is defined to be a space-separated
             list of strings like for <spanx style="verb">scope</spanx> in
-            <xref target="RFC7591">RFC7591</xref> subset_of, superset_of
-            and defaults are still expressed as lists of strings.
+            <xref target="RFC7591">RFC7591</xref> <spanx style="verb">subset_of</spanx>,
+            <spanx style="verb">superset_of</spanx> and
+            <spanx style="verb">default</spanx> are still expressed as lists of strings.
           </t>
         </section>
         <section title="Restrictions on Policy Entries" anchor="policy_restr">
@@ -1512,12 +1516,12 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
 		operator.
               </t>
               <t>
-                If the parameter still has no value apply the
+                If the parameter still has no value, apply the
 		<spanx style="verb">default</spanx> if there is one.
               </t>
               <t>
                 Do the essential check. If <spanx style="verb">essential</spanx> is
-                missing as an operator
+                missing as an operator,
                 <spanx style="verb">essential</spanx>
                 is to be treated as if set to <spanx style="verb">false</spanx>.
                 If <spanx style="verb">essential</spanx> is defined to be
@@ -1527,7 +1531,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
                 fail.
               </t>
               <t>
-                Do the other checks. Verified that the value is
+                Do the other checks. Verify that the value is
 		<spanx style="verb">one_of</spanx> or that the
                 values are <spanx style="verb">subset_of</spanx>/<spanx
                       style="verb">superset_of</spanx>. If the parameter values
@@ -1540,7 +1544,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         <section title="Policy Combination Example">
           <figure>
             <preamble>
-              A federation's policy for OAUth2 clients:
+              A federation's policy for OAuth2 clients:
             </preamble>
             <artwork><![CDATA[
 {
@@ -1714,10 +1718,10 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
   },
   "logo_uri": {
     "one_of": [
-      "https://example.com/logo_small.jpg",
-      "https://example.com/logo_big.jpg"
+      "https://example.com/logo_small.svg",
+      "https://example.com/logo_big.svg"
     ],
-    "default": "https://example.com/logo_small.jpg"
+    "default": "https://example.com/logo_small.svg"
   },
   "policy_uri": {
     "value": "https://example.com/policy.html"
@@ -1740,7 +1744,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
     "rp_admins@cs.example.com",
     "helpdesk@example.com"
   ],
-  "logo_uri": "https://example.com/logo_small.jpg",
+  "logo_uri": "https://example.com/logo_small.svg",
   "policy_uri": "https://example.com/policy.html",
   "tos_uri": "https://example.com/tos.html",
   "id_token_signed_response_alg": "ES256",
@@ -1981,12 +1985,13 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             <preamble>A non-normative example of a trust mark claim inside an entity statement is:</preamble>
             <artwork><![CDATA[
 {
-  "iss": "https://rp.example.it/spid",
-  "sub": "https://rp.example.it/spid",
+  "iss": "https://rp.example.it/spid/",
+  "sub": "https://rp.example.it/spid/",
   "iat": 1516239022,
   "exp": 1516298022,
   "trust_marks": [
-    {"id": "https://www.spid.gov.it/certification/rp",
+    {
+     "id": "https://www.spid.gov.it/certification/rp/",
      "trust_mark":
        "eyJhbGciOiJSUzI1NiIsImtpZCI6Ing0VnduN0RzRE1ib0dBOHRNV2pleVVjT0"
        "RTTVBua1luSVdJN3R6eVVnRmsifQ.eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkL"
@@ -2006,14 +2011,16 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
   ],
   "metadata": {
     "openid_relying_party": {
-    "application_type": "web",
-    “client_registration_types”: [“automatic”],
-    "client_name": "https://rp.example.it/spid",
-  "contacts": [
-    "ops@rp.example.it"
-  ],
+      "application_type": "web",
+      "client_registration_types": ["automatic"],
+      "client_name": "https://rp.example.it/spid/",
+      "contacts": [
+        "ops@rp.example.it"
+      ],
 
-  ... follows other entity statement claims ...
+       ... follows other claims ...
+
+   ... follows other claims ...
 
 ]]></artwork>
           </figure>
@@ -2026,7 +2033,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
   "iat": 1579621160,
   "id": "https://openid.net/certification/op",
   "logo_uri": "http://openid.net/wordpress-content/uploads/2016/
-    05/oid-l-certification-mark-l-cmyk-150dpi-90mm.jpg",
+    05/oid-l-certification-mark-l-cmyk-150dpi-90mm.svg",
   "ref": "https://openid.net/wordpress-content/uploads/2015/
     09/RolandHedberg-pyoidc-0.7.7-Basic-26-Sept-2015.zip"
 }
@@ -2099,7 +2106,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           A federation Entity Configuration Document MUST be queried using an
           HTTP GET request at the previously specified path.
           The requesting party would make the following request to the Entity
-          <spanx style="verb">https://example.com</spanx>
+          <spanx style="verb">https://openid.sunet.se</spanx>
           to obtain its
           Configuration information:
         </t>
@@ -2241,7 +2248,7 @@ Content-Type: application/entity-statement+jwt
                 from which you want an entity statement issued. Because of the
                 normalization of the URL, multiple issuers MAY resolve to a
                 shared fetch endpoint. This parameter makes it explicit exactly
-                which issuer we want entity statements from. Without this
+                which issuer you want entity statements from. Without this
                 parameter, the issuer matches to the entity at
                 which the request was made.
               </t>
@@ -2410,7 +2417,7 @@ Host: openid.sunet.se
         <section title="Resolve Response">
           <t>
             The response is a signed JWT containing resolved metadata and
-            verified trust marks. The response MAY also contains
+            verified trust marks. The response MAY also contain 
             the sequence of the entity statements that compose the trust chain.
             The keys used by the resolver MUST be the
             same keys used to construct a self-signed
@@ -2508,12 +2515,12 @@ Host: openid.sunet.se
         <section title="Entity Listings Request">
           <t>
             The request MUST be an HTTP request using the GET method and
-            the https scheme to a resolve list endpoint.
+            the https scheme to a list endpoint.
           </t>
           <figure>
             <preamble>
               The following is a non-normative example of an API
-              request for trust negotiation:
+              request for a list of entities:
             </preamble>
             <artwork><![CDATA[
 GET /list HTTP/1.1
@@ -2554,14 +2561,14 @@ Content-Type: application/json
         <section title="Status request">
           <t>
             The request MUST be an HTTP request using the GET method and
-            the https scheme to a resolved status endpoint with the
-            following query string parameters:
+            the https scheme to a status endpoint with the
+            following query parameters:
           </t>
           <t>
             <list style="hanging">
               <t hangText="sub">
                 <vspace/>
-                OPTIONAL. The entity_id for the entity to which the trust mark
+                OPTIONAL. The ID of the entity to which the trust mark
                 was issued.
               </t>
               <t hangText="id">
@@ -2574,12 +2581,12 @@ Content-Type: application/json
                 <spanx style="verb">iat</spanx> is not specified and the
                 trust issuer have issued several trust marks with the
                 <spanx style="verb">id</spanx> specified in the request to the
-                entity identified by <spanx style="verb">sub</spanx>. Then the
-                last last one is assumed.
+                entity identified by <spanx style="verb">sub</spanx>; the
+                last one is assumed.
               </t>
               <t hangText="trust_mark">
                 <vspace/>
-                OPTIONAL. The whole trust mark
+                OPTIONAL. The whole trust mark.
               </t>
             </list>
           </t>
@@ -2695,7 +2702,7 @@ Content-Type: application/json
              title="Resolving Trust Chain and Metadata">
       <t>
         An entity (e.g., the Consumer) that wants to establish trust with a
-        remote peer, MUST have the remote peer's entity identifier and a list of
+        remote peer MUST have the remote peer's entity identifier and a list of
         entity identifiers of trust anchors together with the public version
         of their signing keys. The Consumer will first have to fetch
         sufficient entity statements to establish at least one chain of trust
@@ -2800,8 +2807,8 @@ Content-Type: application/json
         </t>
         <t>
           Verifying the signature is a much more expensive
-          operation then verifying the correctness of the statement and the
-          timestamps. An implementer MAY therefore chose to not verify the
+          operation than verifying the correctness of the statement and the
+          timestamps. An implementer MAY therefore choose to not verify the
           signature until all the other checks have been done.
         </t>
         <t>Consumers MAY cache Entity Statements or signature verification
@@ -2830,8 +2837,10 @@ Content-Type: application/json
                title="Calculating the Expiration Time of a Trust Chain">
         <t>
           Each entity statement in a trust chain is signed and MUST have an
-          expiration time (exp) set. The expiration time of the whole trust
-          chain is set to the minimum value of exp within the chain.
+          expiration time (<spanx style="verb">exp</spanx>) set.
+          The expiration time of the whole trust
+          chain is set to the minimum value of
+          (<spanx style="verb">exp</spanx>) within the chain.
         </t>
       </section>
     </section>
@@ -2839,7 +2848,7 @@ Content-Type: application/json
     <section title="Updating Metadata, Key Rollover, and Revocation">
       <t>
         This specification allows for a smooth process of updating metadata
-        and public keys.
+        and public key.
       </t>
       <t>
         As described above in <xref target="trust_lifetime"/>,
@@ -3319,7 +3328,7 @@ HTTP/1.1 302 Found
                 </t>
                 <t>
                   The RP will now construct a self-signed entity statement
-                  where the metadata statement chosen is influenced by the OPs
+                  where the metadata statement chosen is influenced by the OP's
                   metadata and the <spanx style="verb">authority_hints</spanx> included
                   are picked by the process described above.
                   Note that the <spanx style="verb">aud</spanx> claim in the
@@ -3529,7 +3538,7 @@ HTTP/1.1 302 Found
                 <spanx style="verb">client_registration_types_supported</spanx>
               </t>
               <t>
-                Metadata Description: Federation Types Supported
+                Metadata Description: Client Registration Types Supported
               </t>
               <t>
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
@@ -3576,7 +3585,7 @@ HTTP/1.1 302 Found
 		Client Metadata Name: <spanx style="verb">client_registration_type</spanx>
 	      </t>
 	      <t>
-		Client Metadata Description: Federation Type
+		Client Metadata Description: Client Registration Type
 	      </t>
 	      <t>
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
@@ -3974,7 +3983,7 @@ HTTP/1.1 302 Found
           Now before the federation operator starts adding entities, there have to
           be policies in place on who can be part of the federation and the
           layout of the federation. Is it supposed to be a one-layer federation
-          like Internet2, a two-layer one like the SWAMID federation,
+          like InCommon, a two-layer one like the SWAMID federation,
           or a multi-layer federation?
           The federation may also want to think about implementing other
           policies using the federation policy framework,
@@ -4589,7 +4598,7 @@ Host: geant.org
           </t>
           <figure>
             <artwork><![CDATA[
-GET /authorize?
+GET /openid/authorization?
   request=eyJhbGciOiJSUzI1NiIsImtpZCI6ImRVTjJhMDF3Umtoa1NXc
     GxRVGh2Y1ZCSU5VSXdUVWRPVUZVMlRtVnJTbWhFUVhnelpYbHBUemRR
     TkEifQ.eyJyZXNwb25zZV90eXBlIjogImNvZGUiLCAic2NvcGUiOiAi
@@ -4743,7 +4752,7 @@ Host: op.umu.se
   ],
   "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
   "redirect_uris": [
-    "https://wiki.ligo.org/callback"
+    "https://wiki.ligo.org/openid/callback"
   ],
   "response_types": [
     "code"
@@ -4775,7 +4784,7 @@ Host: op.umu.se
   ],
   "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
   "redirect_uris": [
-    "https://wiki.ligo.org/callback"
+    "https://wiki.ligo.org/openid/callback"
   ],
   "response_types": [
     "code"
@@ -4934,7 +4943,7 @@ Host: op.umu.se
   ],
   "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
   "redirect_uris": [
-    "https://wiki.ligo.org/callback"
+    "https://wiki.ligo.org/openid/callback"
   ],
   "response_types": [
     "code"
@@ -4994,7 +5003,7 @@ Host: op.umu.se
         individuals and organizations to this specification:
         Vladimir Dzhuvinov,
         Heather Flanagan,
-	Samuel Gulliksson,
+	    Samuel Gulliksson,
         Takahiko Kawasaki,
         Torsten Lodderstedt,
         Jouke Roorda,
@@ -5038,9 +5047,9 @@ Host: op.umu.se
 	  <t>
 	    Updated example for Resolve endpoint.
 	  </t>
-          <t>
-            Recommended that Key IDs be the JWK Thumbprint of the key.
-          </t>
+      <t>
+        Recommended that Key IDs be the JWK Thumbprint of the key.
+      </t>
 	  <t>
 	    Fixed #1502 - Corrected usage of <spanx style="verb">id_token_signed_response_alg</spanx>.
 	  </t>
@@ -5049,6 +5058,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Added Giuseppe De Marco as an editor and removed Samuel Gulliksson as an editor.
+	  </t>
+	  <t>
+	    fixed #1508 - Editorial review.
 	  </t>
         </list>
       </t>
