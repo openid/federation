@@ -77,7 +77,7 @@
       </address>
     </author>
 
-    <date day="27" month="May" year="2022"/>
+    <date day="30" month="May" year="2022"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -184,6 +184,10 @@
               the entities' signing keys and further data used to control the
               trust chain resolution process, such as authority hints.
             </t>
+	    <t hangText="Federation Operator">
+	      An organizaiton that is authoritative for a federation.
+	      A federation operator administers the trust anchor(s) for entities in its federation.
+	    </t>
             <t hangText="Intermediate Entity">
               <vspace/>
               An entity that issues
@@ -2855,7 +2859,7 @@ Content-Type: application/json
     <section title="Updating Metadata, Key Rollover, and Revocation">
       <t>
         This specification allows for a smooth process of updating metadata
-        and public key.
+        and public keys.
       </t>
       <t>
         As described above in <xref target="trust_lifetime"/>,
@@ -2907,10 +2911,23 @@ Content-Type: application/json
             </t>
           </list>
         </t>
-        <t>
-          It MUST be taken into consideration that clients MAY have
-          manually configured public keys as part of their configuration.
-        </t>
+      </section>
+
+      <section title="Redundant Retrieval of Trust Anchor Keys" anchor="TrustAnchorKeys">
+	<t>
+	  It is RECOMMENDED that Federation Operators provide a means of retrieving the public keys
+	  for Trust Anchors that it administers that is independent of the entity statements
+	  for those Trust Anchors.
+	  This is intended to provide redundancy in the eventuality of the compromise of
+	  the Web PKI infrastructure underlying retrieval of public keys from entity statements.
+	</t>
+	<t>
+	  The keys retreived via the independent mechanism specified by the Federation Operator
+	  SHOULD be be compared to those retreived via the trust anchor's entity statement.
+	  If they do not match, both SHOULD be retrieved again.
+	  If they still do not match, it is indicative of a security or configuration problem.
+	  The appropriate remidation steps in that eventuality SHOULD be specified by the Federation Operator.
+	</t>
       </section>
 
       <section title="Revocation">
@@ -5034,16 +5051,7 @@ Host: op.umu.se
       <t>
         <list style="symbols">
           <t>
-            How are federation operator keys retrieved?
-          </t>
-          <t>
             Discuss localization of human-readable strings.
-          </t>
-          <t>
-            Define the relationship between trust anchors and Federation
-            Operators,
-            as people will expect to find the Federation Operator term in the
-            specification.
           </t>
         </list>
       </t>
@@ -5101,6 +5109,9 @@ Host: op.umu.se
           </t>
 	  <t>
 	    Rewrote <spanx style="verb">trust_marks</spanx> definition.
+	  </t>
+	  <t>
+	    Defined the term Federation Operator and described redundant retrieval of Trust Anchor keys.
 	  </t>
         </list>
       </t>
