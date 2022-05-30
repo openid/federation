@@ -77,7 +77,7 @@
       </address>
     </author>
 
-    <date day="27" month="May" year="2022"/>
+    <date day="28" month="May" year="2022"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -684,7 +684,7 @@
             <t hangText="signed_jwks_uri">
               <vspace/>
               OPTIONAL. A URI pointing to a signed JWT having the entity's
-              JWK Set as payload. The JWT is signed with a key that was included
+              JWK Set as its payload. The JWT is signed with a key that was included
               in the JWK that the entity published in its self-signed entity
               statement.
               If an RP can use <spanx style="verb">signed_jwks_uri</spanx>,
@@ -957,7 +957,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
             <t hangText="signed_jwks_uri">
               <vspace/>
               OPTIONAL. A URI pointing to a signed JWT having the entity's
-              JWK Set as payload. The JWT is signed with a key that was included
+              JWK Set as its payload. The JWT is signed with a key that was included
               in the JWK Set that the entity published in its self-signed entity
               statement.
             </t>
@@ -3259,7 +3259,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
             </section>
           </section>
         </section>
-        <section title="Authentication Error Response">
+        <section title="Authentication Error Response" anchor="AuthenticationError">
           <t>
             If the OP fails to establish trust with the RP, it SHOULD use an
             appropriate error code, and an
@@ -3555,7 +3555,24 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): Section TBD of [[ this specification ]]
+                Specification Document(s): Section <xref target="OP_metadata"/> of [[ this specification ]]
+              </t>
+	    </list>
+	  </t>
+	  <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">organization_name</spanx>
+              </t>
+              <t>
+                Metadata Description:
+		Human-readable name representing the organization owning the OP
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="OP_metadata"/> of [[ this specification ]]
               </t>
 	    </list>
 	  </t>
@@ -3572,7 +3589,77 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="Cliregreq"/> of [[ this specification ]]
+                Specification Document(s): <xref target="OP_metadata"/> of [[ this specification ]]
+              </t>
+	    </list>
+	  </t>
+	  <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">request_authentication_methods_supported</spanx>
+              </t>
+              <t>
+                Metadata Description:
+		Authentication request authentication methods supported
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="OP_metadata"/> of [[ this specification ]]
+              </t>
+	    </list>
+	  </t>
+	  <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">request_authentication_signing_alg_values_supported</spanx>
+              </t>
+              <t>
+                Metadata Description:
+		JSON array containing the JWS signing algorithms
+		supported for the signature on
+		the JWT used to authenticate the request
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="OP_metadata"/> of [[ this specification ]]
+              </t>
+	    </list>
+	  </t>
+	  <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">signed_jwks_uri</spanx>
+              </t>
+              <t>
+                Metadata Description:
+		URI pointing to a signed JWT having the entity's JWK Set as its payload
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="OP_metadata"/> of [[ this specification ]]
+              </t>
+	    </list>
+	  </t>
+	  <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">jwks</spanx>
+              </t>
+              <t>
+                Metadata Description:
+		JSON Web Key Set document, passed by value
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="OP_metadata"/> of [[ this specification ]]
               </t>
 	    </list>
 	  </t>
@@ -3590,22 +3677,95 @@ HTTP/1.1 302 Found
 	</t>
 
 	<section anchor="DynRegContents" title="Registry Contents">
-	  <t> <?rfc subcompact="yes"?>
+	  <t>
+	    <?rfc subcompact="yes"?>
 	    <list style="symbols">
 	      <t>
-		Client Metadata Name: <spanx style="verb">client_registration_type</spanx>
+		Client Metadata Name: <spanx style="verb">client_registration_types</spanx>
 	      </t>
 	      <t>
-		Client Metadata Description: Client Registration Type
+		Client Metadata Description:
+		Array of strings specifying the client registration types the RP wants to use
 	      </t>
 	      <t>
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): Section TBD of [[ this specification ]]
+		Specification Document(s): Section <xref target="RP_metadata"/> of [[ this specification ]]
 	      </t>
 	    </list>
 	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Client Metadata Name: <spanx style="verb">organization_name</spanx>
+	      </t>
+	      <t>
+		Client Metadata Description:
+		Human-readable name representing the organization owning the RP
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section <xref target="RP_metadata"/> of [[ this specification ]]
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Client Metadata Name: <spanx style="verb">signed_jwks_uri</spanx>
+	      </t>
+	      <t>
+		Client Metadata Description:
+		URI pointing to a signed JWT having the entity's JWK Set as its payload
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section <xref target="RP_metadata"/> of [[ this specification ]]
+	      </t>
+	    </list>
+	  </t>
+	</section>
+	<?rfc subcompact="no"?>
+      </section>
+
+      <section anchor="ErrorReg" title="OAuth Extensions Error Registration">
+
+        <t>
+          This section registers the following values in the
+          IANA "OAuth Extensions Error Registry" registry
+          <xref target="IANA.OAuth.Parameters"/>
+          established by <xref target="RFC6749"/>.
+        </t>
+
+	<section title="Registry Contents" anchor="ErrorContents">
+	  <t>
+            <?rfc subcompact="yes"?>
+            <list style="symbols">
+              <t>Name: missing_trust_anchor</t>
+              <t>Usage Location: Authorization Request</t>
+              <t>Protocol Extension: OpenID Connect Federation</t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+              <t>Reference: <xref target="AuthenticationError"/> of [[ this specification ]]</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: validation_failed</t>
+              <t>Usage Location: Authorization Request</t>
+              <t>Protocol Extension: OpenID Connect Federation</t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+              <t>Reference: <xref target="AuthenticationError"/> of [[ this specification ]]</t>
+            </list>
+          </t>
 	</section>
 	<?rfc subcompact="no"?>
       </section>
@@ -3876,6 +4036,7 @@ HTTP/1.1 302 Found
 
     <references title="Informative References">
       <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2046.xml"?>
+      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6749.xml"?>
       <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"?>
       <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8446.xml"?>
 
@@ -5052,9 +5213,9 @@ Host: op.umu.se
 	  <t>
 	    Updated example for Resolve endpoint.
 	  </t>
-      <t>
-        Recommended that Key IDs be the JWK Thumbprint of the key.
-      </t>
+	  <t>
+	    Recommended that Key IDs be the JWK Thumbprint of the key.
+	  </t>
 	  <t>
 	    Fixed #1502 - Corrected usage of <spanx style="verb">id_token_signed_response_alg</spanx>.
 	  </t>
@@ -5070,7 +5231,24 @@ Host: op.umu.se
 	  <t>
 	    Fixed #1505 - Defined that <spanx style="verb">signed_jwks_uri</spanx> is preferred over
 	    <spanx style="verb">jwks_uri</spanx> and <spanx style="verb">jwks</spanx>.
-
+	  </t>
+	  <t>
+	    Fixed #1512 - Registered the error codes <spanx style="verb">missing_trust_anchor</spanx>
+	    and <spanx style="verb">validation_failed</spanx>.
+	  </t>
+	  <t>
+	    Also registered the OP Metadata parameters
+	    <spanx style="verb">organization_name</spanx>,
+	    <spanx style="verb">request_authentication_methods_supported</spanx>,
+	    <spanx style="verb">request_authentication_signing_alg_values_supported</spanx>,
+	    <spanx style="verb">signed_jwks_uri</spanx>,
+	    and
+	    <spanx style="verb">jwks</spanx>
+	    and the RP Metadata parameters
+	    <spanx style="verb">client_registration_types</spanx> (which was previously misregistered as <spanx style="verb">client_registration_type</spanx>),
+	    <spanx style="verb">organization_name</spanx>,
+	    and
+	    <spanx style="verb">signed_jwks_uri</spanx>.
 	  </t>
         </list>
       </t>
