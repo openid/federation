@@ -273,7 +273,7 @@
           <list style="hanging">
             <t hangText="iss">
               <vspace/>
-              REQUIRED. The Entity identifier of the issuer of
+              REQUIRED. The Entity Identifier of the issuer of
               the statement. If the <spanx style="verb">iss</spanx> and
               the <spanx style="verb">sub</spanx> are identical, the
               issuer is making a Statement about itself and this Entity Statement
@@ -281,7 +281,7 @@
             </t>
             <t hangText="sub">
               <vspace/>
-              REQUIRED. The Entity identifier of the subject.
+              REQUIRED. The Entity Identifier of the subject.
             </t>
             <t hangText="iat">
               <vspace/>
@@ -322,12 +322,12 @@
               <vspace/>
               OPTIONAL.
               The Entity Statement MAY be specifically created for an Entity.
-              The Entity identifier for that Entity MUST appear in this claim.
+              The Entity Identifier for that Entity MUST appear in this claim.
             </t>
             <t hangText="authority_hints">
               <vspace/>
               OPTIONAL. Array of strings representing
-              the Entity identifiers of intermediate entities or Trust Anchors
+              the Entity Identifiers of intermediate entities or Trust Anchors
               that MAY issue an Entity Statement about the issuer Entity.
               For all entities except for Trust Anchors that do not have any
               superiors this is REQUIRED and MUST NOT be the empty list [].
@@ -462,7 +462,7 @@
               OPTIONAL.
               An OP MUST use this claim to tell the RP which Trust Anchor it
               chose to use when responding to an explicit client registration.
-              The value of <spanx style="verb">trust_anchor_id</spanx> is the Entity identifier of a trust
+              The value of <spanx style="verb">trust_anchor_id</spanx> is the Entity Identifier of a trust
               anchor.
             </t>
           </list>
@@ -893,7 +893,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
                   Note that if <spanx style="verb">private_key_jwt</spanx> is
                   used, the audience of the signed JWT MUST be either the URL of
                   the Authorization Server's Authorization Endpoint or the
-                  Authorization Server's Entity identifier.
+                  Authorization Server's Entity Identifier.
                 </t>
                 <t hangText="tls_client_auth">
                   <vspace/>
@@ -1787,7 +1787,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             </t>
             <t hangText="naming_constraints">
               <vspace/>
-              OPTIONAL. JSON object. Restriction on the Entity identifiers of
+              OPTIONAL. JSON object. Restriction on the Entity Identifiers of
               the
               entities below this Entity. The behavior of this claim mimics
               what is defined in Section 4.2.1.10 in <xref target="RFC5280"/>.
@@ -1885,7 +1885,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           <t>
             The <spanx style="verb">naming_constraints</spanx> member
         specifies a namespace within which all subject
-            Entity identifiers in subordinate Entity Statements in a Trust Chain
+            Entity Identifiers in subordinate Entity Statements in a Trust Chain
             MUST be located.
           </t>
           <t>
@@ -2081,11 +2081,11 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         <xref target="RFC8615">Well-Known URIs</xref>
         specification, with the suffix
         <spanx style="verb">openid-federation</spanx>. The scheme, host, and port
-        are taken directly from the Entity identifier combined with the following
+        are taken directly from the Entity Identifier combined with the following
         path: <spanx style="verb">/.well-known/openid-federation</spanx>.
       </t>
       <t>
-        If the Entity identifier contains a path, it is concatenated after
+        If the Entity Identifier contains a path, it is concatenated after
         <spanx style="verb">/.well-known/openid-federation</spanx>
         in the same
         manner
@@ -2260,7 +2260,7 @@ Content-Type: application/entity-statement+jwt
             <list style="hanging">
               <t hangText="iss">
                 <vspace/>
-                OPTIONAL. The Entity identifier of the issuer
+                OPTIONAL. The Entity Identifier of the issuer
                 from which you want an Entity Statement issued. Because of the
                 normalization of the URL, multiple issuers MAY resolve to a
                 shared fetch endpoint. This parameter makes it explicit exactly
@@ -2270,7 +2270,7 @@ Content-Type: application/entity-statement+jwt
               </t>
               <t hangText="sub">
                 <vspace/>
-                OPTIONAL. The Entity identifier of the subject
+                OPTIONAL. The Entity Identifier of the subject
                 for which you would like an Entity Statement issued. If this
                 parameter is left out, it is considered to be the same as the
                 issuer and would indicate a request for a self-issued
@@ -2278,7 +2278,7 @@ Content-Type: application/entity-statement+jwt
               </t>
               <t hangText="aud">
                 <vspace/>
-                OPTIONAL. The Entity identifier of the
+                OPTIONAL. The Entity Identifier of the
                 requester. If the <spanx style="verb">aud</spanx>
                     parameter is present in the request,
                 the <spanx style="verb">aud</spanx> claim SHOULD be present in
@@ -2389,7 +2389,7 @@ Content-Type: application/entity-statement+jwt
             <list style="hanging">
               <t hangText="sub">
                 <vspace/>
-                REQUIRED. The Entity identifier of the
+                REQUIRED. The Entity Identifier of the
                 Entity whose resolved data is requested.
               </t>
               <t hangText="anchor">
@@ -2408,7 +2408,7 @@ Content-Type: application/entity-statement+jwt
               </t>
               <t hangText="iss">
                 <vspace/>
-                OPTIONAL. The Entity identifier of the
+                OPTIONAL. The Entity Identifier of the
                 Entity who is requesting the information. If this parameter
                 is present in the request, then it MUST be present in the
                 response in the
@@ -2717,8 +2717,8 @@ Content-Type: application/json
              title="Resolving Trust Chain and Metadata">
       <t>
         An Entity (e.g., the Consumer) that wants to establish trust with a
-        remote peer MUST have the remote peer's Entity identifier and a list of
-        Entity identifiers of Trust Anchors together with the public version
+        remote peer MUST have the remote peer's Entity Identifier and a list of
+        Entity Identifiers of Trust Anchors together with the public version
         of their signing keys. The Consumer will first have to fetch
         sufficient Entity Statements to establish at least one chain of trust
         from the remote peer to one or more of the configured Trust Anchors.
@@ -2734,7 +2734,7 @@ Content-Type: application/json
           handed the remote peer's Entity Configuration, or it may
           have to fetch it by itself. If it needs to fetch it, it will use the
           process described in <xref target="federation_configuration"/>
-          based on the Entity identifier of the remote peer.
+          based on the Entity Identifier of the remote peer.
         </t>
         <t>
           The next step is to iterate through the list of
@@ -2981,7 +2981,7 @@ Content-Type: application/json
           <list style="symbols">
             <t>
               The Client ID of the RP
-              MUST be set to be identical to the RP Entity identifier.
+              MUST be set to be identical to the RP Entity Identifier.
             </t>
             <t>
               Without a registration process, the RP does not have a
@@ -3264,7 +3264,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                     If mTLS is used and the certificate used was not
                     self-signed, then the Subject Alternative Name of the
                     certificate
-                    MUST match the Entity identifier of the RP.
+                    MUST match the Entity Identifier of the RP.
                   </t>
                   <t hangText="self_signed_tls_client_auth">
             <vspace/>
@@ -3401,7 +3401,7 @@ HTTP/1.1 302 Found
                   </t>
                   <t>
                     At this point, if there already exists a client
-                    registration under the same Entity identifier then that
+                    registration under the same Entity Identifier then that
                     registration MUST be regarded as invalid.
                     Note
                     that key material from the previous registration SHOULD be
@@ -3414,7 +3414,7 @@ HTTP/1.1 302 Found
                     metadata that the OP finds acceptable.
                     Note
                     that the Client ID the OP chooses does not have to be
-                    the same as the Entity identifier of the RP.
+                    the same as the Entity Identifier of the RP.
                     To the Entity Statement it will add a
                     <spanx style="verb">trust_anchor_id</spanx>
                     claim, containing the Trust Anchor chosen above.
@@ -5525,7 +5525,7 @@ Host: op.umu.se
             <spanx style="verb">openid_provider</spanx>.
           </t>
           <t>
-            Entity identifier paths are now included when using the Federation
+            Entity Identifier paths are now included when using the Federation
             API,
             enabling use in multi-tenant deployments sharing a common domain
             name.
