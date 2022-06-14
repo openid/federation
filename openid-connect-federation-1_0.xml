@@ -113,7 +113,7 @@
       <t>
         This specification describes how two entities that would like to
         interact can dynamically fetch and resolve trust and metadata for a
-        given protocol through the use of third-party trust anchor. A trust
+        given protocol through the use of third-party Trust Anchor. A trust
         anchor is an Entity whose main purpose is to issue statements
         about entities, such as OpenID Connect Relying Parties, OpenID
         Providers, and participating organizations.
@@ -186,13 +186,13 @@
             </t>
         <t hangText="Federation Operator">
           An organization that is authoritative for a federation.
-          A federation operator administers the trust anchor(s) for entities in its federation.
+          A federation operator administers the Trust Anchor(s) for entities in its federation.
         </t>
             <t hangText="Intermediate Entity">
               <vspace/>
               An Entity that issues
               an Entity Statement that appears somewhere in between those
-              issued by the trust anchor and the leaf Entity in a Trust Chain.
+              issued by the Trust Anchor and the leaf Entity in a Trust Chain.
             </t>
             <t hangText="Leaf Entity">
               <vspace/>
@@ -206,7 +206,7 @@
             <t hangText="Trust Chain">
               <vspace/>
               A sequence of Entity Statements that represents a chain
-              starting at a leaf Entity and ending in a trust anchor.
+              starting at a leaf Entity and ending in a Trust Anchor.
             </t>
           </list>
         </t>
@@ -217,13 +217,13 @@
         The basic component is the Entity Statement, which is a cryptographically
         signed <xref target="RFC7519">JSON Web Token (JWT)</xref>.
         A set of Entity Statements can form a path from a leaf Entity to
-        a trust anchor. Entity Configurations as self-signed Entity Statements
+        a Trust Anchor. Entity Configurations as self-signed Entity Statements
         issued by federation entities about themselves control the Trust Chain
         resolution process.</t>
       <t>Starting with the Entity Configuration of the leaf Entity, you can find
         the next level of Entity Configuration by following the authority hints.
-        And then repeat this until you hit a trust anchor. Using the federation APIs
-        exposed by the intermediate entities and the trust anchor, you can then
+        And then repeat this until you hit a Trust Anchor. Using the federation APIs
+        exposed by the intermediate entities and the Trust Anchor, you can then
         fetch the Entity Statements for the intermediate entities and the leaf Entity.
       </t>
       <t>
@@ -327,12 +327,12 @@
             <t hangText="authority_hints">
               <vspace/>
               OPTIONAL. Array of strings representing
-              the Entity identifiers of intermediate entities or trust anchors
+              the Entity identifiers of intermediate entities or Trust Anchors
               that MAY issue an Entity Statement about the issuer Entity.
-              For all entities except for trust anchors that do not have any
+              For all entities except for Trust Anchors that do not have any
               superiors this is REQUIRED and MUST NOT be the empty list [].
               This claim MUST be absent from an
-              Entity Statement issued by a trust anchor with no superiors.
+              Entity Statement issued by a Trust Anchor with no superiors.
             </t>
             <t hangText="metadata">
               <vspace/>
@@ -448,10 +448,10 @@
             <t hangText="trust_marks_issuers">
               <vspace/>
               OPTIONAL.
-              A trust anchor MAY use this claim to tell which trust mark identifiers
+              A Trust Anchor MAY use this claim to tell which trust mark identifiers
               and their issuers are trusted by the federation.
               This claim MUST be ignored if present in an Entity Statement of other entities
-              than trust anchor.
+              than Trust Anchor.
               It is a JSON array with keys representing trust mark identifiers and values
               being an array of trusted entities representing the accreditation authority.
               A special value of <spanx style="verb">*</spanx> allows for self-signed trust marks.
@@ -460,7 +460,7 @@
             <t hangText="trust_anchor_id">
               <vspace/>
               OPTIONAL.
-              An OP MUST use this claim to tell the RP which trust anchor it
+              An OP MUST use this claim to tell the RP which Trust Anchor it
               chose to use when responding to an explicit client registration.
               The value of <spanx style="verb">trust_anchor_id</spanx> is the Entity identifier of a trust
               anchor.
@@ -567,7 +567,7 @@
             </t>
             <t hangText="Intermediate">
               <vspace/>
-              Neither a leaf nor a trust anchor.
+              Neither a leaf nor a Trust Anchor.
             </t>
           </list>
         </t>
@@ -575,7 +575,7 @@
           A Trust Chain begins with a leaf Entity's self-signed Entity
           Statement, has zero or more Entity Statements
           issued by intermediates about subordinates, and ends with an
-          Entity Statement issued by the trust anchor about the top-most
+          Entity Statement issued by the Trust Anchor about the top-most
           intermediate (if there are intermediates) or the leaf Entity
           (if there are no intermediates).
         </t>
@@ -599,7 +599,7 @@
           A Trust Chain MUST always be possible to order such that:
           If we name the Entity Statements ES[0] (the leaf Entity's
           self-signed Entity Statement) to ES[i] (an Entity Statement issued
-          by the trust anchor), i>0 then:
+          by the Trust Anchor), i>0 then:
           <list style="symbols">
             <t>
               The <spanx style="verb">iss</spanx> Entity in one Entity Statement
@@ -623,7 +623,7 @@
         </t>
         <t>
           The signing key that MUST be used to verify ES[i] is distributed
-          from the trust anchors to any Entity that needs to verify a
+          from the Trust Anchors to any Entity that needs to verify a
           Trust Chain in some secure out-of-band way not described in this
           document.
         </t>
@@ -1121,7 +1121,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               OPTIONAL.
               The fetch endpoint described in
               <xref target="fetch_endpoint"/>. Intermediate entities and
-              trust anchors MUST publish a
+              Trust Anchors MUST publish a
                 <spanx style="verb">federation_fetch_endpoint</spanx>.
               Leaf entities MUST NOT.
             </t>
@@ -1130,7 +1130,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               OPTIONAL.
               The list endpoint described in
               <xref target="entity_listing"/>. Intermediate entities and
-              trust anchors MUST publish a
+              Trust Anchors MUST publish a
                 <spanx style="verb">federation_list_endpoint</spanx>.
               Leaf entities MUST NOT.
             </t>
@@ -1975,7 +1975,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         </section>
         <section title="Validating a Trust Mark" anchor="trust_valid">
           <t>An Entity SHOULD NOT try to validate a trust mark until
-            it knows which trust anchors it wants to use.
+            it knows which Trust Anchors it wants to use.
           </t>
           <t>Validating a trust mark issuer follows the procedure set out in
             <xref target="resolving_trust"/>. Validating the trust mark
@@ -1984,9 +1984,9 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           <t>
             Note that the Entity representing the accreditation authority
             SHOULD be well known and trusted for a given trust mark identifier.
-            A trust anchor MAY publish a list of accreditation authorities
+            A Trust Anchor MAY publish a list of accreditation authorities
             of trust marks that SHOULD be trusted by other federation entities.
-            A trust anchor uses the <spanx style="verb">trust_marks_issuers</spanx> claim
+            A Trust Anchor uses the <spanx style="verb">trust_marks_issuers</spanx> claim
             in its Entity Statement to publish this information.
           </t>
           <t>
@@ -2139,7 +2139,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
       <section title="Federation Entity Configuration Response">
         <t>The response is a self-signed Entity Statement, as described in
           <xref target="entity-statement"/>.
-          If the Entity is an intermediate Entity or a trust anchor, the
+          If the Entity is an intermediate Entity or a Trust Anchor, the
           response MUST contain metadata for a federation Entity.
         </t>
         <t>
@@ -2372,7 +2372,7 @@ Content-Type: application/entity-statement+jwt
           the resolver. The resolver is supposed to fetch the subject's
           self-signed Entity Statement, collect a Trust Chain that starts
           with the subject's Entity Statement and ends with the specified
-          trust anchor, verify the Trust Chain and then apply all the
+          Trust Anchor, verify the Trust Chain and then apply all the
           policies present in the Trust Chain to the Entity Statements
           metadata. The resolver is also expected to verify that the
           present trust marks are active. If it finds trust marks that are
@@ -2394,7 +2394,7 @@ Content-Type: application/entity-statement+jwt
               </t>
               <t hangText="anchor">
                 <vspace/>
-                REQUIRED. The trust anchor that the remote peer
+                REQUIRED. The Trust Anchor that the remote peer
                 MUST use when resolving the metadata. The value is an Entity
                 identifier.
               </t>
@@ -2513,7 +2513,7 @@ Host: openid.sunet.se
         <section title="Considerations">
           <t>The service provided at this endpoint goes contrary to the main
             parts of this specification. The basic assumption of this specification
-            is that you should trust no one except the trust anchor and your
+            is that you should trust no one except the Trust Anchor and your
             own capabilities. If you use this service, you basically trust
             someone else to do the right thing.</t>
           <t>Even so there are benefits from having a service like this.</t>
@@ -2718,10 +2718,10 @@ Content-Type: application/json
       <t>
         An Entity (e.g., the Consumer) that wants to establish trust with a
         remote peer MUST have the remote peer's Entity identifier and a list of
-        Entity identifiers of trust anchors together with the public version
+        Entity identifiers of Trust Anchors together with the public version
         of their signing keys. The Consumer will first have to fetch
         sufficient Entity Statements to establish at least one chain of trust
-        from the remote peer to one or more of the configured trust anchors.
+        from the remote peer to one or more of the configured Trust Anchors.
         After that the Entity MUST validate the Trust Chains independently,
         and -- if there are multiple valid Trust Chains and if the
         application demands it -- choose one.
@@ -2740,13 +2740,13 @@ Content-Type: application/json
           The next step is to iterate through the list of
           intermediates listed in
           <spanx style="verb">authority_hints</spanx>, ignoring the authority
-          hints that end in an unknown trust anchor, requesting an Entity
+          hints that end in an unknown Trust Anchor, requesting an Entity
           Configuration from each of the intermediates.
           If the received Entity Configuration contains an authority hint this
           process is repeated.
         </t>
         <t>
-         With the list of all intermediates and the trust anchor, the respective
+         With the list of all intermediates and the Trust Anchor, the respective
          federation API (see <xref target="federation_endpoints"/>) is used to fetch Entity
          Statements about the intermediates and the remote peer.
         </t>
@@ -2758,11 +2758,11 @@ Content-Type: application/json
         <t>
           A successful operation will return one or more lists of
           Entity Statements. Each of the lists terminating in a self-signed
-          Entity Statement is issued by a trust anchor.
+          Entity Statement is issued by a Trust Anchor.
         </t>
         <t>
           If there is no path from the remote peer to at least one of the
-          trusted trust anchors, then the list will be empty and there is no
+          trusted Trust Anchors, then the list will be empty and there is no
           way of establishing trust in the remote peer's information. How the
           Consumer deals with this is out of scope for this specification.
         </t>
@@ -2815,8 +2815,8 @@ Content-Type: application/json
             </t>
             <t>
               For j == i: verify that a) the issuer matches the configured
-              identifier of a trust anchor and b) its signature is valid with
-              the likewise configured public key of said trust anchor.
+              identifier of a Trust Anchor and b) its signature is valid with
+              the likewise configured public key of said Trust Anchor.
             </t>
           </list>
         </t>
@@ -2888,17 +2888,17 @@ Content-Type: application/json
       <section title="Key Rollover for a Trust Anchor"
                anchor="key_rollover_anchor">
         <t>
-          A trust anchor MUST publish a self-signed Entity Statement about
-          itself. The trust anchor SHOULD set a reasonable expiration
+          A Trust Anchor MUST publish a self-signed Entity Statement about
+          itself. The Trust Anchor SHOULD set a reasonable expiration
           time on that Statement, such that the consumers will re-fetch the
-          Entity Statement at reasonable intervals. If the trust anchor wants to
+          Entity Statement at reasonable intervals. If the Trust Anchor wants to
           roll over its signing keys it would have to:
         </t>
         <t>
           <list style="numbers">
             <t>
               Add the new keys to the <spanx style="verb">jwks</spanx> representing
-              the trust anchors signing keys.
+              the Trust Anchors signing keys.
             </t>
             <t>
               Keep signing the Entity Statement using
@@ -2911,7 +2911,7 @@ Content-Type: application/json
             <t>
               After a reasonable time period remove the old keys. What is
               regarded as a reasonable time is dependent on the security profile
-              and risk assessment of the trust anchor.
+              and risk assessment of the Trust Anchor.
             </t>
           </list>
         </t>
@@ -2927,7 +2927,7 @@ Content-Type: application/json
     </t>
     <t>
       The keys retreived via the independent mechanism specified by the Federation Operator
-      SHOULD be be compared to those retreived via the trust anchor's Entity Statement.
+      SHOULD be be compared to those retreived via the Trust Anchor's Entity Statement.
       If they do not match, both SHOULD be retrieved again.
       If they still do not match, it is indicative of a security or configuration problem.
       The appropriate remediation steps in that eventuality SHOULD be specified by the Federation Operator.
@@ -3296,7 +3296,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
             <list style="hanging">
               <t hangText="missing_trust_anchor">
                 <vspace/>
-                No trusted trust anchor could be found.
+                No trusted Trust Anchor could be found.
               </t>
               <t hangText="validation_failed">
                 <vspace/>
@@ -3352,11 +3352,11 @@ HTTP/1.1 302 Found
                   contain more than one.
                 </t>
                 <t>
-                  Based on the trust anchors referenced in the subset of
+                  Based on the Trust Anchors referenced in the subset of
                   Trust Chains, the RP will choose a set of
                   <spanx style="verb">authority_hints</spanx>
                   from
-                  its own set that terminate in those trust anchors.
+                  its own set that terminate in those Trust Anchors.
                 </t>
                 <t>
                   The RP will now construct a self-signed Entity Statement
@@ -3396,7 +3396,7 @@ HTTP/1.1 302 Found
                   </t>
                   <t>
                     If it finds more than one acceptable Trust Chain, it MUST
-                    choose one trust anchor from those chains as the one it will
+                    choose one Trust Anchor from those chains as the one it will
                     proceed with.
                   </t>
                   <t>
@@ -3417,7 +3417,7 @@ HTTP/1.1 302 Found
                     the same as the Entity identifier of the RP.
                     To the Entity Statement it will add a
                     <spanx style="verb">trust_anchor_id</spanx>
-                    claim, containing the trust anchor chosen above.
+                    claim, containing the Trust Anchor chosen above.
                   </t>
                   <t>
                     It will sign and return the registration response (a signed
@@ -3434,7 +3434,7 @@ HTTP/1.1 302 Found
                     The RP verifies the correctness of the received Entity
                     Statement, making sure that the Trust Chains starting at the
                     <spanx style="verb">authority_hints</spanx>
-                    terminate in trust anchors that were
+                    terminate in Trust Anchors that were
                     referenced in the Entity Statement it sent to the OP.
                   </t>
                   <t>
@@ -3442,7 +3442,7 @@ HTTP/1.1 302 Found
                     chains that the OP provides because those are not valid for
                     the RP's metadata.
                     The RP MUST apply policies to the metadata using one of its
-                    own Trust Chains that ends in the trust anchor that the OP
+                    own Trust Chains that ends in the Trust Anchor that the OP
                     chose.
                     Once it has applied those policies, it can then apply
                     the policy returned from the OP.
@@ -3527,7 +3527,7 @@ HTTP/1.1 302 Found
                   starting with the RP's client registration request, the OP
                   MUST
                   verify that there still is a valid Trust Chain terminating in
-                  the trust anchor the OP chose during the registration process.
+                  the Trust Anchor the OP chose during the registration process.
                 </t>
               </list>
             </t>
@@ -4427,7 +4427,7 @@ Host: umu.se
             This is the second link in the Trust Chain.
           </t>
           <t>
-            Notable here is that this path leads to two trust anchors using the
+            Notable here is that this path leads to two Trust Anchors using the
             same next step ("https://swamid.se").
           </t>
         </section>
@@ -4552,7 +4552,7 @@ Host: swamid.se
           </t>
           <t>
             If we assume that the issuer of this Entity Statement is not in the
-            list of trust anchors the LIGO Wiki RP has access to, we have to go
+            list of Trust Anchors the LIGO Wiki RP has access to, we have to go
             one step further.
           </t>
         </section>
@@ -4602,7 +4602,7 @@ Host: edugain.geant.org
             As described in
             <xref target="key_rollover_anchor"/>,
             note SHOULD also be
-            taken to <spanx style="verb">jwks</spanx> as the trust anchor MAY be
+            taken to <spanx style="verb">jwks</spanx> as the Trust Anchor MAY be
             performing a key rollover.
           </t>
         </section>
@@ -4658,13 +4658,13 @@ Host: geant.org
           </figure>
           <t>
             If we assume that the issuer of this Statement appears in the list
-            of trust anchors the LIGO Wiki RP has access to this would be
+            of Trust Anchors the LIGO Wiki RP has access to this would be
             the fourth and final Entity Statement in the Trust Chain.
           </t>
           <t>
             We now have the whole chain from the self-signed Entity Statement of
             the
-            leaf up until the last one that is issued by a trust anchor. All in
+            leaf up until the last one that is issued by a Trust Anchor. All in
             all,
             we have:
             <list style="numbers">
@@ -4682,7 +4682,7 @@ Host: geant.org
             those are not used in the Trust Chain verification.
           </t>
           <t>
-            Using the public keys of the trust anchor that the LIGO Wiki RP has
+            Using the public keys of the Trust Anchor that the LIGO Wiki RP has
             been
             provided with in some secure out-of-band way, it can now verify the
             Trust Chain as described in
@@ -4861,7 +4861,7 @@ Host: op.umu.se
           <section title="OP Evaluates the RP Metadata"
                    anchor="rp_metadata_eval">
             <t>
-              Using the public keys of the trust anchor that the LIGO Wiki RP
+              Using the public keys of the Trust Anchor that the LIGO Wiki RP
               has
               been
               provided with in some secure out-of-band way, it can now verify
