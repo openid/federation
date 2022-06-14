@@ -217,7 +217,7 @@
         The basic component is the Entity Statement, which is a cryptographically
         signed <xref target="RFC7519">JSON Web Token (JWT)</xref>.
         A set of Entity Statements can form a path from a leaf Entity to
-        a trust anchor. Entity configurations as self-signed Entity Statements
+        a trust anchor. Entity Configurations as self-signed Entity Statements
         issued by federation entities about themselves control the trust chain
         resolution process.</t>
       <t>Starting with the Entity Configuration of the leaf Entity, you can find
@@ -343,7 +343,7 @@
               the metadata according to the metadata schema of that metadata
               type. An Entity Statement MAY contain multiple
               metadata Statements, but only one for each metadata type.
-              If the Entity Statement is an Entity configuration,
+              If the Entity Statement is an Entity Configuration,
               then the Entity Statement MUST contain a
               <spanx style="verb">metadata</spanx>
               claim.
@@ -2076,8 +2076,8 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             title="Obtaining Federation Entity Configuration Information"
             anchor="federation_configuration">
       <t>
-        The Entity configuration of every federation Entity SHOULD be exposed at a well-known endpoint.
-        The configuration endpoint is found using the
+        The Entity Configuration of every federation Entity SHOULD be exposed at a well-known endpoint.
+        The Configuration endpoint is found using the
         <xref target="RFC8615">Well-Known URIs</xref>
         specification, with the suffix
         <spanx style="verb">openid-federation</spanx>. The scheme, host, and port
@@ -2101,7 +2101,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         <spanx style="verb">https://multi-tenant-service.example.com/.well-known/openid-federation/my-tenant-identifier</spanx>
         whereas it is very likely to have control over the path
         <spanx style="verb">https://multi-tenant-service.example.com/my-tenant-identifier/.well-known/openid-federation</spanx>.
-        Therefore, if using the configuration endpoint at the URL with the
+        Therefore, if using the Configuration endpoint at the URL with the
         tenant path
         after the well-known part fails,
         it is RECOMMENDED that callers retry at the URL with the tenant path
@@ -2124,7 +2124,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           The requesting party would make the following request to the Entity
           <spanx style="verb">https://openid.sunet.se</spanx>
           to obtain its
-          Configuration information:
+          configuration information:
         </t>
         <t>
           <figure>
@@ -2731,7 +2731,7 @@ Content-Type: application/json
                title="Fetching Entity Statements to Establish a Trust Chain">
         <t>
           Depending on the circumstances, the Consumer MAY either be
-          handed the remote peer's Entity configuration, or it may
+          handed the remote peer's Entity Configuration, or it may
           have to fetch it by itself. If it needs to fetch it, it will use the
           process described in <xref target="federation_configuration"/>
           based on the Entity identifier of the remote peer.
@@ -2741,8 +2741,8 @@ Content-Type: application/json
           intermediates listed in
           <spanx style="verb">authority_hints</spanx>, ignoring the authority
           hints that end in an unknown trust anchor, requesting an Entity
-          configuration from each of the intermediates.
-          If the received Entity configuration contains an authority hint this
+          Configuration from each of the intermediates.
+          If the received Entity Configuration contains an authority hint this
           process is repeated.
         </t>
         <t>
@@ -5336,7 +5336,7 @@ Host: op.umu.se
             Trust Marks: added non-normative examples.
           </t>
           <t>
-            Expanded Section 8.1: Included Entity configurations.
+            Expanded Section 8.1: Included Entity Configurations.
           </t>
       <t>
         Fixed #1373 - More clearly defined the term Entity Statement,
@@ -5490,7 +5490,7 @@ Host: op.umu.se
             Major changes were as follows.
           </t>
           <t>
-            Separated Entity configuration discovery from operations provided
+            Separated Entity Configuration discovery from operations provided
             by the federation API.
           </t>
           <t>
