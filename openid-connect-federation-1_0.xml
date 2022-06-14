@@ -77,7 +77,7 @@
       </address>
     </author>
 
-    <date day="30" month="May" year="2022"/>
+    <date day="14" month="June" year="2022"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -553,7 +553,7 @@
 
       <section title="Trust Chain" anchor="trust_chain">
         <t>
-          In an OpenID Connect Identity Federation, entities that together build
+          In an OpenID Connect identity federation, entities that together build
           a Trust Chain can be categorized as:
           <list style="hanging">
             <t hangText="Trust anchor">
@@ -563,7 +563,7 @@
             </t>
             <t hangText="Leaf">
               <vspace/>
-              In an OpenID Connect identity Federation, an RP or an OP.
+              In an OpenID Connect identity federation, an RP or an OP.
             </t>
             <t hangText="Intermediate">
               <vspace/>
@@ -646,7 +646,7 @@
         standards.
         If needed, the metadata schema is extended
         with additional properties relevant in a federated context.
-        For instance, for OpenID Connect Federations, this specification uses
+        For instance, for OpenID Connect federations, this specification uses
         metadata values from
         <xref target="OpenID.Discovery">OpenID Connect Discovery 1.0</xref>
         and
@@ -858,7 +858,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
             <t hangText="federation_registration_endpoint">
               <vspace/>
               OPTIONAL.
-              URL of the OP's Federation specific Dynamic Client Registration
+              URL of the OP's federation-specific Dynamic Client Registration
               Endpoint. If the OP supports explicit client
               registration as described in <xref target="explicit"/>,
               then this claim is REQUIRED.
@@ -1152,7 +1152,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             <t hangText="organization_name">
               <vspace/>
               OPTIONAL. A human-readable
-              name representing the organization owning the Federation Entity. 
+              name representing the organization owning the federation Entity. 
               If the owner is a physical person 
               this MAY be, for example, the name of a person.
             </t>
@@ -3545,7 +3545,7 @@ HTTP/1.1 302 Found
       <section title="ID Token Validation">
         <t>
             The RP MUST validate any ID token as defined in Section 3.1.3.7. of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>. If the
-            trust relationship between RP and OP was established using OpenID Federation, the key material used for ID Token signature validation MUST
+            trust relationship between RP and OP was established using OpenID Connect Federation, the key material used for ID Token signature validation MUST
             be obtained from the OP's metadata the RP obtained as a result of Trust Chain validation as defined in <xref target="resolving_trust"/>
             and combining the metadata policies from the Entity Statements of the Trust Chain as described in <xref target="metadata_policy"/>.
         </t>
@@ -5191,6 +5191,7 @@ Host: op.umu.se
         Samuel Gulliksson,
         Takahiko Kawasaki,
         Torsten Lodderstedt,
+	Roberto Polli,
         Jouke Roorda,
         Mischa Sall&eacute;,
         Marcos Sanz,
@@ -5201,71 +5202,75 @@ Host: op.umu.se
       </t>
     </section>
 
-    <section anchor="TBD" title="Open Issues">
-      <t>
-        The following open issues remain to be addressed in this specification.
-      </t>
-      <t>
-        <list style="symbols">
-          <t>
-            Discuss localization of human-readable strings.
-          </t>
-        </list>
-      </t>
-    </section>
-
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
 
       <t>
         -20
         <list style="symbols">
-      <t>
-        Updated example for Resolve endpoint.
-      </t>
-      <t>
-        Recommended that Key IDs be the JWK Thumbprint of the key.
-      </t>
-      <t>
-        Fixed #1502 - Corrected usage of <spanx style="verb">id_token_signed_response_alg</spanx>.
-      </t>
-      <t>
-        Fixed #1506 - Referenced RFC 9126 for Pushed Authorization Requests.
-      </t>
-      <t>
-        Added Giuseppe De Marco as an editor and removed Samuel Gulliksson as an editor.
-      </t>
-      <t>
-        Fixed #1508 - Editorial review.
-      </t>
-      <t>
-        Fixed #1505 - Defined that <spanx style="verb">signed_jwks_uri</spanx> is preferred over
-        <spanx style="verb">jwks_uri</spanx> and <spanx style="verb">jwks</spanx>.
-      </t>
-      <t>
-        Fixed #1514 - Corrected RP metadata examples to use <spanx style="verb">id_token_signed_response_alg</spanx>.
-      </t>
-      <t>
-        Fixed #1512 - Registered the error codes <spanx style="verb">missing_trust_anchor</spanx>
-        and <spanx style="verb">validation_failed</spanx>.
-      </t>
-      <t>
-        Also registered the OP Metadata parameters
-        <spanx style="verb">organization_name</spanx>,
-        <spanx style="verb">request_authentication_methods_supported</spanx>,
-        <spanx style="verb">request_authentication_signing_alg_values_supported</spanx>,
-        <spanx style="verb">signed_jwks_uri</spanx>,
-        and
-        <spanx style="verb">jwks</spanx>
-        and the RP Metadata parameters
-        <spanx style="verb">client_registration_types</spanx> (which was previously misregistered as <spanx style="verb">client_registration_type</spanx>),
-        <spanx style="verb">organization_name</spanx>,
-        and
-        <spanx style="verb">signed_jwks_uri</spanx>.
-      </t>
-      <t>
-        Defined the term Federation Operator and described redundant retrieval of Trust Anchor keys.
-      </t>
+	  <t>
+	    Updated example for Resolve endpoint.
+	  </t>
+	  <t>
+	    Recommended that Key IDs be the JWK Thumbprint of the key.
+	  </t>
+	  <t>
+	    Fixed #1502 - Corrected usage of <spanx style="verb">id_token_signed_response_alg</spanx>.
+	  </t>
+	  <t>
+	    Fixed #1506 - Referenced RFC 9126 for Pushed Authorization Requests.
+	  </t>
+	  <t>
+	    Added Giuseppe De Marco as an editor and removed Samuel Gulliksson as an editor.
+	  </t>
+	  <t>
+	    Fixed #1508 - Editorial review.
+	  </t>
+	  <t>
+	    Fixed #1505 - Defined that <spanx style="verb">signed_jwks_uri</spanx> is preferred over
+	    <spanx style="verb">jwks_uri</spanx> and <spanx style="verb">jwks</spanx>.
+	  </t>
+	  <t>
+	    Fixed #1514 - Corrected RP metadata examples to use <spanx style="verb">id_token_signed_response_alg</spanx>.
+	  </t>
+	  <t>
+	    Fixed #1512 - Registered the error codes <spanx style="verb">missing_trust_anchor</spanx>
+	    and <spanx style="verb">validation_failed</spanx>.
+	  </t>
+	  <t>
+	    Also registered the OP Metadata parameters
+	    <spanx style="verb">organization_name</spanx>,
+	    <spanx style="verb">request_authentication_methods_supported</spanx>,
+	    <spanx style="verb">request_authentication_signing_alg_values_supported</spanx>,
+	    <spanx style="verb">signed_jwks_uri</spanx>,
+	    and
+	    <spanx style="verb">jwks</spanx>
+	    and the RP Metadata parameters
+	    <spanx style="verb">client_registration_types</spanx> (which was previously misregistered as <spanx style="verb">client_registration_type</spanx>),
+	    <spanx style="verb">organization_name</spanx>,
+	    and
+	    <spanx style="verb">signed_jwks_uri</spanx>.
+	  </t>
+	  <t>
+	    Defined the term Federation Operator and described redundant retrieval of Trust Anchor keys.
+	  </t>
+	  <t>
+	    Fixed #1519 - Corrected instances of <spanx style="verb">client_registration_type</spanx>
+	    to <spanx style="verb">client_registration_types_supported</spanx>.
+	  </t>
+	  <t>
+	    Fixed #1520 - Renamed <spanx style="verb">federation_api_endpoint</spanx>
+	    to <spanx style="verb">federation_fetch_endpoint</spanx>.
+	  </t>
+	  <t>
+	    Fixed #1521 - Changed swamid.sunet.se to swamid.se in examples.
+	  </t>
+	  <t>
+	    Fixed #1523 - Added <spanx style="verb">request_parameter_supported</spanx> to examples.
+	  </t>
+	  <t>
+	    Capitalized defined terms.
+	  </t>
         </list>
       </t>
 
