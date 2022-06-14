@@ -132,10 +132,10 @@
         It is also true that an Entity can be part of more than one federation.
       </t>
       <t>
-        OpenID Connect Federation trust chains rely on
+        OpenID Connect Federation Trust Chains rely on
         cryptographically signed
         <xref target="RFC7519">JSON Web Token (JWT)</xref>
-        documents, and the trust chain does not at
+        documents, and the Trust Chain does not at
         all rely on TLS
         <xref target="RFC8446"/>
         to establish trust.
@@ -182,7 +182,7 @@
               <vspace/>
               An Entity Statement issued by an Entity about itself. It contains
               the entities' signing keys and further data used to control the
-              trust chain resolution process, such as authority hints.
+              Trust Chain resolution process, such as authority hints.
             </t>
         <t hangText="Federation Operator">
           An organization that is authoritative for a federation.
@@ -192,7 +192,7 @@
               <vspace/>
               An Entity that issues
               an Entity Statement that appears somewhere in between those
-              issued by the trust anchor and the leaf Entity in a trust chain.
+              issued by the trust anchor and the leaf Entity in a Trust Chain.
             </t>
             <t hangText="Leaf Entity">
               <vspace/>
@@ -218,7 +218,7 @@
         signed <xref target="RFC7519">JSON Web Token (JWT)</xref>.
         A set of Entity Statements can form a path from a leaf Entity to
         a trust anchor. Entity Configurations as self-signed Entity Statements
-        issued by federation entities about themselves control the trust chain
+        issued by federation entities about themselves control the Trust Chain
         resolution process.</t>
       <t>Starting with the Entity Configuration of the leaf Entity, you can find
         the next level of Entity Configuration by following the authority hints.
@@ -233,7 +233,7 @@
         done is described in <xref target="trust_chain"/>.
       </t>
       <t>
-        With a verified trust chain in hand, you can now apply federation
+        With a verified Trust Chain in hand, you can now apply federation
         policy to the published metadata. How this is done is described in
         <xref target="federation_policy"/>.
       </t>
@@ -254,7 +254,7 @@
       </t>
     </section>
     <section title="Components" anchor="components">
-      <section anchor="Entity-statement" title="Entity Statement">
+      <section anchor="entity-statement" title="Entity Statement">
         <t>
           An Entity Statement contains the information needed for the Entity
       that is the subject of the Entity Statement to participate in federation(s).
@@ -371,7 +371,7 @@
             </t>
             <t hangText="constraints">
               <vspace/>
-              OPTIONAL. JSON object that describes a set of trust chain
+              OPTIONAL. JSON object that describes a set of Trust Chain
               constraints. There is more about this in
               <xref target="chain_constraints"/>.
             </t>
@@ -554,7 +554,7 @@
       <section title="Trust Chain" anchor="trust_chain">
         <t>
           In an OpenID Connect IdEntity Federation, entities that together build
-          a trust chain can be categorized as:
+          a Trust Chain can be categorized as:
           <list style="hanging">
             <t hangText="Trust anchor">
               <vspace/>
@@ -572,7 +572,7 @@
           </list>
         </t>
         <t>
-          A trust chain begins with a leaf Entity's self-signed Entity
+          A Trust Chain begins with a leaf Entity's self-signed Entity
           Statement, has zero or more Entity Statements
           issued by intermediates about subordinates, and ends with an
           Entity Statement issued by the trust anchor about the top-most
@@ -581,7 +581,7 @@
         </t>
         <t>
           A simple example: If we have an RP that belongs to organization A
-          that is a member of federation F, the trust chain for such a setup
+          that is a member of federation F, the Trust Chain for such a setup
           will contain the following Entity Statements:
           <list style="numbers">
             <t>
@@ -596,7 +596,7 @@
           </list>
         </t>
         <t>
-          A trust chain MUST always be possible to order such that:
+          A Trust Chain MUST always be possible to order such that:
           If we name the Entity Statements ES[0] (the leaf Entity's
           self-signed Entity Statement) to ES[i] (an Entity Statement issued
           by the trust anchor), i>0 then:
@@ -624,7 +624,7 @@
         <t>
           The signing key that MUST be used to verify ES[i] is distributed
           from the trust anchors to any Entity that needs to verify a
-          trust chain in some secure out-of-band way not described in this
+          Trust Chain in some secure out-of-band way not described in this
           document.
         </t>
       </section>
@@ -1443,7 +1443,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         </section>
         <section title="Combining Policies">
           <t>
-            If there is more than one metadata policy in a trust chain, then the
+            If there is more than one metadata policy in a Trust Chain, then the
             policies
             MUST be combined before they are applied to the metadata Statement.
           </t>
@@ -1783,7 +1783,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               <vspace/>
               OPTIONAL. Integer. The maximum number of Entity Statements
               between this Entity Statement and the last Entity Statement in
-              the trust chain.
+              the Trust Chain.
             </t>
             <t hangText="naming_constraints">
               <vspace/>
@@ -1827,7 +1827,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             The <spanx style="verb">max_path_length</spanx> constraint specifies
             the
             maximum number of
-            Entity Statements a trust chain can have between the Entity Statement
+            Entity Statements a Trust Chain can have between the Entity Statement
             that contains the constraint specification and the leaf's Entity
             Statement.
           </t>
@@ -1843,7 +1843,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             limit is imposed.
           </t>
           <t>
-            Assuming that we have a trust chain with four Entity Statements:
+            Assuming that we have a Trust Chain with four Entity Statements:
             <list style="numbers">
               <t>Leaf Entity (LE)</t>
               <t>Intermediate 1 (I1)</t>
@@ -1852,7 +1852,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             </list>
           </t>
           <t>
-            Then the trust chain fulfills the constraints if:
+            Then the Trust Chain fulfills the constraints if:
             <list style="symbols">
               <t>
                 The TA specifies a <spanx style="verb">max_path_length</spanx> that
@@ -1873,7 +1873,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             </list>
           </t>
           <t>
-            The trust chain does not fulfil the constraints if:
+            The Trust Chain does not fulfil the constraints if:
             <list style="symbols">
               <t>TA has specified <spanx style="verb">max_path_length</spanx> of
                 1.
@@ -1885,7 +1885,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           <t>
             The <spanx style="verb">naming_constraints</spanx> member
         specifies a namespace within which all subject
-            Entity identifiers in subordinate Entity Statements in a trust chain
+            Entity identifiers in subordinate Entity Statements in a Trust Chain
             MUST be located.
           </t>
           <t>
@@ -2138,13 +2138,13 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
       </section>
       <section title="Federation Entity Configuration Response">
         <t>The response is a self-signed Entity Statement, as described in
-          <xref target="Entity-statement"/>.
+          <xref target="entity-statement"/>.
           If the Entity is an intermediate Entity or a trust anchor, the
           response MUST contain metadata for a federation Entity.
         </t>
         <t>
           A positive response is a signed Entity Statement, where the content
-          type MUST be set to <spanx style="verb">application/Entity-statement+jwt</spanx>.
+          type MUST be set to <spanx style="verb">application/entity-statement+jwt</spanx>.
           In case of an error, the response
           will be a JSON object, the content type MUST be set to
           <spanx style="verb">application/json</spanx>,
@@ -2159,7 +2159,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             <artwork><![CDATA[
 200 OK
 Last-Modified: Thu, 29 Aug 2019 08:54:26 GMT
-Content-Type: application/Entity-statement+jwt
+Content-Type: application/entity-statement+jwt
 
 {
   "iss": "https://openid.sunet.se",
@@ -2240,7 +2240,7 @@ Content-Type: application/Entity-statement+jwt
         </t>
         <t>
           Fetching Entity Statements is performed to collect Entity Statements
-          one by one to gather trust chains.
+          one by one to gather Trust Chains.
         </t>
         <t>
           To fetch an Entity Statement, an Entity needs to know the
@@ -2304,7 +2304,7 @@ Host: edugain.org
           <t>
             A positive response is a signed Entity Statement where
             the content type MUST be set to
-            <spanx style="verb">application/Entity-statement+jwt</spanx>.
+            <spanx style="verb">application/entity-statement+jwt</spanx>.
             If it is a negative response, it will be a JSON object and the
             content type MUST be set to
             <spanx style="verb">application/json</spanx>.
@@ -2318,7 +2318,7 @@ Host: edugain.org
             <artwork><![CDATA[
 200 OK
 Last-Modified: Mon, 17 Dec 2018 11:15:56 GMT
-Content-Type: application/Entity-statement+jwt
+Content-Type: application/entity-statement+jwt
 
 {
   "iss": "https://edugain.org/federation",
@@ -2370,10 +2370,10 @@ Content-Type: application/Entity-statement+jwt
           An Entity MAY use the resolve endpoint to fetch
           resolved metadata and trust marks for an Entity as seen/trusted by
           the resolver. The resolver is supposed to fetch the subject's
-          self-signed Entity Statement, collect a trust chain that starts
+          self-signed Entity Statement, collect a Trust Chain that starts
           with the subject's Entity Statement and ends with the specified
-          trust anchor, verify the trust chain and then apply all the
-          policies present in the trust chain to the Entity Statements
+          trust anchor, verify the Trust Chain and then apply all the
+          policies present in the Trust Chain to the Entity Statements
           metadata. The resolver is also expected to verify that the
           present trust marks are active. If it finds trust marks that are
           not active, then those should be left out of the response set.
@@ -2434,7 +2434,7 @@ Host: openid.sunet.se
           <t>
             The response is a signed JWT containing resolved metadata and
             verified trust marks. The response MAY also contain 
-            the sequence of the Entity Statements that compose the trust chain.
+            the sequence of the Entity Statements that compose the Trust Chain.
             The keys used by the resolver MUST be the
             same keys used to construct a self-signed
             Entity Statement.
@@ -2722,8 +2722,8 @@ Content-Type: application/json
         of their signing keys. The Consumer will first have to fetch
         sufficient Entity Statements to establish at least one chain of trust
         from the remote peer to one or more of the configured trust anchors.
-        After that the Entity MUST validate the trust chains independently,
-        and -- if there are multiple valid trust chains and if the
+        After that the Entity MUST validate the Trust Chains independently,
+        and -- if there are multiple valid Trust Chains and if the
         application demands it -- choose one.
       </t>
 
@@ -2772,9 +2772,9 @@ Content-Type: application/json
                anchor="trust_chain_validation">
         <t>
           As described in <xref target="trust_chain"/>,
-          a trust chain consists of an ordered list of Entity
+          a Trust Chain consists of an ordered list of Entity
           Statements. So whichever way the Consumer has acquired the set of
-          Entity Statements, it MUST now verify that it is a proper trust chain
+          Entity Statements, it MUST now verify that it is a proper Trust Chain
           using the rules laid out in that section.
         </t>
         <t>
@@ -2832,14 +2832,14 @@ Content-Type: application/json
         </t>
         <t>
           Note that the second bullet point means that, at each step in the
-          trust chain resolution, it MUST be verified that the signing JWK is
+          Trust Chain resolution, it MUST be verified that the signing JWK is
           also present in the <spanx style="verb">jwks</spanx>
       Statement claim issued by the superior.
         </t>
       </section>
       <section title="Choosing One of the Valid Trust Chains">
         <t>
-          If multiple valid trust chains are found, the Consumer will
+          If multiple valid Trust Chains are found, the Consumer will
           need to decide on which one to use.
         </t>
         <t>
@@ -2851,7 +2851,7 @@ Content-Type: application/json
       <section anchor="trust_lifetime"
                title="Calculating the Expiration Time of a Trust Chain">
         <t>
-          Each Entity Statement in a trust chain is signed and MUST have an
+          Each Entity Statement in a Trust Chain is signed and MUST have an
           expiration time (<spanx style="verb">exp</spanx>) set.
           The expiration time of the whole trust
           chain is set to the minimum value of
@@ -2867,12 +2867,12 @@ Content-Type: application/json
       </t>
       <t>
         As described above in <xref target="trust_lifetime"/>,
-        each trust chain has an expiration time.
+        each Trust Chain has an expiration time.
         A consumer of metadata using this specification MUST support
-        refreshing a trust chain when it expires.
-        How often a consumer SHOULD re-evaluate the trust chain depends on
+        refreshing a Trust Chain when it expires.
+        How often a consumer SHOULD re-evaluate the Trust Chain depends on
         how quickly the consumer wants to find out that something has changed
-        in the trust chain.
+        in the Trust Chain.
       </t>
 
       <section title="Protocol Key Rollover">
@@ -2936,7 +2936,7 @@ Content-Type: application/json
 
       <section title="Revocation">
         <t>
-          Since the consumers are expected to check the trust chain at regular,
+          Since the consumers are expected to check the Trust Chain at regular,
           reasonably frequent times, this specification does not specify a
           standard revocation process. Specific federations MAY make a
           different choice and will then have to add such a process.
@@ -3121,7 +3121,7 @@ https://server.example.com/authorize?
                 Statement as described in <xref target="fetching-es"/>.
               </t>
               <t>
-                The OP MUST then validate the possible trust chains, as
+                The OP MUST then validate the possible Trust Chains, as
                 described in
                 <xref target="trust_chain_validation"/>,
                 and resolve the RP metadata with type
@@ -3183,7 +3183,7 @@ https://server.example.com/authorize?
               </list>
               Note that if mTLS is used, TLS client authentication MUST be
               configured and, in case of self-signed certificates, the server must
-              omit trust chain validation.
+              omit Trust Chain validation.
             </t>
             <t>Using the example above, a request could look like this:</t>
             <figure>
@@ -3228,11 +3228,11 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                 is a valid URL, the OP does not have the Client ID
                 registered as a known client and the OP supports the request
                 authentication method used then the OP SHOULD try to resolve and
-                fetch trust chains starting with the RP's Entity
+                fetch Trust Chains starting with the RP's Entity
                 Statement as described in <xref target="fetching-es"/>.
               </t>
               <t>
-                The OP SHOULD validate the possible trust chains, as described
+                The OP SHOULD validate the possible Trust Chains, as described
                 in
                 <xref target="trust_chain_validation"/>,
                 and resolve the RP metadata with type
@@ -3346,14 +3346,14 @@ HTTP/1.1 302 Found
             <t>
               <list style="numbers">
                 <t>
-                  Once it has the list of acceptable trust chains for the OP,
+                  Once it has the list of acceptable Trust Chains for the OP,
                   it MUST choose the subset it wants to progress with. The
-                  subset can be as small as one trust chain, but it can also
+                  subset can be as small as one Trust Chain, but it can also
                   contain more than one.
                 </t>
                 <t>
                   Based on the trust anchors referenced in the subset of
-                  trust chains, the RP will choose a set of
+                  Trust Chains, the RP will choose a set of
                   <spanx style="verb">authority_hints</spanx>
                   from
                   its own set that terminate in those trust anchors.
@@ -3371,7 +3371,7 @@ HTTP/1.1 302 Found
                   The Entity Statement is sent, using POST, to the
                   <spanx style="verb">federation_registration_endpoint</spanx>
                   defined in this document. The content type MUST be set to
-                  <spanx style="verb">application/Entity-statement+jwt</spanx>.
+                  <spanx style="verb">application/entity-statement+jwt</spanx>.
                 </t>
               </list>
             </t>
@@ -3380,22 +3380,22 @@ HTTP/1.1 302 Found
           <section anchor="cliregresp" title="Client Registration Response">
             <section title="OP Constructing the Response">
               <t>
-                The trust chains MUST be constructed using the received
+                The Trust Chains MUST be constructed using the received
                 Entity Statement.
               </t>
               <t>
                 <list style="numbers">
                   <t>
                     After the OP receives the request, it collects and
-                    evaluates the trust chains starting with the
+                    evaluates the Trust Chains starting with the
                     <spanx style="verb">authority_hints</spanx>
                     in the registration request.
-                    After it has verified at least one trust chain it
+                    After it has verified at least one Trust Chain it
                     MUST verify that the signature on the received registration
                     request is correct.
                   </t>
                   <t>
-                    If it finds more than one acceptable trust chain, it MUST
+                    If it finds more than one acceptable Trust Chain, it MUST
                     choose one trust anchor from those chains as the one it will
                     proceed with.
                   </t>
@@ -3432,7 +3432,7 @@ HTTP/1.1 302 Found
                 <list style="numbers">
                   <t>
                     The RP verifies the correctness of the received Entity
-                    Statement, making sure that the trust chains starting at the
+                    Statement, making sure that the Trust Chains starting at the
                     <spanx style="verb">authority_hints</spanx>
                     terminate in trust anchors that were
                     referenced in the Entity Statement it sent to the OP.
@@ -3442,7 +3442,7 @@ HTTP/1.1 302 Found
                     chains that the OP provides because those are not valid for
                     the RP's metadata.
                     The RP MUST apply policies to the metadata using one of its
-                    own trust chains that ends in the trust anchor that the OP
+                    own Trust Chains that ends in the trust anchor that the OP
                     chose.
                     Once it has applied those policies, it can then apply
                     the policy returned from the OP.
@@ -3452,10 +3452,10 @@ HTTP/1.1 302 Found
                     using the agreed-upon metadata.
                   </t>
                   <t>
-                    At this point the RP also knows which trust chain it should
+                    At this point the RP also knows which Trust Chain it should
                     use when evaluating the OP's metadata. It can therefore
                     apply the metadata policies on the OP's metadata using the
-                    relevant trust chain and store the result as the OPs
+                    relevant Trust Chain and store the result as the OPs
                     metadata.
                   </t>
                   <t>
@@ -3489,8 +3489,8 @@ HTTP/1.1 302 Found
               <list style="numbers">
                 <t>
                   Starting with the OP's Entity Statement, resolve and verify
-                  the trust chains it chooses to use when constructing the
-                  registration request. If those trust chains do not exist
+                  the Trust Chains it chooses to use when constructing the
+                  registration request. If those Trust Chains do not exist
                   anymore or do not verify, then the registration SHOULD be
                   regarded as invalid and a new registration process SHOULD be
                   started.
@@ -3526,7 +3526,7 @@ HTTP/1.1 302 Found
                 <t>
                   starting with the RP's client registration request, the OP
                   MUST
-                  verify that there still is a valid trust chain terminating in
+                  verify that there still is a valid Trust Chain terminating in
                   the trust anchor the OP chose during the registration process.
                 </t>
               </list>
@@ -3546,8 +3546,8 @@ HTTP/1.1 302 Found
         <t>
             The RP MUST validate any ID token as defined in Section 3.1.3.7. of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>. If the
             trust relationship between RP and OP was established using OpenID Federation, the key material used for ID Token signature validation MUST
-            be obtained from the OP's metadata the RP obtained as a result of trust chain validation as defined in <xref target="resolving_trust"/>
-            and combining the metadata policies from the Entity Statements of the trust chain as described in <xref target="metadata_policy"/>.
+            be obtained from the OP's metadata the RP obtained as a result of Trust Chain validation as defined in <xref target="resolving_trust"/>
+            and combining the metadata policies from the Entity Statements of the Trust Chain as described in <xref target="metadata_policy"/>.
         </t>
       </section>
     </section>
@@ -3806,7 +3806,7 @@ HTTP/1.1 302 Found
         Type name: application
           </t>
           <t>
-        Subtype name: Entity-statement+jwt
+        Subtype name: entity-statement+jwt
           </t>
           <t>
         Required parameters: n/a
@@ -4217,13 +4217,13 @@ HTTP/1.1 302 Found
           described above.
         </t>
         <t>
-          When building the trust chain, the Entity Statements issued
+          When building the Trust Chain, the Entity Statements issued
           by a superior about its subordinate are used together with the
           self-signed Entity Statement issued by the leaf.
         </t>
         <t>
           The self-signed Entity Statement concerning intermediates is not
-          part of the trust chain.
+          part of the Trust Chain.
         </t>
         <section title="Configuration Information for op.umu.se">
           <t>The LIGO WIKI RP fetches the self-signed Entity Statement from the
@@ -4303,7 +4303,7 @@ HTTP/1.1 302 Found
             intermediate https://umu.se. So that is the next step.
           </t>
           <t>
-            This Entity Statement is the first link in the trust chain.
+            This Entity Statement is the first link in the Trust Chain.
           </t>
         </section>
         <section title="Configuration Information for 'https://umu.se'">
@@ -4424,7 +4424,7 @@ Host: umu.se
 ]]></artwork>
           </figure>
           <t>
-            This is the second link in the trust chain.
+            This is the second link in the Trust Chain.
           </t>
           <t>
             Notable here is that this path leads to two trust anchors using the
@@ -4548,7 +4548,7 @@ Host: swamid.se
 ]]></artwork>
           </figure>
           <t>
-            This is the third link in the trust chain.
+            This is the third link in the Trust Chain.
           </t>
           <t>
             If we assume that the issuer of this Entity Statement is not in the
@@ -4659,7 +4659,7 @@ Host: geant.org
           <t>
             If we assume that the issuer of this Statement appears in the list
             of trust anchors the LIGO Wiki RP has access to this would be
-            the fourth and final Entity Statement in the trust chain.
+            the fourth and final Entity Statement in the Trust Chain.
           </t>
           <t>
             We now have the whole chain from the self-signed Entity Statement of
@@ -4679,13 +4679,13 @@ Host: geant.org
           </t>
           <t>We also have the self-signed Entity Statements from https://umu.se,
             https://swamid.se and https://edugain.geant.org about themselves but
-            those are not used in the trust chain verification.
+            those are not used in the Trust Chain verification.
           </t>
           <t>
             Using the public keys of the trust anchor that the LIGO Wiki RP has
             been
             provided with in some secure out-of-band way, it can now verify the
-            trust chain as described in
+            Trust Chain as described in
             <xref target="trust_chain_validation"/>.
           </t>
         </section>
@@ -4777,7 +4777,7 @@ Host: geant.org
               <spanx style="verb">federation_registration_endpoint</spanx>,
               which provides the metadata for the RP to use. The OP MAY return a
               metadata policy that adds restrictions over and above what the
-              trust chain already has defined.
+              Trust Chain already has defined.
             </t>
           </list>
         </t>
@@ -4825,7 +4825,7 @@ Host: op.umu.se
           </t>
           <section title="OP Fetches Entity Statements">
             <t>
-              The OP needs to establish a trust chain for the RP
+              The OP needs to establish a Trust Chain for the RP
               (wiki.ligo.org).
               The OP in this example is configured with public keys of two
               federations:
@@ -4843,7 +4843,7 @@ Host: op.umu.se
             <t>
               The process is the same as described in
               <xref target="op_discovery"/>
-              and will result in a trust chain with the following Entity
+              and will result in a Trust Chain with the following Entity
               Statements:
               <list style="numbers">
                 <t>Self-signed Entity Statement by the leaf
@@ -4866,7 +4866,7 @@ Host: op.umu.se
               been
               provided with in some secure out-of-band way, it can now verify
               the
-              trust chain as described in
+              Trust Chain as described in
               <xref target="trust_chain_validation"/>.
             </t>
             <t>
@@ -5007,7 +5007,7 @@ Host: op.umu.se
             <xref target="rp_metadata_eval"/>, but what it now can do is
             return a metadata policy that it wants to be applied to the RP's
             metadata. This metadata policy will be combined with the
-            trust chain's combined metadata policy before being applied to the
+            Trust Chain's combined metadata policy before being applied to the
             RP's metadata.
           </t>
           <t>
@@ -5315,7 +5315,7 @@ Host: op.umu.se
         dynamic client registration parameter.
       </t>
       <t>
-        Registered and used the <spanx style="verb">application/Entity-statement+jwt</spanx> media type.
+        Registered and used the <spanx style="verb">application/entity-statement+jwt</spanx> media type.
       </t>
       <t>
         Registered the <spanx style="verb">application/trust-mark+jwt</spanx> media type.
