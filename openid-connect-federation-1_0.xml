@@ -5,7 +5,7 @@
 <!--
   NOTE:  This XML file is input used to produce the authoritative copy of an
   OpenID Foundation specification.  The authoritative copy is the HTML output.
-  This XML source file is not authoritative.  The Statement ipr="none" is
+  This XML source file is not authoritative.  The statement ipr="none" is
   present only to satisfy the document compilation tool and is not indicative
   of the IPR status of this specification.  The IPR for this specification is
   described in the "Notices" section.  This is a public OpenID Foundation
@@ -114,7 +114,7 @@
         This specification describes how two entities that would like to
         interact can dynamically fetch and resolve trust and metadata for a
         given protocol through the use of third-party trust anchor. A trust
-        anchor is an Entity whose main purpose is to issue Statements
+        anchor is an Entity whose main purpose is to issue statements
         about entities, such as OpenID Connect Relying Parties, OpenID
         Providers, and participating organizations.
         An identity federation can be realized using this specification using
@@ -274,7 +274,7 @@
             <t hangText="iss">
               <vspace/>
               REQUIRED. The Entity identifier of the issuer of
-              the Statement. If the <spanx style="verb">iss</spanx> and
+              the statement. If the <spanx style="verb">iss</spanx> and
               the <spanx style="verb">sub</spanx> are identical, the
               issuer is making a Statement about itself and this Entity Statement
               is an Entity Configuration.
@@ -285,7 +285,7 @@
             </t>
             <t hangText="iat">
               <vspace/>
-              REQUIRED. The time the Statement was issued.
+              REQUIRED. The time the statement was issued.
               Its value is a JSON number representing the number of seconds from
               1970-01-01T0:0:0Z as measured in UTC until the date/time.
               See <xref target="RFC3339"/> for
@@ -294,7 +294,7 @@
             <t hangText="exp">
               <vspace/>
               REQUIRED.
-              Expiration time on or after which the Statement MUST NOT be
+              Expiration time on or after which the statement MUST NOT be
               accepted for processing. Its value is a JSON number representing
               the number of seconds from 1970-01-01T0:0:0Z as measured in UTC
               until the date/time.
@@ -416,14 +416,14 @@
               header parameters that MUST be
               understood and processed.
               Its value is an array listing the policy language extensions
-              present in the policy language Statements that use those
+              present in the policy language statements that use those
               extensions.
               If any of the listed extension policy language extensions are not
               understood and supported by the recipient, then the Entity
               Statement is invalid.
               Producers MUST NOT include policy language names defined by this
               specification or
-              names that do not occur in policy language Statements in the
+              names that do not occur in policy language statements in the
               Entity Statement
               in the <spanx style="verb">policy_language_crit</spanx> list.
               Producers MUST NOT use the empty list
@@ -473,7 +473,7 @@
           (JWS)</xref>. Entities MUST support signing Entity Statements with
           the RSA SHA-256 algorithm (an <spanx style="verb">alg</spanx>
       value of <spanx style="verb">RS256</spanx>). Consequently,
-          entities MUST support signature verification where the Statement was
+          entities MUST support signature verification where the statement was
           signed using RS256.
         </t>
 
@@ -2246,7 +2246,7 @@ Content-Type: application/entity-statement+jwt
           To fetch an Entity Statement, an Entity needs to know the
           identifier of the Entity to ask (the issuer), the fetch
           endpoint of that Entity and the identifier of the Entity that you
-          want the Statement to be about (the subject).
+          want the statement to be about (the subject).
         </t>
 
         <section title="Fetch Entity Statements Request"
@@ -2524,7 +2524,7 @@ Host: openid.sunet.se
         <t>
           An Entity MAY query another Entity for a list of all the
           entities immediately subordinate to that Entity and about which
-          that Entity is prepared to issue Statements about.
+          that Entity is prepared to issue statements about.
           (In some cases, this MAY be a very large list.)
         </t>
 
@@ -2786,7 +2786,7 @@ Content-Type: application/json
               For each Entity Statement ES[j] j=i,..,0:
               <list style="symbols">
                 <t>
-                  Verify that the Statement contains all the required claims.
+                  Verify that the statement contains all the required claims.
                 </t>
                 <t>
                   Verify that <spanx style="verb">iat</spanx> has a value in the
@@ -2822,7 +2822,7 @@ Content-Type: application/json
         </t>
         <t>
           Verifying the signature is a much more expensive
-          operation than verifying the correctness of the Statement and the
+          operation than verifying the correctness of the statement and the
           timestamps. An implementer MAY therefore choose to not verify the
           signature until all the other checks have been done.
         </t>
@@ -3036,7 +3036,7 @@ Content-Type: application/json
                   <vspace/>
                   MUST NOT be present. This together with the value of
           <spanx style="verb">aud</spanx>
-                  SHOULD make reuse of the Statement for
+                  SHOULD make reuse of the statement for
           <spanx style="verb">private_key_jwt</spanx>
           client authentication not feasible.
                 </t>
