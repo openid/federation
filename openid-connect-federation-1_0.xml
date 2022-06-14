@@ -5,7 +5,7 @@
 <!--
   NOTE:  This XML file is input used to produce the authoritative copy of an
   OpenID Foundation specification.  The authoritative copy is the HTML output.
-  This XML source file is not authoritative.  The statement ipr="none" is
+  This XML source file is not authoritative.  The Statement ipr="none" is
   present only to satisfy the document compilation tool and is not indicative
   of the IPR status of this specification.  The IPR for this specification is
   described in the "Notices" section.  This is a public OpenID Foundation
@@ -114,7 +114,7 @@
         This specification describes how two entities that would like to
         interact can dynamically fetch and resolve trust and metadata for a
         given protocol through the use of third-party trust anchor. A trust
-        anchor is an Entity whose main purpose is to issue statements
+        anchor is an Entity whose main purpose is to issue Statements
         about entities, such as OpenID Connect Relying Parties, OpenID
         Providers, and participating organizations.
         An idEntity federation can be realized using this specification using
@@ -180,7 +180,7 @@
             </t>
             <t hangText="Entity Configuration">
               <vspace/>
-              An Entity statement issued by an Entity about itself. It contains
+              An Entity Statement issued by an Entity about itself. It contains
               the entities' signing keys and further data used to control the
               trust chain resolution process, such as authority hints.
             </t>
@@ -229,7 +229,7 @@
       <t>
         Once you have followed a path, you have collected a set of Entity Statements
         that forms a chain. You can verify that this chain has not been tampered
-        with by verifying the signature of each statement. How this is
+        with by verifying the signature of each Statement. How this is
         done is described in <xref target="trust_chain"/>.
       </t>
       <t>
@@ -274,9 +274,9 @@
             <t hangText="iss">
               <vspace/>
               REQUIRED. The Entity identifier of the issuer of
-              the statement. If the <spanx style="verb">iss</spanx> and
+              the Statement. If the <spanx style="verb">iss</spanx> and
               the <spanx style="verb">sub</spanx> are identical, the
-              issuer is making a statement about itself and this Entity Statement
+              issuer is making a Statement about itself and this Entity Statement
               is an Entity Configuration.
             </t>
             <t hangText="sub">
@@ -285,7 +285,7 @@
             </t>
             <t hangText="iat">
               <vspace/>
-              REQUIRED. The time the statement was issued.
+              REQUIRED. The time the Statement was issued.
               Its value is a JSON number representing the number of seconds from
               1970-01-01T0:0:0Z as measured in UTC until the date/time.
               See <xref target="RFC3339"/> for
@@ -294,7 +294,7 @@
             <t hangText="exp">
               <vspace/>
               REQUIRED.
-              Expiration time on or after which the statement MUST NOT be
+              Expiration time on or after which the Statement MUST NOT be
               accepted for processing. Its value is a JSON number representing
               the number of seconds from 1970-01-01T0:0:0Z as measured in UTC
               until the date/time.
@@ -306,7 +306,7 @@
               representing the public part of the subject
               Entity's signing keys. The corresponding private key is
               used by leaf entities to sign Entity Statements about themselves,
-              and intermediate entities to sign statements about other entities.
+              and intermediate entities to sign Statements about other entities.
               The keys that can be found here are intended to sign
               Entity Statements and SHOULD NOT be used in other protocols. Keys
               to be used in other protocols, such as OpenID Connect, are conveyed
@@ -342,15 +342,15 @@
               identifier, and each value MUST be a JSON object representing
               the metadata according to the metadata schema of that metadata
               type. An Entity Statement MAY contain multiple
-              metadata statements, but only one for each metadata type.
-              If the Entity statement is an Entity configuration,
-              then the Entity statement MUST contain a
+              metadata Statements, but only one for each metadata type.
+              If the Entity Statement is an Entity configuration,
+              then the Entity Statement MUST contain a
               <spanx style="verb">metadata</spanx>
               claim.
               If <spanx style="verb">iss</spanx> and
               <spanx style="verb">sub</spanx>
               are not the same,
-              then the Entity statement MAY contain a
+              then the Entity Statement MAY contain a
               <spanx style="verb">metadata</spanx>
               claim containing metadata asserted by a superior about the
               Entity identified by <spanx style="verb">sub</spanx>.
@@ -362,8 +362,8 @@
               Each key of the JSON object represents a metadata type
               identifier, and each value MUST be a JSON object representing
               the metadata policy according to the metadata schema of that
-              metadata type. An Entity statement MAY contain multiple
-              metadata policy statements, but only one for each metadata type.
+              metadata type. An Entity Statement MAY contain multiple
+              metadata policy Statements, but only one for each metadata type.
               Only non-leaf entities MAY contain a
               <spanx style="verb">metadata_policy</spanx>
               claim. Leaf entities MUST NOT contain a
@@ -378,24 +378,24 @@
             <t hangText="crit">
               <vspace/>
               OPTIONAL.
-              The <spanx style="verb">crit</spanx> (critical) Entity statement
+              The <spanx style="verb">crit</spanx> (critical) Entity Statement
               claim
-              indicates that extensions to Entity statement claims defined by
+              indicates that extensions to Entity Statement claims defined by
               this specification
               are being used that MUST be understood and processed.
               It is used in the same way that
               <spanx style="verb">crit</spanx>
               is used for extension <xref target="RFC7515">JWS</xref> header
               parameters that MUST be understood and processed.
-              Its value is an array listing the Entity statement claims
-              present in the Entity statement that use those extensions.
-              If any of the listed extension Entity statement claims are not
+              Its value is an array listing the Entity Statement claims
+              present in the Entity Statement that use those extensions.
+              If any of the listed extension Entity Statement claims are not
               understood and supported by the recipient, then the Entity
-              statement is invalid.
-              Producers MUST NOT include Entity statement claim names defined by
+              Statement is invalid.
+              Producers MUST NOT include Entity Statement claim names defined by
               this specification or
-              names that do not occur as Entity statement claim names in the
-              Entity statement
+              names that do not occur as Entity Statement claim names in the
+              Entity Statement
               in the <spanx style="verb">crit</spanx> list.
               Producers MUST NOT use the empty list
               <spanx style="verb">[]</spanx>
@@ -405,7 +405,7 @@
               <vspace/>
               OPTIONAL.
               The <spanx style="verb">policy_language_crit</spanx> (critical)
-              Entity statement claim
+              Entity Statement claim
               indicates that extensions to the policy language defined by this
               specification
               are being used that MUST be understood and processed.
@@ -416,15 +416,15 @@
               header parameters that MUST be
               understood and processed.
               Its value is an array listing the policy language extensions
-              present in the policy language statements that use those
+              present in the policy language Statements that use those
               extensions.
               If any of the listed extension policy language extensions are not
               understood and supported by the recipient, then the Entity
-              statement is invalid.
+              Statement is invalid.
               Producers MUST NOT include policy language names defined by this
               specification or
-              names that do not occur in policy language statements in the
-              Entity statement
+              names that do not occur in policy language Statements in the
+              Entity Statement
               in the <spanx style="verb">policy_language_crit</spanx> list.
               Producers MUST NOT use the empty list
               <spanx style="verb">[]</spanx>
@@ -450,7 +450,7 @@
               OPTIONAL.
               A trust anchor MAY use this claim to tell which trust mark identifiers
               and their issuers are trusted by the federation.
-              This claim MUST be ignored if present in an Entity statement of other entities
+              This claim MUST be ignored if present in an Entity Statement of other entities
               than trust anchor.
               It is a JSON array with keys representing trust mark identifiers and values
               being an array of trusted entities representing the accreditation authority.
@@ -468,12 +468,12 @@
           </list>
         </t>
         <t>
-          The Entity statement is signed using the private key of the issuer
+          The Entity Statement is signed using the private key of the issuer
           Entity, in the form of a <xref target="RFC7515">JSON Web Signature
           (JWS)</xref>. Entities MUST support signing Entity Statements with
           the RSA SHA-256 algorithm (an <spanx style="verb">alg</spanx>
       value of <spanx style="verb">RS256</spanx>). Consequently,
-          entities MUST support signature verification where the statement was
+          entities MUST support signature verification where the Statement was
           signed using RS256.
         </t>
 
@@ -493,11 +493,11 @@
 
         <figure>
           <preamble>
-            The following is a non-normative example of an Entity statement
+            The following is a non-normative example of an Entity Statement
             before
             serialization and adding a signature. The example contains
             a critical extension <spanx style="verb">jti</spanx> (JWT ID) to the
-            Entity statement and one critical extension to the policy language
+            Entity Statement and one critical extension to the policy language
             <spanx style="verb">regexp</spanx>
             (Regular expression).
           </preamble>
@@ -573,36 +573,36 @@
         </t>
         <t>
           A trust chain begins with a leaf Entity's self-signed Entity
-          statement, has zero or more Entity statements
+          Statement, has zero or more Entity Statements
           issued by intermediates about subordinates, and ends with an
-          Entity statement issued by the trust anchor about the top-most
+          Entity Statement issued by the trust anchor about the top-most
           intermediate (if there are intermediates) or the leaf Entity
           (if there are no intermediates).
         </t>
         <t>
           A simple example: If we have an RP that belongs to organization A
           that is a member of federation F, the trust chain for such a setup
-          will contain the following Entity statements:
+          will contain the following Entity Statements:
           <list style="numbers">
             <t>
-              a self-signed Entity statement about the RP published by the RP,
+              a self-signed Entity Statement about the RP published by the RP,
             </t>
             <t>
-              an Entity statement about the RP published by Organization A, and
+              an Entity Statement about the RP published by Organization A, and
             </t>
             <t>
-              an Entity statement about Organization A published by Federation F.
+              an Entity Statement about Organization A published by Federation F.
             </t>
           </list>
         </t>
         <t>
           A trust chain MUST always be possible to order such that:
-          If we name the Entity statements ES[0] (the leaf Entity's
-          self-signed Entity statement) to ES[i] (an Entity statement issued
+          If we name the Entity Statements ES[0] (the leaf Entity's
+          self-signed Entity Statement) to ES[i] (an Entity Statement issued
           by the trust anchor), i>0 then:
           <list style="symbols">
             <t>
-              The <spanx style="verb">iss</spanx> Entity in one Entity statement
+              The <spanx style="verb">iss</spanx> Entity in one Entity Statement
               is always the
               <spanx style="verb">sub</spanx>
               Entity in the next.
@@ -667,7 +667,7 @@
           <xref target="OpenID.Registration">OpenID Connect Dynamic Client
             Registration 1.0
           </xref>
-          are allowed in a metadata statement.
+          are allowed in a metadata Statement.
         </t>
         <t>
           To that list is added:
@@ -692,7 +692,7 @@
               OPTIONAL. A URI pointing to a signed JWT having the Entity's
               JWK Set as its payload. The JWT is signed with a key that was included
               in the JWK that the Entity published in its self-signed Entity
-              statement.
+              Statement.
               If an RP can use <spanx style="verb">signed_jwks_uri</spanx>,
               it MUST NOT use <spanx style="verb">jwks</spanx> or
               <spanx style="verb">jwks_uri</spanx>.
@@ -770,7 +770,7 @@
 
 <figure>
 <preamble>
-            The following is a non-normative example of an RP's Entity statement:
+            The following is a non-normative example of an RP's Entity Statement:
           </preamble>
 
           <artwork><![CDATA[
@@ -818,7 +818,7 @@
 <t>
 Note: An OpenID Connect RP MUST only use the keys published in a suitable element, such as <spanx style="verb">jwks</spanx>
 or <spanx style="verb">jwks_uri</spanx> or <spanx style="verb">signed_jwks_uri</spanx>, underneath the
-<spanx style="verb">metadata/openid_relying_party</spanx> element of the respective Entity statement for the OpenID Connect protocol.
+<spanx style="verb">metadata/openid_relying_party</spanx> element of the respective Entity Statement for the OpenID Connect protocol.
 The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that purpose.
 </t>
       </section>
@@ -967,7 +967,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
               OPTIONAL. A URI pointing to a signed JWT having the Entity's
               JWK Set as its payload. The JWT is signed with a key that was included
               in the JWK Set that the Entity published in its self-signed Entity
-              statement.
+              Statement.
             </t>
             <t hangText="jwks">
               <vspace/>
@@ -989,7 +989,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
         </t>
 
         <t>
-          The following is a non-normative example of an OP's Entity statement:
+          The following is a non-normative example of an OP's Entity Statement:
         </t>
         <figure>
           <artwork><![CDATA[
@@ -1067,7 +1067,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
         <t>
 Note: An OpenID Connect OP MUST only use the keys published in a suitable element, such as <spanx style="verb">jwks</spanx>
 or <spanx style="verb">jwks_uri</spanx> or <spanx style="verb">signed_jwks_uri</spanx>, underneath the
-<spanx style="verb">metadata/openid_provider</spanx> element of the respective Entity statement for the OpenID Connect protocol.
+<spanx style="verb">metadata/openid_provider</spanx> element of the respective Entity Statement for the OpenID Connect protocol.
 The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for that purpose.
 </t>
 
@@ -1445,7 +1445,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           <t>
             If there is more than one metadata policy in a trust chain, then the
             policies
-            MUST be combined before they are applied to the metadata statement.
+            MUST be combined before they are applied to the metadata Statement.
           </t>
           <t>
             Using the notation we have defined in <xref target="trust_chain"/>, policies are
@@ -1658,8 +1658,8 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         </section>
       <section title="Enforcing Policy">
         <t>
-          If applying policies to a metadata statement results in incorrect
-          metadata, then such a metadata statement MUST
+          If applying policies to a metadata Statement results in incorrect
+          metadata, then such a metadata Statement MUST
           be regarded as broken and MUST NOT be used.
         </t>
       </section>
@@ -1781,8 +1781,8 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           <list style="hanging">
             <t hangText="max_path_length">
               <vspace/>
-              OPTIONAL. Integer. The maximum number of Entity statements
-              between this Entity statement and the last Entity statement in
+              OPTIONAL. Integer. The maximum number of Entity Statements
+              between this Entity Statement and the last Entity Statement in
               the trust chain.
             </t>
             <t hangText="naming_constraints">
@@ -1813,12 +1813,12 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
 ]]></artwork>
         </figure>
         <t>
-          If a subordinate Entity statement contains a constraint specification
+          If a subordinate Entity Statement contains a constraint specification
           that is more restrictive than the one in effect, then the more
           restrictive constraint is in effect from here on.
         </t>
         <t>
-          If a subordinate Entity statement contains a constraint specification
+          If a subordinate Entity Statement contains a constraint specification
           that is less restrictive than the one in effect, then it MUST be
           ignored.
         </t>
@@ -1827,15 +1827,15 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             The <spanx style="verb">max_path_length</spanx> constraint specifies
             the
             maximum number of
-            Entity statements a trust chain can have between the Entity statement
+            Entity Statements a trust chain can have between the Entity Statement
             that contains the constraint specification and the leaf's Entity
-            statement.
+            Statement.
           </t>
           <t>
             A <spanx style="verb">max_path_length</spanx> constraint of zero
             indicates that no
-            Entity statement MAY appear between this Entity statement and the
-            leaf Entity statement. Where it appears, the
+            Entity Statement MAY appear between this Entity Statement and the
+            leaf Entity Statement. Where it appears, the
         <spanx style="verb">max_path_length</spanx> constraint
             MUST have a value that is greater than or equal to zero.
             Where <spanx style="verb">max_path_length</spanx> does not appear,
@@ -1843,7 +1843,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             limit is imposed.
           </t>
           <t>
-            Assuming that we have a trust chain with four Entity statements:
+            Assuming that we have a trust chain with four Entity Statements:
             <list style="numbers">
               <t>Leaf Entity (LE)</t>
               <t>Intermediate 1 (I1)</t>
@@ -1885,7 +1885,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           <t>
             The <spanx style="verb">naming_constraints</spanx> member
         specifies a namespace within which all subject
-            Entity identifiers in subordinate Entity statements in a trust chain
+            Entity identifiers in subordinate Entity Statements in a trust chain
             MUST be located.
           </t>
           <t>
@@ -1915,13 +1915,13 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         </t>
         <t>
       Technically, trust marks as used by this specification are signed
-          JWTs that represent a statement of conformance to a well-scoped
+          JWTs that represent a Statement of conformance to a well-scoped
           set of trust and/or interoperability requirements.
         </t>
         <t>
       The trust marks are signed by a federation accredited
-          authority. The validation of such a signed statement is performed
-          in the same way that a self-signed Entity statement is validated.
+          authority. The validation of such a signed Statement is performed
+          in the same way that a self-signed Entity Statement is validated.
         </t>
         <t>
       Note that a federation MAY allow an Entity to self-sign
@@ -1987,7 +1987,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             A trust anchor MAY publish a list of accreditation authorities
             of trust marks that SHOULD be trusted by other federation entities.
             A trust anchor uses the <spanx style="verb">trust_marks_issuers</spanx> claim
-            in its Entity statement to publish this information.
+            in its Entity Statement to publish this information.
           </t>
           <t>
             For other externally issued trust marks, it is an out-of-band process
@@ -1998,7 +1998,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         </section>
         <section title="Trust Mark Examples" anchor="trust_example">
           <figure>
-            <preamble>A non-normative example of a trust mark claim inside an Entity statement is:</preamble>
+            <preamble>A non-normative example of a trust mark claim inside an Entity Statement is:</preamble>
             <artwork><![CDATA[
 {
   "iss": "https://rp.example.it/spid/",
@@ -2114,7 +2114,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         at the configuration endpoint. There is only one exception to this
         rule and that is for an RP that only does explicit registration. Since
         it
-        posts the self-signed Entity statement to the OP during client
+        posts the self-signed Entity Statement to the OP during client
         registration, the OP has everything it needs from the RP.
       </t>
       <section title="Federation Entity Configuration Request">
@@ -2143,7 +2143,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           response MUST contain metadata for a federation Entity.
         </t>
         <t>
-          A positive response is a signed Entity statement, where the content
+          A positive response is a signed Entity Statement, where the content
           type MUST be set to <spanx style="verb">application/Entity-statement+jwt</spanx>.
           In case of an error, the response
           will be a JSON object, the content type MUST be set to
@@ -2235,18 +2235,18 @@ Content-Type: application/Entity-statement+jwt
       </t>
       <section title="Fetching Entity Statements" anchor="fetch_endpoint">
         <t>
-          All entities that are expected to publish Entity statements about other
+          All entities that are expected to publish Entity Statements about other
           entities MUST expose a Fetch endpoint.
         </t>
         <t>
-          Fetching Entity statements is performed to collect Entity statements
+          Fetching Entity Statements is performed to collect Entity Statements
           one by one to gather trust chains.
         </t>
         <t>
-          To fetch an Entity statement, an Entity needs to know the
+          To fetch an Entity Statement, an Entity needs to know the
           identifier of the Entity to ask (the issuer), the fetch
           endpoint of that Entity and the identifier of the Entity that you
-          want the statement to be about (the subject).
+          want the Statement to be about (the subject).
         </t>
 
         <section title="Fetch Entity Statements Request"
@@ -2261,20 +2261,20 @@ Content-Type: application/Entity-statement+jwt
               <t hangText="iss">
                 <vspace/>
                 OPTIONAL. The Entity identifier of the issuer
-                from which you want an Entity statement issued. Because of the
+                from which you want an Entity Statement issued. Because of the
                 normalization of the URL, multiple issuers MAY resolve to a
                 shared fetch endpoint. This parameter makes it explicit exactly
-                which issuer you want Entity statements from. Without this
+                which issuer you want Entity Statements from. Without this
                 parameter, the issuer matches to the Entity at
                 which the request was made.
               </t>
               <t hangText="sub">
                 <vspace/>
                 OPTIONAL. The Entity identifier of the subject
-                for which you would like an Entity statement issued. If this
+                for which you would like an Entity Statement issued. If this
                 parameter is left out, it is considered to be the same as the
                 issuer and would indicate a request for a self-issued
-                statement.
+                Statement.
               </t>
               <t hangText="aud">
                 <vspace/>
@@ -2282,14 +2282,14 @@ Content-Type: application/Entity-statement+jwt
                 requester. If the <spanx style="verb">aud</spanx>
                     parameter is present in the request,
                 the <spanx style="verb">aud</spanx> claim SHOULD be present in
-                the Entity statement response and take exactly that value.
+                the Entity Statement response and take exactly that value.
               </t>
             </list>
           </t>
           <figure>
             <preamble>
               The following is a non-normative example of an API
-              request for an Entity statement:
+              request for an Entity Statement:
             </preamble>
             <artwork><![CDATA[
 GET /federation_fetch_endpoint?
@@ -2302,7 +2302,7 @@ Host: edugain.org
 
         <section title="Fetch Entity Statements Response">
           <t>
-            A positive response is a signed Entity statement where
+            A positive response is a signed Entity Statement where
             the content type MUST be set to
             <spanx style="verb">application/Entity-statement+jwt</spanx>.
             If it is a negative response, it will be a JSON object and the
@@ -2370,10 +2370,10 @@ Content-Type: application/Entity-statement+jwt
           An Entity MAY use the resolve endpoint to fetch
           resolved metadata and trust marks for an Entity as seen/trusted by
           the resolver. The resolver is supposed to fetch the subject's
-          self-signed Entity statement, collect a trust chain that starts
-          with the subject's Entity statement and ends with the specified
+          self-signed Entity Statement, collect a trust chain that starts
+          with the subject's Entity Statement and ends with the specified
           trust anchor, verify the trust chain and then apply all the
-          policies present in the trust chain to the Entity statements
+          policies present in the trust chain to the Entity Statements
           metadata. The resolver is also expected to verify that the
           present trust marks are active. If it finds trust marks that are
           not active, then those should be left out of the response set.
@@ -2434,10 +2434,10 @@ Host: openid.sunet.se
           <t>
             The response is a signed JWT containing resolved metadata and
             verified trust marks. The response MAY also contain 
-            the sequence of the Entity statements that compose the trust chain.
+            the sequence of the Entity Statements that compose the trust chain.
             The keys used by the resolver MUST be the
             same keys used to construct a self-signed
-            Entity statement.
+            Entity Statement.
           </t>
           <figure>
             <preamble>
@@ -2524,7 +2524,7 @@ Host: openid.sunet.se
         <t>
           An Entity MAY query another Entity for a list of all the
           entities immediately subordinate to that Entity and about which
-          that Entity is prepared to issue statements about.
+          that Entity is prepared to issue Statements about.
           (In some cases, this MAY be a very large list.)
         </t>
 
@@ -2720,7 +2720,7 @@ Content-Type: application/json
         remote peer MUST have the remote peer's Entity identifier and a list of
         Entity identifiers of trust anchors together with the public version
         of their signing keys. The Consumer will first have to fetch
-        sufficient Entity statements to establish at least one chain of trust
+        sufficient Entity Statements to establish at least one chain of trust
         from the remote peer to one or more of the configured trust anchors.
         After that the Entity MUST validate the trust chains independently,
         and -- if there are multiple valid trust chains and if the
@@ -2748,17 +2748,17 @@ Content-Type: application/json
         <t>
          With the list of all intermediates and the trust anchor, the respective
          federation API (see <xref target="federation_endpoints"/>) is used to fetch Entity
-         statements about the intermediates and the remote peer.
+         Statements about the intermediates and the remote peer.
         </t>
         <t>
          Note: The Consumer SHOULD NOT attempt to fetch
-          Entity statements it already has fetched during this
+          Entity Statements it already has fetched during this
           process (loop prevention).
         </t>
         <t>
           A successful operation will return one or more lists of
-          Entity statements. Each of the lists terminating in a self-signed
-          Entity statement is issued by a trust anchor.
+          Entity Statements. Each of the lists terminating in a self-signed
+          Entity Statement is issued by a trust anchor.
         </t>
         <t>
           If there is no path from the remote peer to at least one of the
@@ -2773,8 +2773,8 @@ Content-Type: application/json
         <t>
           As described in <xref target="trust_chain"/>,
           a trust chain consists of an ordered list of Entity
-          statements. So whichever way the Consumer has acquired the set of
-          Entity statements, it MUST now verify that it is a proper trust chain
+          Statements. So whichever way the Consumer has acquired the set of
+          Entity Statements, it MUST now verify that it is a proper trust chain
           using the rules laid out in that section.
         </t>
         <t>
@@ -2783,10 +2783,10 @@ Content-Type: application/json
         <t>
           <list style="symbols">
             <t>
-              For each Entity statement ES[j] j=i,..,0:
+              For each Entity Statement ES[j] j=i,..,0:
               <list style="symbols">
                 <t>
-                  Verify that the statement contains all the required claims.
+                  Verify that the Statement contains all the required claims.
                 </t>
                 <t>
                   Verify that <spanx style="verb">iat</spanx> has a value in the
@@ -2822,7 +2822,7 @@ Content-Type: application/json
         </t>
         <t>
           Verifying the signature is a much more expensive
-          operation than verifying the correctness of the statement and the
+          operation than verifying the correctness of the Statement and the
           timestamps. An implementer MAY therefore choose to not verify the
           signature until all the other checks have been done.
         </t>
@@ -2834,7 +2834,7 @@ Content-Type: application/json
           Note that the second bullet point means that, at each step in the
           trust chain resolution, it MUST be verified that the signing JWK is
           also present in the <spanx style="verb">jwks</spanx>
-      statement claim issued by the superior.
+      Statement claim issued by the superior.
         </t>
       </section>
       <section title="Choosing One of the Valid Trust Chains">
@@ -2851,7 +2851,7 @@ Content-Type: application/json
       <section anchor="trust_lifetime"
                title="Calculating the Expiration Time of a Trust Chain">
         <t>
-          Each Entity statement in a trust chain is signed and MUST have an
+          Each Entity Statement in a trust chain is signed and MUST have an
           expiration time (<spanx style="verb">exp</spanx>) set.
           The expiration time of the whole trust
           chain is set to the minimum value of
@@ -2880,7 +2880,7 @@ Content-Type: application/json
           If a leaf Entity publishes its public keys in the metadata part
           using <spanx style="verb">jwks</spanx>, setting an expiration time on
           the self-signed Entity
-          statement can be used to control how often the receiving Entity is
+          Statement can be used to control how often the receiving Entity is
           fetching an updated version of the public key.
         </t>
       </section>
@@ -2888,10 +2888,10 @@ Content-Type: application/json
       <section title="Key Rollover for a Trust Anchor"
                anchor="key_rollover_anchor">
         <t>
-          A trust anchor MUST publish a self-signed Entity statement about
+          A trust anchor MUST publish a self-signed Entity Statement about
           itself. The trust anchor SHOULD set a reasonable expiration
-          time on that statement, such that the consumers will re-fetch the
-          Entity statement at reasonable intervals. If the trust anchor wants to
+          time on that Statement, such that the consumers will re-fetch the
+          Entity Statement at reasonable intervals. If the trust anchor wants to
           roll over its signing keys it would have to:
         </t>
         <t>
@@ -2901,7 +2901,7 @@ Content-Type: application/json
               the trust anchors signing keys.
             </t>
             <t>
-              Keep signing the Entity statement using
+              Keep signing the Entity Statement using
               the old keys for a long enough time period to allow all
               subordinates to have gotten access to the new keys.
             </t>
@@ -2920,14 +2920,14 @@ Content-Type: application/json
       <section title="Redundant Retrieval of Trust Anchor Keys" anchor="TrustAnchorKeys">
     <t>
       It is RECOMMENDED that Federation Operators provide a means of retrieving the public keys
-      for Trust Anchors that it administers that is independent of the Entity statements
+      for Trust Anchors that it administers that is independent of the Entity Statements
       for those Trust Anchors.
       This is intended to provide redundancy in the eventuality of the compromise of
-      the Web PKI infrastructure underlying retrieval of public keys from Entity statements.
+      the Web PKI infrastructure underlying retrieval of public keys from Entity Statements.
     </t>
     <t>
       The keys retreived via the independent mechanism specified by the Federation Operator
-      SHOULD be be compared to those retreived via the trust anchor's Entity statement.
+      SHOULD be be compared to those retreived via the trust anchor's Entity Statement.
       If they do not match, both SHOULD be retrieved again.
       If they still do not match, it is indicative of a security or configuration problem.
       The appropriate remediation steps in that eventuality SHOULD be specified by the Federation Operator.
@@ -2992,7 +2992,7 @@ Content-Type: application/json
             </t>
             <t>
               The Client ID MUST be a URL from which the OP can
-              fetch the RP's self-signed Entity statement using the process
+              fetch the RP's self-signed Entity Statement using the process
               described in <xref target="federation_configuration"/>.
             </t>
             <t>
@@ -3036,7 +3036,7 @@ Content-Type: application/json
                   <vspace/>
                   MUST NOT be present. This together with the value of
           <spanx style="verb">aud</spanx>
-                  SHOULD make reuse of the statement for
+                  SHOULD make reuse of the Statement for
           <spanx style="verb">private_key_jwt</spanx>
           client authentication not feasible.
                 </t>
@@ -3118,7 +3118,7 @@ https://server.example.com/authorize?
                 registered as a known
                 client, then the OP SHOULD try to resolve and fetch trust
                 chains starting with the RP's Entity
-                statement as described in <xref target="fetching-es"/>.
+                Statement as described in <xref target="fetching-es"/>.
               </t>
               <t>
                 The OP MUST then validate the possible trust chains, as
@@ -3229,7 +3229,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                 registered as a known client and the OP supports the request
                 authentication method used then the OP SHOULD try to resolve and
                 fetch trust chains starting with the RP's Entity
-                statement as described in <xref target="fetching-es"/>.
+                Statement as described in <xref target="fetching-es"/>.
               </t>
               <t>
                 The OP SHOULD validate the possible trust chains, as described
@@ -3328,7 +3328,7 @@ HTTP/1.1 302 Found
             Registration 1.0
           </xref>
           but where the client registration request
-          is a signed Entity statement.
+          is a signed Entity Statement.
         </t>
         <section anchor="Clireg" title="Client Registration">
           <section anchor="Cliregreq" title="Client Registration Request">
@@ -3359,16 +3359,16 @@ HTTP/1.1 302 Found
                   its own set that terminate in those trust anchors.
                 </t>
                 <t>
-                  The RP will now construct a self-signed Entity statement
-                  where the metadata statement chosen is influenced by the OP's
+                  The RP will now construct a self-signed Entity Statement
+                  where the metadata Statement chosen is influenced by the OP's
                   metadata and the <spanx style="verb">authority_hints</spanx> included
                   are picked by the process described above.
                   Note that the <spanx style="verb">aud</spanx> claim in the
-                  Entity statement is REQUIRED
+                  Entity Statement is REQUIRED
                   in this case and MUST be set to the OP issuer identifier.
                 </t>
                 <t>
-                  The Entity statement is sent, using POST, to the
+                  The Entity Statement is sent, using POST, to the
                   <spanx style="verb">federation_registration_endpoint</spanx>
                   defined in this document. The content type MUST be set to
                   <spanx style="verb">application/Entity-statement+jwt</spanx>.
@@ -3381,7 +3381,7 @@ HTTP/1.1 302 Found
             <section title="OP Constructing the Response">
               <t>
                 The trust chains MUST be constructed using the received
-                Entity statement.
+                Entity Statement.
               </t>
               <t>
                 <list style="numbers">
@@ -3410,18 +3410,18 @@ HTTP/1.1 302 Found
                   </t>
                   <t>
                     The OP will now construct a metadata policy that, if
-                    applied to the RP's metadata statement, will result in
+                    applied to the RP's metadata Statement, will result in
                     metadata that the OP finds acceptable.
                     Note
                     that the Client ID the OP chooses does not have to be
                     the same as the Entity identifier of the RP.
-                    To the Entity statement it will add a
+                    To the Entity Statement it will add a
                     <spanx style="verb">trust_anchor_id</spanx>
                     claim, containing the trust anchor chosen above.
                   </t>
                   <t>
                     It will sign and return the registration response (a signed
-                    Entity statement) to the RP.
+                    Entity Statement) to the RP.
                   </t>
                 </list>
               </t>
@@ -3432,10 +3432,10 @@ HTTP/1.1 302 Found
                 <list style="numbers">
                   <t>
                     The RP verifies the correctness of the received Entity
-                    statement, making sure that the trust chains starting at the
+                    Statement, making sure that the trust chains starting at the
                     <spanx style="verb">authority_hints</spanx>
                     terminate in trust anchors that were
-                    referenced in the Entity statement it sent to the OP.
+                    referenced in the Entity Statement it sent to the OP.
                   </t>
                   <t>
                     The RP MUST NOT apply metadata policies from the trust
@@ -3447,7 +3447,7 @@ HTTP/1.1 302 Found
                     Once it has applied those policies, it can then apply
                     the policy returned from the OP.
                     When it has applied all the metadata policies to its
-                    metadata statement, it then stores
+                    metadata Statement, it then stores
                     the result and can continue communicating with the OP
                     using the agreed-upon metadata.
                   </t>
@@ -3459,7 +3459,7 @@ HTTP/1.1 302 Found
                     metadata.
                   </t>
                   <t>
-                    If the RP does not accept the received Entity statement for
+                    If the RP does not accept the received Entity Statement for
                     some
                     reason,
                     then it has the choice to restart the
@@ -3474,7 +3474,7 @@ HTTP/1.1 302 Found
         <section title="After Client Registration">
           <t>
             A client registration using this specification is not expected to
-            be valid forever. The Entity statements exchanged all have
+            be valid forever. The Entity Statements exchanged all have
             expiration times, which means that the registration will eventually
             time out. An OP can also, for administrative reasons, decide that a
             client registration is not valid anymore. An example of this could
@@ -3488,7 +3488,7 @@ HTTP/1.1 302 Found
             <t>
               <list style="numbers">
                 <t>
-                  Starting with the OP's Entity statement, resolve and verify
+                  Starting with the OP's Entity Statement, resolve and verify
                   the trust chains it chooses to use when constructing the
                   registration request. If those trust chains do not exist
                   anymore or do not verify, then the registration SHOULD be
@@ -3496,8 +3496,8 @@ HTTP/1.1 302 Found
                   started.
                 </t>
                 <t>
-                  If the OP's Entity statement was properly formed the RP must
-                  now verify that the Entity statement it received about itself
+                  If the OP's Entity Statement was properly formed the RP must
+                  now verify that the Entity Statement it received about itself
                   from the OP is still valid.
                   Again, if that is not the case the registration
                   SHOULD be regarded as invalid and a new registration process
@@ -3547,7 +3547,7 @@ HTTP/1.1 302 Found
             The RP MUST validate any ID token as defined in Section 3.1.3.7. of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>. If the
             trust relationship between RP and OP was established using OpenID Federation, the key material used for ID Token signature validation MUST
             be obtained from the OP's metadata the RP obtained as a result of trust chain validation as defined in <xref target="resolving_trust"/>
-            and combining the metadata policies from the Entity statements of the trust chain as described in <xref target="metadata_policy"/>.
+            and combining the metadata policies from the Entity Statements of the trust chain as described in <xref target="metadata_policy"/>.
         </t>
       </section>
     </section>
@@ -3816,7 +3816,7 @@ HTTP/1.1 302 Found
           </t>
           <t>
         Encoding considerations: binary;
-        An Entity statement is a JWT;
+        An Entity Statement is a JWT;
         JWT values are encoded as a
         series of base64url-encoded values (some of which may be the
         empty string) separated by period ('.') characters.
@@ -4144,15 +4144,15 @@ HTTP/1.1 302 Found
               Generate a signing key. This must be a public/private key pair.
             </t>
             <t>
-              Set up a signing service that can sign JWTs/Entity statements
+              Set up a signing service that can sign JWTs/Entity Statements
               using the federation operator's signing key.
             </t>
             <t>
-              Set up web services that can publish signed Entity statements.
+              Set up web services that can publish signed Entity Statements.
               You need at least two:
               one for the URL corresponding to the federation's Entity ID returning
-              self-signed Entity statements and the other one providing the fetch
-              Entity statement request API, as described in
+              self-signed Entity Statements and the other one providing the fetch
+              Entity Statement request API, as described in
               <xref target="fetch_statement"/>.
             </t>
           </list>
@@ -4164,11 +4164,11 @@ HTTP/1.1 302 Found
             <t>
               Providing the Entity with the
               federation's Entity ID and the public part of the key pairs used
-              by the federation operator for signing Entity statements.
+              by the federation operator for signing Entity Statements.
             </t>
             <t>
               Getting the Entity's Entity ID and the JWKS that the Entity
-              plans to publish in its self-signed Entity statement.
+              plans to publish in its self-signed Entity Statement.
             </t>
           </list>
         </t>
@@ -4190,7 +4190,7 @@ HTTP/1.1 302 Found
                anchor="op_discovery">
         <t>
           Metadata discovery is a sequence of steps that starts with the RP
-          fetching the self-signed Entity statement of the leaf (in this case
+          fetching the self-signed Entity Statement of the leaf (in this case
           https://op.umu.se) using the process defined in
           <xref target="federation_configuration"/>.
           What follows thereafter is this sequence of steps:
@@ -4217,22 +4217,22 @@ HTTP/1.1 302 Found
           described above.
         </t>
         <t>
-          When building the trust chain, the Entity statements issued
+          When building the trust chain, the Entity Statements issued
           by a superior about its subordinate are used together with the
-          self-signed Entity statement issued by the leaf.
+          self-signed Entity Statement issued by the leaf.
         </t>
         <t>
-          The self-signed Entity statement concerning intermediates is not
+          The self-signed Entity Statement concerning intermediates is not
           part of the trust chain.
         </t>
         <section title="Configuration Information for op.umu.se">
-          <t>The LIGO WIKI RP fetches the self-signed Entity statement from the
+          <t>The LIGO WIKI RP fetches the self-signed Entity Statement from the
             OP (op.umu.se)
             using the process defined in <xref
                     target="federation_configuration"/>.
           </t>
           <figure>
-            <preamble>The result is this Entity statement.</preamble>
+            <preamble>The result is this Entity Statement.</preamble>
             <artwork><![CDATA[
 {
   "authority_hints": [
@@ -4303,11 +4303,11 @@ HTTP/1.1 302 Found
             intermediate https://umu.se. So that is the next step.
           </t>
           <t>
-            This Entity statement is the first link in the trust chain.
+            This Entity Statement is the first link in the trust chain.
           </t>
         </section>
         <section title="Configuration Information for 'https://umu.se'">
-          <t>The LIGO RP fetches the self-signed Entity statement from
+          <t>The LIGO RP fetches the self-signed Entity Statement from
             "https://umu.se" using the process defined in
             <xref target="federation_configuration"/>.
           </t>
@@ -4352,7 +4352,7 @@ Host: umu.se
           </figure>
           <t>
             The only piece of information that is used from this Entity
-            statement is
+            Statement is
             the <spanx style="verb">federation_fetch_endpoint</spanx>,
             which is used in the next step.
           </t>
@@ -4432,7 +4432,7 @@ Host: umu.se
           </t>
         </section>
         <section title="Configuration Information for 'https://swamid.se'">
-          <t>The LIGO Wiki RP fetches the self-signed Entity statement from
+          <t>The LIGO Wiki RP fetches the self-signed Entity Statement from
             "https://swamid.se" using the process defined in
             <xref target="federation_configuration"/>.
           </t>
@@ -4478,7 +4478,7 @@ Host: swamid.se
           </figure>
           <t>
             The only piece of information that is used from this Entity
-            statement is
+            Statement is
             the <spanx style="verb">federation_fetch_endpoint</spanx>,
             which is used in the next step.
           </t>
@@ -4551,14 +4551,14 @@ Host: swamid.se
             This is the third link in the trust chain.
           </t>
           <t>
-            If we assume that the issuer of this Entity statement is not in the
+            If we assume that the issuer of this Entity Statement is not in the
             list of trust anchors the LIGO Wiki RP has access to, we have to go
             one step further.
           </t>
         </section>
         <section
                 title="Configuration Information for 'https://edugain.geant.org'">
-          <t>RP fetches the self-signed Entity statement from
+          <t>RP fetches the self-signed Entity Statement from
             "https://edugain.geant.org" using the process defined in
             <xref target="federation_configuration"/>.
           </t>
@@ -4657,18 +4657,18 @@ Host: geant.org
 ]]></artwork>
           </figure>
           <t>
-            If we assume that the issuer of this statement appears in the list
+            If we assume that the issuer of this Statement appears in the list
             of trust anchors the LIGO Wiki RP has access to this would be
-            the fourth and final Entity statement in the trust chain.
+            the fourth and final Entity Statement in the trust chain.
           </t>
           <t>
-            We now have the whole chain from the self-signed Entity statement of
+            We now have the whole chain from the self-signed Entity Statement of
             the
             leaf up until the last one that is issued by a trust anchor. All in
             all,
             we have:
             <list style="numbers">
-              <t>Self-signed Entity statement by the leaf (https://op.umu.se)
+              <t>Self-signed Entity Statement by the leaf (https://op.umu.se)
               </t>
               <t>Statement issued by https://umu.se about https://op.umu.se</t>
               <t>Statement issued by https://swamid.se about https://umu.se</t>
@@ -4677,7 +4677,7 @@ Host: geant.org
               </t>
             </list>
           </t>
-          <t>We also have the self-signed Entity statements from https://umu.se,
+          <t>We also have the self-signed Entity Statements from https://umu.se,
             https://swamid.se and https://edugain.geant.org about themselves but
             those are not used in the trust chain verification.
           </t>
@@ -4693,11 +4693,11 @@ Host: geant.org
           <t>Having verified the chain, the LIGO Wiki RP can proceed with the
             next step.
           </t>
-          <t>Combining the metadata policies from the tree Entity statements we
+          <t>Combining the metadata policies from the tree Entity Statements we
             have by
             a superior about its subordinate and applying the combined policy
             to the
-            metadata statement that the leaf Entity presented, we get:
+            metadata Statement that the leaf Entity presented, we get:
           </t>
           <figure>
             <artwork><![CDATA[
@@ -4836,7 +4836,7 @@ Host: op.umu.se
             </t>
             <t>
               The OP starts to resolve metadata for the client identifier
-              https://wiki.ligo.org by fetching the self-issued Entity statement
+              https://wiki.ligo.org by fetching the self-issued Entity Statement
               using
               the process described in <xref target="federation_configuration"/>.
             </t>
@@ -4844,9 +4844,9 @@ Host: op.umu.se
               The process is the same as described in
               <xref target="op_discovery"/>
               and will result in a trust chain with the following Entity
-              statements:
+              Statements:
               <list style="numbers">
-                <t>Self-signed Entity statement by the leaf
+                <t>Self-signed Entity Statement by the leaf
                   https://wiki.ligo.org
                 </t>
                 <t>Statement issued by https://incommon.org about
@@ -4870,7 +4870,7 @@ Host: op.umu.se
               <xref target="trust_chain_validation"/>.
             </t>
             <t>
-              We will not list the complete Entity statements but only the
+              We will not list the complete Entity Statements but only the
               <spanx style="verb">metadata</spanx>
               and <spanx style="verb">metadata_policy</spanx> parts.
               There are two metadata policies:
@@ -4996,10 +4996,10 @@ Host: op.umu.se
             Here the LIGO Wiki RP sends a client registration request to the
             <spanx style="verb">federation_registration_endpoint</spanx>
         of the OP (op.umu.se).
-            What it sends is a self-signed Entity statement.
+            What it sends is a self-signed Entity Statement.
           </t>
           <t>
-            Once the OP has the Entity statement, it proceeds with the same
+            Once the OP has the Entity Statement, it proceeds with the same
             sequence of steps as laid out in <xref target="op_discovery"/>.
           </t>
           <t>
@@ -5028,7 +5028,7 @@ Host: op.umu.se
 ]]></artwork>
           </figure>
           <t>
-            Thus, the Entity statement returned by the OP to the RP MAY look
+            Thus, the Entity Statement returned by the OP to the RP MAY look
             like this:
           </t>
           <figure>
@@ -5397,18 +5397,18 @@ Host: op.umu.se
         -13
         <list style="symbols">
           <t>
-            Added 'trust_marks' as a parameter in the Entity statement.
+            Added 'trust_marks' as a parameter in the Entity Statement.
           </t>
           <t>
-            An RP's self-signed Entity statement MUST have the OP's issuer
+            An RP's self-signed Entity Statement MUST have the OP's issuer
             identifier
             as the value of 'aud'.
           </t>
           <t>
-            Added RS256 as default signing algorithm for Entity statements.
+            Added RS256 as default signing algorithm for Entity Statements.
           </t>
           <t>
-            Specified that the value of 'aud' in the Entity statement use in
+            Specified that the value of 'aud' in the Entity Statement use in
             automatic client registration MUST have the ASs authorization
             endpoint
             URL as value. Also, the 'sub' claim MUST NOT be present.
@@ -5422,13 +5422,13 @@ Host: op.umu.se
             publish and support a .well-known/openid-federation endpoint.
           </t>
           <t>
-            Every key in a JWK Set in an Entity statement MUST have a kid.
+            Every key in a JWK Set in an Entity Statement MUST have a kid.
           </t>
         </list>
         -12
         <list style="symbols">
           <t>
-            Made JWK Set OPTIONAL in an Entity statement returned by OP as response
+            Made JWK Set OPTIONAL in an Entity Statement returned by OP as response
             of an explicit client registration
           </t>
           <t>
@@ -5478,7 +5478,7 @@ Host: op.umu.se
             Incorporated additional review feedback from Marcos Sanz.
             The primary change was moving constraints to their own section of
             the
-            Entity statement.
+            Entity Statement.
           </t>
         </list>
       </t>
@@ -5509,7 +5509,7 @@ Host: op.umu.se
             Major changes were as follows.
           </t>
           <t>
-            Deleted <spanx style="verb">sub_is_leaf</spanx> Entity statement
+            Deleted <spanx style="verb">sub_is_leaf</spanx> Entity Statement
             since it was redundant.
           </t>
           <t>
@@ -5538,7 +5538,7 @@ Host: op.umu.se
           <t>
             Added <spanx style="verb">crit</spanx> and
             <spanx style="verb">policy_language_crit</spanx>,
-            enabling control over which Entity statement and policy language
+            enabling control over which Entity Statement and policy language
             extensions
             MUST be understood and processed.
           </t>
