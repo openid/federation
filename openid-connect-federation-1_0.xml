@@ -436,7 +436,7 @@
               a certification mark. Each object contains two claims:
               <list style="hanging">
                 <t hangText="id">
-                  The trust mark identifier
+                  The Trust Mark identifier
                 </t>
                 <t hangText="trust_mark">
                   A signed JSON Web Token that represents a certification mark.
@@ -448,13 +448,13 @@
             <t hangText="trust_marks_issuers">
               <vspace/>
               OPTIONAL.
-              A Trust Anchor MAY use this claim to tell which trust mark identifiers
+              A Trust Anchor MAY use this claim to tell which Trust Mark identifiers
               and their issuers are trusted by the federation.
               This claim MUST be ignored if present in an Entity Statement of other entities
               than Trust Anchor.
-              It is a JSON array with keys representing trust mark identifiers and values
+              It is a JSON array with keys representing Trust Mark identifiers and values
               being an array of trusted entities representing the accreditation authority.
-              A special value of <spanx style="verb">*</spanx> allows for self-signed trust marks.
+              A special value of <spanx style="verb">*</spanx> allows for self-signed Trust Marks.
               There is more about certification marks in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_anchor_id">
@@ -1144,7 +1144,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             <t hangText="federation_status_endpoint">
               <vspace/>
               OPTIONAL.
-              The trust mark status endpoint described in
+              The Trust Mark status endpoint described in
               <xref target="status_endpoint"/>. Trust mark issuers SHOULD
               publish a
                 <spanx style="verb">federation_status_endpoint</spanx>.
@@ -1205,7 +1205,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               <vspace/>
               OPTIONAL.
               The endpoint for the status operation is described in
-              <xref target="status_endpoint"/>. Issuers of trust marks
+              <xref target="status_endpoint"/>. Issuers of Trust Marks
               MAY publish a <spanx style="verb">status_endpoint</spanx>.
             </t>
           </list>
@@ -1914,38 +1914,38 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           by an accreditation authority".
         </t>
         <t>
-      Technically, trust marks as used by this specification are signed
+      Technically, Trust Marks as used by this specification are signed
           JWTs that represent a Statement of conformance to a well-scoped
           set of trust and/or interoperability requirements.
         </t>
         <t>
-      The trust marks are signed by a federation accredited
+      The Trust Marks are signed by a federation accredited
           authority. The validation of such a signed Statement is performed
           in the same way that a self-signed Entity Statement is validated.
         </t>
         <t>
       Note that a federation MAY allow an Entity to self-sign
-          some trust marks.
+          some Trust Marks.
         </t>
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
-          <t>These are the properties that can occur in a trust mark:</t>
+          <t>These are the properties that can occur in a Trust Mark:</t>
           <t>
             <list style="hanging">
               <t hangText="iss">
                 <vspace/>
-                REQUIRED. String. The issuer of the trust mark.
+                REQUIRED. String. The issuer of the Trust Mark.
               </t>
               <t hangText="sub">
                 <vspace/>
-                REQUIRED. String. The Entity this trust mark applies to.
+                REQUIRED. String. The Entity this Trust Mark applies to.
               </t>
               <t hangText="id">
                 <vspace/>
-                REQUIRED. String. An identifier of the trust mark.
+                REQUIRED. String. An identifier of the Trust Mark.
               </t>
               <t hangText="iat">
                 <vspace/>
-                REQUIRED. Number. When this trust mark was issued.
+                REQUIRED. Number. When this Trust Mark was issued.
         Expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
               </t>
               <t hangText="logo_uri">
@@ -1955,15 +1955,15 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               </t>
               <t hangText="exp">
                 <vspace/>
-                OPTIONAL. Number. When this trust mark is not valid anymore.
+                OPTIONAL. Number. When this Trust Mark is not valid anymore.
                 Expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
         If not present, it means that
-                the trust mark is valid forever.
+                the Trust Mark is valid forever.
               </t>
               <t hangText="ref">
                 <vspace/>
                 OPTIONAL. String. URL that points to information connected to
-                the issuance of this trust mark.
+                the issuance of this Trust Mark.
               </t>
             </list>
           </t>
@@ -1974,31 +1974,31 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           </t>
         </section>
         <section title="Validating a Trust Mark" anchor="trust_valid">
-          <t>An Entity SHOULD NOT try to validate a trust mark until
+          <t>An Entity SHOULD NOT try to validate a Trust Mark until
             it knows which Trust Anchors it wants to use.
           </t>
-          <t>Validating a trust mark issuer follows the procedure set out in
-            <xref target="resolving_trust"/>. Validating the trust mark
+          <t>Validating a Trust Mark issuer follows the procedure set out in
+            <xref target="resolving_trust"/>. Validating the Trust Mark
             itself is described in <xref target="status_endpoint"/>
           </t>
           <t>
             Note that the Entity representing the accreditation authority
-            SHOULD be well known and trusted for a given trust mark identifier.
+            SHOULD be well known and trusted for a given Trust Mark identifier.
             A Trust Anchor MAY publish a list of accreditation authorities
-            of trust marks that SHOULD be trusted by other federation entities.
+            of Trust Marks that SHOULD be trusted by other federation entities.
             A Trust Anchor uses the <spanx style="verb">trust_marks_issuers</spanx> claim
             in its Entity Statement to publish this information.
           </t>
           <t>
-            For other externally issued trust marks, it is an out-of-band process
+            For other externally issued Trust Marks, it is an out-of-band process
             to define and announce accreditation authorities to other entities
             and it is left to the discretion of the receiving party to assign
-            an appropriate level of trust to such trust marks.
+            an appropriate level of trust to such Trust Marks.
           </t>
         </section>
         <section title="Trust Mark Examples" anchor="trust_example">
           <figure>
-            <preamble>A non-normative example of a trust mark claim inside an Entity Statement is:</preamble>
+            <preamble>A non-normative example of a Trust Mark claim inside an Entity Statement is:</preamble>
             <artwork><![CDATA[
 {
   "iss": "https://rp.example.it/spid/",
@@ -2368,14 +2368,14 @@ Content-Type: application/entity-statement+jwt
       <section title="Resolve Entity Statement" anchor="resolve">
         <t>
           An Entity MAY use the resolve endpoint to fetch
-          resolved metadata and trust marks for an Entity as seen/trusted by
+          resolved metadata and Trust Marks for an Entity as seen/trusted by
           the resolver. The resolver is supposed to fetch the subject's
           self-signed Entity Statement, collect a Trust Chain that starts
           with the subject's Entity Statement and ends with the specified
           Trust Anchor, verify the Trust Chain and then apply all the
           policies present in the Trust Chain to the Entity Statements
           metadata. The resolver is also expected to verify that the
-          present trust marks are active. If it finds trust marks that are
+          present Trust Marks are active. If it finds Trust Marks that are
           not active, then those should be left out of the response set.
         </t>
 
@@ -2433,7 +2433,7 @@ Host: openid.sunet.se
         <section title="Resolve Response">
           <t>
             The response is a signed JWT containing resolved metadata and
-            verified trust marks. The response MAY also contain 
+            verified Trust Marks. The response MAY also contain 
             the sequence of the Entity Statements that compose the Trust Chain.
             The keys used by the resolver MUST be the
             same keys used to construct a self-signed
@@ -2571,8 +2571,8 @@ Content-Type: application/json
 
       <section title="Trust Mark Status" anchor="status_endpoint">
         <t>
-          This is to allow an Entity to check whether a trust mark is still
-          active or not. The query MUST be sent to the trust mark issuer.
+          This is to allow an Entity to check whether a Trust Mark is still
+          active or not. The query MUST be sent to the Trust Mark issuer.
         </t>
         <section title="Status request">
           <t>
@@ -2584,25 +2584,25 @@ Content-Type: application/json
             <list style="hanging">
               <t hangText="sub">
                 <vspace/>
-                OPTIONAL. The ID of the Entity to which the trust mark
+                OPTIONAL. The ID of the Entity to which the Trust Mark
                 was issued.
               </t>
               <t hangText="id">
                 <vspace/>
-                OPTIONAL. Identifier of the trust mark.
+                OPTIONAL. Identifier of the Trust Mark.
               </t>
               <t hangText="iat">
                 <vspace/>
-                OPTIONAL. When the trust mark was issued. If
+                OPTIONAL. When the Trust Mark was issued. If
                 <spanx style="verb">iat</spanx> is not specified and the
-                trust issuer have issued several trust marks with the
+                trust issuer have issued several Trust Marks with the
                 <spanx style="verb">id</spanx> specified in the request to the
                 Entity identified by <spanx style="verb">sub</spanx>; the
                 last one is assumed.
               </t>
               <t hangText="trust_mark">
                 <vspace/>
-                OPTIONAL. The whole trust mark.
+                OPTIONAL. The whole Trust Mark.
               </t>
             </list>
           </t>
@@ -2640,7 +2640,7 @@ Host: operations.swamid.se
             <list style="hanging">
               <t hangText="active">
                 <vspace/>
-                REQUIRED. Boolean. Whether the trust mark is active or not.
+                REQUIRED. Boolean. Whether the Trust Mark is active or not.
               </t>
             </list>
           </t>
@@ -3885,7 +3885,7 @@ HTTP/1.1 302 Found
           </t>
           <t>
         Encoding considerations: binary;
-        A trust mark is a JWT;
+        A Trust Mark is a JWT;
         JWT values are encoded as a
         series of base64url-encoded values (some of which may be the
         empty string) separated by period ('.') characters.
@@ -5458,7 +5458,7 @@ Host: op.umu.se
         -11
         <list style="symbols">
           <t>
-            Added section on trust marks.
+            Added section on Trust Marks.
           </t>
           <t>
             Clarified private_key_jwt usage in the authentication request.
