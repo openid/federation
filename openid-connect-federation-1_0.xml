@@ -208,6 +208,11 @@
               A sequence of Entity Statements that represents a chain
               starting at a leaf Entity and ending in a Trust Anchor.
             </t>
+            <t hangText="Trust Mark">
+              A trust mark represents a statement of conformance to a
+              well-scoped set of trust and/or interoperability requirements
+              as determined by an accreditation authority.
+            </t>
           </list>
         </t>
       </section>
@@ -439,29 +444,30 @@
             <t hangText="trust_marks">
               <vspace/>
               OPTIONAL. A JSON array of objects, each representing
-              a certification mark. Each object contains two claims:
+              a Trust Mark. Each object contains two claims:
               <list style="hanging">
                 <t hangText="id">
                   The Trust Mark identifier
                 </t>
                 <t hangText="trust_mark">
-                  A signed JSON Web Token that represents a certification mark.
+                  A signed JSON Web Token that represents a Trust Mark.
                 </t>
               </list>
-              There is more about certification marks in
+              There is more about Trust Marks in
               <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_marks_issuers">
               <vspace/>
               OPTIONAL.
-              A Trust Anchor MAY use this claim to tell which Trust Mark identifiers
-              and their issuers are trusted by the federation.
-              This claim MUST be ignored if present in an Entity Statement of other entities
-              than Trust Anchor.
+              A Trust Anchor MAY use this claim to tell which combination of
+              Trust Mark identifiers and issuers are trusted by the federation.
+              This claim MUST be ignored if present in an Entity Statement that
+              describes an entity that is not a Trust Anchor.
               It is a JSON array with keys representing Trust Mark identifiers and values
               being an array of trusted entities representing the accreditation authority.
-              A special value of <spanx style="verb">*</spanx> allows for self-signed Trust Marks.
-              There is more about certification marks in <xref target="trust_marks"/>.
+              If the value list bound to a Trust Mark identifier is empty it
+              means that anyone can issue Trust Marks with that identifier.
+              There is more about Trust Marks in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_anchor_id">
               <vspace/>
@@ -690,7 +696,7 @@
               <vspace/>
               OPTIONAL. A human-readable
               name representing the organization owning the RP.
-              If the owner is a physical person 
+              If the owner is a physical person
               this MAY be, for example, the name of a person.
             </t>
             <t hangText="signed_jwks_uri">
@@ -858,7 +864,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
               name representing the organization owning the OP. It is
               intended to be used in the user interface, being recognized by
               the end users that would be using the OP to authenticate.
-              If the owner is a physical person 
+              If the owner is a physical person
               this MAY be, for example, the name of a person.
             </t>
             <t hangText="federation_registration_endpoint">
@@ -1158,8 +1164,8 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             <t hangText="organization_name">
               <vspace/>
               OPTIONAL. A human-readable
-              name representing the organization owning the federation Entity. 
-              If the owner is a physical person 
+              name representing the organization owning the federation Entity.
+              If the owner is a physical person
               this MAY be, for example, the name of a person.
             </t>
             <t hangText="contacts">
@@ -1914,23 +1920,16 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
       </section>
       <section title="Trust Marks" anchor="trust_marks">
         <t>
-      In this specification we use the US NSTIC definition:
-          "A trustmark is used to indicate that a product or service provider
-          has met the requirements of the Identity Ecosystem, as determined
-          by an accreditation authority".
+          Technically, Trust Marks as used by this specification are signed
+          JWTs.
         </t>
         <t>
-      Technically, Trust Marks as used by this specification are signed
-          JWTs that represent a statement of conformance to a well-scoped
-          set of trust and/or interoperability requirements.
-        </t>
-        <t>
-      The Trust Marks are signed by a federation accredited
+          The Trust Marks are signed by a federation accredited
           authority. The validation of such a signed statement is performed
           in the same way that a self-signed Entity Statement is validated.
         </t>
         <t>
-      Note that a federation MAY allow an Entity to self-sign
+          Note that a federation MAY allow an Entity to self-sign
           some Trust Marks.
         </t>
 
@@ -2056,7 +2055,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
 ]]></artwork>
           </figure>
           <figure>
-            <preamble>An example of a decoded self-signed certification mark:</preamble>
+            <preamble>An example of a decoded self-signed Trust Mark:</preamble>
             <artwork><![CDATA[
 {
   "iss": "https://example.com/op",
@@ -2448,7 +2447,7 @@ Host: openid.sunet.se
         <section title="Resolve Response">
           <t>
             The response is a signed JWT containing resolved metadata and
-            verified Trust Marks. The response MAY also contain 
+            verified Trust Marks. The response MAY also contain
             the sequence of the Entity Statements that compose the Trust Chain.
             The keys used by the resolver MUST be the
             same keys used to construct a self-signed
