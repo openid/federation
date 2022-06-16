@@ -523,10 +523,17 @@
   "crit": ["jti"],
   "jti": "7l2lncFdY6SlhNia",
   "policy_language_crit": ["regexp"],
+  "metadata": {
+    "openid_provider": {
+      "issuer": "https://ntnu.no",
+      "organization_name": "NTNU",
+    },
+    "oauth_client": {
+      "organization_name": "NTNU"
+    }
+  },
   "metadata_policy": {
     "openid_provider": {
-      "issuer": {"value": "https://ntnu.no"},
-      "organization_name": {"value": "NTNU"},
       "id_token_signing_alg_values_supported":
         {"subset_of": ["RS256", "RS384", "RS512"]},
       "op_policy_uri": {
@@ -534,7 +541,6 @@
           "^https:\/\/[\\w-]+\\.example\\.com\/[\\w-]+\\.html"}
     },
     "oauth_client": {
-      "organization_name": {"value": "NTNU"},
       "grant_types": {
         "subset_of": ["authorization_code", "client_credentials"]},
       "scope": {
@@ -1239,12 +1245,66 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
         <t>
-          An Entity can publish metadata policies pertaining to entities of a
-          specific type. Entity type identifiers specified in this document
-          can be found in <xref target="metadata"/>.
+          An Entity can publish metadata policies pertaining to subordinate
+          entities of a specific type. Entity type identifiers specified in
+          this document can be found in <xref target="metadata"/>.
         </t>
         <t>
-          Each such metadata policy has the following structure:
+          Metadata policies can be expressed in two ways, with
+          <spanx style="verb">metadata</spanx> or with
+          <spanx style="verb">metadata_policy</spanx>. You can use these together
+          but if so, claim types that appear in
+          <spanx style="verb">metadata</spanx> MUST NOT
+          appear in <spanx style="verb">metadata_policy</spanx> for the same
+          kind of entity type.
+        </t>
+        <t>
+          Using <spanx style="verb">metadata</spanx> or the
+          <spanx style="verb">value</spanx> operator in
+          <spanx style="verb">metadata_policy</spanx>
+          allows a superior to assert certain claims about a subordinate entity,
+        </t>
+        <t>
+          If a superior adds a metadata claim it is basically a shorthand for
+          writing a metadata policy with value claims.
+          <figure>
+            <preamble>
+              So instead of writing:
+            </preamble>
+            <artwork><![CDATA[
+{
+    "metadata_policy": {
+        "openid_relying_party": {
+            "policy_uri": {
+                "value": "https://example.com/policy.html"
+            },
+            "tos_uri": {
+                "value": "https://example.com/tos.html"
+            }
+        }
+    }
+}
+]]></artwork>
+          </figure>
+          <figure>
+            <preamble>
+              You can write
+            </preamble>
+            <artwork><![CDATA[
+{
+    "metadata": {
+        "openid_relying_party": {
+            "policy_uri": "https://example.com/policy.html",
+            "tos_uri": "https://example.com/tos.html"
+        }
+    }
+}
+]]></artwork></figure>
+        </t>
+        <section title="metadata_policy">
+        <t>
+          A <spanx style="verb">metadata_policy</spanx> for a specific entity
+          type has the following structure:
           <list style="symbols">
             <t>It consists of one or more policy entries.</t>
             <t>Each policy entry applies to one metadata parameter, such as
@@ -1290,6 +1350,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
 ]]></artwork>
           </figure>
         </t>
+        </section>
         <section title="Operators">
           <t>
             Value modifiers are:
@@ -1741,21 +1802,25 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           </preamble>
           <artwork><![CDATA[
 {
-  "contacts": {
-    "add": "helpdesk@example.com"
+  "metadata_policy": {
+    "openid_relying_party": {
+      "contacts": {
+        "add": "helpdesk@example.com"
+      },
+      "logo_uri": {
+        "one_of": [
+          "https://example.com/logo_small.svg",
+          "https://example.com/logo_big.svg"
+        ],
+        "default": "https://example.com/logo_small.svg"
+      }
+    }
   },
-  "logo_uri": {
-    "one_of": [
-      "https://example.com/logo_small.svg",
-      "https://example.com/logo_big.svg"
-    ],
-    "default": "https://example.com/logo_small.svg"
-  },
-  "policy_uri": {
-    "value": "https://example.com/policy.html"
-  },
-  "tos_uri": {
-    "value": "https://example.com/tos.html"
+  "metadata": {
+    "openid_relying_party": {
+      "policy_uri": "https://example.com/policy.html",
+      "tos_uri": "https://example.com/tos.html"
+    }
   }
 }
 ]]></artwork>
@@ -5071,26 +5136,18 @@ Host: op.umu.se
           "refresh_token"
         ]
       }
-      "registration_access_token": {
-        "value": "nLe19cJ5e9SXXiPqnRRuxpjyWI73bDhD"
-      },
-      "client_id": {
-        "value": "m3GyHw"
-      },
-      "client_secret_expires_at": {
-        "value": 1604049619
-      },
-      "registration_client_uri": {
-        "value":
-          "https://op.umu.se/openid/registration?client_id=m3GyHw"
-      },
-      "client_secret": {
-        "value":
-          "cb44eed577f3b5edf3e08362d47a0dc44630b3dc6ea99f7a79205"
-      },
-      "client_id_issued_at": {
-        "value": 1601457619
-      }
+    }
+  },
+  "metadata": {
+    "openid_relying_party": {
+      "registration_access_token": "nLe19cJ5e9SXXiPqnRRuxpjyWI73bDhD",
+      "client_id": "m3GyHw",
+      "client_secret_expires_at": 1604049619,
+      "registration_client_uri":
+        "https://op.umu.se/openid/registration?client_id=m3GyHw",
+      "client_secret":
+        "cb44eed577f3b5edf3e08362d47a0dc44630b3dc6ea99f7a79205"
+      "client_id_issued_at": 1601457619,
     }
   },
   "authority_hints": [
