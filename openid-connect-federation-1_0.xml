@@ -365,6 +365,11 @@
               <spanx style="verb">metadata</spanx>
               claim containing metadata asserted by a superior about the
               Entity identified by <spanx style="verb">sub</spanx>.
+              If a <spanx style="verb">metadata</spanx> claim appears beside a
+              <spanx style="verb">metadata_policy</spanx> claim in an
+              Entity Statement then for each entity type, claims that appear in
+              <spanx style="verb">metadata</spanx> MUST NOT appear in
+              <spanx style="verb">metadata_policy</spanx>
             </t>
             <t hangText="metadata_policy">
               <vspace/>
@@ -1248,58 +1253,6 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           An Entity can publish metadata policies pertaining to subordinate
           entities of a specific type. Entity type identifiers specified in
           this document can be found in <xref target="metadata"/>.
-        </t>
-        <t>
-          Metadata policies can be expressed in two ways, with
-          <spanx style="verb">metadata</spanx> or with
-          <spanx style="verb">metadata_policy</spanx>. You can use these together
-          but if so, claim types that appear in
-          <spanx style="verb">metadata</spanx> MUST NOT
-          appear in <spanx style="verb">metadata_policy</spanx> for the same
-          kind of entity type.
-        </t>
-        <t>
-          Using <spanx style="verb">metadata</spanx> or the
-          <spanx style="verb">value</spanx> operator in
-          <spanx style="verb">metadata_policy</spanx>
-          allows a superior to assert certain claims about a subordinate entity,
-        </t>
-        <t>
-          If a superior adds a metadata claim it is basically a shorthand for
-          writing a metadata policy with value claims.
-          <figure>
-            <preamble>
-              So instead of writing:
-            </preamble>
-            <artwork><![CDATA[
-{
-    "metadata_policy": {
-        "openid_relying_party": {
-            "policy_uri": {
-                "value": "https://example.com/policy.html"
-            },
-            "tos_uri": {
-                "value": "https://example.com/tos.html"
-            }
-        }
-    }
-}
-]]></artwork>
-          </figure>
-          <figure>
-            <preamble>
-              You can write
-            </preamble>
-            <artwork><![CDATA[
-{
-    "metadata": {
-        "openid_relying_party": {
-            "policy_uri": "https://example.com/policy.html",
-            "tos_uri": "https://example.com/tos.html"
-        }
-    }
-}
-]]></artwork></figure>
         </t>
         <section title="metadata_policy">
         <t>
