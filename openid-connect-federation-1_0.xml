@@ -3956,15 +3956,37 @@ HTTP/1.1 302 Found
     </section>
 
     <section anchor="Security" title="Security Considerations">
+      <section title="Denial-of-Service attacks prevention" anchor="DoS">
       <t>
         Some of the interfaces defined in this specification could be used for
-        Denial-of-Service attacks (DOS), most notably, Entity Listings
-        (<xref target="entity_listing"/>) and
-        automatic client registration (<xref target="automatic"/>).
-        If you plan to provide these interfaces as a service, you should consider
-        applying normal defense methods, such as those described in
+        Denial-of-Service attacks (DOS), most notably, Resolve endpoint
+        (<xref target="entity_listing"/>), explicit client registration 
+        (<xref target="explicit"/>) and
+        automatic client registration (<xref target="automatic"/>), can 
+        be exploited as vectors of http propagation attacks.
+        
+        If you plan to provide these endpoints, you should consider
+        applying some adequate defense methods, such as those described below and in
         <xref target="RFC4732"/>.
       </t>
+      <t>
+        A Trust Mark can be statically validated, using the public key of its issuer.
+        The static validation of the Trust Marks represent a 
+        filter against a propagation attacks. An attacker 
+        could exploit the metadata discovery mechanism and use an OIDC Federation 
+        to propagate many http requests. For each authorization request, crafted 
+        by an anonymous client, the OP would produce ~3 http requests to third parties 
+        in absence of intermediaries, and at least 5 http requests with at 
+        least one intermediary. If an OP doesn't find at least one 
+        valid Trust Mark in an Entity Configuration it should reject the request and 
+        temporary bans the requestor.
+      </t>
+      <t>
+        If client authentication is not demanded at the Resolve endpoint 
+        then incoming requests should not by default result in immediate 
+        collection (metadata discovery process) and evaluation of Trust Chains.
+      </t>
+    </section>
     </section>
   </middle>
 
