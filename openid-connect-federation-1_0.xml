@@ -77,7 +77,7 @@
       </address>
     </author>
 
-    <date day="30" month="May" year="2022"/>
+    <date day="14" month="June" year="2022"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -208,6 +208,11 @@
               A sequence of Entity Statements that represents a chain
               starting at a leaf Entity and ending in a Trust Anchor.
             </t>
+            <t hangText="Trust Mark">
+              A trust mark represents a statement of conformance to a
+              well-scoped set of trust and/or interoperability requirements
+              as determined by an accreditation authority.
+            </t>
           </list>
         </t>
       </section>
@@ -265,6 +270,12 @@
           All entities in a federation SHOULD be prepared to publish an Entity
           Statement about themselves. If they are not able to do so themselves,
           another issuer MUST do it for them.
+        </t>
+        <t>
+          Entity Statement JWTs MUST be explicitly typed, by setting the
+          <spanx style="verb">typ</spanx> header parameter to
+          <spanx style="verb">entity-statement+jwt</spanx>. This is done to
+          prevent cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
         </t>
         <t>
           An Entity Statement is composed of the following claims:
@@ -433,29 +444,30 @@
             <t hangText="trust_marks">
               <vspace/>
               OPTIONAL. A JSON array of objects, each representing
-              a certification mark. Each object contains two claims:
+              a Trust Mark. Each object contains two claims:
               <list style="hanging">
                 <t hangText="id">
                   The Trust Mark identifier
                 </t>
                 <t hangText="trust_mark">
-                  A signed JSON Web Token that represents a certification mark.
+                  A signed JSON Web Token that represents a Trust Mark.
                 </t>
               </list>
-              There is more about certification marks in
+              There is more about Trust Marks in
               <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_marks_issuers">
               <vspace/>
               OPTIONAL.
-              A Trust Anchor MAY use this claim to tell which Trust Mark identifiers
-              and their issuers are trusted by the federation.
-              This claim MUST be ignored if present in an Entity Statement of other entities
-              than Trust Anchor.
+              A Trust Anchor MAY use this claim to tell which combination of
+              Trust Mark identifiers and issuers are trusted by the federation.
+              This claim MUST be ignored if present in an Entity Statement that
+              describes an entity that is not a Trust Anchor.
               It is a JSON array with keys representing Trust Mark identifiers and values
               being an array of trusted entities representing the accreditation authority.
-              A special value of <spanx style="verb">*</spanx> allows for self-signed Trust Marks.
-              There is more about certification marks in <xref target="trust_marks"/>.
+              If the value list bound to a Trust Mark identifier is empty it
+              means that anyone can issue Trust Marks with that identifier.
+              There is more about Trust Marks in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_anchor_id">
               <vspace/>
@@ -553,7 +565,7 @@
 
       <section title="Trust Chain" anchor="trust_chain">
         <t>
-          In an OpenID Connect Identity Federation, entities that together build
+          In an OpenID Connect identity federation, entities that together build
           a Trust Chain can be categorized as:
           <list style="hanging">
             <t hangText="Trust anchor">
@@ -563,7 +575,7 @@
             </t>
             <t hangText="Leaf">
               <vspace/>
-              In an OpenID Connect identity Federation, an RP or an OP.
+              In an OpenID Connect identity federation, an RP or an OP.
             </t>
             <t hangText="Intermediate">
               <vspace/>
@@ -646,7 +658,7 @@
         standards.
         If needed, the metadata schema is extended
         with additional properties relevant in a federated context.
-        For instance, for OpenID Connect Federations, this specification uses
+        For instance, for OpenID Connect federations, this specification uses
         metadata values from
         <xref target="OpenID.Discovery">OpenID Connect Discovery 1.0</xref>
         and
@@ -684,7 +696,7 @@
               <vspace/>
               OPTIONAL. A human-readable
               name representing the organization owning the RP.
-              If the owner is a physical person 
+              If the owner is a physical person
               this MAY be, for example, the name of a person.
             </t>
             <t hangText="signed_jwks_uri">
@@ -852,13 +864,13 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
               name representing the organization owning the OP. It is
               intended to be used in the user interface, being recognized by
               the end users that would be using the OP to authenticate.
-              If the owner is a physical person 
+              If the owner is a physical person
               this MAY be, for example, the name of a person.
             </t>
             <t hangText="federation_registration_endpoint">
               <vspace/>
               OPTIONAL.
-              URL of the OP's Federation specific Dynamic Client Registration
+              URL of the OP's federation-specific Dynamic Client Registration
               Endpoint. If the OP supports explicit client
               registration as described in <xref target="explicit"/>,
               then this claim is REQUIRED.
@@ -1152,8 +1164,8 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             <t hangText="organization_name">
               <vspace/>
               OPTIONAL. A human-readable
-              name representing the organization owning the Federation Entity. 
-              If the owner is a physical person 
+              name representing the organization owning the federation Entity.
+              If the owner is a physical person
               this MAY be, for example, the name of a person.
             </t>
             <t hangText="contacts">
@@ -1908,25 +1920,27 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
       </section>
       <section title="Trust Marks" anchor="trust_marks">
         <t>
-      In this specification we use the US NSTIC definition:
-          "A trustmark is used to indicate that a product or service provider
-          has met the requirements of the Identity Ecosystem, as determined
-          by an accreditation authority".
+          Technically, Trust Marks as used by this specification are signed
+          JWTs.
         </t>
         <t>
-      Technically, Trust Marks as used by this specification are signed
-          JWTs that represent a statement of conformance to a well-scoped
-          set of trust and/or interoperability requirements.
-        </t>
-        <t>
-      The Trust Marks are signed by a federation accredited
+          The Trust Marks are signed by a federation accredited
           authority. The validation of such a signed statement is performed
           in the same way that a self-signed Entity Statement is validated.
         </t>
         <t>
-      Note that a federation MAY allow an Entity to self-sign
+          Note that a federation MAY allow an Entity to self-sign
           some Trust Marks.
         </t>
+
+        <t>
+          Trust Mark JWTs MUST be explicitly typed, by setting the
+          <spanx style="verb">typ</spanx> header parameter to
+          <spanx style="verb">trust-mark+jwt</spanx>. This is done to prevent
+          cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
+        </t>
+
+
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
           <t>These are the properties that can occur in a Trust Mark:</t>
           <t>
@@ -2517,7 +2531,7 @@ Host: openid.sunet.se
         <section title="Resolve Response">
           <t>
             The response is a signed JWT containing resolved metadata and
-            verified Trust Marks. The response MAY also contain 
+            verified Trust Marks. The response MAY also contain
             the sequence of the Entity Statements that compose the Trust Chain.
             The keys used by the resolver MUST be the
             same keys used to construct a self-signed
@@ -3629,7 +3643,7 @@ HTTP/1.1 302 Found
       <section title="ID Token Validation">
         <t>
             The RP MUST validate any ID token as defined in Section 3.1.3.7. of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>. If the
-            trust relationship between RP and OP was established using OpenID Federation, the key material used for ID Token signature validation MUST
+            trust relationship between RP and OP was established using OpenID Connect Federation, the key material used for ID Token signature validation MUST
             be obtained from the OP's metadata the RP obtained as a result of Trust Chain validation as defined in <xref target="resolving_trust"/>
             and combining the metadata policies from the Entity Statements of the Trust Chain as described in <xref target="metadata_policy"/>.
         </t>
@@ -4165,6 +4179,7 @@ HTTP/1.1 302 Found
       <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2046.xml"?>
       <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6749.xml"?>
       <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"?>
+      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8725.xml"?>
       <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8446.xml"?>
 
       <reference anchor="IANA.OAuth.Parameters" target="http://www.iana.org/assignments/oauth-parameters">
@@ -5297,6 +5312,7 @@ Host: op.umu.se
         Samuel Gulliksson,
         Takahiko Kawasaki,
         Torsten Lodderstedt,
+    Roberto Polli,
         Jouke Roorda,
         Mischa Sall&eacute;,
         Marcos Sanz,
@@ -5304,19 +5320,6 @@ Host: op.umu.se
         Michael Schwartz,
         and
         the JRA3T3 task force of GEANT4-2.
-      </t>
-    </section>
-
-    <section anchor="TBD" title="Open Issues">
-      <t>
-        The following open issues remain to be addressed in this specification.
-      </t>
-      <t>
-        <list style="symbols">
-          <t>
-            Discuss localization of human-readable strings.
-          </t>
-        </list>
       </t>
     </section>
 
@@ -5372,6 +5375,23 @@ Host: op.umu.se
       <t>
         Defined the term Federation Operator and described redundant retrieval of Trust Anchor keys.
       </t>
+      <t>
+        Fixed #1519 - Corrected instances of <spanx style="verb">client_registration_type</spanx>
+        to <spanx style="verb">client_registration_types_supported</spanx>.
+      </t>
+      <t>
+        Fixed #1520 - Renamed <spanx style="verb">federation_api_endpoint</spanx>
+        to <spanx style="verb">federation_fetch_endpoint</spanx>.
+      </t>
+      <t>
+        Fixed #1521 - Changed swamid.sunet.se to swamid.se in examples.
+      </t>
+      <t>
+        Fixed #1523 - Added <spanx style="verb">request_parameter_supported</spanx> to examples.
+      </t>
+      <t>
+        Capitalized defined terms.
+      </t>
         </list>
       </t>
 
@@ -5379,7 +5399,7 @@ Host: op.umu.se
         -19
         <list style="symbols">
       <t>
-        Fixed #1497 - Removed <spanx style="verb">trust_mark</spanx> claim from federation Entity metadata.
+        Fixed #1497 - Removed <spanx style="verb">trust_mark</spanx> claim from federation entity metadata.
       </t>
       <t>
         Fixed #1446 - Added <spanx style="verb">trust_chain</spanx> and removed <spanx style="verb">is_leaf</spanx>.
@@ -5442,7 +5462,7 @@ Host: op.umu.se
             Trust Marks: added non-normative examples.
           </t>
           <t>
-            Expanded Section 8.1: Included Entity Configurations.
+            Expanded Section 8.1: Included entity configurations.
           </t>
       <t>
         Fixed #1373 - More clearly defined the term Entity Statement,
@@ -5503,18 +5523,18 @@ Host: op.umu.se
         -13
         <list style="symbols">
           <t>
-            Added 'trust_marks' as a parameter in the Entity Statement.
+            Added 'trust_marks' as a parameter in the entity statement.
           </t>
           <t>
-            An RP's self-signed Entity Statement MUST have the OP's issuer
+            An RP's self-signed entity statement MUST have the OP's issuer
             identifier
             as the value of 'aud'.
           </t>
           <t>
-            Added RS256 as default signing algorithm for Entity Statements.
+            Added RS256 as default signing algorithm for entity statements.
           </t>
           <t>
-            Specified that the value of 'aud' in the Entity Statement use in
+            Specified that the value of 'aud' in the entity statement use in
             automatic client registration MUST have the ASs authorization
             endpoint
             URL as value. Also, the 'sub' claim MUST NOT be present.
@@ -5528,17 +5548,17 @@ Host: op.umu.se
             publish and support a .well-known/openid-federation endpoint.
           </t>
           <t>
-            Every key in a JWK Set in an Entity Statement MUST have a kid.
+            Every key in a JWK Set in an entity statement MUST have a kid.
           </t>
         </list>
         -12
         <list style="symbols">
           <t>
-            Made JWK Set OPTIONAL in an Entity Statement returned by OP as response
+            Made JWK Set OPTIONAL in an entity statement returned by OP as response
             of an explicit client registration
           </t>
           <t>
-            Renamed Entity type to client registration type.
+            Renamed entity type to client registration type.
           </t>
           <t>
             Added more text describing
@@ -5564,7 +5584,7 @@ Host: op.umu.se
         -11
         <list style="symbols">
           <t>
-            Added section on Trust Marks.
+            Added section on trust marks.
           </t>
           <t>
             Clarified private_key_jwt usage in the authentication request.
@@ -5584,7 +5604,7 @@ Host: op.umu.se
             Incorporated additional review feedback from Marcos Sanz.
             The primary change was moving constraints to their own section of
             the
-            Entity Statement.
+            entity statement.
           </t>
         </list>
       </t>
@@ -5596,7 +5616,7 @@ Host: op.umu.se
             Major changes were as follows.
           </t>
           <t>
-            Separated Entity Configuration discovery from operations provided
+            Separated entity configuration discovery from operations provided
             by the federation API.
           </t>
           <t>
@@ -5615,7 +5635,7 @@ Host: op.umu.se
             Major changes were as follows.
           </t>
           <t>
-            Deleted <spanx style="verb">sub_is_leaf</spanx> Entity Statement
+            Deleted <spanx style="verb">sub_is_leaf</spanx> entity statement
             since it was redundant.
           </t>
           <t>
@@ -5631,7 +5651,7 @@ Host: op.umu.se
             <spanx style="verb">openid_provider</spanx>.
           </t>
           <t>
-            Entity Identifier paths are now included when using the Federation
+            Entity identifier paths are now included when using the Federation
             API,
             enabling use in multi-tenant deployments sharing a common domain
             name.
@@ -5644,7 +5664,7 @@ Host: op.umu.se
           <t>
             Added <spanx style="verb">crit</spanx> and
             <spanx style="verb">policy_language_crit</spanx>,
-            enabling control over which Entity Statement and policy language
+            enabling control over which entity statement and policy language
             extensions
             MUST be understood and processed.
           </t>
