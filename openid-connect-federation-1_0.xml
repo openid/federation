@@ -878,6 +878,14 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
             <t hangText="request_authentication_methods_supported">
               <vspace/>
               OPTIONAL.
+              A JSON Object defining the client authentications supported for each endpoint.
+              The endpoint names are defined in the IANA 
+              "OAuth Authorization Server Metadata" registry
+              <xref target="IANA.OAuth.Parameters"/>. 
+              Other endpoints and authentication methods are possible, if made 
+              recognizable according 
+              to established standards and not in conflict with the operating 
+              principles of this specification.
               In OpenID Connect Core, no client authentication is performed at the authentication
               endpoint. Instead, you can say that the request itself is authenticated.
               What it amounts to is that the OP maps
@@ -1048,15 +1056,17 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
             "private_key_jwt"
          ],
          "pushed_authorization_request_endpoint":"https://op.umu.se/openid/par",
-         "request_authentication_methods_supported":{
-            "ar":[
-               "request_object"
+         "request_authentication_methods_supported": {
+            "authorization_endpoint": [
+                "request_object"
             ],
-            "par":[
-               "private_key_jwt",
-               "self_signed_tls_client_auth"
+            "pushed_authorization_request_endpoint": [
+                "request_object",
+                "private_key_jwt",
+                "tls_client_auth",
+                "self_signed_tls_client_auth"
             ]
-         }
+        }
       }
    },
    "authority_hints":[
@@ -5329,6 +5339,9 @@ Host: op.umu.se
       <t>
         -21
         <list style="symbols">
+      <t>
+        Fixed #1513: request_authentication_methods_supported according to IANA OAuth2 AS metadata registered names.
+      </t>
       <t>
         Trust Marks: Definition and additionals non normative examples.
       </t>
