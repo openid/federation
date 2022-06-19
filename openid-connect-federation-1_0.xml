@@ -2420,14 +2420,6 @@ Content-Type: application/entity-statement+jwt
                 If no value is given, then all metadata types are expected to
                 be returned.
               </t>
-              <t hangText="iss">
-                <vspace/>
-                OPTIONAL. The Entity Identifier of the
-                Entity who is requesting the information. If this parameter
-                is present in the request, then it MUST be present in the
-                response in the
-                <spanx style="verb">aud/jose</spanx> parameter of the signed JWT.
-              </t>
             </list>
           </t>
           <figure>
@@ -2450,8 +2442,9 @@ Host: openid.sunet.se
             verified Trust Marks. The response MAY also contain
             the sequence of the Entity Statements that compose the Trust Chain.
             The keys used by the resolver MUST be the
-            same keys used to construct a self-signed
-            Entity Statement.
+            same keys used to construct a self-signed Entity Statement.
+            The response SHOULD contain the aud claim only
+            if the requesting client is authenticated.
           </t>
           <figure>
             <preamble>
