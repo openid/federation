@@ -889,6 +889,14 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
             <t hangText="request_authentication_methods_supported">
               <vspace/>
               OPTIONAL.
+              A JSON Object defining the client authentications supported for each endpoint.
+              The endpoint names are defined in the IANA 
+              "OAuth Authorization Server Metadata" registry
+              <xref target="IANA.OAuth.Parameters"/>. 
+              Other endpoints and authentication methods are possible, if made 
+              recognizable according 
+              to established standards and not in conflict with the operating 
+              principles of this specification.
               In OpenID Connect Core, no client authentication is performed at the authentication
               endpoint. Instead, you can say that the request itself is authenticated.
               What it amounts to is that the OP maps
@@ -1059,15 +1067,17 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
             "private_key_jwt"
          ],
          "pushed_authorization_request_endpoint":"https://op.umu.se/openid/par",
-         "request_authentication_methods_supported":{
-            "ar":[
-               "request_object"
+         "request_authentication_methods_supported": {
+            "authorization_endpoint": [
+                "request_object"
             ],
-            "par":[
-               "private_key_jwt",
-               "self_signed_tls_client_auth"
+            "pushed_authorization_request_endpoint": [
+                "request_object",
+                "private_key_jwt",
+                "tls_client_auth",
+                "self_signed_tls_client_auth"
             ]
-         }
+        }
       }
    },
    "authority_hints":[
@@ -2072,6 +2082,90 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
 
 ]]></artwork>
           </figure>
+          
+          <figure>
+            <preamble>
+                An example of a decoded Trust Mark issued to a RP,
+                attesting the conformance to a national 
+                public service profile:
+            </preamble>
+            <artwork><![CDATA[
+{
+  "id":"https://federation.id/openid_relying_party/public/",
+  "iss": "https://trust-anchor.gov.id",
+  "sub": "https://rp.cie.id",
+  "iat": 1579621160,
+  "organization_name": "Organization name",
+  "policy_uri": "https://rp.cie.id/privacy_policy",
+  "tos_uri": "https://rp.cie.id/info_policy",
+  "service_documentation": "https://rp.cie.id/api/v1/get/services",
+  "ref": "https://rp.cie.id/documentation/manuale_operativo.pdf"
+}
+
+]]></artwork>
+          </figure>
+          
+          <figure>
+            <preamble>
+                An example of a decoded Trust Mark issued to a RP, 
+                attesting its conformance to the rules for 
+                data management of underage users:
+            </preamble>
+            <artwork><![CDATA[
+{
+  "id":"https://federation.id/openid_relying_party/private/under-age",
+  "iss": "https://trust-anchor.gov.id",
+  "sub": "https://rp.cie.id",
+  "iat": 1579621160,
+  "organization_name": "Organization name",
+  "policy_uri": "https://rp.cie.id/privacy_policy",
+  "tos_uri": "https://rp.cie.id/info_policy"
+}
+
+]]></artwork>
+          </figure>
+
+          <figure>
+            <preamble>
+                An example of a Trust Mark attesting a stipulation of an 
+                agreement between a RP and an Attribute Authority:</preamble>
+            <artwork><![CDATA[
+{
+  "id": "https://deleghedigitali.gov.it/openid_relying_party/sgd/",
+  "iss": "https://deleghedigitali.gov.it",
+  "sub": "https://rp.cie.id",
+  "iat": 1579621160,
+  "logo_uri": "https://deleghedigitali.gov.it/sgd-cmyk-150dpi-90mm.svg",
+  "organization_type": "public",
+  "id_code": "123456",
+  "email": "info@rp.cie.id",
+  "organization_name#it": "Nome dell'organizazzione",
+  "policy_uri#it": "https://rp.cie.id/privacy_policy",
+  "tos_uri#it": "https://rp.cie.id/info_policy",
+  "service_documentation": "https://rp.cie.id/api/v1/get/services",
+  "ref": "https://deleghedigitali.gov.it/documentation/manuale_operativo.pdf"
+}
+]]></artwork>
+          </figure>
+
+          <figure>
+            <preamble>
+                An example of a Trust Mark asserting 
+                conformance to a security profile:
+            </preamble>
+            <artwork><![CDATA[
+{
+  "iss": "https://secusign.org",
+  "sub": "https://example.com/op",
+  "iat": 1579621160,
+  "id": "https://secusign.org/level/A",
+  "logo_uri": "https://secusign.org/static/levels/
+    certification-level-A-150dpi-90mm.svg",
+  "ref": "https://secusign.org/conformances/"
+}
+]]></artwork>
+          </figure>
+
           <figure>
             <preamble>An example of a decoded self-signed Trust Mark:</preamble>
             <artwork><![CDATA[
@@ -2087,6 +2181,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
 }
 ]]></artwork>
           </figure>
+
           <figure>
             <preamble>An example of a third-party accreditation authority:
             </preamble>
@@ -2096,8 +2191,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
   "sub": "https://umu.se/op",
   "iat": 1577833200,
   "exp": 1609369200,
-  "id":
-    "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf"
+  "id": "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf"
 }
 ]]></artwork>
           </figure>
@@ -2438,14 +2532,6 @@ Content-Type: application/entity-statement+jwt
                 If no value is given, then all metadata types are expected to
                 be returned.
               </t>
-              <t hangText="iss">
-                <vspace/>
-                OPTIONAL. The Entity Identifier of the
-                Entity who is requesting the information. If this parameter
-                is present in the request, then it MUST be present in the
-                response in the
-                <spanx style="verb">aud/jose</spanx> parameter of the signed JWT.
-              </t>
             </list>
           </t>
           <figure>
@@ -2468,8 +2554,9 @@ Host: openid.sunet.se
             verified Trust Marks. The response MAY also contain
             the sequence of the Entity Statements that compose the Trust Chain.
             The keys used by the resolver MUST be the
-            same keys used to construct a self-signed
-            Entity Statement.
+            same keys used to construct a self-signed Entity Statement.
+            The response SHOULD contain the aud claim only
+            if the requesting client is authenticated.
           </t>
           <figure>
             <preamble>
@@ -3108,8 +3195,7 @@ Content-Type: application/json
   "redirect_uri": "https://rp.example.com/authz_cb",
   "response_type": "code",
   "scope": "openid profile email address phone",
-  "state": "YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ",
-  "sub": "https://rp.example.com"
+  "state": "YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ"
 }
 ]]></artwork>
             </figure>
@@ -3125,20 +3211,24 @@ https://server.example.com/authorize?
     &scope=openid+profile+email+address+phone
     &response_type=code
     &client_id=https%3A%2F%2Frp.example.com
-    &request=eyJhbGciOiJSUzI1NiIsImtpZCI6ImRVTjJhMDF3Umtoa1
-      NXcGxRVGh2Y1ZCSU5VSXdUVWRPVUZVMlRtVnJTbWhFUVhnelpYbHB
-      UemRRTkEifQ.eyJzdWIiOiAiaHR0cHM6Ly9ycC5leGFtcGxlLmNvb
-      SIsICJpc3MiOiAiaHR0cHM6Ly9ycC5leGFtcGxlLmNvbSIsICJpYX
-      QiOiAxNTkzNjE1Nzk0LCAiZXhwIjogMTU5MzYxNTg1NCwgImF1ZCI
-      6ICJodHRwczovL29wLmV4YW1wbGUub3JnL2F1dGhvcml6YXRpb24i
-      LCAianRpIjogIjlhNDY2Njc3ZDZkOTQ5OWZiOTFjNDg4YTY1NzA0N
-      TU2In0.mFq0V4KIb6eM-WV5vvQAvSSwoUyi-cy_ASMDgR1-amotjK
-      6El0T1WV9-Hdrkgi_zBJtARs6VE380GmwpXXuMF1p6y-IoyIBJUSR
-      w9LaeK9oi3d1stTT_J6VL8JwsNuetB6r9YLAQS-1p6mFKsv7TQSjk
-      xNHfw0BTxfZftcDnooCqusC17xrz11qEY1CCtjDbbxYM1cYfzGFwS
-      I0UZneQUZqa2ChOqWTguumG7XonB5NFZWieAtvyyPZaSI7AW5wCs2
-      sH6kjMxOHEAIvxygZZwKpTiToccYtU7t0n2xKRr-oYDQaFjuRIemE
-      xsuzVl6pbvCVYqyjxFscS9NgDB-hAAQ
+    &request=eyJhbGciOiJSUzI1NiIsImtpZCI6IjJIbm9GUzNZbkM5dGppQ2FpdmhXTFZVSjNB
+      eHdHR3pfOTh1UkZhcU1FRXMifQ.eyJhdWQiOiJodHRwczovL29wLmV4YW1wbGUub
+      3JnL2F1dGhvcml6YXRpb24iLCJjbGllbnRfaWQiOiJodHRwczovL3JwLmV4YW1wb
+      GUuY29tIiwiZXhwIjoxNTg5Njk5MTYyLCJpYXQiOjE1ODk2OTkxMDIsImlzcyI6I
+      mh0dHBzOi8vcnAuZXhhbXBsZS5jb20iLCJqdGkiOiI0ZDNlYzBmODFmMTM0ZWU5Y
+      Tk3ZTA0NDliZTZkMzJiZSIsIm5vbmNlIjoiNExYMG1GTXhkQmprR210eDdhOFdJT
+      25CIiwicmVkaXJlY3RfdXJpIjoiaHR0cHM6Ly9ycC5leGFtcGxlLmNvbS9hdXRoe
+      l9jYiIsInJlc3BvbnNlX3R5cGUiOiJjb2RlIiwic2NvcGUiOiJvcGVuaWQgcHJvZ
+      mlsZSBlbWFpbCBhZGRyZXNzIHBob25lIiwic3RhdGUiOiJZbVg4UE05STdXYk5vT
+      W5uaWVLS0JpcHRWVzBzUDJPWiIsInN1YiI6Imh0dHBzOi8vcnAuZXhhbXBsZS5jb
+      20iLCJ0cnVzdF9wYXRoX2hpbnQiOlsiaHR0cHM6Ly9pbnRlcm1lZGlhcnktb25lL
+      m9yZyIsImh0dHBzOi8vaW50ZXJtZWRpYXJ5LXR3by5vcmciLCJodHRwczovL3Ryd
+      XN0LWFuY2hvci5vcmciXX0.yJz8KKF-TZPzxG1iKRkhldlVzn6NtNpgpFK0Bm93v
+      AGnDu6XxSfK1pHFOTYCnG8DH-c8k2QsL4zHQQjwVElcWJyNJKXUAkOhNufssJD09
+      6CizIjDdHuzMs9-LAJH6e7eKbsE_-17xY7JvtxZGLDNAx9Dm4gBEl7H_8U5SorGW
+      dSN8biVe3gySBivy7czrG2_afitpaEFMxDgy7wuU5aWKo9L1aaRSpcKpDHNq45Mz
+      Ir4JTaSzob0Eil8H-QYUqqQR-ob86_gy7bHFhQMN-0lfXHkIl3riCo2JlxnjLctf
+      IRa4r6OKgFMNDqPzGqgwPuXMbjhBTuJptUgsmbEwdsGYw
 ]]></artwork>
             </figure>
             <section title="Processing the Authentication Request">
@@ -3974,15 +4064,37 @@ HTTP/1.1 302 Found
     </section>
 
     <section anchor="Security" title="Security Considerations">
+      <section title="Denial-of-Service attacks prevention" anchor="DoS">
       <t>
         Some of the interfaces defined in this specification could be used for
-        Denial-of-Service attacks (DOS), most notably, Entity Listings
-        (<xref target="entity_listing"/>) and
-        automatic client registration (<xref target="automatic"/>).
-        If you plan to provide these interfaces as a service, you should consider
-        applying normal defense methods, such as those described in
+        Denial-of-Service attacks (DOS), most notably, Resolve endpoint
+        (<xref target="entity_listing"/>), explicit client registration 
+        (<xref target="explicit"/>) and
+        automatic client registration (<xref target="automatic"/>), can 
+        be exploited as vectors of http propagation attacks.
+        
+        If you plan to provide these endpoints, you should consider
+        applying some adequate defense methods, such as those described below and in
         <xref target="RFC4732"/>.
       </t>
+      <t>
+        A Trust Mark can be statically validated, using the public key of its issuer.
+        The static validation of the Trust Marks represent a 
+        filter against a propagation attacks. An attacker 
+        could exploit the metadata discovery mechanism and use an OIDC Federation 
+        to propagate many http requests. For each authorization request, crafted 
+        by an anonymous client, the OP would produce ~3 http requests to third parties 
+        in absence of intermediaries, and at least 5 http requests with at 
+        least one intermediary. If an OP doesn't find at least one 
+        valid Trust Mark in an Entity Configuration it should reject the request and 
+        temporary bans the requestor.
+      </t>
+      <t>
+        If client authentication is not demanded at the Resolve endpoint 
+        then incoming requests should not by default result in immediate 
+        collection (metadata discovery process) and evaluation of Trust Chains.
+      </t>
+    </section>
     </section>
   </middle>
 
@@ -5216,7 +5328,7 @@ Host: op.umu.se
         Samuel Gulliksson,
         Takahiko Kawasaki,
         Torsten Lodderstedt,
-	Roberto Polli,
+        Roberto Polli,
         Jouke Roorda,
         Mischa Sall&eacute;,
         Marcos Sanz,
@@ -5231,95 +5343,117 @@ Host: op.umu.se
       <t>[[ To be removed from the final specification ]]</t>
 
       <t>
+        -21
+        <list style="symbols">
+      <t>
+        Resolve endpoint: removed iss paramenter in the request and specified the usage of the aud claim in the response.
+      </t>
+      <t>
+        Fixed #1513: request_authentication_methods_supported according to IANA OAuth2 AS metadata registered names.
+      </t>
+      <t>
+        Trust Marks: Definition and additionals non normative examples.
+      </t>
+      <t>
+        Security Considerations regarding the role of the Trust Marks.
+      </t>
+      <t>
+        Editorial review, normative language and typos.
+      </t>
+      <t>
+        Fixed #1535: Removed the sub claim from the non normative example of the Authz Request Object.
+      </t>
+      
+      <t>
         -20
         <list style="symbols">
-	  <t>
-	    Updated example for Resolve endpoint.
-	  </t>
-	  <t>
-	    Recommended that Key IDs be the JWK Thumbprint of the key.
-	  </t>
-	  <t>
-	    Fixed #1502 - Corrected usage of <spanx style="verb">id_token_signed_response_alg</spanx>.
-	  </t>
-	  <t>
-	    Fixed #1506 - Referenced RFC 9126 for Pushed Authorization Requests.
-	  </t>
-	  <t>
-	    Added Giuseppe De Marco as an editor and removed Samuel Gulliksson as an editor.
-	  </t>
-	  <t>
-	    Fixed #1508 - Editorial review.
-	  </t>
-	  <t>
-	    Fixed #1505 - Defined that <spanx style="verb">signed_jwks_uri</spanx> is preferred over
-	    <spanx style="verb">jwks_uri</spanx> and <spanx style="verb">jwks</spanx>.
-	  </t>
-	  <t>
-	    Fixed #1514 - Corrected RP metadata examples to use <spanx style="verb">id_token_signed_response_alg</spanx>.
-	  </t>
-	  <t>
-	    Fixed #1512 - Registered the error codes <spanx style="verb">missing_trust_anchor</spanx>
-	    and <spanx style="verb">validation_failed</spanx>.
-	  </t>
-	  <t>
-	    Also registered the OP Metadata parameters
-	    <spanx style="verb">organization_name</spanx>,
-	    <spanx style="verb">request_authentication_methods_supported</spanx>,
-	    <spanx style="verb">request_authentication_signing_alg_values_supported</spanx>,
-	    <spanx style="verb">signed_jwks_uri</spanx>,
-	    and
-	    <spanx style="verb">jwks</spanx>
-	    and the RP Metadata parameters
-	    <spanx style="verb">client_registration_types</spanx> (which was previously misregistered as <spanx style="verb">client_registration_type</spanx>),
-	    <spanx style="verb">organization_name</spanx>,
-	    and
-	    <spanx style="verb">signed_jwks_uri</spanx>.
-	  </t>
-	  <t>
-	    Defined the term Federation Operator and described redundant retrieval of Trust Anchor keys.
-	  </t>
-	  <t>
-	    Fixed #1519 - Corrected instances of <spanx style="verb">client_registration_type</spanx>
-	    to <spanx style="verb">client_registration_types_supported</spanx>.
-	  </t>
-	  <t>
-	    Fixed #1520 - Renamed <spanx style="verb">federation_api_endpoint</spanx>
-	    to <spanx style="verb">federation_fetch_endpoint</spanx>.
-	  </t>
-	  <t>
-	    Fixed #1521 - Changed swamid.sunet.se to swamid.se in examples.
-	  </t>
-	  <t>
-	    Fixed #1523 - Added <spanx style="verb">request_parameter_supported</spanx> to examples.
-	  </t>
-	  <t>
-	    Capitalized defined terms.
-	  </t>
+      <t>
+        Updated example for Resolve endpoint.
+      </t>
+      <t>
+        Recommended that Key IDs be the JWK Thumbprint of the key.
+      </t>
+      <t>
+        Fixed #1502 - Corrected usage of <spanx style="verb">id_token_signed_response_alg</spanx>.
+      </t>
+      <t>
+        Fixed #1506 - Referenced RFC 9126 for Pushed Authorization Requests.
+      </t>
+      <t>
+        Added Giuseppe De Marco as an editor and removed Samuel Gulliksson as an editor.
+      </t>
+      <t>
+        Fixed #1508 - Editorial review.
+      </t>
+      <t>
+        Fixed #1505 - Defined that <spanx style="verb">signed_jwks_uri</spanx> is preferred over
+        <spanx style="verb">jwks_uri</spanx> and <spanx style="verb">jwks</spanx>.
+      </t>
+      <t>
+        Fixed #1514 - Corrected RP metadata examples to use <spanx style="verb">id_token_signed_response_alg</spanx>.
+      </t>
+      <t>
+        Fixed #1512 - Registered the error codes <spanx style="verb">missing_trust_anchor</spanx>
+        and <spanx style="verb">validation_failed</spanx>.
+      </t>
+      <t>
+        Also registered the OP Metadata parameters
+        <spanx style="verb">organization_name</spanx>,
+        <spanx style="verb">request_authentication_methods_supported</spanx>,
+        <spanx style="verb">request_authentication_signing_alg_values_supported</spanx>,
+        <spanx style="verb">signed_jwks_uri</spanx>,
+        and
+        <spanx style="verb">jwks</spanx>
+        and the RP Metadata parameters
+        <spanx style="verb">client_registration_types</spanx> (which was previously misregistered as <spanx style="verb">client_registration_type</spanx>),
+        <spanx style="verb">organization_name</spanx>,
+        and
+        <spanx style="verb">signed_jwks_uri</spanx>.
+      </t>
+      <t>
+        Defined the term Federation Operator and described redundant retrieval of Trust Anchor keys.
+      </t>
+      <t>
+        Fixed #1519 - Corrected instances of <spanx style="verb">client_registration_type</spanx>
+        to <spanx style="verb">client_registration_types_supported</spanx>.
+      </t>
+      <t>
+        Fixed #1520 - Renamed <spanx style="verb">federation_api_endpoint</spanx>
+        to <spanx style="verb">federation_fetch_endpoint</spanx>.
+      </t>
+      <t>
+        Fixed #1521 - Changed swamid.sunet.se to swamid.se in examples.
+      </t>
+      <t>
+        Fixed #1523 - Added <spanx style="verb">request_parameter_supported</spanx> to examples.
+      </t>
+      <t>
+        Capitalized defined terms.
+      </t>
         </list>
       </t>
 
       <t>
         -19
         <list style="symbols">
-	  <t>
-	    Fixed #1497 - Removed <spanx style="verb">trust_mark</spanx> claim from federation entity metadata.
-	  </t>
-	  <t>
-	    Fixed #1446 - Added <spanx style="verb">trust_chain</spanx> and removed <spanx style="verb">is_leaf</spanx>.
-	  </t>
-	  <t>
-	    Fixed #1479 - Added <spanx style="verb">jwks</spanx> claim in OP metadata.
-	  </t>
-	  <t>
-	    Fixed #1477 - Added <spanx style="verb">request_authentication_methods_supported</spanx>.
-	  </t>
+      <t>
+        Fixed #1497 - Removed <spanx style="verb">trust_mark</spanx> claim from federation entity metadata.
+      </t>
+      <t>
+        Fixed #1446 - Added <spanx style="verb">trust_chain</spanx> and removed <spanx style="verb">is_leaf</spanx>.
+      </t>
+      <t>
+        Fixed #1479 - Added <spanx style="verb">jwks</spanx> claim in OP metadata.
+      </t>
+      <t>
+        Fixed #1477 - Added <spanx style="verb">request_authentication_methods_supported</spanx>.
+      </t>
           <t>
-	    Fixed #1474 - Added the <spanx style="verb">request_authentication_signing_alg_values_supported</spanx> OP metadata parameter.
+        Fixed #1474 - Added the <spanx style="verb">request_authentication_signing_alg_values_supported</spanx> OP metadata parameter.
           </t>
-	  <t>
-	    Rewrote <spanx style="verb">trust_marks</spanx> definition.
-	  </t>
+      <t>
+        Rewrote <spanx style="verb">trust_marks</spanx> definition.
+      </t>
         </list>
       </t>
 
@@ -5331,24 +5465,24 @@ Host: op.umu.se
          </t>
           <t>
             Moved from a federation API to separate endpoints per operation.
-	  </t>
+      </t>
     <t>
       Added descriptions of the list, resolve and status federation endpoints.
     </t>
-	  <t>
-	    Registered the <spanx style="verb">client_registration_types_supported</spanx> and
-	    <spanx style="verb">federation_registration_endpoint</spanx>
-	    authorization server metadata parameters.
-	  </t>
-	  <t>
-	    Registered the <spanx style="verb">client_registration_type</spanx>
-	    dynamic client registration parameter.
-	  </t>
-	  <t>
-	    Registered and used the <spanx style="verb">application/entity-statement+jwt</spanx> media type.
-	  </t>
-	  <t>
-	    Registered the <spanx style="verb">application/trust-mark+jwt</spanx> media type.
+      <t>
+        Registered the <spanx style="verb">client_registration_types_supported</spanx> and
+        <spanx style="verb">federation_registration_endpoint</spanx>
+        authorization server metadata parameters.
+      </t>
+      <t>
+        Registered the <spanx style="verb">client_registration_type</spanx>
+        dynamic client registration parameter.
+      </t>
+      <t>
+        Registered and used the <spanx style="verb">application/entity-statement+jwt</spanx> media type.
+      </t>
+      <t>
+        Registered the <spanx style="verb">application/trust-mark+jwt</spanx> media type.
           </t>
           <t>
             Trust marks: the claim <spanx style="verb">mark</spanx> has been renamed to <spanx style="verb">logo_uri</spanx>.
@@ -5368,10 +5502,10 @@ Host: op.umu.se
           <t>
             Expanded Section 8.1: Included entity configurations.
           </t>
-	  <t>
-	    Fixed #1373 - More clearly defined the term Entity Statement,
-	    both in the Terminology section and in the Entity Statement section.
-	  </t>
+      <t>
+        Fixed #1373 - More clearly defined the term Entity Statement,
+        both in the Terminology section and in the Entity Statement section.
+      </t>
         </list>
       </t>
       <t>
@@ -5379,9 +5513,9 @@ Host: op.umu.se
         <list style="symbols">
           <t>
             Addressed many working group review comments.
-	    Changes included adding the Overall Architecture section,
-	    the <spanx style="verb">trust_marks_issuers</spanx> claim,
-	    and the Setting Up a Federation section.
+        Changes included adding the Overall Architecture section,
+        the <spanx style="verb">trust_marks_issuers</spanx> claim,
+        and the Setting Up a Federation section.
           </t>
         </list>
       </t>
@@ -5398,7 +5532,7 @@ Host: op.umu.se
         <list style="symbols">
           <t>
             Added <spanx style="verb">signed_jwks_uri</spanx>,
-	    which had been lost somewhere along the road.
+        which had been lost somewhere along the road.
           </t>
         </list>
       </t>
@@ -5417,10 +5551,10 @@ Host: op.umu.se
           <t>
             Made a distinction between parameters and claims.
           </t>
-	  <t>
-	    Corrected the description of the intended behavior when
-	    <spanx style="verb">essential</spanx> is absent.
-	  </t>
+      <t>
+        Corrected the description of the intended behavior when
+        <spanx style="verb">essential</spanx> is absent.
+      </t>
         </list>
       </t>
       <t>
