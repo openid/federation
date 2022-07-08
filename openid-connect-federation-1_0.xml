@@ -879,12 +879,12 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
               <vspace/>
               OPTIONAL.
               A JSON Object defining the client authentications supported for each endpoint.
-              The endpoint names are defined in the IANA 
+              The endpoint names are defined in the IANA
               "OAuth Authorization Server Metadata" registry
-              <xref target="IANA.OAuth.Parameters"/>. 
-              Other endpoints and authentication methods are possible, if made 
-              recognizable according 
-              to established standards and not in conflict with the operating 
+              <xref target="IANA.OAuth.Parameters"/>.
+              Other endpoints and authentication methods are possible, if made
+              recognizable according
+              to established standards and not in conflict with the operating
               principles of this specification.
               In OpenID Connect Core, no client authentication is performed at the authentication
               endpoint. Instead, you can say that the request itself is authenticated.
@@ -1819,6 +1819,14 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               Restrictions are defined in terms of permitted or excluded name
               subtrees.
             </t>
+            <t hangText="allowed_leaf_entity_types">
+              <vspace/>
+              OPTIONAL. Array of strings. Each string is an entity type.
+              Entity type identifiers specified in this document
+              can be found in <xref target="metadata"/>.
+              This constraint restricts what types of leaf entities that can
+              appear beneath the entity described in this Entity Statement.
+            </t>
           </list>
         </t>
         <t>The following is a non-normative example of such a specification:</t>
@@ -1833,7 +1841,8 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
       "https://east.example.com"
     ]
   },
-  "max_path_length": 2
+  "max_path_length": 2,
+  "allowed_leaf_entity_types": ["openid_provider", "openid_relying_party"]
 }
 ]]></artwork>
         </figure>
@@ -1909,7 +1918,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         <section title="Naming Constraints" anchor="naming_constraints">
           <t>
             The <spanx style="verb">naming_constraints</spanx> member
-        specifies a namespace within which all subject
+            specifies a namespace within which all subject
             Entity Identifiers in subordinate Entity Statements in a Trust Chain
             MUST be located.
           </t>
@@ -1929,6 +1938,13 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             ".example.com" is not satisfied by "example.com". When the
             constraint does not begin with a period, it specifies a host.
           </t>
+        </section>
+        <section title="Leaf Entity Type Constraints"
+                 anchor="leaf_entity_type_constraints">
+          The <spanx style="verb">allowed_leaf_entity_types</spanx> constraint
+          specifies what entity types are possible for leaf entities beneath an
+          entity. If there is no <spanx style="verb">allowed_leaf_entity_types</spanx>
+          defined it means that any type is allowed.
         </section>
       </section>
       <section title="Trust Marks" anchor="trust_marks">
@@ -2067,11 +2083,11 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
 
 ]]></artwork>
           </figure>
-          
+
           <figure>
             <preamble>
                 An example of a decoded Trust Mark issued to a RP,
-                attesting the conformance to a national 
+                attesting the conformance to a national
                 public service profile:
             </preamble>
             <artwork><![CDATA[
@@ -2089,11 +2105,11 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
 
 ]]></artwork>
           </figure>
-          
+
           <figure>
             <preamble>
-                An example of a decoded Trust Mark issued to a RP, 
-                attesting its conformance to the rules for 
+                An example of a decoded Trust Mark issued to a RP,
+                attesting its conformance to the rules for
                 data management of underage users:
             </preamble>
             <artwork><![CDATA[
@@ -2112,7 +2128,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
 
           <figure>
             <preamble>
-                An example of a Trust Mark attesting a stipulation of an 
+                An example of a Trust Mark attesting a stipulation of an
                 agreement between a RP and an Attribute Authority:</preamble>
             <artwork><![CDATA[
 {
@@ -2135,7 +2151,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
 
           <figure>
             <preamble>
-                An example of a Trust Mark asserting 
+                An example of a Trust Mark asserting
                 conformance to a security profile:
             </preamble>
             <artwork><![CDATA[
@@ -4103,30 +4119,30 @@ HTTP/1.1 302 Found
       <t>
         Some of the interfaces defined in this specification could be used for
         Denial-of-Service attacks (DoS), most notably, the Resolve endpoint
-        (<xref target="entity_listing"/>), explicit client registration 
+        (<xref target="entity_listing"/>), explicit client registration
         (<xref target="explicit"/>), and
-        automatic client registration (<xref target="automatic"/>), can 
+        automatic client registration (<xref target="automatic"/>), can
         be exploited as vectors of http propagation attacks.
-        
+
         If you plan to provide these endpoints, you should consider
         applying some adequate defense methods, such as those described below and in
         <xref target="RFC4732"/>.
       </t>
       <t>
         A Trust Mark can be statically validated, using the public key of its issuer.
-        The static validation of the Trust Marks represent a 
-        filter against a propagation attacks. An attacker 
-        could exploit the metadata discovery mechanism and use an OIDC Federation 
-        to propagate many http requests. For each authorization request, crafted 
-        by an anonymous client, the OP would produce ~3 http requests to third parties 
-        in absence of intermediaries, and at least 5 http requests with at 
-        least one intermediary. If an OP doesn't find at least one 
-        valid Trust Mark in an Entity Configuration it should reject the request and 
+        The static validation of the Trust Marks represent a
+        filter against a propagation attacks. An attacker
+        could exploit the metadata discovery mechanism and use an OIDC Federation
+        to propagate many http requests. For each authorization request, crafted
+        by an anonymous client, the OP would produce ~3 http requests to third parties
+        in absence of intermediaries, and at least 5 http requests with at
+        least one intermediary. If an OP doesn't find at least one
+        valid Trust Mark in an Entity Configuration it should reject the request and
         temporary bans the requestor.
       </t>
       <t>
-        If client authentication is not demanded at the Resolve endpoint 
-        then incoming requests should not by default result in immediate 
+        If client authentication is not demanded at the Resolve endpoint
+        then incoming requests should not by default result in immediate
         collection (metadata discovery process) and evaluation of Trust Chains.
       </t>
     </section>
@@ -5400,6 +5416,9 @@ Host: op.umu.se
         -21
         <list style="symbols">
       <t>
+        Added a new constraint, allowed_leaf_entity_types.
+      </t>
+      <t>
         Resolve endpoint: Removed iss paramenter in the request and specified the usage of the aud claim in the response.
       </t>
       <t>
@@ -5425,7 +5444,7 @@ Host: op.umu.se
       </t>
 	</list>
       </t>
-      
+
       <t>
         -20
         <list style="symbols">
