@@ -658,6 +658,10 @@
         standards.
         If needed, the metadata schema is extended
         with additional properties relevant in a federated context.
+      </t>
+      
+      <section title="OpenID Connect and OAuth2 Metadata" anchor="common_metadata">
+      <t>
         For instance, for OpenID Connect federations, this specification uses
         metadata values from
         <xref target="OpenID.Discovery">OpenID Connect Discovery 1.0</xref>
@@ -665,37 +669,24 @@
         <xref target="OpenID.Registration">OpenID Connect Dynamic Client
           Registration 1.0
         </xref>
-        and adds additional
-        values used for federations.
+        and adds additional values used for federations.
       </t>
-
-      <section title="RP Metadata" anchor="RP_metadata">
-        <t>
-          The metadata type identifier is
-          <spanx style="verb">openid_relying_party</spanx>.
-        </t>
-        <t>
-          All parameters defined in Section 2 of
-          <xref target="OpenID.Registration">OpenID Connect Dynamic Client
-            Registration 1.0
-          </xref>
-          are allowed in a metadata statement.
-        </t>
-        <t>
-          To that list is added:
+      <t>
+        For OAuth2 federations, this specification uses metadata values from
+        OAuth 2.0 Authorization Server Metadata as specified in <xref target="RFC8414"/>.
+      </t>
+      
+      <t>
+        For both OpenID Connect and OAuth2 metadata the following properties 
+        are defined.
+      </t>
+      
+      <t>
           <list style="hanging">
-            <t hangText="client_registration_types">
-              <vspace/>
-              REQUIRED. Array of strings specifying the client registration
-              types the RP wants to use. Values defined by this specification
-              are
-              <spanx style="verb">automatic</spanx>
-              and <spanx style="verb">explicit</spanx>.
-            </t>
             <t hangText="organization_name">
               <vspace/>
               OPTIONAL. A human-readable
-              name representing the organization owning the RP.
+              name representing the organization owning the Entity.
               If the owner is a physical person
               this MAY be, for example, the name of a person.
             </t>
@@ -705,7 +696,7 @@
               JWK Set as its payload. The JWT is signed with a key that was included
               in the JWK that the Entity published in its self-signed Entity
               Statement.
-              If an RP can use <spanx style="verb">signed_jwks_uri</spanx>,
+              If an Entity can use <spanx style="verb">signed_jwks_uri</spanx>,
               it MUST NOT use <spanx style="verb">jwks</spanx> or
               <spanx style="verb">jwks_uri</spanx>.
               A signed JWT can contain the following claims, all except
@@ -743,96 +734,143 @@
               <spanx style="verb">nbf</spanx> and <spanx style="verb">jti</spanx>
               are deemed to not be very useful in this context and are therefore
               to be omitted.
+            
+            
+            <figure>
+              <preamble>
+                The following is a non-normative example of a signed JWKS
+                before serialization and adding a signature.
+              </preamble>
+              <artwork>
+    <![CDATA[
+    {
+      "keys": [
+        {
+          "kty": "RSA",
+          "kid": "SUdtUndEWVY2cUFDeDV5NVlBWDhvOXJodVl2am1mNGNtR0pmd",
+          "n": "y_Zc8rByfeRIC9fFZrDZ2MGH2ZnxLrc0ZNNwkNet5rwCPYeRF3Sv
+                5nihZA9NHkDTEX97dN8hG6ACfeSo6JB2P7heJtmzM8oOBZbmQ90n
+                EA_JCHszkejHaOtDDfxPH6bQLrMlItF4JSUKua301uLB7C8nzTxm
+                tF3eAhGCKn8LotEseccxsmzApKRNWhfKDLpKPe9i9PZQhhJaurwD
+                kMwbWTAeZbqCScU1o09piuK1JDf2PaDFevioHncZcQO74Obe4nN3
+                oNPNAxrMClkZ9s9GMEd5vMqOD4huXlRpHwm9V3oJ3LRutOTxqQLV
+                yPucu7eHA7her4FOFAiUk-5SieXL9Q",
+          "e": "AQAB"
+        },
+        {
+          "kty": "EC",
+          "kid": "MFYycG1raTI4SkZvVDBIMF9CNGw3VEZYUmxQLVN2T21nSWlkd3",
+          "crv": "P-256",
+          "x": "qAOdPQROkHfZY1daGofOmSNQWpYK8c9G2m2Rbkpbd4c",
+          "y": "G_7fF-T8n2vONKM15Mzj4KR_shvHBxKGjMosF6FdoPY"
+        }
+      ],
+      "iss": "https://example.org/op",
+      "iat": 1618410883
+    }
+]]>
+              </artwork>
+            </figure>
+            
+            <figure>
+            <preamble>
+                The following is a non-normative example of an RP's Entity Statement:
+            </preamble>
+            
+                <artwork>
+<![CDATA[
+    {
+      "iss": "https://openid.sunet.se",
+      "sub": "https://openid.sunet.se",
+      "iat": 1516239022,
+      "exp": 1516298022,
+      "metadata": {
+        "openid_relying_party": {
+          "application_type": "web",
+          "redirect_uris": [
+            "https://openid.sunet.se/rp/callback"
+          ],
+          "organization_name": "SUNET",
+          "logo_uri": "https://www.sunet.se/sunet/images/32x32.png",
+          "grant_types": [
+            "authorization_code",
+            "implicit"
+          ],
+          "signed_jwks_uri": "https://openid.sunet.se/rp/jwks.jose"
+        }
+      },
+      "jwks": {
+        "keys": [
+          {
+            "alg": "RS256",
+            "e": "AQAB",
+            "key_ops": [
+              "verify"
+            ],
+            "kid": "key1",
+            "kty": "RSA",
+            "n": "pnXBOusEANuug6ewezb9J_...",
+            "use": "sig"
+          }
+        ]
+      },
+      "authority_hints": [
+        "https://edugain.org/federation"
+      ]
+    }
+    ]]>
+                </artwork>
+            </figure>
+            </t>
+
+            <t hangText="jwks">
+              <vspace/>
+              OPTIONAL. JSON Web Key Set document, passed by value, as
+              defined in <xref target="RFC7517"/>.
+              If an OP can use <spanx style="verb">signed_jwks_uri</spanx>,
+              it MUST NOT use <spanx style="verb">jwks</spanx> or
+              <spanx style="verb">jwks_uri</spanx>.
+              This parameter is intended
+              to be used by participants that, for some reason, are
+              unable to use the <spanx style="verb">signed_jwks_uri</spanx>
+              parameter.
+              One significant downside of <spanx style="verb">jwks</spanx>
+              is that it does not enable key rotation
+              (which <spanx style="verb">signed_jwks_uri</spanx> and
+              <spanx style="verb">jwks_uri</spanx> do).
+            </t>
+
+        </list>
+      </t>
+      </section>
+      
+      <section title="RP Metadata" anchor="RP_metadata">
+        <t>
+          The metadata type identifier is
+          <spanx style="verb">openid_relying_party</spanx>.
+        </t>
+        <t>
+          All parameters defined in Section 2 of
+          <xref target="OpenID.Registration">OpenID Connect Dynamic Client
+            Registration 1.0
+          </xref>
+          are allowed in a metadata statement.
+        </t>
+        <t>
+          In addition, the parameters defined in <xref target="metadata"/>
+          for OpenID Connect and OAuth2 entities and the following are added:
+          <list style="hanging">
+            <t hangText="client_registration_types">
+              <vspace/>
+              REQUIRED. Array of strings specifying the client registration
+              types the RP wants to use. Values defined by this specification
+              are
+              <spanx style="verb">automatic</spanx>
+              and <spanx style="verb">explicit</spanx>.
             </t>
           </list>
         </t>
-    <figure>
-          <preamble>
-            The following is a non-normative example of a signed JWKS
-            before serialization and adding a signature.
-          </preamble>
-          <artwork><![CDATA[
-{
-  "keys": [
-    {
-      "kty": "RSA",
-      "kid": "SUdtUndEWVY2cUFDeDV5NVlBWDhvOXJodVl2am1mNGNtR0pmd",
-      "n": "y_Zc8rByfeRIC9fFZrDZ2MGH2ZnxLrc0ZNNwkNet5rwCPYeRF3Sv
-            5nihZA9NHkDTEX97dN8hG6ACfeSo6JB2P7heJtmzM8oOBZbmQ90n
-            EA_JCHszkejHaOtDDfxPH6bQLrMlItF4JSUKua301uLB7C8nzTxm
-            tF3eAhGCKn8LotEseccxsmzApKRNWhfKDLpKPe9i9PZQhhJaurwD
-            kMwbWTAeZbqCScU1o09piuK1JDf2PaDFevioHncZcQO74Obe4nN3
-            oNPNAxrMClkZ9s9GMEd5vMqOD4huXlRpHwm9V3oJ3LRutOTxqQLV
-            yPucu7eHA7her4FOFAiUk-5SieXL9Q",
-      "e": "AQAB"
-    },
-    {
-      "kty": "EC",
-      "kid": "MFYycG1raTI4SkZvVDBIMF9CNGw3VEZYUmxQLVN2T21nSWlkd3",
-      "crv": "P-256",
-      "x": "qAOdPQROkHfZY1daGofOmSNQWpYK8c9G2m2Rbkpbd4c",
-      "y": "G_7fF-T8n2vONKM15Mzj4KR_shvHBxKGjMosF6FdoPY"
-    }
-  ],
-  "iss": "https://example.org/op",
-  "iat": 1618410883
-}
-]]></artwork>
-        </figure>
-
-<figure>
-<preamble>
-            The following is a non-normative example of an RP's Entity Statement:
-          </preamble>
-
-          <artwork><![CDATA[
-{
-  "iss": "https://openid.sunet.se",
-  "sub": "https://openid.sunet.se",
-  "iat": 1516239022,
-  "exp": 1516298022,
-  "metadata": {
-    "openid_relying_party": {
-      "application_type": "web",
-      "redirect_uris": [
-        "https://openid.sunet.se/rp/callback"
-      ],
-      "organization_name": "SUNET",
-      "logo_uri": "https://www.sunet.se/sunet/images/32x32.png",
-      "grant_types": [
-        "authorization_code",
-        "implicit"
-      ],
-      "signed_jwks_uri": "https://openid.sunet.se/rp/jwks.jose"
-    }
-  },
-  "jwks": {
-    "keys": [
-      {
-        "alg": "RS256",
-        "e": "AQAB",
-        "key_ops": [
-          "verify"
-        ],
-        "kid": "key1",
-        "kty": "RSA",
-        "n": "pnXBOusEANuug6ewezb9J_...",
-        "use": "sig"
-      }
-    ]
-  },
-  "authority_hints": [
-    "https://edugain.org/federation"
-  ]
-}
-]]></artwork>
-        </figure>
-<t>
-Note: An OpenID Connect RP MUST only use the keys published in a suitable element, such as <spanx style="verb">jwks</spanx>
-or <spanx style="verb">jwks_uri</spanx> or <spanx style="verb">signed_jwks_uri</spanx>, underneath the
-<spanx style="verb">metadata/openid_relying_party</spanx> element of the respective Entity Statement for the OpenID Connect protocol.
-The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that purpose.
-</t>
+    
       </section>
 
       <section title="OP Metadata" anchor="OP_metadata">
@@ -846,8 +884,8 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
           are applicable.
         </t>
         <t>
-          In addition, the following parameters are defined by this
-          specification:
+          In addition, the parameters defined in <xref target="metadata"/>
+          for OpenID Connect and OAuth2 entities and the following are added:
         </t>
         <t>
           <list style="hanging">
@@ -857,15 +895,6 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
               Federation type values defined by this specification are
               <spanx style="verb">automatic</spanx>
               and <spanx style="verb">explicit</spanx>.
-            </t>
-            <t hangText="organization_name">
-              <vspace/>
-              OPTIONAL. A human-readable
-              name representing the organization owning the OP. It is
-              intended to be used in the user interface, being recognized by
-              the end users that would be using the OP to authenticate.
-              If the owner is a physical person
-              this MAY be, for example, the name of a person.
             </t>
             <t hangText="federation_registration_endpoint">
               <vspace/>
@@ -981,30 +1010,6 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> for that pu
           Servers SHOULD support <spanx style="verb">RS256</spanx>.
           The value <spanx style="verb">none</spanx> MUST NOT be used.
         </t>
-
-            <t hangText="signed_jwks_uri">
-              <vspace/>
-              OPTIONAL. A URI pointing to a signed JWT having the Entity's
-              JWK Set as its payload. The JWT is signed with a key that was included
-              in the JWK Set that the Entity published in its self-signed Entity
-              Statement.
-            </t>
-            <t hangText="jwks">
-              <vspace/>
-              OPTIONAL. JSON Web Key Set document, passed by value, as
-              defined in <xref target="RFC7517"/>.
-              If an OP can use <spanx style="verb">signed_jwks_uri</spanx>,
-              it MUST NOT use <spanx style="verb">jwks</spanx> or
-              <spanx style="verb">jwks_uri</spanx>.
-              This parameter is intended
-              to be used by participants that, for some reason, are
-              unable to use the <spanx style="verb">signed_jwks_uri</spanx>
-              parameter.
-              One significant downside of <spanx style="verb">jwks</spanx>
-              is that it does not enable key rotation
-              (which <spanx style="verb">signed_jwks_uri</spanx> and
-              <spanx style="verb">jwks_uri</spanx> do).
-            </t>
           </list>
         </t>
 
@@ -1103,6 +1108,8 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           All parameters defined in Section 2 of
           <xref target="RFC8414">RFC 8414</xref>
           are applicable.
+          In addition, the parameters defined in <xref target="metadata"/>
+          for OpenID Connect and OAuth2 entities are added.
         </t>
       </section>
 
@@ -1114,7 +1121,9 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         <t>
           All parameters defined in Section 2 of
           <xref target="RFC7591">RFC 7591</xref>
-          are applicable.
+          are applicable. 
+          In addition, the parameters defined in <xref target="metadata"/>
+          for OpenID Connect and OAuth2 entities are added.
         </t>
       </section>
 
@@ -1122,9 +1131,12 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         <t>
           The metadata type identifier is
           <spanx style="verb">oauth_resource</spanx>.
-          There is no standard that specifies what parameters can occur
-          in the metadata for this kind of Entity. So, for the time being, this
-          can be regarded as a placeholder.
+          In addition to those defined in
+          <xref target="draft-jones-oauth-resource-metadata">
+              draft-jones-oauth-resource-metadata
+          </xref>,
+          the parameters defined in <xref target="metadata"/>
+          for OpenID Connect and OAuth2 entities are added.
         </t>
       </section>
       <section title="Federation Entity">
@@ -3864,14 +3876,20 @@ HTTP/1.1 302 Found
 
       </section>
 
-      <section anchor="DynRegRegistrations" title="OAuth Dynamic Client Registration Metadata Registration">
+    <section anchor="DynRegRegistrations" title="OAuth Dynamic Client Registration Metadata Registration">
     <t>
       This specification registers the following client metadata definition
       in the IANA "OAuth Dynamic Client Registration Metadata" registry
       <xref target="IANA.OAuth.Parameters"/>
       established by <xref target="RFC7591"/>.
     </t>
-
+    <section anchor="draft-jones-oauth-resource-metadata" title="OAuth 2.0 Protected Resource Metadata">
+    <t>
+        This specification defines a metadata format that an OAuth 2.0 client
+        can use to obtain the information needed to interact with an OAuth
+        2.0 protected resource.
+    </t>
+    </section>
     <section anchor="DynRegContents" title="Registry Contents">
       <t>
         <?rfc subcompact="yes"?>
@@ -5413,10 +5431,13 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
-
+      
       <t>
         -21
         <list style="symbols">
+      <t>
+        Fixed #1547: Metadata section restructured.
+      </t>
       <t>
         Fixed #1548: request_authentication_signing_alg_values_supported clarification text about the usage of private_key_jwt and request_object.
       </t>
