@@ -676,7 +676,7 @@
         If needed, the metadata schema is extended
         with additional properties relevant in a federated context.
       </t>
-      
+
       <section title="OpenID Connect and OAuth2 Metadata" anchor="common_metadata">
       <t>
         For instance, for OpenID Connect federations, this specification uses
@@ -692,12 +692,12 @@
         For OAuth2 federations, this specification uses metadata values from
         OAuth 2.0 Authorization Server Metadata as specified in <xref target="RFC8414"/>.
       </t>
-      
+
       <t>
-        For both OpenID Connect and OAuth2 metadata the following properties 
+        For both OpenID Connect and OAuth2 metadata the following properties
         are defined.
       </t>
-      
+
       <t>
           <list style="hanging">
             <t hangText="organization_name">
@@ -751,8 +751,8 @@
               <spanx style="verb">nbf</spanx> and <spanx style="verb">jti</spanx>
               are deemed to not be very useful in this context and are therefore
               to be omitted.
-            
-            
+
+
             <figure>
               <preamble>
                 The following is a non-normative example of a signed JWKS
@@ -788,12 +788,12 @@
 ]]>
               </artwork>
             </figure>
-            
+
             <figure>
             <preamble>
                 The following is a non-normative example of an RP's Entity Statement:
             </preamble>
-            
+
                 <artwork>
 <![CDATA[
     {
@@ -860,7 +860,7 @@
         </list>
       </t>
       </section>
-      
+
       <section title="RP Metadata" anchor="RP_metadata">
         <t>
           The metadata type identifier is
@@ -887,7 +887,7 @@
             </t>
           </list>
         </t>
-    
+
       </section>
 
       <section title="OP Metadata" anchor="OP_metadata">
@@ -1017,9 +1017,9 @@
           OPTIONAL.
           JSON array containing a list of the JWS signing algorithms
           (<spanx style="verb">alg</spanx> values)
-          supported for the signature on the JWT <xref target="RFC7519" /> 
-          used in the <spanx style="verb">request_object</spanx> 
-          contained in the request parameter of an authorization request or 
+          supported for the signature on the JWT <xref target="RFC7519" />
+          used in the <spanx style="verb">request_object</spanx>
+          contained in the request parameter of an authorization request or
           in the <spanx style="verb">private_key_jwt</spanx> of a pushed authorization request.
           This entry MUST be present if either of these authentication methods are specified
           in the <spanx style="verb">request_authentication_methods_supported</spanx> entry.
@@ -1139,7 +1139,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         <t>
           All parameters defined in Section 2 of
           <xref target="RFC7591">RFC 7591</xref>
-          are applicable. 
+          are applicable.
           In addition, the parameters defined in <xref target="metadata"/>
           for OpenID Connect and OAuth2 entities are added.
         </t>
@@ -3517,14 +3517,14 @@ HTTP/1.1 302 Found
                   Based on the Trust Anchors referenced in the subset of
                   Trust Chains, the RP will choose a set of
                   <spanx style="verb">authority_hints</spanx>
-                  from
-                  its own set that terminate in those Trust Anchors.
+                  from its own set that, when collecting a trust chain,
+                  will terminate in one of those Trust Anchors.
                 </t>
                 <t>
                   The RP will now construct a self-signed Entity Statement
                   where the metadata statement chosen is influenced by the OP's
-                  metadata and the <spanx style="verb">authority_hints</spanx> included
-                  are picked by the process described above.
+                  metadata and where the <spanx style="verb">authority_hints</spanx>
+                  included are picked by the process described above.
                   Note that the <spanx style="verb">aud</spanx> claim in the
                   Entity Statement is REQUIRED
                   in this case and MUST be set to the OP issuer identifier.
@@ -3579,7 +3579,7 @@ HTTP/1.1 302 Found
                     the same as the Entity Identifier of the RP.
                     To the Entity Statement it will add a
                     <spanx style="verb">trust_anchor_id</spanx>
-                    claim, containing the Trust Anchor chosen above.
+                    claim, containing the Trust Anchor chosen in step 2.
                   </t>
                   <t>
                     It will sign and return the registration response (a signed
@@ -3594,10 +3594,11 @@ HTTP/1.1 302 Found
                 <list style="numbers">
                   <t>
                     The RP verifies the correctness of the received Entity
-                    Statement, making sure that the Trust Chains starting at the
+                    Statement, making sure that one of the
                     <spanx style="verb">authority_hints</spanx>
-                    terminate in Trust Anchors that were
-                    referenced in the Entity Statement it sent to the OP.
+                    it added to the registration request will lead to the
+                    Trust Anchor the OP named using the claim
+                    <spanx style="verb">trust_anchor_id</spanx>.
                   </t>
                   <t>
                     The RP MUST NOT apply metadata policies from the trust
@@ -3608,8 +3609,11 @@ HTTP/1.1 302 Found
                     chose.
                     Once it has applied those policies, it can then apply
                     the policy returned from the OP.
-                    When it has applied all the metadata policies to its
-                    metadata statement, it then stores
+                    This is equivalent to adding the OPs metadata policies and
+                    assertions to the trust chain inbetween the RP's and its
+                    immediate superior's entity statements.
+                    When the RP has applied all the metadata policies and
+                    assertions to its metadata statement, it then stores
                     the result and can continue communicating with the OP
                     using the agreed-upon metadata.
                   </t>
@@ -3622,9 +3626,7 @@ HTTP/1.1 302 Found
                   </t>
                   <t>
                     If the RP does not accept the received Entity Statement for
-                    some
-                    reason,
-                    then it has the choice to restart the
+                    some reason, then it has the choice to restart the
                     registration process or to give up.
                   </t>
                 </list>
@@ -5312,11 +5314,8 @@ Host: op.umu.se
   },
   "metadata": {
     "openid_relying_party": {
-      "registration_access_token": "nLe19cJ5e9SXXiPqnRRuxpjyWI73bDhD",
       "client_id": "m3GyHw",
       "client_secret_expires_at": 1604049619,
-      "registration_client_uri":
-        "https://op.umu.se/openid/registration?client_id=m3GyHw",
       "client_secret":
         "cb44eed577f3b5edf3e08362d47a0dc44630b3dc6ea99f7a79205"
       "client_id_issued_at": 1601457619,
@@ -5448,7 +5447,7 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
-      
+
       <t>
         -22
         <list style="symbols">
