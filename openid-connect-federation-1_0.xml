@@ -1125,8 +1125,8 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           All parameters defined in Section 2 of
           <xref target="RFC8414">RFC 8414</xref>
           and <xref target="common_metadata"/> are applicable.
-          In addition, all the parameters defined  
-          for <xref target="OP_metadata"/>  are 
+          In addition, all the parameters defined
+          for <xref target="OP_metadata"/>  are
           applicable for this Entity.
         </t>
       </section>
@@ -3495,9 +3495,8 @@ HTTP/1.1 302 Found
         <section anchor="Clireg" title="Client Registration">
           <section anchor="Cliregreq" title="Client Registration Request">
             <t>
-              The OP MUST support OpenID Dynamic Client Registration as extended
-              by this specification.
-              This is signaled by having the claim
+              An OP that supports OpenID Dynamic Client Registration as extended
+              by this specification, SHOULD signal this by having the claim
               <spanx style="verb">federation_registration_endpoint</spanx>
               in the OP's metadata.
             </t>
@@ -3508,17 +3507,17 @@ HTTP/1.1 302 Found
             <t>
               <list style="numbers">
                 <t>
-                  Once it has the list of acceptable Trust Chains for the OP,
-                  it MUST choose the subset it wants to progress with. The
-                  subset can be as small as one Trust Chain, but it can also
+                  Once it has a list of acceptable Trust Anchors to the OP,
+                  it MUST choose the subset it wants to progress with. This
+                  subset can be as small as one Trust Anchor, but it can also
                   contain more than one.
                 </t>
                 <t>
-                  Based on the Trust Anchors referenced in the subset of
-                  Trust Chains, the RP will choose a set of
+                  Using this subset of Trust Anchors, the RP will choose a set of
                   <spanx style="verb">authority_hints</spanx>
-                  from its own set that, when collecting a trust chain,
-                  will terminate in one of those Trust Anchors.
+                  from the hints that are available to it. Each hint MUST,
+                  when used as a starting point for trust chain collection,
+                  lead to at least one of the Trust Anchors in the subset.
                 </t>
                 <t>
                   The RP will now construct a self-signed Entity Statement
@@ -3571,13 +3570,13 @@ HTTP/1.1 302 Found
                     archived data.
                   </t>
                   <t>
-                    The OP will now construct a metadata policy that, if
-                    applied to the RP's metadata statement, will result in
-                    metadata that the OP finds acceptable.
+                    The OP will now construct metadata policies and assertions
+                    that, if applied to the RP's metadata statement, will result
+                    in metadata that the OP finds acceptable.
                     Note
                     that the Client ID the OP chooses does not have to be
                     the same as the Entity Identifier of the RP.
-                    To the Entity Statement it will add a
+                    To the Entity Statement it MUST add a
                     <spanx style="verb">trust_anchor_id</spanx>
                     claim, containing the Trust Anchor chosen in step 2.
                   </t>
@@ -3601,28 +3600,28 @@ HTTP/1.1 302 Found
                     <spanx style="verb">trust_anchor_id</spanx>.
                   </t>
                   <t>
-                    The RP MUST NOT apply metadata policies from the trust
-                    chains that the OP provides because those are not valid for
-                    the RP's metadata.
-                    The RP MUST apply policies to the metadata using one of its
-                    own Trust Chains that ends in the Trust Anchor that the OP
-                    chose.
-                    Once it has applied those policies, it can then apply
-                    the policy returned from the OP.
+                    The RP MUST NOT apply metadata policies and assertions
+                    from the trust chains that the OP provides because those
+                    are not valid for the RP's metadata.
+                    The RP MUST apply policies and assertions to the metadata
+                    using one of its own Trust Chains that ends in the Trust
+                    Anchor that the OP chose.
+                    Once it has applied those policies and assertions, it can
+                    then apply the policies and assertions returned from the OP.
                     This is equivalent to adding the OPs metadata policies and
                     assertions to the trust chain inbetween the RP's and its
                     immediate superior's entity statements.
                     When the RP has applied all the metadata policies and
                     assertions to its metadata statement, it then stores
-                    the result and can continue communicating with the OP
-                    using the agreed-upon metadata.
+                    the result and will in the following communicating with the
+                    OP using the agreed-upon metadata.
                   </t>
                   <t>
                     At this point the RP also knows which Trust Chain it should
                     use when evaluating the OP's metadata. It can therefore
-                    apply the metadata policies on the OP's metadata using the
-                    relevant Trust Chain and store the result as the OP's
-                    metadata.
+                    apply the metadata policies and assertions on the OP's
+                    metadata using the relevant Trust Chain and store the result
+                    as the OP's metadata.
                   </t>
                   <t>
                     If the RP does not accept the received Entity Statement for
@@ -5456,7 +5455,7 @@ Host: op.umu.se
       </t>
 	    </list>
       </t>
-      
+
       <t>
         -21
         <list style="symbols">
