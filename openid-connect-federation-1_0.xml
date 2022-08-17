@@ -46,7 +46,7 @@
       </address>
     </author>
 
-    <author fullname="Andreas &Aring;kre Solberg" initials="A.&Aring;."
+    <author fullname="Andreas Åkre Solberg" initials="A.Å."
             surname="Solberg">
       <organization>Sikt</organization>
 
@@ -77,7 +77,7 @@
       </address>
     </author>
 
-    <date day="6" month="July" year="2022"/>
+    <date day="12" month="August" year="2022"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -365,11 +365,22 @@
               <spanx style="verb">metadata</spanx>
               claim containing metadata asserted by a superior about the
               Entity identified by <spanx style="verb">sub</spanx>.
+              If a <spanx style="verb">metadata</spanx> claim appears beside a
+              <spanx style="verb">metadata_policy</spanx> claim in an
+              Entity Statement then for each entity type, claims that appear in
+              <spanx style="verb">metadata</spanx> MUST NOT appear in
+              <spanx style="verb">metadata_policy</spanx>
             </t>
             <t hangText="metadata_policy">
               <vspace/>
               REQUIRED Conditional. JSON object that describes
               a metadata policy.
+              A metadata_policy applies to the entity describe in this
+              Entity Statement as well as to all entities that appear beneath the
+              entity described in this Entity Statement. This distinguishes
+              <spanx style="verb">metadata_policy</spanx> from
+              <spanx style="verb">metadata</spanx> which only applies to the
+              subject itself.
               Each key of the JSON object represents a metadata type
               identifier, and each value MUST be a JSON object representing
               the metadata policy according to the metadata schema of that
@@ -523,10 +534,17 @@
   "crit": ["jti"],
   "jti": "7l2lncFdY6SlhNia",
   "policy_language_crit": ["regexp"],
+  "metadata": {
+    "openid_provider": {
+      "issuer": "https://ntnu.no",
+      "organization_name": "NTNU",
+    },
+    "oauth_client": {
+      "organization_name": "NTNU"
+    }
+  },
   "metadata_policy": {
     "openid_provider": {
-      "issuer": {"value": "https://ntnu.no"},
-      "organization_name": {"value": "NTNU"},
       "id_token_signing_alg_values_supported":
         {"subset_of": ["RS256", "RS384", "RS512"]},
       "op_policy_uri": {
@@ -534,7 +552,6 @@
           "^https:\/\/[\\w-]+\\.example\\.com\/[\\w-]+\\.html"}
     },
     "oauth_client": {
-      "organization_name": {"value": "NTNU"},
       "grant_types": {
         "subset_of": ["authorization_code", "client_credentials"]},
       "scope": {
@@ -1107,9 +1124,10 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         <t>
           All parameters defined in Section 2 of
           <xref target="RFC8414">RFC 8414</xref>
-          are applicable.
-          In addition, the parameters defined in <xref target="metadata"/>
-          for OpenID Connect and OAuth2 entities are added.
+          and <xref target="common_metadata"/> are applicable.
+          In addition, all the parameters defined  
+          for <xref target="OP_metadata"/>  are 
+          applicable for this Entity.
         </t>
       </section>
 
@@ -1217,7 +1235,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
     "https://example.com/federation_fetch",
   "federation_list_endpoint":
     "https://example.com/federation_list",
-  "name": "The example cooperation",
+  "organization_name": "The example cooperation",
   "homepage_uri": "https://www.example.com"
 }
 ]]></artwork>
@@ -1261,12 +1279,14 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
         <t>
-          An Entity can publish metadata policies pertaining to entities of a
-          specific type. Entity type identifiers specified in this document
-          can be found in <xref target="metadata"/>.
+          An Entity can publish metadata policies pertaining to subordinate
+          entities of a specific type. Entity type identifiers specified in
+          this document can be found in <xref target="metadata"/>.
         </t>
+        <section title="metadata_policy">
         <t>
-          Each such metadata policy has the following structure:
+          A <spanx style="verb">metadata_policy</spanx> for a specific entity
+          type has the following structure:
           <list style="symbols">
             <t>It consists of one or more policy entries.</t>
             <t>Each policy entry applies to one metadata parameter, such as
@@ -1312,6 +1332,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
 ]]></artwork>
           </figure>
         </t>
+        </section>
         <section title="Operators">
           <t>
             Value modifiers are:
@@ -1766,21 +1787,25 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           </preamble>
           <artwork><![CDATA[
 {
-  "contacts": {
-    "add": "helpdesk@example.com"
+  "metadata_policy": {
+    "openid_relying_party": {
+      "contacts": {
+        "add": "helpdesk@example.com"
+      },
+      "logo_uri": {
+        "one_of": [
+          "https://example.com/logo_small.svg",
+          "https://example.com/logo_big.svg"
+        ],
+        "default": "https://example.com/logo_small.svg"
+      }
+    }
   },
-  "logo_uri": {
-    "one_of": [
-      "https://example.com/logo_small.svg",
-      "https://example.com/logo_big.svg"
-    ],
-    "default": "https://example.com/logo_small.svg"
-  },
-  "policy_uri": {
-    "value": "https://example.com/policy.html"
-  },
-  "tos_uri": {
-    "value": "https://example.com/tos.html"
+  "metadata": {
+    "openid_relying_party": {
+      "policy_uri": "https://example.com/policy.html",
+      "tos_uri": "https://example.com/tos.html"
+    }
   }
 }
 ]]></artwork>
@@ -3320,7 +3345,7 @@ https://server.example.com/authorize?
               </list>
               Note that if mTLS is used, TLS client authentication MUST be
               configured and, in case of self-signed certificates, the server must
-              omit Trust Chain validation.
+              omit the certificate chain validation.
             </t>
             <t>Using the example above, a request could look like this:</t>
             <figure>
@@ -4040,7 +4065,7 @@ HTTP/1.1 302 Found
           <t>
         Person &amp; email address to contact for further information:
 <vspace/>
-        Michael B.&nbsp;Jones, mbj@microsoft.com
+        Michael B. Jones, mbj@microsoft.com
           </t>
           <t>
         Intended usage: COMMON
@@ -4049,7 +4074,7 @@ HTTP/1.1 302 Found
         Restrictions on usage: none
           </t>
           <t>
-        Author: Michael B.&nbsp;Jones, mbj@microsoft.com
+        Author: Michael B. Jones, mbj@microsoft.com
           </t>
           <t>
         Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
@@ -4109,7 +4134,7 @@ HTTP/1.1 302 Found
           <t>
         Person &amp; email address to contact for further information:
 <vspace/>
-        Michael B.&nbsp;Jones, mbj@microsoft.com
+        Michael B. Jones, mbj@microsoft.com
           </t>
           <t>
         Intended usage: COMMON
@@ -4118,7 +4143,7 @@ HTTP/1.1 302 Found
         Restrictions on usage: none
           </t>
           <t>
-        Author: Michael B.&nbsp;Jones, mbj@microsoft.com
+        Author: Michael B. Jones, mbj@microsoft.com
           </t>
           <t>
         Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
@@ -4347,7 +4372,7 @@ HTTP/1.1 302 Found
         Hence the differences in depth in the federations.
       </t>
       <t>
-        Let us assume a researcher from Ume&aring; University would like to
+        Let us assume a researcher from Umeå University would like to
         login at
         the LIGO Wiki. At the Wiki, the researcher will use some kind of
         discovery service to find the home identity provider (op.umu.se)
@@ -4570,7 +4595,7 @@ Host: umu.se
       "contacts": "ops@umu.se",
       "federation_fetch_endpoint": "https://umu.se/oidc/fedapi",
       "homepage_uri": "https://www.umu.se",
-      "name": "UmU"
+      "organization_name": "UmU"
     }
   },
   "sub": "https://umu.se"
@@ -4696,7 +4721,7 @@ Host: swamid.se
       "federation_fetch_endpoint":
         "https://swamid.se/fedapi",
       "homepage_uri": "https://www.sunet.se/swamid/",
-      "name": "SWAMID"
+      "organization_name": "SWAMID"
     }
   },
   "sub": "https://swamid.se"
@@ -5283,26 +5308,18 @@ Host: op.umu.se
           "refresh_token"
         ]
       }
-      "registration_access_token": {
-        "value": "nLe19cJ5e9SXXiPqnRRuxpjyWI73bDhD"
-      },
-      "client_id": {
-        "value": "m3GyHw"
-      },
-      "client_secret_expires_at": {
-        "value": 1604049619
-      },
-      "registration_client_uri": {
-        "value":
-          "https://op.umu.se/openid/registration?client_id=m3GyHw"
-      },
-      "client_secret": {
-        "value":
-          "cb44eed577f3b5edf3e08362d47a0dc44630b3dc6ea99f7a79205"
-      },
-      "client_id_issued_at": {
-        "value": 1601457619
-      }
+    }
+  },
+  "metadata": {
+    "openid_relying_party": {
+      "registration_access_token": "nLe19cJ5e9SXXiPqnRRuxpjyWI73bDhD",
+      "client_id": "m3GyHw",
+      "client_secret_expires_at": 1604049619,
+      "registration_client_uri":
+        "https://op.umu.se/openid/registration?client_id=m3GyHw",
+      "client_secret":
+        "cb44eed577f3b5edf3e08362d47a0dc44630b3dc6ea99f7a79205"
+      "client_id_issued_at": 1601457619,
     }
   },
   "authority_hints": [
@@ -5420,7 +5437,7 @@ Host: op.umu.se
         Torsten Lodderstedt,
         Roberto Polli,
         Jouke Roorda,
-        Mischa Sall&eacute;,
+        Mischa Sallé,
         Marcos Sanz,
         Peter Schober,
         Michael Schwartz,
@@ -5431,6 +5448,15 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+      
+      <t>
+        -22
+        <list style="symbols">
+      <t>
+        Fixed #1581: OP metadata claims enabled for AS.
+      </t>
+	    </list>
+      </t>
       
       <t>
         -21
