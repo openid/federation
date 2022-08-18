@@ -3218,10 +3218,11 @@ Content-Type: application/json
                 </t>
                 <t hangText="trust_chain">
                   <vspace/>
-                  OPTIONAL. JSON Object array containing the sequence of the statements
+                  OPTIONAL. Array of JSON objects containing the sequence of the statements
                   that compose the Trust Chain related to the Client/RP that make the request. 
-                  Due to the large size of a Trust Chain it could be necessary the
-                  adoption of <xref target="RFC9126">Pushed Authorization Requests</xref>.
+                  Due to the large size of a Trust Chain it could be necessary to use
+                  a <xref target="RFC9191">JWT-Secured Authorization Request (JAR)</a> or 
+                  <xref target="RFC9126">Pushed Authorization Request</xref>.
                 </t>
               </list>
             </t>
@@ -3295,7 +3296,7 @@ https://server.example.com/authorize?
                 Configuration as described in <xref target="fetching-es"/>.
               </t>
               <t>
-                If the RP made available a self issued Trust Chain related to itself,
+                If the RP made available a self-issued Trust Chain related to itself,
                 using the <spanx style="verb">trust_chain</spanx>
                 parameter, the OP MAY evaluate this hint to make its 
                 Metadata Discovery procedure more efficient.
@@ -3415,8 +3416,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
               <t>
                 All the assumptions and requirements already defined in 
                  <xref target="AuthzRequestProcessing">Authentication Request</xref>
-                MUST 
-                be considered also for <xref target="RFC9126">Pushed Authorization Requests</xref>.
+                also apply to <xref target="RFC9126">Pushed Authorization Requests</xref>.
               </t>
               <t>
                 Once the OP has the RP's metadata, it can verify the client
