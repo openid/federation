@@ -3133,10 +3133,10 @@ Content-Type: application/json
           and then
           verifies that the RP is in control of a private key that is a
           companion
-          to one of the public keys the RP published through its metadata.
+          to one of the public keys the RP published through its Entity Configuration.
         </t>
         <t>
-          For automatic registration to work a number of things MUST be valid:
+          Automatic registration has the following requirements:
           <list style="symbols">
             <t>
               The Client ID of the RP
@@ -3216,6 +3216,13 @@ Content-Type: application/json
                   <vspace/>
                   OPTIONAL. Time at which the JWT was issued.
                 </t>
+                <t hangText="trust_chain">
+                  <vspace/>
+                  OPTIONAL. JSON Object array containing the sequence of the statements
+                  that compose the Trust Chain related to the Client/RP that make the request. 
+                  Due to the large size of a Trust Chain it could be necessary the
+                  adoption of <xref target="RFC9126">Pushed Authorization Requests</xref>.
+                </t>
               </list>
             </t>
             <figure>
@@ -3235,7 +3242,12 @@ Content-Type: application/json
   "redirect_uri": "https://rp.example.com/authz_cb",
   "response_type": "code",
   "scope": "openid profile email address phone",
-  "state": "YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ"
+  "state": "YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ",
+  "trust_chain" : [
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6Ims1NEhRdERpYnlHY3M5WldWTWZ2aUhm ...",
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ...",
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ..."
+  ]
 }
 ]]></artwork>
             </figure>
@@ -3271,19 +3283,40 @@ https://server.example.com/authorize?
       IRa4r6OKgFMNDqPzGqgwPuXMbjhBTuJptUgsmbEwdsGYw
 ]]></artwork>
             </figure>
-            <section title="Processing the Authentication Request">
+            <section title="Processing the Authentication Request" anchor="AuthzRequestProcessing">
               <t>
                 When the OP receives an incoming Authentication Request,
                 the OP supports OpenID Connect Federation, the incoming
                 Client ID
                 is a valid URL, and the OP does not have the Client ID
                 registered as a known
-                client, then the OP SHOULD try to resolve and fetch trust
-                chains starting with the RP's Entity
-                Statement as described in <xref target="fetching-es"/>.
+                client, then the OP SHOULD try to resolve and fetch Trust
+                Chains starting with the RP's Entity
+                Configuration as described in <xref target="fetching-es"/>.
               </t>
               <t>
-                The OP MUST then validate the possible Trust Chains, as
+                If the RP made available a self issued Trust Chain related to itself,
+                using the <spanx style="verb">trust_chain</spanx>
+                parameter, the OP MAY evaluate this hint to make its 
+                Metadata Discovery procedure more efficient.
+                The Trust Chain submitted by RP suggests to the OP 
+                the path to take, from the Leaf to the Trust Anchor, 
+                for the evaluation of the trust. 
+                If the OP has already registered in the past the RP and the Trust Chain 
+                related to this latter is not expired yet, the OP MAY renew 
+                the Trust Chain related to the RP, if one or more of the Entity Statements contained 
+                in the <spanx style="verb">trust_chain</spanx> array are
+                different from those available in the Trust Chain already 
+                created in the past by the OP for that RP. This can be done by 
+                comparing the final metadata extracted from the <spanx style="verb">trust_chain</spanx> 
+                acquired by the Leaf with the final metadata already in possession 
+                of the OP. The OP MUST verify every statement contained in 
+                <spanx style="verb">trust_chain</spanx>.
+              </t>
+              <t>
+                If the RP doesn't include its <spanx style="verb">trust_chain</spanx>
+                in the request or the OP doesn't support this feature, it then SHOULD validate 
+                the possible Trust Chains, as
                 described in
                 <xref target="trust_chain_validation"/>,
                 and resolve the RP metadata with type
@@ -3380,32 +3413,10 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
             </figure>
             <section title="Processing the Authentication Request">
               <t>
-                There are three different paths the OP MUST follow when
-                processing the Authentication Request, depending on which
-                request authentication
-                method was used. It all starts the same though.
-                When the OP receives an incoming Authentication Request,
-                the OP supports OpenID Connect Federation, the incoming
-                Client ID
-                is a valid URL, the OP does not have the Client ID
-                registered as a known client and the OP supports the request
-                authentication method used then the OP SHOULD try to resolve and
-                fetch Trust Chains starting with the RP's Entity
-                Statement as described in <xref target="fetching-es"/>.
-              </t>
-              <t>
-                The OP SHOULD validate the possible Trust Chains, as described
-                in
-                <xref target="trust_chain_validation"/>,
-                and resolve the RP metadata with type
-                <spanx style="verb">openid_relying_party</spanx>.
-              </t>
-              <t>
-                The OP SHOULD consider the resolved metadata of the RP and
-                verify that it complies with the client metadata specification
-                in
-                <xref target="OpenID.Registration">OpenID Connect Dynamic Client
-                  Registration 1.0</xref>.
+                All the assumptions and requirements already defined in 
+                 <xref target="AuthzRequestProcessing">Authentication Request</xref>
+                MUST 
+                be considered also for <xref target="RFC9126">Pushed Authorization Requests</xref>.
               </t>
               <t>
                 Once the OP has the RP's metadata, it can verify the client
@@ -5454,6 +5465,9 @@ Host: op.umu.se
         <list style="symbols">
       <t>
         Fixed #1581: OP metadata claims enabled for AS.
+      </t>
+      <t>
+        Fixed #1594: self issued trust_chain in the Authorization Request.
       </t>
 	    </list>
       </t>
