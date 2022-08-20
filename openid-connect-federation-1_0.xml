@@ -77,7 +77,7 @@
       </address>
     </author>
 
-    <date day="12" month="August" year="2022"/>
+    <date day="16" month="August" year="2022"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -676,7 +676,7 @@
         If needed, the metadata schema is extended
         with additional properties relevant in a federated context.
       </t>
-      
+
       <section title="OpenID Connect and OAuth2 Metadata" anchor="common_metadata">
       <t>
         For instance, for OpenID Connect federations, this specification uses
@@ -692,12 +692,12 @@
         For OAuth2 federations, this specification uses metadata values from
         OAuth 2.0 Authorization Server Metadata as specified in <xref target="RFC8414"/>.
       </t>
-      
+
       <t>
-        For both OpenID Connect and OAuth2 metadata the following properties 
+        For both OpenID Connect and OAuth2 metadata the following properties
         are defined.
       </t>
-      
+
       <t>
           <list style="hanging">
             <t hangText="organization_name">
@@ -751,8 +751,8 @@
               <spanx style="verb">nbf</spanx> and <spanx style="verb">jti</spanx>
               are deemed to not be very useful in this context and are therefore
               to be omitted.
-            
-            
+
+
             <figure>
               <preamble>
                 The following is a non-normative example of a signed JWKS
@@ -788,12 +788,12 @@
 ]]>
               </artwork>
             </figure>
-            
+
             <figure>
             <preamble>
                 The following is a non-normative example of an RP's Entity Statement:
             </preamble>
-            
+
                 <artwork>
 <![CDATA[
     {
@@ -860,7 +860,7 @@
         </list>
       </t>
       </section>
-      
+
       <section title="RP Metadata" anchor="RP_metadata">
         <t>
           The metadata type identifier is
@@ -887,7 +887,7 @@
             </t>
           </list>
         </t>
-    
+
       </section>
 
       <section title="OP Metadata" anchor="OP_metadata">
@@ -1017,9 +1017,9 @@
           OPTIONAL.
           JSON array containing a list of the JWS signing algorithms
           (<spanx style="verb">alg</spanx> values)
-          supported for the signature on the JWT <xref target="RFC7519" /> 
-          used in the <spanx style="verb">request_object</spanx> 
-          contained in the request parameter of an authorization request or 
+          supported for the signature on the JWT <xref target="RFC7519" />
+          used in the <spanx style="verb">request_object</spanx>
+          contained in the request parameter of an authorization request or
           in the <spanx style="verb">private_key_jwt</spanx> of a pushed authorization request.
           This entry MUST be present if either of these authentication methods are specified
           in the <spanx style="verb">request_authentication_methods_supported</spanx> entry.
@@ -1125,8 +1125,8 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           All parameters defined in Section 2 of
           <xref target="RFC8414">RFC 8414</xref>
           and <xref target="common_metadata"/> are applicable.
-          In addition, all the parameters defined  
-          for <xref target="OP_metadata"/>  are 
+          In addition, all the parameters defined
+          for <xref target="OP_metadata"/>  are
           applicable for this Entity.
         </t>
       </section>
@@ -1139,7 +1139,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         <t>
           All parameters defined in Section 2 of
           <xref target="RFC7591">RFC 7591</xref>
-          are applicable. 
+          are applicable.
           In addition, the parameters defined in <xref target="metadata"/>
           for OpenID Connect and OAuth2 entities are added.
         </t>
@@ -1340,9 +1340,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               <t hangText="value">
                 <vspace/>
                 Disregarding what value the parameter had, if any, the
-                parameter's
-                value
-                will be set to the operator's value.
+                parameter's value will be set to the operator's value.
               </t>
               <t hangText="add">
                 <vspace/>
@@ -1357,8 +1355,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               <t hangText="default">
                 <vspace/>
                 If no value is assigned to this parameter, then the parameter's
-                value
-                will be set to the operator's value(s).
+                value will be set to the operator's value(s).
               </t>
             </list>
           </t>
@@ -1368,8 +1365,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               <t hangText="one_of">
                 <vspace/>
                 The value of the parameter MUST be one of the ones listed in
-                this
-                directive.
+                this directive. 
               </t>
               <t hangText="subset_of">
                 <vspace/>
@@ -1423,8 +1419,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
                 appear beside
                 <spanx style="verb">subset_of</spanx>/
                 <spanx style="verb">superset_of</spanx>
-                in a
-                policy entry.
+                in a policy entry.
               </t>
               <t hangText="value">
                 <vspace/>
@@ -1611,6 +1606,14 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
                       style="verb">superset_of</spanx>. If the parameter values
                 do not fall within the allowed boundaries,
         applying the operator MUST fail.
+              </t>
+              <t>
+                 If more than one value is specified in
+                 <spanx style="verb">one_of</spanx> and the leaf entity 
+                 does not specify the metadata claim for which
+                 <spanx style="verb">one_of</spanx> is referred to, 
+                 it’s an implementation choice which of the values in 
+                 the <spanx style="verb">one_of</spanx> array will be used.
               </t>
             </list>
           </t>
@@ -1852,7 +1855,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               OPTIONAL. JSON object. Restriction on the Entity Identifiers of
               the
               entities below this Entity. The behavior of this claim mimics
-              what is defined in Section 4.2.1.10 in <xref target="RFC5280"/>.
+              what is defined in Section 4.2.1.10 of <xref target="RFC5280"/>.
               Restrictions are defined in terms of permitted or excluded name
               subtrees.
             </t>
@@ -1966,14 +1969,15 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             permitted claim.
           </t>
           <t>
-            The constraint MUST be specified as a fully qualified domain name
-            and MAY specify a host or a domain. Examples would be
-            "host.example.com" and ".example.com". When the constraint begins
+	    Domain name constraints are as specified in Section 4.2.1.10 of <xref target="RFC5280"/>.
+            As stated there, a domain name constraint MUST be specified as a fully qualified domain name
+            and MAY specify a host or a domain. Examples are
+            "host.example.com" and ".example.com". When the domain name constraint begins
             with a period, it MAY be expanded with one or more labels.
-            That is, the constraint ".example.com" is satisfied by both
-            host.example.com and my.host.example.com. However, the constraint
+            That is, the domain name constraint ".example.com" is satisfied by both
+            host.example.com and my.host.example.com. However, the domain name constraint
             ".example.com" is not satisfied by "example.com". When the
-            constraint does not begin with a period, it specifies a host.
+            domain name constraint does not begin with a period, it specifies a host.
           </t>
         </section>
         <section title="Leaf Entity Type Constraints"
@@ -3507,9 +3511,8 @@ HTTP/1.1 302 Found
         <section anchor="Clireg" title="Client Registration">
           <section anchor="Cliregreq" title="Client Registration Request">
             <t>
-              The OP MUST support OpenID Dynamic Client Registration as extended
-              by this specification.
-              This is signaled by having the claim
+              An OP that supports OpenID Dynamic Client Registration as extended
+              by this specification, signals this by having the claim
               <spanx style="verb">federation_registration_endpoint</spanx>
               in the OP's metadata.
             </t>
@@ -3520,23 +3523,23 @@ HTTP/1.1 302 Found
             <t>
               <list style="numbers">
                 <t>
-                  Once it has the list of acceptable Trust Chains for the OP,
-                  it MUST choose the subset it wants to progress with. The
-                  subset can be as small as one Trust Chain, but it can also
+                  Once it has a list of acceptable Trust Anchors to the OP,
+                  it MUST choose the subset it wants to progress with. This
+                  subset can be as small as one Trust Anchor, but it can also
                   contain more than one.
                 </t>
                 <t>
-                  Based on the Trust Anchors referenced in the subset of
-                  Trust Chains, the RP will choose a set of
+                  Using this subset of Trust Anchors, the RP will choose a set of
                   <spanx style="verb">authority_hints</spanx>
-                  from
-                  its own set that terminate in those Trust Anchors.
+                  from the hints that are available to it. Each hint MUST,
+                  when used as a starting point for trust chain collection,
+                  lead to at least one of the Trust Anchors in the subset.
                 </t>
                 <t>
                   The RP will now construct a self-signed Entity Statement
                   where the metadata statement chosen is influenced by the OP's
-                  metadata and the <spanx style="verb">authority_hints</spanx> included
-                  are picked by the process described above.
+                  metadata and where the <spanx style="verb">authority_hints</spanx>
+                  included are picked by the process described above.
                   Note that the <spanx style="verb">aud</spanx> claim in the
                   Entity Statement is REQUIRED
                   in this case and MUST be set to the OP issuer identifier.
@@ -3583,15 +3586,15 @@ HTTP/1.1 302 Found
                     archived data.
                   </t>
                   <t>
-                    The OP will now construct a metadata policy that, if
-                    applied to the RP's metadata statement, will result in
-                    metadata that the OP finds acceptable.
+                    The OP will now construct metadata policies and assertions
+                    that, if applied to the RP's metadata statement, will result
+                    in metadata that the OP finds acceptable.
                     Note
                     that the Client ID the OP chooses does not have to be
                     the same as the Entity Identifier of the RP.
-                    To the Entity Statement it will add a
+                    To the Entity Statement it MUST add a
                     <spanx style="verb">trust_anchor_id</spanx>
-                    claim, containing the Trust Anchor chosen above.
+                    claim, containing the Trust Anchor chosen in step 2.
                   </t>
                   <t>
                     It will sign and return the registration response (a signed
@@ -3606,37 +3609,39 @@ HTTP/1.1 302 Found
                 <list style="numbers">
                   <t>
                     The RP verifies the correctness of the received Entity
-                    Statement, making sure that the Trust Chains starting at the
+                    Statement, making sure that one of the
                     <spanx style="verb">authority_hints</spanx>
-                    terminate in Trust Anchors that were
-                    referenced in the Entity Statement it sent to the OP.
+                    it added to the registration request will lead to the
+                    Trust Anchor the OP named using the claim
+                    <spanx style="verb">trust_anchor_id</spanx>.
                   </t>
                   <t>
-                    The RP MUST NOT apply metadata policies from the trust
-                    chains that the OP provides because those are not valid for
-                    the RP's metadata.
-                    The RP MUST apply policies to the metadata using one of its
-                    own Trust Chains that ends in the Trust Anchor that the OP
-                    chose.
-                    Once it has applied those policies, it can then apply
-                    the policy returned from the OP.
-                    When it has applied all the metadata policies to its
-                    metadata statement, it then stores
-                    the result and can continue communicating with the OP
-                    using the agreed-upon metadata.
+                    The RP MUST NOT apply metadata policies and assertions
+                    from the trust chains that the OP provides because those
+                    are not valid for the RP's metadata.
+                    The RP MUST apply policies and assertions to the metadata
+                    using one of its own Trust Chains that ends in the Trust
+                    Anchor that the OP chose.
+                    Once it has applied those policies and assertions, it can
+                    then apply the policies and assertions returned from the OP.
+                    This is equivalent to adding the OP's metadata policies and
+                    assertions to the trust chain in between the RP's and its
+                    immediate superior's entity statements.
+                    When the RP has applied all the metadata policies and
+                    assertions to its metadata statement, it then stores
+                    the result and will use the agreed-upon metadata when
+                    talking to the OP.
                   </t>
                   <t>
                     At this point the RP also knows which Trust Chain it should
                     use when evaluating the OP's metadata. It can therefore
-                    apply the metadata policies on the OP's metadata using the
-                    relevant Trust Chain and store the result as the OP's
-                    metadata.
+                    apply the metadata policies and assertions on the OP's
+                    metadata using the relevant Trust Chain and store the result
+                    as the OP's metadata.
                   </t>
                   <t>
                     If the RP does not accept the received Entity Statement for
-                    some
-                    reason,
-                    then it has the choice to restart the
+                    some reason, then it has the choice to restart the
                     registration process or to give up.
                   </t>
                 </list>
@@ -5325,11 +5330,8 @@ Host: op.umu.se
   },
   "metadata": {
     "openid_relying_party": {
-      "registration_access_token": "nLe19cJ5e9SXXiPqnRRuxpjyWI73bDhD",
       "client_id": "m3GyHw",
       "client_secret_expires_at": 1604049619,
-      "registration_client_uri":
-        "https://op.umu.se/openid/registration?client_id=m3GyHw",
       "client_secret":
         "cb44eed577f3b5edf3e08362d47a0dc44630b3dc6ea99f7a79205"
       "client_id_issued_at": 1601457619,
@@ -5461,19 +5463,27 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
-      
+
       <t>
         -22
         <list style="symbols">
-      <t>
-        Fixed #1581: OP metadata claims enabled for AS.
+          <t>
+            Rewritten text about metadata processing when doing explicit client registration.
+          </t>
+          <t>
+            Fixed #1581: OP metadata claims enabled for AS.
+          </t>
+          <t>
+            Fixed #1594: self-issued trust_chain in the Authorization Request.
+          </t>
+            Fixed #1583: metadata policy one_of operator, explanatory text for multiple values.
+          </t>
+          <t>
+            Fixed #1584: Stated that domain name constraints are as specified in Section 4.2.1.10 of <xref target="RFC5280"/>.
+          </t>
+            </list>
       </t>
-      <t>
-        Fixed #1594: self-issued trust_chain in the Authorization Request.
-      </t>
-	    </list>
-      </t>
-      
+
       <t>
         -21
         <list style="symbols">
