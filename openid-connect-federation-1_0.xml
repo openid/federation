@@ -3509,6 +3509,33 @@ HTTP/1.1 302 Found
 ]]></artwork>
           </figure>
         </section>
+        
+      <section title="Rationale of the Trust Chain parameter">
+        <t>
+        The <spanx style="verb">trust_chain</spanx> in the Authorization Request enables many benefits in the general architecture of Federation.
+
+            <t>
+            It solves the problem of metadata misalignment between the RPs and the OPs 
+            when an OP reuses a not expired Trust Chain even if the RP has changed 
+            its Entity Configuration. This enables a mechanism that allow an RP to 
+            notify if something has changed, preventing temporary faults
+            due to stale metadatas.
+            </t>
+            
+            <t>
+            It prevents the OP to build all the possibile Trust Chains before choosing the good one.
+            Representing a hint of a correct and verifiable trust path to be adopted to
+            build the Trust Chain. This reduces the costs of the metadata discovery to OPs.
+            </t>
+
+            <t>
+            It gives the Entity Configuration, with Trust Marks in if any available, 
+            to avoid to OP to do the http request to the .well-known/openid-federation endpoint of the RP 
+            without having statically validated the Trust Marks first.
+            </t>
+      </t>
+      </section>  
+      
       </section>
       <section title="Explicit Registration" anchor="explicit">
         <t>
@@ -5489,12 +5516,13 @@ Host: op.umu.se
           <t>
             Fixed #1594: self-issued trust_chain in the Authorization Request.
           </t>
+          <t>
             Fixed #1583: metadata policy one_of operator, explanatory text for multiple values.
           </t>
           <t>
             Fixed #1584: Stated that domain name constraints are as specified in Section 4.2.1.10 of <xref target="RFC5280"/>.
           </t>
-            </list>
+        </list>
       </t>
 
       <t>
