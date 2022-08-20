@@ -3225,6 +3225,9 @@ Content-Type: application/json
                   OPTIONAL. Array of JSON objects containing the sequence of the statements
                   that compose the Trust Chain between the Client/RP that makes 
                   the request and the chosen Trust Anchor. 
+                  The sequence of statements doesn't imply any particular order 
+                  except the first element which MUST be the Entity Configuration 
+                  of the Client/RP making the request.
                   Due to the large size of a Trust Chain it could be necessary to use
                   a <xref target="RFC9101">JWT-Secured Authorization Request (JAR)</xref> or 
                   <xref target="RFC9126">Pushed Authorization Request</xref>.
@@ -3301,22 +3304,32 @@ https://server.example.com/authorize?
                 Configuration as described in <xref target="fetching-es"/>.
               </t>
               <t>
-                If the RP made available a self-issued Trust Chain related to itself,
+                An RP may made available to the OP 
+                a self-issued Trust Chain related to itself,
                 using the <spanx style="verb">trust_chain</spanx>
-                parameter, the OP MAY evaluate this hint to make its 
-                Metadata Discovery procedure more efficient.
-                The Trust Chain submitted by RP suggests to the OP 
-                the path to take, from the Leaf to the Trust Anchor, 
-                for the evaluation of the trust. 
-                If the OP has already registered in the past the RP and the Trust Chain 
-                related to this latter is not expired yet, the OP MAY renew 
-                the Trust Chain related to the RP, if one or more of the Entity Statements contained 
-                in the <spanx style="verb">trust_chain</spanx> array are
-                different from those available in the Trust Chain already 
-                created in the past by the OP for that RP. This can be done by 
-                comparing the final metadata extracted from the <spanx style="verb">trust_chain</spanx> 
-                acquired by the Leaf with the final metadata already in possession 
-                of the OP. The OP MUST verify every statement contained in 
+                parameter.
+
+                If the OP doesn't have a valid registration for the RP, 
+                or if the registration has expired, 
+                the Trust Chain submitted by RP suggests to the OP 
+                the path to take, from the Leaf to the Trust Anchor. 
+                The OP MAY evaluate the statements in the 
+                <spanx style="verb">trust_chain</spanx>
+                to make its Metadata Discovery procedure more efficient, 
+                specially if the RP shows more than a single authority hint in 
+                its Entity Configuration.
+
+                If the OP already has a valid registration for the RP, 
+                then the OP SHOULD check if any of the Entity Statements 
+                in the chain is different from the chain used 
+                for the registration. This can be achieved by comparing 
+                the final metadata extracted from the 
+                <spanx style="verb">trust_chain</spanx> acquired by the 
+                Leaf with the final metadata already in possession 
+                of the OP. 
+
+                When the OP uses the Trust Chain submitted by an RP, 
+                the OP MUST verify every statement contained in 
                 <spanx style="verb">trust_chain</spanx>.
               </t>
               <t>
