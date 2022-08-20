@@ -3640,12 +3640,21 @@ HTTP/1.1 302 Found
 
         <section title="After Client Registration">
           <t>
-            A client registration using this specification is not expected to
+            A client registration using the explicit method is not expected to
             be valid forever. The Entity Statements exchanged all have
             expiration times, which means that the registration will eventually
             time out. An OP can also, for administrative reasons, decide that a
             client registration is not valid anymore. An example of this could
-            be that the OP leaves the federation in use.
+            be the OP leaving the federation used to register an RP.
+          </t>
+
+          <t>
+            The temporary nature of explicit registration means that an RP must
+            expect its registration to become invalidated at any time, causing
+            RP requests to the OP, such as authorization, token or UserInfo
+            requests, to fail. An RP may devise appropriate strategies to
+            re-register with the OP and restart the transaction when such a
+            condition occurs.
           </t>
 
           <section title="What the RP MUST Do">
