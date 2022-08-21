@@ -3225,9 +3225,8 @@ Content-Type: application/json
                   OPTIONAL. Array of JSON objects containing the sequence of the statements
                   that compose the Trust Chain between the Client/RP that makes 
                   the request and the chosen Trust Anchor. 
-                  The sequence of statements doesn't imply any particular order 
-                  except the first element which MUST be the Entity Configuration 
-                  of the Client/RP making the request.
+                  The statements are not ordered, however the first MUST 
+                  be the Entity Configuration of the Client/RP making the request.
                   Due to the large size of a Trust Chain it could be necessary to use
                   a <xref target="RFC9101">JWT-Secured Authorization Request (JAR)</xref> or 
                   <xref target="RFC9126">Pushed Authorization Request</xref>.
@@ -3304,8 +3303,7 @@ https://server.example.com/authorize?
                 Configuration as described in <xref target="fetching-es"/>.
               </t>
               <t>
-                An RP may made available to the OP 
-                a self-issued Trust Chain related to itself,
+                An RP MAY present to the OP a Trust Chain related to itself,
                 using the <spanx style="verb">trust_chain</spanx>
                 parameter.
 
@@ -3316,7 +3314,7 @@ https://server.example.com/authorize?
                 The OP MAY evaluate the statements in the 
                 <spanx style="verb">trust_chain</spanx>
                 to make its Metadata Discovery procedure more efficient, 
-                specially if the RP shows more than a single authority hint in 
+                especially if the RP shows more than a single authority hint in 
                 its Entity Configuration.
 
                 If the OP already has a valid registration for the RP, 
@@ -3333,8 +3331,8 @@ https://server.example.com/authorize?
                 <spanx style="verb">trust_chain</spanx>.
               </t>
               <t>
-                If the RP doesn't include its <spanx style="verb">trust_chain</spanx>
-                in the request or the OP doesn't support this feature, it then SHOULD validate 
+                If the RP doesn't include the <spanx style="verb">trust_chain</spanx>
+                in the request or the OP doesn't support this feature, it then MUST validate 
                 the possible Trust Chains, as
                 described in
                 <xref target="trust_chain_validation"/>,
@@ -3526,7 +3524,7 @@ HTTP/1.1 302 Found
             <t>
             It enables the OP to not have to build all the possibile 
             Trust Chains before choosing a good one.
-            Representing a hint of a correct and verifiable trust path to be adopted to
+            It represents a hint of a verifiable trust path to be adopted to
             build the Trust Chain. This reduces the costs of the metadata discovery for OPs.
             </t>
 
