@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Connect Federation">OpenID Connect Federation 1.0 -
-      draft 21
+      draft 22
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -77,7 +77,7 @@
       </address>
     </author>
 
-    <date day="16" month="August" year="2022"/>
+    <date day="22" month="August" year="2022"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -323,7 +323,7 @@
               to be used in other protocols, such as OpenID Connect, are conveyed
               in the  <spanx style="verb">metadata</spanx> element of the respective Entity Statement.
               This claim is only OPTIONAL for the Entity Statement returned
-              from an OP when the client is doing explicit registration.
+              from an OP when the client is doing Explicit Registration.
               In all other cases it is REQUIRED.
               Every JWK in the JWK Set MUST have a Key ID (<spanx style="verb">kid</spanx>).
           It is RECOMMENDED that the Key ID be the JWK Thumbprint <xref target="RFC7638"/>
@@ -938,9 +938,9 @@
               information in the request (like the redirect_uri) to information it has gained
               on the client, through static or dynamic registration.
               If the map is successful, then the request is permitted to be processed.
-              If the RP uses automatic registration as described in this specification
+              If the RP uses Automatic Registration, as defined in <xref target="automatic"/>,
               the OP has no prior knowledge
-              of the RP. Therefore the OP must start by gathering
+              of the RP. Therefore, the OP must start by gathering
               information about the RP using the process outlined in
               <xref target="federation_configuration"/>. Once it has the RP's
               metadata, the OP can then verify the request in the same way
@@ -2282,7 +2282,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         Federation Entities SHOULD make an Entity Configuration Document
         available
         at the configuration endpoint. There is only one exception to this
-        rule and that is for an RP that only does explicit registration. Since
+        rule and that is for an RP that only does Explicit Registration. Since
         it
         posts the self-signed Entity Statement to the OP during client
         registration, the OP has everything it needs from the RP.
@@ -3115,43 +3115,43 @@ Content-Type: application/json
       </t>
       <t>
         There are two alternative approaches to establish trust between an
-        RP and an OP, which we call automatic and explicit
-        registration. Members of a federation or a community
+        RP and an OP, which we call Automatic and Explicit Registration.
+	Members of a federation or a community
         SHOULD agree upon which one to use. While implementations should
         support both methods, deployments MAY choose to disable the use of one
         of them.
       </t>
       <t>
-        Independent of whether the RP uses automatic or explicit registration,
+        Independent of whether the RP uses Automatic or Explicit Registration,
         the way that the RP learns about the OP is the same.
         It will use the procedure that is
         described in <xref target="resolving_trust"/>.
       </t>
       <section title="Automatic Registration" anchor="automatic">
         <t>
-          Automatic registration allows an RP to send Authorization Requests
-          to an OP without first registering with the OP. It basically works by
-          the OP using the Client ID in the request to find the RP's metadata
+          Automatic Registration enables an RP to send Authorization Requests
+          to an OP without prior client registration with the OP.
+	  When the RP uses Automatic Registration,
+          the OP uses the Client ID value provided by the RP in the request
+	  as the location from which to retrieve the RP's metadata
           using the process outlined in
           <xref target="resolving_trust"/>
           and then
-          verifies that the RP is in control of a private key that is a
-          companion
+          verifies that the RP is in control of a private key that corresponds to
           to one of the public keys the RP published through its metadata.
         </t>
         <t>
-          For automatic registration to work a number of things MUST be valid:
+          Automatic Registration has the following characteristics:
           <list style="symbols">
             <t>
               The Client ID of the RP
-              MUST be set to be identical to the RP Entity Identifier.
+              MUST be set to the RP's Entity Identifier.
             </t>
             <t>
-              Without a registration process, the RP does not have a
-              client secret. Instead, the automatic registration model requires
-              the
-              RP to make use of asymmetric cryptography. Basically, the RP must
-              prove that it has control of the RP's private keys.
+              Since there is no pre-registration process, the RP does not have a
+              Client Secret. Instead, the Automatic Registration model requires
+              the RP to make use of asymmetric cryptography
+	      to prove that it has control of its private keys.
             </t>
             <t>
               The Client ID MUST be a URL from which the OP can
@@ -3487,12 +3487,10 @@ HTTP/1.1 302 Found
       </section>
       <section title="Explicit Registration" anchor="explicit">
         <t>
-          This method involves performing an explicit registration of a new
+          This method involves performing an explicit pre-registration of a new
           client the first time an RP interacts with an OP
-          using something that basically follows the steps in
-          <xref target="OpenID.Registration">OpenID Connect Dynamic Client
-            Registration 1.0
-          </xref>
+          similarly to the process specified by
+          <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>,
           but where the client registration request
           is a signed Entity Statement.
         </t>
@@ -3505,7 +3503,7 @@ HTTP/1.1 302 Found
               in the OP's metadata.
             </t>
             <t>
-              Given that the OP supports explicit registration, the RP
+              Given that the OP supports Explicit Registration, the RP
               progresses as follows:
             </t>
             <t>
@@ -3709,6 +3707,36 @@ HTTP/1.1 302 Found
           </t>
         </section>
       </section>
+
+      <section title="Differences between Automatic Registration and Explicit Registration" anchor="AutomaticVsExplicit">
+	<t>
+	  The primary differences between Automatic Registration and Explicit Registration are:
+          <list style="symbols">
+            <t>
+	      With Automatic Registration, there is no pre-registration step,
+	      whereas with Explicit Registration, there is.
+	      (<xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>
+	      and <xref target="RFC7591">OAuth 2.0 Dynamic Client Registration</xref>)
+	      also employ pre-registration.)
+	    </t>
+	    <t>
+	      With Automatic Registration, the Client ID value is the RP's Entity Statment URL,
+	      and is supplied to the OP by the RP,
+	      whereas with Explicit Registration, the Client ID assigned by the OP and supplied to the RP.
+	    </t>
+	    <t>
+	      With Automatic Registration, there is never a Client Secret,
+	      whereas with Explicit Registration, the OP can return a Client Secret to the RP
+	      in the registration response.
+	      Instead of using a Client Secret to authenticate the client,
+	      with Automatic Registration, the client is authenticated by
+	      the RP proving that it controls a private key
+	      corresponding to one of its Entity Statement's public keys.
+	    </t>
+	  </list>
+	</t>
+      </section>
+
       <section title="ID Token Validation">
         <t>
             The RP MUST validate any ID token as defined in Section 3.1.3.7. of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>. If the
@@ -4169,9 +4197,9 @@ HTTP/1.1 302 Found
       <t>
         Some of the interfaces defined in this specification could be used for
         Denial-of-Service attacks (DoS), most notably, the Resolve endpoint
-        (<xref target="entity_listing"/>), explicit client registration
+        (<xref target="entity_listing"/>), Explicit Client Registration
         (<xref target="explicit"/>), and
-        automatic client registration (<xref target="automatic"/>), can
+        Automatic Client Registration (<xref target="automatic"/>), can
         be exploited as vectors of http propagation attacks.
 
         If you plan to provide these endpoints, you should consider
@@ -5455,7 +5483,7 @@ Host: op.umu.se
         -22
         <list style="symbols">
           <t>
-            Rewritten text about metadata processing when doing explicit client registration.
+            Rewritten text about metadata processing when doing Explicit Client Registration.
           </t>
       <t>
         Fixed #1581: OP metadata claims enabled for AS.
@@ -5466,7 +5494,10 @@ Host: op.umu.se
 	  <t>
 	    Fixed #1584: Stated that domain name constraints are as specified in Section 4.2.1.10 of <xref target="RFC5280"/>.
 	  </t>
-	    </list>
+	  <t>
+	    Fixed #1588: Explicitly described the differences between Automatic and Explicit Registration.
+	  </t>
+	</list>
       </t>
 
       <t>
