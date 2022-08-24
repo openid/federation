@@ -3509,25 +3509,27 @@ HTTP/1.1 302 Found
         a federation:
 
             <t>
-            It solves the problem of metadata misalignment between the RPs and the OPs 
-            when an OP reuses a not expired Trust Chain even if the RP has changed 
-            its Entity Configuration. This enables a mechanism for an RP to 
-            notify that something has changed, preventing temporary faults
-            due to stale metadata.
+            It solves the problem of OPs using RP metadata that has become stale. 
+            This may occur when the OP uses cached RP metadata from a Trust Chain 
+            that hasn't reached its expiration time yet. By passing the 
+            <spanx style="verb">trust_chain</spanx>  
+            parameter in the Authentication Request the RP can notify the OP that a 
+            change has taken place, thus letting the OP update its client 
+            registration and prevent potential temporary faults due to stale metadata.
             </t>
             
             <t>
-            It enables the OP to not have to build all the possibile 
-            Trust Chains before choosing a good one.
-            It represents a hint of a verifiable trust path to be adopted to
-            build the Trust Chain. This reduces the costs of the metadata discovery for OPs.
+            It enables the RP to pass a verifiable hint which trust path to 
+            take in order to build the Trust Chain. This can reduce the costs 
+            of RP metadata discovery for OPs in complex federations where the 
+            RP has multiple Trust Anchors or the Trust Chain resolution may 
+            result in dead-ends.
             </t>
 
             <t>
-            It provides the Entity Configuration, including Trust Marks when available
-            enabling the OP to not perform an HTTP request 
-            to the .well-known/openid-federation endpoint of the RP 
-            without having statically validated the Trust Marks first.
+            It enables direct passing of the Entity Configuration, including 
+            any present Trust Marks, thus saving the OP from having to make 
+            an HTTP request to the RP .well-known/openid-federation endpoint.
             </t>
       </t>
       </section>  
