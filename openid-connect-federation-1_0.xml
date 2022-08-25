@@ -3129,34 +3129,25 @@ Content-Type: application/json
       </t>
       <section title="Automatic Registration" anchor="automatic">
         <t>
-          Automatic Registration enables an RP to send Authorization Requests
-          to an OP without prior client registration with the OP.
-	  When the RP uses Automatic Registration,
-          the OP uses the Client ID value provided by the RP in the request
-	  as the location from which to retrieve the RP's Entity Configuration
-          using the process outlined in
-          <xref target="resolving_trust"/>
-          and then
-          verifies that the RP is in control of a private key that corresponds to
-          to one of the public keys the RP published through its metadata.
+	  Automatic Registration enables an RP to make Authentication Requests
+	  without a prior separate request to register itself with the OP.
+	  The OP resolves the RP's Entity Configuration from the Client ID in the Authentication Request,
+	  following the process defined in <xref target="resolving_trust"/>.
         </t>
         <t>
           Automatic Registration has the following characteristics:
           <list style="symbols">
             <t>
-              The Client ID of the RP
-              MUST be set to the RP's Entity Identifier.
+	      The RP employs its Entity Identifier as its Client ID in all its interactions with the OP.
+              The Entity Identifier is the URL from which the OP can
+              fetch the RP's self-signed Entity Statement using the process
+              described in <xref target="federation_configuration"/>.
             </t>
             <t>
               Since there is no pre-registration process, the RP does not have a
               Client Secret. Instead, the Automatic Registration model requires
               the RP to make use of asymmetric cryptography
 	      to prove that it has control of its private keys.
-            </t>
-            <t>
-              The Client ID MUST be a URL from which the OP can
-              fetch the RP's self-signed Entity Statement using the process
-              described in <xref target="federation_configuration"/>.
             </t>
             <t>
               The OP MUST publish that it supports a request authentication
@@ -3720,7 +3711,7 @@ HTTP/1.1 302 Found
 	      also employ pre-registration.)
 	    </t>
 	    <t>
-	      With Automatic Registration, the Client ID value is the RP's Entity Statment URL,
+	      With Automatic Registration, the Client ID value is the RP's Entity Identifier,
 	      and is supplied to the OP by the RP,
 	      whereas with Explicit Registration, a Client ID is assigned by the OP and supplied to the RP.
 	    </t>
