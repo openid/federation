@@ -1365,7 +1365,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               <t hangText="one_of">
                 <vspace/>
                 The value of the parameter MUST be one of the ones listed in
-                this directive. 
+                this directive.
               </t>
               <t hangText="subset_of">
                 <vspace/>
@@ -1609,10 +1609,10 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               </t>
               <t>
                  If more than one value is specified in
-                 <spanx style="verb">one_of</spanx> and the leaf entity 
+                 <spanx style="verb">one_of</spanx> and the leaf entity
                  does not specify the metadata claim for which
-                 <spanx style="verb">one_of</spanx> is referred to, 
-                 it’s an implementation choice which of the values in 
+                 <spanx style="verb">one_of</spanx> is referred to,
+                 it’s an implementation choice which of the values in
                  the <spanx style="verb">one_of</spanx> array will be used.
               </t>
             </list>
@@ -2674,12 +2674,17 @@ Host: openid.sunet.se
           </figure>
         </section>
         <section title="Considerations">
-          <t>The service provided at this endpoint goes contrary to the main
-            parts of this specification. The basic assumption of this specification
+          <t>The basic assumption of this specification
             is that you should trust no one except the Trust Anchor and your
-            own capabilities. If you use this service, you basically trust
-            someone else to do the right thing.</t>
-          <t>Even so there are benefits from having a service like this.</t>
+            own capabilities.
+            NOTE: The security trust model changes when using this service.
+            If a party uses this service to obtain federation data, it trusts
+            the resolver to perform the validation of the cryptographically
+            protected metadata correctly and to provide it with authentic results.</t>
+          <t>
+            You can, of course, use the service as a recommendation. A way to
+            get a quick response, a hint, that you can use as the bases for
+            going forward or not.</t>
         </section>
       </section>
 
@@ -3690,12 +3695,21 @@ HTTP/1.1 302 Found
 
         <section title="After Client Registration">
           <t>
-            A client registration using this specification is not expected to
+            A client registration using the explicit method is not expected to
             be valid forever. The Entity Statements exchanged all have
             expiration times, which means that the registration will eventually
             time out. An OP can also, for administrative reasons, decide that a
             client registration is not valid anymore. An example of this could
-            be that the OP leaves the federation in use.
+            be the OP leaving the federation used to register an RP.
+          </t>
+
+          <t>
+            The temporary nature of explicit registration means that an RP must
+            expect its registration to become invalidated at any time, causing
+            RP requests to the OP, such as authorization, token or UserInfo
+            requests, to fail. An RP may devise appropriate strategies to
+            re-register with the OP and restart the transaction when such a
+            condition occurs.
           </t>
 
           <section title="What the RP MUST Do">
@@ -5549,6 +5563,9 @@ Host: op.umu.se
           </t>
           <t>
             Fixed #1584: Stated that domain name constraints are as specified in Section 4.2.1.10 of <xref target="RFC5280"/>.
+          </t>
+          <t>
+            Added more text on considerations when using the resolve endpoint.
           </t>
         </list>
       </t>
