@@ -3179,7 +3179,7 @@ Content-Type: application/json
             or using pushed authorization as described in
             <xref target="RFC9126">Pushed Authorization Requests</xref>.
           </t>
-          <section title="Using a Request Object" anchor="UsingAuthzRequestObject">
+          <section title="Using a Request Object">
 
             <t>
               In the case where a Request Object is used, the value of the
@@ -3225,23 +3225,23 @@ Content-Type: application/json
                   <vspace/>
                   OPTIONAL. Time at which the JWT was issued.
                 </t>
-                <t hangText="trust_chain" anchor="trust_chain_param">
+                <t hangText="trust_chain">
                   <vspace/>
                   OPTIONAL. Array of JSON objects containing the sequence of the statements
                   that compose the Trust Chain between the RP that makes 
                   the request and the selected Trust Anchor. 
                   The statements are not ordered, however the first MUST 
                   be the Entity Configuration of the RP making the request.
+                  Due to the large size of a Trust Chain it could be necessary to use
+                  a <xref target="RFC9101">JWT-Secured Authorization Request (JAR)</xref> or 
+                  <xref target="RFC9126">Pushed Authorization Request</xref>.
                 </t>
               </list>
             </t>
             <figure>
               <preamble>
                 The following is a non-normative example of the Claims in a
-                Request Object before base64url encoding and signing.
-                Due to the large size of a Trust Chain it could be necessary to use
-                a <xref target="RFC9101">JWT-Secured Authorization Request (JAR)</xref> or 
-                <xref target="RFC9126">Pushed Authorization Request</xref>.
+                Request Object before base64url encoding and signing:
               </preamble>
               <artwork><![CDATA[
 {
@@ -3307,7 +3307,7 @@ https://server.example.com/authorize?
                 Chains starting with the RP's Entity
                 Configuration as described in <xref target="fetching-es"/>.
               </t>
-              <t anchor="TrustChainParamPresent">
+              <t>
                 An RP MAY present to the OP a Trust Chain related to itself,
                 using the <spanx style="verb">trust_chain</spanx>
                 parameter.
@@ -3328,7 +3328,7 @@ https://server.example.com/authorize?
                 Whenever the OP uses a Trust Chain submitted by an RP, the 
                 OP MUST fully verify it, with every statement contained in it.
               </t>
-              <t anchor="TrustChainParamAbsent">
+              <t>
                 If the RP doesn't include the <spanx style="verb">trust_chain</spanx>
                 in the request or the OP doesn't support this feature, it then MUST validate 
                 the possible Trust Chains, as
@@ -3506,38 +3506,37 @@ HTTP/1.1 302 Found
           </figure>
         </section>
         
-      <section title="Rationale for the Trust Chain parameter" anchor="TrustChainParamRationale">
+      <section title="Rationale for the Trust Chain parameter">
         <t>
         Including the <spanx style="verb">trust_chain</spanx> 
         parameter in Authentication Requests for RPs that use
         automatic client registration enables the following benefits in 
-        a federation.
-        
-            <t anchor="MetadataUpdateHint">
+        a federation:
+
+            <t>
             It solves the problem of OPs using RP metadata that has become stale. 
             This may occur when the OP uses cached RP metadata from a Trust Chain 
             that hasn't reached its expiration time yet. By passing the 
             <spanx style="verb">trust_chain</spanx>  
-            parameter in the request the RP can notify the OP that a 
+            parameter in the Authentication Request the RP can notify the OP that a 
             change has taken place, thus letting the OP update its client 
             registration and prevent potential temporary faults due to stale metadata.
             </t>
-        
-            <t anchor="TrustPathHint">
+            
+            <t>
             It enables the RP to pass a verifiable hint which trust path to 
             take in order to build the Trust Chain. This can reduce the costs 
             of RP metadata discovery for OPs in complex federations where the 
             RP has multiple Trust Anchors or the Trust Chain resolution may 
             result in dead-ends.
             </t>
-        
-            <t anchor="ECHint">
+
+            <t>
             It enables direct passing of the Entity Configuration, including 
             any present Trust Marks, thus saving the OP from having to make 
             an HTTP request to the RP .well-known/openid-federation endpoint.
             </t>
-
-        </t>
+      </t>
       </section>  
       
       </section>
@@ -3549,7 +3548,8 @@ HTTP/1.1 302 Found
           <xref target="OpenID.Registration">OpenID Connect Dynamic Client
             Registration 1.0
           </xref>
-          but where the client registration request is a signed Entity Statement.
+          but where the client registration request
+          is a signed Entity Statement.
         </t>
         <section anchor="Clireg" title="Client Registration">
           <section anchor="Cliregreq" title="Client Registration Request">
@@ -3593,16 +3593,6 @@ HTTP/1.1 302 Found
                   defined in this document. The content type MUST be set to
                   <spanx style="verb">application/entity-statement+jwt</spanx>.
                 </t>
-                <t>
-                  The Entity Statement MAY contain the 
-                  <xref target="trust_chain_param">trust_chain</xref> 
-                  claim as defined for 
-                  <spanx style="verb">Automatic Registration</spanx>.
-                  The considerations made for 
-                  <xref target="TrustPathHint"/>
-                  and <xref target="ECHint"/>
-                  are also valid for Explicit Registration.
-                </t>
               </list>
             </t>
           </section>
@@ -3617,15 +3607,7 @@ HTTP/1.1 302 Found
                 <list style="numbers">
                   <t>
                     After the OP receives the request, it collects and
-                    evaluates the Trust Chains. 
-                    If the claim <spanx style="verb">trust_chain</spanx> 
-                    is present in the 
-                    reigstration request, the behaviour 
-                    defined in <xref target="TrustChainParamPresent"/> and 
-                    <xref target="TrustChainParamAbsent"/>
-                    applies,
-                    otherwise the OP evaluate the Trust Chain 
-                    starting with the
+                    evaluates the Trust Chains starting with the
                     <spanx style="verb">authority_hints</spanx>
                     in the registration request.
                     After it has verified at least one Trust Chain it
@@ -3633,8 +3615,7 @@ HTTP/1.1 302 Found
                     request is correct.
                   </t>
                   <t>
-                    If it finds more than one acceptable Trust Chain and the
-                    <spanx style="verb">trust_chain</spanx> is not present, it MUST
+                    If it finds more than one acceptable Trust Chain, it MUST
                     choose one Trust Anchor from those chains as the one it will
                     proceed with.
                   </t>
@@ -5575,7 +5556,7 @@ Host: op.umu.se
             Fixed #1581: OP metadata claims enabled for AS.
           </t>
           <t>
-            Fixed #1594: self-issued trust_chain in Authorization and Registration Request.
+            Fixed #1594: self-issued trust_chain in the Authorization Request.
           </t>
           <t>
             Fixed #1583: metadata policy one_of operator, explanatory text for multiple values.
