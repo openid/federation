@@ -2285,11 +2285,10 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
       </t>
       <t>
         Federation Entities SHOULD make an Entity Configuration Document
-        available
-        at the configuration endpoint. There is only one exception to this
+        available at the configuration endpoint. 
+        There is only one exception to this
         rule and that is for an RP that only does explicit registration. Since
-        it
-        posts the self-signed Entity Statement to the OP during client
+        it posts the Entity Configuration to the OP during client
         registration, the OP has everything it needs from the RP.
       </t>
       <section title="Federation Entity Configuration Request">
@@ -2298,8 +2297,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           HTTP GET request at the previously specified path.
           The requesting party would make the following request to the Entity
           <spanx style="verb">https://openid.sunet.se</spanx>
-          to obtain its
-          configuration information:
+          to obtain its configuration information:
         </t>
         <t>
           <figure>
@@ -3085,10 +3083,10 @@ Content-Type: application/json
       <section title="Redundant Retrieval of Trust Anchor Keys" anchor="TrustAnchorKeys">
     <t>
       It is RECOMMENDED that Federation Operators provide a means of retrieving the public keys
-      for Trust Anchors that it administers that is independent of the Entity Statements
+      for Trust Anchors that it administers that is independent of the Entity Configurations
       for those Trust Anchors.
       This is intended to provide redundancy in the eventuality of the compromise of
-      the Web PKI infrastructure underlying retrieval of public keys from Entity Statements.
+      the Web PKI infrastructure underlying retrieval of public keys from Entity Configurations.
     </t>
     <t>
       The keys retreived via the independent mechanism specified by the Federation Operator
@@ -3546,7 +3544,7 @@ HTTP/1.1 302 Found
             Registration 1.0
           </xref>
           but where the client registration request
-          is a signed Entity Statement.
+          is a signed Entity Configuration.
         </t>
         <section anchor="Clireg" title="Client Registration">
           <section anchor="Cliregreq" title="Client Registration Request">
@@ -3572,7 +3570,7 @@ HTTP/1.1 302 Found
                   Using this subset of Trust Anchors, the RP will choose a set of
                   <spanx style="verb">authority_hints</spanx>
                   from the hints that are available to it. Each hint MUST,
-                  when used as a starting point for trust chain collection,
+                  when used as a starting point for Trust Chain collection,
                   lead to at least one of the Trust Anchors in the subset.
                 </t>
                 <t>
@@ -3595,7 +3593,7 @@ HTTP/1.1 302 Found
             <section title="OP Constructing the Response">
               <t>
                 The Trust Chains MUST be constructed using the received
-                Entity Statements.
+                Entity Configuration.
               </t>
               <t>
                 <list style="numbers">
@@ -3654,7 +3652,7 @@ HTTP/1.1 302 Found
                   </t>
                   <t>
                     The RP MUST NOT apply metadata policies and assertions
-                    from the trust chains that the OP provides because those
+                    from the Trust Chains that the OP provides because those
                     are not valid for the RP's metadata.
                     The RP MUST apply policies and assertions to the metadata
                     using one of its own Trust Chains that ends in the Trust
@@ -3662,8 +3660,8 @@ HTTP/1.1 302 Found
                     Once it has applied those policies and assertions, it can
                     then apply the policies and assertions returned from the OP.
                     This is equivalent to adding the OP's metadata policies and
-                    assertions to the trust chain in between the RP's and its
-                    immediate superior's entity statements.
+                    assertions to the Trust Chain in between the RP's and its
+                    immediate superior's Entity Statements.
                     When the RP has applied all the metadata policies and
                     assertions to its metadata statement, it then stores
                     the result and will use the agreed-upon metadata when
@@ -4578,7 +4576,7 @@ HTTP/1.1 302 Found
                     target="federation_configuration"/>.
           </t>
           <figure>
-            <preamble>The result is this Entity Statement.</preamble>
+            <preamble>The result is this Entity Configuration.</preamble>
             <artwork><![CDATA[
 {
   "authority_hints": [
@@ -4587,6 +4585,7 @@ HTTP/1.1 302 Found
   "exp": 1568397247,
   "iat": 1568310847,
   "iss": "https://op.umu.se",
+  "sub": "https://op.umu.se"
   "jwks": {
     "keys": [
       {
@@ -4639,8 +4638,7 @@ HTTP/1.1 302 Found
         "private_key_jwt"
       ]
     }
-  },
-  "sub": "https://op.umu.se"
+  }
 }
 ]]></artwork>
           </figure>
@@ -4649,7 +4647,7 @@ HTTP/1.1 302 Found
             intermediate https://umu.se. So that is the next step.
           </t>
           <t>
-            This Entity Statement is the first link in the Trust Chain.
+            This Entity Configuration is the first link in the Trust Chain.
           </t>
         </section>
         <section title="Configuration Information for 'https://umu.se'">
@@ -4674,6 +4672,7 @@ Host: umu.se
   "exp": 1568397247,
   "iat": 1568310847,
   "iss": "https://umu.se",
+  "sub": "https://umu.se"
   "jwks": {
     "keys": [
       {
@@ -4691,8 +4690,7 @@ Host: umu.se
       "homepage_uri": "https://www.umu.se",
       "organization_name": "UmU"
     }
-  },
-  "sub": "https://umu.se"
+  }
 }
 ]]></artwork>
           </figure>
@@ -4922,6 +4920,7 @@ Host: edugain.geant.org
   "exp": 1568397247,
   "iat": 1568310847,
   "iss": "https://edugain.geant.org",
+  "sub": "https://edugain.geant.org",
   "jwks": {
     "keys": [
       {
@@ -4936,8 +4935,7 @@ Host: edugain.geant.org
     "federation_entity": {
       "federation_fetch_endpoint": "https://geant.org/edugain/api"
     }
-  },
-  "sub": "https://edugain.geant.org"
+  }
 }
 
 ]]></artwork>
@@ -5014,18 +5012,16 @@ Host: geant.org
             all,
             we have:
             <list style="numbers">
-              <t>Self-signed Entity Statement by the Leaf Entity (https://op.umu.se)
-              </t>
+              <t>Entity Configuration by the Leaf Entity (https://op.umu.se)</t>
+              <t>Entity Configuration by https://umu.se</t>
               <t>Statement issued by https://umu.se about https://op.umu.se</t>
+              <t>Entity Configuration by https://swamid.se</t>
               <t>Statement issued by https://swamid.se about https://umu.se</t>
+              <t>Entity Configuration by https://edugain.geant.org</t>
               <t>Statement issued by https://edugain.geant.org about
                 https://swamid.se
               </t>
             </list>
-          </t>
-          <t>We also have the Entity Configurations from https://umu.se,
-            https://swamid.se and https://edugain.geant.org about themselves but
-            those are not used in the Trust Chain verification.
           </t>
           <t>
             Using the public keys of the Trust Anchor that the LIGO Wiki RP has
@@ -5091,8 +5087,7 @@ Host: geant.org
   "token_endpoint_auth_methods_supported": [
     "private_key_jwt",
     "client_secret_jwt"
-  ],
-  "version": "3.0"
+  ]
 }
 
 ]]></artwork>
