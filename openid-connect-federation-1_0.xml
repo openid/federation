@@ -616,7 +616,13 @@
               an Entity Configuration about the RP published by the RP,
             </t>
             <t>
-              an Entity Statement about the RP published by Organization A, and
+              an Entity Configuration about the Organization A,
+            </t>
+            <t>
+              an Entity Statement about the RP published by Organization A,
+            </t>
+            <t>
+              an Entity Configuration about the Federation F, and
             </t>
             <t>
               an Entity Statement about Organization A published by Federation F.
@@ -2587,7 +2593,8 @@ Host: openid.sunet.se
           <t>
             The response is a signed JWT containing resolved metadata and
             verified Trust Marks. The response MAY also contain
-            the sequence of the Entity Statements that compose the Trust Chain.
+            the sequence of the Entity Statements that compose the Trust Chain,
+            sorted as shown in <xref target="trust_chain"/>.
             The keys used by the resolver MUST be the
             same keys used to construct its Entity Configuration.
             The response SHOULD contain the aud claim only
@@ -2927,8 +2934,7 @@ Content-Type: application/json
         </t>
       </section>
 
-      <section title="Validating a Trust Chain"
-               anchor="trust_chain_validation">
+      <section title="Validating a Trust Chain" anchor="trust_chain_validation">
         <t>
           As described in <xref target="trust_chain"/>,
           a Trust Chain consists of an ordered list of Entity
@@ -3220,9 +3226,8 @@ Content-Type: application/json
                   <vspace/>
                   OPTIONAL. Array of JSON objects containing the sequence of the statements
                   that compose the Trust Chain between the RP that makes 
-                  the request and the selected Trust Anchor. 
-                  The statements are not ordered, however the first MUST 
-                  be the Entity Configuration of the RP making the request.
+                  the request and the selected Trust Anchor, 
+                  sorted as shown in <xref target="trust_chain"/>.
                   Due to the large size of a Trust Chain it could be necessary to use
                   a <xref target="RFC9101">JWT-Secured Authorization Request (JAR)</xref> or 
                   <xref target="RFC9126">Pushed Authorization Request</xref>.
@@ -3322,8 +3327,7 @@ https://server.example.com/authorize?
               <t>
                 If the RP doesn't include the <spanx style="verb">trust_chain</spanx>
                 in the request or the OP doesn't support this feature, it then MUST validate 
-                the possible Trust Chains, as
-                described in
+                the possible Trust Chains, as described in
                 <xref target="trust_chain_validation"/>,
                 and resolve the RP metadata with type
                 <spanx style="verb">openid_relying_party</spanx>.
