@@ -192,7 +192,7 @@
               <vspace/>
               An Entity that issues
               an Entity Statement that appears somewhere in between those
-              issued by the Trust Anchor and the leaf Entity in a Trust Chain.
+              issued by the Trust Anchor and the Leaf Entity in a Trust Chain.
             </t>
             <t hangText="Leaf Entity">
               <vspace/>
@@ -206,7 +206,7 @@
             <t hangText="Trust Chain">
               <vspace/>
               A sequence of Entity Statements that represents a chain
-              starting at a leaf Entity and ending in a Trust Anchor.
+              starting at a Leaf Entity and ending in a Trust Anchor.
             </t>
             <t hangText="Trust Mark">
               A trust mark represents a statement of conformance to a
@@ -221,15 +221,15 @@
       <t>
         The basic component is the Entity Statement, which is a cryptographically
         signed <xref target="RFC7519">JSON Web Token (JWT)</xref>.
-        A set of Entity Statements can form a path from a leaf Entity to
-        a Trust Anchor. Entity Configurations as self-signed Entity Statements
+        A set of Entity Statements can form a path from a Leaf Entity to
+        a Trust Anchor. Entity Configurations
         issued by federation entities about themselves control the Trust Chain
         resolution process.</t>
-      <t>Starting with the Entity Configuration of the leaf Entity, you can find
+      <t>Starting with the Entity Configuration of the Leaf Entity, you can find
         the next level of Entity Configuration by following the authority hints.
         And then repeat this until you hit a Trust Anchor. Using the federation APIs
         exposed by the intermediate entities and the Trust Anchor, you can then
-        fetch the Entity Statements for the intermediate entities and the leaf Entity.
+        fetch the Entity Statements for the intermediate entities and the Leaf Entity.
       </t>
       <t>
         Once you have followed a path, you have collected a set of Entity Statements
@@ -265,10 +265,9 @@
       that is the subject of the Entity Statement to participate in federation(s).
       An Entity Statement is always a signed JWT.
       The subject of the JWT is the Entity itself.
-      The issuer of the JWT is the party that issued the Entity Statement,
-      which will often be the Entity itself.
-          All entities in a federation SHOULD be prepared to publish an Entity
-          Statement about themselves. If they are not able to do so themselves,
+      The issuer of the JWT is the party that issued the Entity Statement.
+          All Entities in a federation SHOULD be prepared to publish an Entity
+          Statement about themselves (Entity Configuration). If they are not able to do so themselves,
           another issuer MUST do it for them.
         </t>
         <t>
@@ -316,7 +315,7 @@
               <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
               representing the public part of the subject
               Entity's signing keys. The corresponding private key is
-              used by leaf entities to sign Entity Statements about themselves,
+              used by Leaf Entities to sign Entity Statements about themselves,
               and intermediate entities to sign statements about other entities.
               The keys that can be found here are intended to sign
               Entity Statements and SHOULD NOT be used in other protocols. Keys
@@ -343,7 +342,7 @@
               For all entities except for Trust Anchors that do not have any
               superiors this is REQUIRED and MUST NOT be the empty list [].
               This claim MUST be absent from an
-              Entity Statement issued by a Trust Anchor with no superiors.
+              Entity Configuration issued by a Trust Anchor with no superiors.
             </t>
             <t hangText="metadata">
               <vspace/>
@@ -375,7 +374,7 @@
               <vspace/>
               REQUIRED Conditional. JSON object that describes
               a metadata policy.
-              A metadata_policy applies to the entity describe in this
+              A metadata_policy applies to the entity described in this
               Entity Statement as well as to all entities that appear beneath the
               entity described in this Entity Statement. This distinguishes
               <spanx style="verb">metadata_policy</spanx> from
@@ -386,7 +385,7 @@
               the metadata policy according to the metadata schema of that
               metadata type. An Entity Statement MAY contain multiple
               metadata policy statements, but only one for each metadata type.
-              Only non-leaf entities MAY contain a
+              Only non Leaf Entities MAY contain a
               <spanx style="verb">metadata_policy</spanx>
               claim. Leaf entities MUST NOT contain a
           <spanx style="verb">metadata_policy</spanx> claim.
@@ -472,7 +471,7 @@
               OPTIONAL.
               A Trust Anchor MAY use this claim to tell which combination of
               Trust Mark identifiers and issuers are trusted by the federation.
-              This claim MUST be ignored if present in an Entity Statement that
+              This claim MUST be ignored if present in an Entity Configuration that
               describes an entity that is not a Trust Anchor.
               It is a JSON array with keys representing Trust Mark identifiers and values
               being an array of trusted entities representing the accreditation authority.
@@ -596,16 +595,16 @@
             </t>
             <t hangText="Intermediate">
               <vspace/>
-              Neither a leaf nor a Trust Anchor.
+              Neither a Leaf Entity nor a Trust Anchor.
             </t>
           </list>
         </t>
         <t>
-          A Trust Chain begins with a leaf Entity's self-signed Entity
-          Statement, has zero or more Entity Statements
+          A Trust Chain begins with a Leaf Entity Configuration, 
+          has zero or more Entity Statements
           issued by intermediates about subordinates, and ends with an
           Entity Statement issued by the Trust Anchor about the top-most
-          intermediate (if there are intermediates) or the leaf Entity
+          intermediate (if there are intermediates) or the Leaf Entity
           (if there are no intermediates).
         </t>
         <t>
@@ -614,7 +613,7 @@
           will contain the following Entity Statements:
           <list style="numbers">
             <t>
-              a self-signed Entity Statement about the RP published by the RP,
+              an Entity Configuration about the RP published by the RP,
             </t>
             <t>
               an Entity Statement about the RP published by Organization A, and
@@ -626,8 +625,8 @@
         </t>
         <t>
           A Trust Chain MUST always be possible to order such that:
-          If we name the Entity Statements ES[0] (the leaf Entity's
-          self-signed Entity Statement) to ES[i] (an Entity Statement issued
+          If we name the Entity Statements ES[0] (the Leaf Entity's
+          Entity Configuration) to ES[i] (an Entity Statement issued
           by the Trust Anchor), i>0 then:
           <list style="symbols">
             <t>
@@ -791,7 +790,7 @@
 
             <figure>
             <preamble>
-                The following is a non-normative example of an RP's Entity Statement:
+                The following is a non-normative example of an RP's Entity Configuration:
             </preamble>
 
                 <artwork>
@@ -1031,7 +1030,7 @@
         </t>
 
         <t>
-          The following is a non-normative example of an OP's Entity Statement:
+          The following is a non-normative example of an OP's Entity Configuration:
         </t>
         <figure>
           <artwork><![CDATA[
@@ -1111,7 +1110,7 @@
         <t>
 Note: An OpenID Connect OP MUST only use the keys published in a suitable element, such as <spanx style="verb">jwks</spanx>
 or <spanx style="verb">jwks_uri</spanx> or <spanx style="verb">signed_jwks_uri</spanx>, underneath the
-<spanx style="verb">metadata/openid_provider</spanx> element of the respective Entity Statement for the OpenID Connect protocol.
+<spanx style="verb">metadata/openid_provider</spanx> element of the respective Entity Configuration for the OpenID Connect protocol.
 The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for that purpose.
 </t>
 
@@ -1609,7 +1608,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               </t>
               <t>
                  If more than one value is specified in
-                 <spanx style="verb">one_of</spanx> and the leaf entity
+                 <spanx style="verb">one_of</spanx> and the Leaf Entity 
                  does not specify the metadata claim for which
                  <spanx style="verb">one_of</spanx> is referred to,
                  it’s an implementation choice which of the values in
@@ -1864,7 +1863,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               OPTIONAL. Array of strings. Each string is an entity type.
               Entity type identifiers specified in this document
               can be found in <xref target="metadata"/>.
-              This constraint restricts what types of leaf entities that MAY
+              This constraint restricts what types of Leaf Entities that MAY
               appear beneath the entity described in this Entity Statement.
             </t>
           </list>
@@ -1902,14 +1901,14 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             the
             maximum number of
             Entity Statements a Trust Chain can have between the Entity Statement
-            that contains the constraint specification and the leaf's Entity
+            that contains the constraint specification and the Leaf's Entity
             Statement.
           </t>
           <t>
             A <spanx style="verb">max_path_length</spanx> constraint of zero
             indicates that no
-            Entity Statement MAY appear between this Entity Statement and the
-            leaf Entity Statement. Where it appears, the
+            intermediaries MAY appear between this Entity and the
+            Leaf Entity. Where it appears, the
         <spanx style="verb">max_path_length</spanx> constraint
             MUST have a value that is greater than or equal to zero.
             Where <spanx style="verb">max_path_length</spanx> does not appear,
@@ -1984,7 +1983,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
                  anchor="leaf_entity_type_constraints">
           <t>
             The <spanx style="verb">allowed_leaf_entity_types</spanx> constraint
-            specifies what entity types are possible for leaf entities beneath an
+            specifies what entity types are possible for Leaf Entities beneath an
             entity. If there is no <spanx style="verb">allowed_leaf_entity_types</spanx>
             defined it means that any type is allowed.
           </t>
@@ -1998,7 +1997,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         <t>
           The Trust Marks are signed by a federation accredited
           authority. The validation of such a signed statement is performed
-          in the same way that a self-signed Entity Statement is validated.
+          in the same way that an Entity Configuration is validated.
         </t>
         <t>
           Note that a federation MAY allow an Entity to self-sign
@@ -2073,7 +2072,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             A Trust Anchor MAY publish a list of accreditation authorities
             of Trust Marks that SHOULD be trusted by other federation entities.
             A Trust Anchor uses the <spanx style="verb">trust_marks_issuers</spanx> claim
-            in its Entity Statement to publish this information.
+            in its Entity Configuration to publish this information.
           </t>
           <t>
             For other externally issued Trust Marks, it is an out-of-band process
@@ -2084,7 +2083,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         </section>
         <section title="Trust Mark Examples" anchor="trust_example">
           <figure>
-            <preamble>A non-normative example of a Trust Mark claim inside an Entity Statement is:</preamble>
+            <preamble>A non-normative example of a Trust Mark claim inside an Entity Configuration is:</preamble>
             <artwork><![CDATA[
 {
   "iss": "https://rp.example.it/spid/",
@@ -2307,7 +2306,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         </t>
       </section>
       <section title="Federation Entity Configuration Response">
-        <t>The response is a self-signed Entity Statement, as described in
+        <t>The response is an Entity Configuration, as described in
           <xref target="entity-statement"/>.
           If the Entity is an intermediate Entity or a Trust Anchor, the
           response MUST contain metadata for a federation Entity.
@@ -2405,7 +2404,7 @@ Content-Type: application/entity-statement+jwt
       </t>
       <section title="Fetching Entity Statements" anchor="fetch_endpoint">
         <t>
-          All entities that are expected to publish Entity Statements about other
+          All Entities that are expected to publish Entity Statements about other
           entities MUST expose a Fetch endpoint.
         </t>
         <t>
@@ -2445,14 +2444,6 @@ Content-Type: application/entity-statement+jwt
                 parameter is left out, it is considered to be the same as the
                 issuer and would indicate a request for a self-signed
                 statement.
-              </t>
-              <t hangText="aud">
-                <vspace/>
-                OPTIONAL. The Entity Identifier of the
-                requester. If the <spanx style="verb">aud</spanx>
-                    parameter is present in the request,
-                the <spanx style="verb">aud</spanx> claim SHOULD be present in
-                the Entity Statement response and take exactly that value.
               </t>
             </list>
           </t>
@@ -2540,7 +2531,7 @@ Content-Type: application/entity-statement+jwt
           An Entity MAY use the resolve endpoint to fetch
           resolved metadata and Trust Marks for an Entity as seen/trusted by
           the resolver. The resolver is supposed to fetch the subject's
-          self-signed Entity Statement, collect a Trust Chain that starts
+          Entity Configuration, collect a Trust Chain that starts
           with the subject's Entity Statement and ends with the specified
           Trust Anchor, verify the Trust Chain and then apply all the
           policies present in the Trust Chain to the Entity Statements
@@ -2598,7 +2589,7 @@ Host: openid.sunet.se
             verified Trust Marks. The response MAY also contain
             the sequence of the Entity Statements that compose the Trust Chain.
             The keys used by the resolver MUST be the
-            same keys used to construct a self-signed Entity Statement.
+            same keys used to construct its Entity Configuration.
             The response SHOULD contain the aud claim only
             if the requesting client is authenticated.
           </t>
@@ -3045,7 +3036,7 @@ Content-Type: application/json
 
       <section title="Protocol Key Rollover">
         <t>
-          If a leaf Entity publishes its public keys in the metadata part
+          If a Leaf Entity publishes its public keys in the metadata part
           using <spanx style="verb">jwks</spanx>, setting an expiration time on
           the self-signed Entity
           Statement can be used to control how often the receiving Entity is
@@ -3056,10 +3047,10 @@ Content-Type: application/json
       <section title="Key Rollover for a Trust Anchor"
                anchor="key_rollover_anchor">
         <t>
-          A Trust Anchor MUST publish a self-signed Entity Statement about
+          A Trust Anchor MUST publish an Entity Configuration about
           itself. The Trust Anchor SHOULD set a reasonable expiration
           time on that Statement, such that the consumers will re-fetch the
-          Entity Statement at reasonable intervals. If the Trust Anchor wants to
+          Entity Configuration at reasonable intervals. If the Trust Anchor wants to
           roll over its signing keys it would have to:
         </t>
         <t>
@@ -3069,7 +3060,7 @@ Content-Type: application/json
               the Trust Anchor's signing keys.
             </t>
             <t>
-              Keep signing the Entity Statement using
+              Keep signing the Entity Configuration and the Entity Statements using
               the old keys for a long enough time period to allow all
               subordinates to have gotten access to the new keys.
             </t>
@@ -3095,7 +3086,7 @@ Content-Type: application/json
     </t>
     <t>
       The keys retreived via the independent mechanism specified by the Federation Operator
-      SHOULD be be compared to those retreived via the Trust Anchor's Entity Statement.
+      SHOULD be be compared to those retreived via the Trust Anchor's Entity Configuration.
       If they do not match, both SHOULD be retrieved again.
       If they still do not match, it is indicative of a security or configuration problem.
       The appropriate remediation steps in that eventuality SHOULD be specified by the Federation Operator.
@@ -3160,7 +3151,7 @@ Content-Type: application/json
             </t>
             <t>
               The Client ID MUST be a URL from which the OP can
-              fetch the RP's self-signed Entity Statement using the process
+              fetch the RP's Entity Configuration using the process
               described in <xref target="federation_configuration"/>.
             </t>
             <t>
@@ -3579,16 +3570,13 @@ HTTP/1.1 302 Found
                   lead to at least one of the Trust Anchors in the subset.
                 </t>
                 <t>
-                  The RP will now construct a self-signed Entity Statement
+                  The RP will now construct an Entity Configuration
                   where the metadata statement chosen is influenced by the OP's
                   metadata and where the <spanx style="verb">authority_hints</spanx>
                   included are picked by the process described above.
-                  Note that the <spanx style="verb">aud</spanx> claim in the
-                  Entity Statement is REQUIRED
-                  in this case and MUST be set to the OP issuer identifier.
                 </t>
                 <t>
-                  The Entity Statement is sent, using POST, to the
+                  The Entity Configuration is sent, using POST, to the
                   <spanx style="verb">federation_registration_endpoint</spanx>
                   defined in this document. The content type MUST be set to
                   <spanx style="verb">application/entity-statement+jwt</spanx>.
@@ -3601,7 +3589,7 @@ HTTP/1.1 302 Found
             <section title="OP Constructing the Response">
               <t>
                 The Trust Chains MUST be constructed using the received
-                Entity Statement.
+                Entity Statements.
               </t>
               <t>
                 <list style="numbers">
@@ -4503,7 +4491,7 @@ HTTP/1.1 302 Found
               Set up web services that can publish signed Entity Statements.
               You need at least two:
               one for the URL corresponding to the federation's Entity Identifier returning
-              self-signed Entity Statements and the other one providing the fetch
+              an Entity Configuration and the other one providing the fetch
               Entity Statement request API, as described in
               <xref target="fetch_statement"/>.
             </t>
@@ -4520,7 +4508,7 @@ HTTP/1.1 302 Found
             </t>
             <t>
               Getting the Entity's Entity Identifier and the JWKS that the Entity
-              plans to publish in its self-signed Entity Statement.
+              plans to publish in its Entity Configuration.
             </t>
           </list>
         </t>
@@ -4542,7 +4530,7 @@ HTTP/1.1 302 Found
                anchor="op_discovery">
         <t>
           Metadata discovery is a sequence of steps that starts with the RP
-          fetching the self-signed Entity Statement of the leaf (in this case
+          fetching the Entity Configuration of the Leaf Entity (in this case
           https://op.umu.se) using the process defined in
           <xref target="federation_configuration"/>.
           What follows thereafter is this sequence of steps:
@@ -4571,14 +4559,14 @@ HTTP/1.1 302 Found
         <t>
           When building the Trust Chain, the Entity Statements issued
           by a superior about its subordinate are used together with the
-          self-signed Entity Statement issued by the leaf.
+          Entity Configuration issued by the Leaf.
         </t>
         <t>
-          The self-signed Entity Statement concerning intermediates is not
+          The Entity Configuration concerning intermediates is not
           part of the Trust Chain.
         </t>
         <section title="Configuration Information for op.umu.se">
-          <t>The LIGO WIKI RP fetches the self-signed Entity Statement from the
+          <t>The LIGO WIKI RP fetches the Entity Configuration from the
             OP (op.umu.se)
             using the process defined in <xref
                     target="federation_configuration"/>.
@@ -4659,7 +4647,7 @@ HTTP/1.1 302 Found
           </t>
         </section>
         <section title="Configuration Information for 'https://umu.se'">
-          <t>The LIGO RP fetches the self-signed Entity Statement from
+          <t>The LIGO RP fetches the Entity Configuration from
             "https://umu.se" using the process defined in
             <xref target="federation_configuration"/>.
           </t>
@@ -4784,7 +4772,7 @@ Host: umu.se
           </t>
         </section>
         <section title="Configuration Information for 'https://swamid.se'">
-          <t>The LIGO Wiki RP fetches the self-signed Entity Statement from
+          <t>The LIGO Wiki RP fetches the Entity Configuration from
             "https://swamid.se" using the process defined in
             <xref target="federation_configuration"/>.
           </t>
@@ -4910,7 +4898,7 @@ Host: swamid.se
         </section>
         <section
                 title="Configuration Information for 'https://edugain.geant.org'">
-          <t>RP fetches the self-signed Entity Statement from
+          <t>RP fetches the Entity Configuration from
             "https://edugain.geant.org" using the process defined in
             <xref target="federation_configuration"/>.
           </t>
@@ -5014,13 +5002,13 @@ Host: geant.org
             the fourth and final Entity Statement in the Trust Chain.
           </t>
           <t>
-            We now have the whole chain from the self-signed Entity Statement of
+            We now have the whole chain from the Entity Configuration of
             the
-            leaf up until the last one that is issued by a Trust Anchor. All in
+            Leaf Entity up until the last one that is issued by a Trust Anchor. All in
             all,
             we have:
             <list style="numbers">
-              <t>Self-signed Entity Statement by the leaf (https://op.umu.se)
+              <t>Self-signed Entity Statement by the Leaf Entity (https://op.umu.se)
               </t>
               <t>Statement issued by https://umu.se about https://op.umu.se</t>
               <t>Statement issued by https://swamid.se about https://umu.se</t>
@@ -5029,7 +5017,7 @@ Host: geant.org
               </t>
             </list>
           </t>
-          <t>We also have the self-signed Entity Statements from https://umu.se,
+          <t>We also have the Entity Configurations from https://umu.se,
             https://swamid.se and https://edugain.geant.org about themselves but
             those are not used in the Trust Chain verification.
           </t>
@@ -5049,7 +5037,7 @@ Host: geant.org
             have by
             a superior about its subordinate and applying the combined policy
             to the
-            metadata statement that the leaf Entity presented, we get:
+            metadata statement that the Leaf Entity presented, we get:
           </t>
           <figure>
             <artwork><![CDATA[
@@ -5188,7 +5176,7 @@ Host: op.umu.se
             </t>
             <t>
               The OP starts to resolve metadata for the client identifier
-              https://wiki.ligo.org by fetching the self-signed Entity Statement
+              https://wiki.ligo.org by fetching the Entity Configuration
               using
               the process described in <xref target="federation_configuration"/>.
             </t>
@@ -5198,7 +5186,7 @@ Host: op.umu.se
               and will result in a Trust Chain with the following Entity
               Statements:
               <list style="numbers">
-                <t>Self-signed Entity Statement by the leaf
+                <t>Entity Configuration by the Leaf Entity
                   https://wiki.ligo.org
                 </t>
                 <t>Statement issued by https://incommon.org about
@@ -5348,7 +5336,7 @@ Host: op.umu.se
             Here the LIGO Wiki RP sends a client registration request to the
             <spanx style="verb">federation_registration_endpoint</spanx>
         of the OP (op.umu.se).
-            What it sends is a self-signed Entity Statement.
+            What it sends is an Entity Configuration.
           </t>
           <t>
             Once the OP has the Entity Statement, it proceeds with the same
@@ -5567,7 +5555,13 @@ Host: op.umu.se
           <t>
             Added more text on considerations when using the resolve endpoint.
           </t>
-        </list>
+          <t>
+            Removal of aud parameter in the fetch endpoint request.
+          </t>
+          <t>
+            General rewording with the terms Leaf Entity and Entity Configuration.
+          </t>
+	    </list>
       </t>
 
       <t>
