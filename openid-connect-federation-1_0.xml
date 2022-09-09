@@ -77,7 +77,7 @@
       </address>
     </author>
 
-    <date day="1" month="September" year="2022"/>
+    <date day="8" month="September" year="2022"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -3130,6 +3130,7 @@ Content-Type: application/json
         It will use the procedure that is
         described in <xref target="resolving_trust"/>.
       </t>
+
       <section title="Automatic Registration" anchor="automatic">
         <t>
 	  Automatic Registration enables an RP to make Authentication Requests
@@ -3168,7 +3169,7 @@ Content-Type: application/json
             or using pushed authorization as described in
             <xref target="RFC9126">Pushed Authorization Requests</xref>.
           </t>
-          <section title="Using a Request Object">
+          <section title="Using a Request Object" anchor="UsingAuthzRequestObject">
 
             <t>
               In the case where a Request Object is used, the value of the
@@ -3214,9 +3215,9 @@ Content-Type: application/json
                   <vspace/>
                   OPTIONAL. Time at which the JWT was issued.
                 </t>
-                <t hangText="trust_chain">
+                <t hangText="trust_chain" anchor="trust_chain_param">
                   <vspace/>
-                  OPTIONAL. Array of JSON objects containing the sequence of the statements
+                  OPTIONAL. Array containing the sequence of the statements
                   that compose the Trust Chain between the RP that makes 
                   the request and the selected Trust Anchor, 
                   sorted as shown in <xref target="trust_chain"/>.
@@ -3291,9 +3292,8 @@ https://server.example.com/authorize?
                 Client ID
                 is a valid URL, and the OP does not have the Client ID
                 registered as a known
-                client, then the OP SHOULD try to resolve and fetch Trust
-                Chains starting with the RP's Entity
-                Configuration as described in <xref target="fetching-es"/>.
+                client, then the OP SHOULD resolve the Trust
+                Chains related to the requestor.
               </t>
               <t>
                 An RP MAY present to the OP a Trust Chain related to itself,
@@ -3322,11 +3322,11 @@ https://server.example.com/authorize?
                 are provided via the <spanx style="verb">trust_chain</spanx> 
                 parameter.
               </t>
-              <t>
+              <t anchor="TrustChainParamAbsent">
                 If the RP doesn't include the <spanx style="verb">trust_chain</spanx>
-                in the request or the OP doesn't support this feature, it then MUST validate 
-                the possible Trust Chains, as described in
-                <xref target="trust_chain_validation"/>,
+                in the request or the OP doesn't support this feature, it then MUST 
+                validate the possible Trust Chains, starting with the RP's Entity 
+                Configuration as described in <xref target="fetching-es"/>,
                 and resolve the RP metadata with type
                 <spanx style="verb">openid_relying_party</spanx>.
               </t>
@@ -3497,48 +3497,17 @@ HTTP/1.1 302 Found
     &state=af0ifjsldkj
 ]]></artwork>
           </figure>
+	</section>
+	<section title="Possible Other Uses of Automatic Registration" anchor="AutomaticRegistrationOtherUses">
 	  <t>
 	    Note that we anticipate that Automatic Registration could be employed
 	    for use cases beyond OpenID Connect Federation.
 	    If used with pure OAuth 2.0, for instance,
 	    Automatic Registration would occur during Authorization Requests.
+	    If for a particular such use case the client does not need to be securely identified,
+	    then the requirement for signed requests could be relaxed.
 	  </t>
         </section>
-        
-      <section title="Rationale for the Trust Chain parameter">
-        <t>
-        Including the <spanx style="verb">trust_chain</spanx> 
-        parameter in Authentication Requests for RPs that use
-        automatic client registration enables the following benefits in 
-        a federation:
-
-            <t>
-            It solves the problem of OPs using RP metadata that has become stale. 
-            This may occur when the OP uses cached RP metadata from a Trust Chain 
-            that hasn't reached its expiration time yet. By passing the 
-            <spanx style="verb">trust_chain</spanx>  
-            parameter in the Authentication Request the RP can notify the OP that a 
-            change has taken place, thus letting the OP update its client 
-            registration and prevent potential temporary faults due to stale metadata.
-            </t>
-            
-            <t>
-            It enables the RP to pass a verifiable hint which trust path to 
-            take in order to build the Trust Chain. This can reduce the costs 
-            of RP metadata discovery for OPs in complex federations where the 
-            RP has multiple Trust Anchors or the Trust Chain resolution may 
-            result in dead-ends.
-            </t>
-
-            <t>
-            It enables direct passing of the Entity Configuration, including 
-            any present Trust Marks, thus saving the OP from having to make 
-            an HTTP request to the RP 
-            <spanx style="verb">/.well-known/openid-federation</spanx>
-            endpoint.
-            </t>
-      </t>
-      </section>  
       
       </section>
       <section title="Explicit Registration" anchor="explicit">
@@ -3547,8 +3516,8 @@ HTTP/1.1 302 Found
 	  before the RP interacts with an OP for the first time,
           similarly to the process specified by
           <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>,
-          but where the client registration request
-          is a signed Entity Configuration.
+          but where the client registration request contains the Entity Configuration
+          or an entire Trust Chain.
         </t>
         <section anchor="Clireg" title="Client Registration">
           <section anchor="Cliregreq" title="Client Registration Request">
@@ -3578,16 +3547,34 @@ HTTP/1.1 302 Found
                   lead to at least one of the Trust Anchors in the subset.
                 </t>
                 <t>
-                  The RP will now construct an Entity Configuration
+                  The RP will now construct its Entity Configuration
                   where the metadata statement chosen is influenced by the OP's
-                  metadata and where the <spanx style="verb">authority_hints</spanx>
+                  metadata and where the 
+                  <spanx style="verb">authority_hints</spanx>
                   included are picked by the process described above.
                 </t>
                 <t>
-                  The Entity Configuration is sent, using POST, to the
+                  The RP MAY include its Entity Configuration 
+                  in a Trust Chain regarding itself. 
+                  The Registration Request will contain an
+                  array containing the sequence of the 
+                  statements that compose the Trust Chain 
+                  between the RP that makes the request and the 
+                  selected Trust Anchor.
+               </t>
+                <t>
+                  The Entity Configuration, or the entire Trust Chain,
+                  is sent, using POST, to the
                   <spanx style="verb">federation_registration_endpoint</spanx>
-                  defined in this document. The content type MUST be set to
-                  <spanx style="verb">application/entity-statement+jwt</spanx>.
+                  defined in this document. 
+                </t>
+                <t>
+                  The content type of the Registration Request MUST be set to
+                  <spanx style="verb">application/entity-statement+jwt</spanx>
+                  if it contains only the Entity Configuration of the 
+                  requestor. Otherwise if it contains the Trust Chain, the 
+                  content type of the Registration Request MUST be set to 
+                  <spanx style="verb">application/trust-chain+json</spanx>.
                 </t>
               </list>
             </t>
@@ -3596,24 +3583,32 @@ HTTP/1.1 302 Found
           <section anchor="cliregresp" title="Client Registration Response">
             <section title="OP Constructing the Response">
               <t>
-                The Trust Chains MUST be constructed using the received
-                Entity Configuration.
-              </t>
-              <t>
                 <list style="numbers">
                   <t>
-                    After the OP receives the request, it collects and
+                    After the OP receives the registration request, it 
+                    checks if this contains an Entity Configuration or an
+                    entire Trust Chain.
+                 </t>
+                 <t>
+                    If the request contains an Entity Configuration, the OP
+                    collects and
                     evaluates the Trust Chains starting with the
                     <spanx style="verb">authority_hints</spanx>
-                    in the registration request.
+                    in the Entity Configuration of the requestor.
                     After it has verified at least one Trust Chain it
                     MUST verify that the signature on the received registration
                     request is correct.
+                    If the OP finds more than one acceptable Trust Chain,  
+                    it MUST choose one Trust Anchor from those chains as the one it will
+                    proceed with.
                   </t>
                   <t>
-                    If it finds more than one acceptable Trust Chain, it MUST
-                    choose one Trust Anchor from those chains as the one it will
-                    proceed with.
+                    If the request contains a Trust Chain,
+                    the OP MAY evaluate the statements in the Trust Chain 
+                    to make its Metadata Discovery procedure more efficient, 
+                    especially if the RP shows more than a single authority 
+                    hint in its Entity Configuration.
+                    
                   </t>
                   <t>
                     At this point, if there already exists a client
@@ -3703,7 +3698,7 @@ HTTP/1.1 302 Found
             The temporary nature of explicit registration means that an RP must
             expect its registration to become invalidated at any time, causing
             RP requests to the OP, such as authorization, token or UserInfo
-            requests, to fail. An RP may devise appropriate strategies to
+            requests, to fail. An RP MAY devise appropriate strategies to
             re-register with the OP and restart the transaction when such a
             condition occurs.
           </t>
@@ -3803,6 +3798,44 @@ HTTP/1.1 302 Found
             and combining the metadata policies from the Entity Statements of the Trust Chain as described in <xref target="metadata_policy"/>.
         </t>
       </section>
+
+      <section title="Rationale for the Trust Chain in the Request" anchor="TrustChainParamRationale">
+        <t>
+        Both Automatic and Explicit Client Registration support  
+        the submission of the Trust Chain embedded in the Request, 
+        calculated by the requestor and related to itself. 
+        
+        This enables the following benefits in 
+        a federation:
+
+            <t anchor="MetadataUpdateHint">
+            It solves the problem of OPs using RP metadata that has become stale. 
+            This may occur when the OP uses cached RP metadata from a Trust Chain 
+            that hasn't reached its expiration time yet. By passing the 
+            <spanx style="verb">trust_chain</spanx>  
+            in the Request the RP can notify the OP that a 
+            change has taken place, thus letting the OP update its client 
+            registration and prevent potential temporary faults due to stale metadata.
+            </t>
+            
+            <t anchor="TrustPathHint">
+            It enables the RP to pass a verifiable hint which trust path to 
+            take in order to build the Trust Chain. This can reduce the costs 
+            of RP metadata discovery for OPs in complex federations where the 
+            RP has multiple Trust Anchors or the Trust Chain resolution may 
+            result in dead-ends.
+            </t>
+
+            <t anchor="ECHint">
+            It enables direct passing of the Entity Configuration, including 
+            any present Trust Marks, thus saving the OP from having to make 
+            an HTTP request to the RP 
+            <spanx style="verb">/.well-known/openid-federation</spanx>
+            endpoint.
+            </t>
+         </t>
+      </section>  
+
     </section>
 
     <section anchor="ClaimsLanguagesAndScripts" title="Claims Languages and Scripts">
@@ -4264,6 +4297,76 @@ HTTP/1.1 302 Found
           <t>
         Encoding considerations: binary;
         An Entity Resolve Response is a signed JWT;
+        JWT values are encoded as a
+        series of base64url-encoded values (some of which may be the
+        empty string) separated by period ('.') characters.
+          </t>
+          <t>
+        Security considerations: See <xref target="Security"/> of [[ this specification ]]
+          </t>
+          <t>
+        Interoperability considerations: n/a
+          </t>
+          <t>
+        Published specification: [[ this specification ]]
+          </t>
+          <t>
+        Applications that use this media type:
+        Applications that use [[ this specification ]]
+          </t>
+          <t>
+        Fragment identifier considerations: n/a
+          </t>
+          <t>
+        Additional information:<list style="empty">
+            <t>Magic number(s): n/a</t>
+        <t>File extension(s): n/a</t>
+        <t>Macintosh file type code(s): n/a </t></list>
+<vspace/>
+          </t>
+          <t>
+        Person &amp; email address to contact for further information:
+<vspace/>
+        Michael B. Jones, mbj@microsoft.com
+          </t>
+          <t>
+        Intended usage: COMMON
+          </t>
+          <t>
+        Restrictions on usage: none
+          </t>
+          <t>
+        Author: Michael B. Jones, mbj@microsoft.com
+          </t>
+          <t>
+        Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+          </t>
+          <t>
+        Provisional registration? No
+          </t>
+        </list>
+        <?rfc subcompact="no"?>
+      </t>
+
+
+      <t>
+        <?rfc subcompact="yes"?>
+        <list style="symbols">
+          <t>
+        Type name: application
+          </t>
+          <t>
+        Subtype name: trust-chain+json
+          </t>
+          <t>
+        Required parameters: n/a
+          </t>
+          <t>
+        Optional parameters: n/a
+          </t>
+          <t>
+        Encoding considerations: binary;
+        A Trust Chain is a JSON Array of JWTs;
         JWT values are encoded as a
         series of base64url-encoded values (some of which may be the
         empty string) separated by period ('.') characters.
@@ -5666,11 +5769,17 @@ Host: op.umu.se
           <t>
             Fixed #1588: Explicitly described the differences between Automatic and Explicit Registration.
           </t>
+	  <t>
+	    Fixed #1606: Described situation in which the requirement for signed requests with Automatic Registration could be relaxed.
+	  </t>
           <t>
             Fixed #1629: authz request object, audience explanatory text.
           </t>
           <t>
             Fixed #1630: Resolve endpoint response content type.
+          </t>
+          <t>
+            Fixed #1608: submission of the Trust Chain in the Explicit Client Registration Request.
           </t>
 	</list>
       </t>
