@@ -600,12 +600,13 @@
           </list>
         </t>
         <t>
+        
+        </t>
+        <t>
           A Trust Chain begins with a Leaf Entity Configuration, 
           has zero or more Entity Statements
-          issued by intermediates about subordinates, and ends with an
-          Entity Statement issued by the Trust Anchor about the top-most
-          intermediate (if there are intermediates) or the Leaf Entity
-          (if there are no intermediates).
+          issued by intermediates about subordinates, and ends with the
+          Entity Configuration of the Trust Anchor.
         </t>
         <t>
           A simple example: If we have an RP that belongs to organization A
@@ -616,16 +617,13 @@
               an Entity Configuration about the RP published by the RP,
             </t>
             <t>
-              an Entity Configuration about the Organization A,
-            </t>
-            <t>
               an Entity Statement about the RP published by Organization A,
             </t>
             <t>
-              an Entity Configuration about the Federation F, and
+              an Entity Statement about Organization A published by Federation F,
             </t>
             <t>
-              an Entity Statement about Organization A published by Federation F.
+              the Entity Configuration about the Federation F.
             </t>
           </list>
         </t>
@@ -1922,12 +1920,13 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             limit is imposed.
           </t>
           <t>
-            Assuming that we have a Trust Chain with four Entity Statements:
+            Assuming that we have a Trust Chain with five Entity Statements:
             <list style="numbers">
-              <t>Leaf Entity (LE)</t>
-              <t>Intermediate 1 (I1)</t>
-              <t>Intermediate 2 (I2)</t>
-              <t>Trust Anchor (TA)</t>
+              <t>Leaf Entity (LE) Entity Configuration</t>
+              <t>Intermediate 1 (I1-LE) Entity Statement issued for LE</t>
+              <t>Intermediate 2 (I2-I1) Entity Statement issued for I1</t>
+              <t>Trust Anchor (TA-I2) Entity Statement issued for I2</t>
+              <t>Trust Anchor (TA) Entity Configuration</t>
             </list>
           </t>
           <t>
@@ -5738,6 +5737,15 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+
+      <t>
+        -23
+        <list style="symbols">
+          <t>
+            Fixed #1634: Trust Chain explanatory text.
+          </t>
+        </list>
+      </t>
 
       <t>
         -22
