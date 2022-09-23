@@ -205,11 +205,11 @@
             </t>
             <t hangText="Federation Entity Discovery">
               <vspace/>
-              A process that starts with an Entity Identifier and collects 
+              A process that starts with an Entity Identifier and collects
               a number of Entity Statements until the chosen Trust Anchor is reached.
-              From the collected Entity Statements a Trust Chain 
+              From the collected Entity Statements a Trust Chain
               is constructed and verified.
-              The end result of the Federation Entity Discovery is that the 
+              The end result of the Federation Entity Discovery is that the
               Leaf Entity's metadata is constructed from the Trust Chain.
             </t>
             <t hangText="Trust Chain">
@@ -609,7 +609,7 @@
           </list>
         </t>
         <t>
-          A Trust Chain begins with a Leaf Entity Configuration, 
+          A Trust Chain begins with a Leaf Entity Configuration,
           has zero or more Entity Statements
           issued by intermediates about subordinates, and ends with an
           Entity Statement issued by the Trust Anchor about the top-most
@@ -1207,14 +1207,6 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               <xref target="resolve"/>. Any federation Entity MAY publish a
                 <spanx style="verb">federation_resolve_endpoint</spanx>.
             </t>
-            <t hangText="federation_status_endpoint">
-              <vspace/>
-              OPTIONAL.
-              The Trust Mark status endpoint described in
-              <xref target="status_endpoint"/>. Trust mark issuers SHOULD
-              publish a
-                <spanx style="verb">federation_status_endpoint</spanx>.
-            </t>
             <t hangText="organization_name">
               <vspace/>
               OPTIONAL. A human-readable
@@ -1267,12 +1259,12 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         <t>
           The following properties are allowed:
           <list style="hanging">
-            <t hangText="status_endpoint">
+            <t hangText="federation_status_endpoint">
               <vspace/>
               OPTIONAL.
-              The endpoint for the status operation is described in
-              <xref target="status_endpoint"/>. Issuers of Trust Marks
-              MAY publish a <spanx style="verb">status_endpoint</spanx>.
+              The Trust Mark status endpoint described in
+              <xref target="status_endpoint"/>. Trust mark issuers SHOULD
+              publish a <spanx style="verb">federation_status_endpoint</spanx>.
             </t>
           </list>
         </t>
@@ -1280,7 +1272,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         <figure>
           <artwork><![CDATA[
 "trust_mark_issuer": {
-  "status_endpoint": "https://trust_marks_are_us.example.com/status"
+  "federation_status_endpoint": "https://trust_marks_are_us.example.com/status"
 }
 ]]></artwork>
         </figure>
@@ -1623,7 +1615,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               </t>
               <t>
                  If more than one value is specified in
-                 <spanx style="verb">one_of</spanx> and the Leaf Entity 
+                 <spanx style="verb">one_of</spanx> and the Leaf Entity
                  does not specify the metadata claim for which
                  <spanx style="verb">one_of</spanx> is referred to,
                  it is an implementation choice which of the values in
@@ -2599,7 +2591,7 @@ Host: openid.sunet.se
         <section title="Resolve Response">
           <t>
             The positive response is a signed JWT, where the content
-            type MUST be set to 
+            type MUST be set to
             <spanx style="verb">application/resolve-response+jwt</spanx>,
             containing resolved metadata and
             verified Trust Marks. The response MAY also contain
@@ -3191,7 +3183,7 @@ Content-Type: application/json
               <list style="hanging">
                 <t hangText="aud">
                   <vspace/>
-                  REQUIRED. The Audience (aud) value MUST be or include 
+                  REQUIRED. The Audience (aud) value MUST be or include
                   the OP's Issuer Identifier URL.
                 </t>
                 <t hangText="iss">
@@ -3227,11 +3219,11 @@ Content-Type: application/json
                 <t hangText="trust_chain" anchor="trust_chain_param">
                   <vspace/>
                   OPTIONAL. Array containing the sequence of the statements
-                  that compose the Trust Chain between the RP that makes 
-                  the request and the selected Trust Anchor, 
+                  that compose the Trust Chain between the RP that makes
+                  the request and the selected Trust Anchor,
                   sorted as shown in <xref target="trust_chain"/>.
                   Due to the large size of a Trust Chain it could be necessary to use
-                  a <xref target="RFC9101">JWT-Secured Authorization Request (JAR)</xref> or 
+                  a <xref target="RFC9101">JWT-Secured Authorization Request (JAR)</xref> or
                   <xref target="RFC9126">Pushed Authorization Request</xref>.
                 </t>
               </list>
@@ -3309,32 +3301,32 @@ https://server.example.com/authorize?
                 using the <spanx style="verb">trust_chain</spanx>
                 parameter.
 
-                If the OP doesn't have a valid registration for the RP or 
-                its registration has expired, the OP MAY use the received 
-                Trust Chain as a hint which path to take from the 
+                If the OP doesn't have a valid registration for the RP or
+                its registration has expired, the OP MAY use the received
+                Trust Chain as a hint which path to take from the
                 Leaf Entity to the Trust Anchor.
-                The OP MAY evaluate the statements in the 
+                The OP MAY evaluate the statements in the
                 <spanx style="verb">trust_chain</spanx>
-                to make its Federation Entity Discovery procedure more efficient, 
-                especially if the RP shows more than a single authority hint in 
+                to make its Federation Entity Discovery procedure more efficient,
+                especially if the RP shows more than a single authority hint in
                 its Entity Configuration.
 
-                If the OP already has a valid registration for the RP it MAY 
+                If the OP already has a valid registration for the RP it MAY
                 use the received Trust Chain to update the RP's registration.
 
-                Whenever the OP uses a Trust Chain submitted by an RP, the 
+                Whenever the OP uses a Trust Chain submitted by an RP, the
                 OP MUST fully verify it, with every statement contained in it.
-                
-                A Trust Chain may be relied upon by the OP because it has validated 
-                all of its statements. This is true whether these statements 
-                are retrieved from their URLs or whether they 
-                are provided via the <spanx style="verb">trust_chain</spanx> 
+
+                A Trust Chain may be relied upon by the OP because it has validated
+                all of its statements. This is true whether these statements
+                are retrieved from their URLs or whether they
+                are provided via the <spanx style="verb">trust_chain</spanx>
                 parameter.
               </t>
               <t anchor="TrustChainParamAbsent">
                 If the RP doesn't include the <spanx style="verb">trust_chain</spanx>
-                in the request or the OP doesn't support this feature, it then MUST 
-                validate the possible Trust Chains, starting with the RP's Entity 
+                in the request or the OP doesn't support this feature, it then MUST
+                validate the possible Trust Chains, starting with the RP's Entity
                 Configuration as described in <xref target="fetching-es"/>,
                 and resolve the RP metadata with type
                 <spanx style="verb">openid_relying_party</spanx>.
@@ -3430,7 +3422,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
             </figure>
             <section title="Processing the Authentication Request">
               <t>
-                All the assumptions and requirements already defined in 
+                All the assumptions and requirements already defined in
                  <xref target="AuthzRequestProcessing"/>
                 also apply to <xref target="RFC9126">Pushed Authorization Requests</xref>.
               </t>
@@ -3517,7 +3509,7 @@ HTTP/1.1 302 Found
 	    then the requirement for signed requests could be relaxed.
 	  </t>
         </section>
-      
+
       </section>
       <section title="Explicit Registration" anchor="explicit">
         <t>
@@ -3558,31 +3550,31 @@ HTTP/1.1 302 Found
                 <t>
                   The RP will now construct its Entity Configuration
                   where the metadata statement chosen is influenced by the OP's
-                  metadata and where the 
+                  metadata and where the
                   <spanx style="verb">authority_hints</spanx>
                   included are picked by the process described above.
                 </t>
                 <t>
-                  The RP MAY include its Entity Configuration 
-                  in a Trust Chain regarding itself. 
+                  The RP MAY include its Entity Configuration
+                  in a Trust Chain regarding itself.
                   The Registration Request will contain an
-                  array containing the sequence of the 
-                  statements that compose the Trust Chain 
-                  between the RP that makes the request and the 
+                  array containing the sequence of the
+                  statements that compose the Trust Chain
+                  between the RP that makes the request and the
                   selected Trust Anchor.
                </t>
                 <t>
                   The Entity Configuration, or the entire Trust Chain,
                   is sent, using POST, to the
                   <spanx style="verb">federation_registration_endpoint</spanx>
-                  defined in this document. 
+                  defined in this document.
                 </t>
                 <t>
                   The content type of the Registration Request MUST be set to
                   <spanx style="verb">application/entity-statement+jwt</spanx>
-                  if it contains only the Entity Configuration of the 
-                  requestor. Otherwise if it contains the Trust Chain, the 
-                  content type of the Registration Request MUST be set to 
+                  if it contains only the Entity Configuration of the
+                  requestor. Otherwise if it contains the Trust Chain, the
+                  content type of the Registration Request MUST be set to
                   <spanx style="verb">application/trust-chain+json</spanx>.
                 </t>
               </list>
@@ -3594,7 +3586,7 @@ HTTP/1.1 302 Found
               <t>
                 <list style="numbers">
                   <t>
-                    After the OP receives the registration request, it 
+                    After the OP receives the registration request, it
                     checks if this contains an Entity Configuration or an
                     entire Trust Chain.
                  </t>
@@ -3607,17 +3599,17 @@ HTTP/1.1 302 Found
                     After it has verified at least one Trust Chain it
                     MUST verify that the signature on the received registration
                     request is correct.
-                    If the OP finds more than one acceptable Trust Chain,  
+                    If the OP finds more than one acceptable Trust Chain,
                     it MUST choose one Trust Anchor from those chains as the one it will
                     proceed with.
                   </t>
                   <t>
                     If the request contains a Trust Chain,
-                    the OP MAY evaluate the statements in the Trust Chain 
-                    to make its Federation Entity Discovery procedure more efficient, 
-                    especially if the RP shows more than a single authority 
+                    the OP MAY evaluate the statements in the Trust Chain
+                    to make its Federation Entity Discovery procedure more efficient,
+                    especially if the RP shows more than a single authority
                     hint in its Entity Configuration.
-                    
+
                   </t>
                   <t>
                     At this point, if there already exists a client
@@ -3810,40 +3802,40 @@ HTTP/1.1 302 Found
 
       <section title="Rationale for the Trust Chain in the Request" anchor="TrustChainParamRationale">
         <t>
-        Both Automatic and Explicit Client Registration support  
-        the submission of the Trust Chain embedded in the Request, 
-        calculated by the requestor and related to itself. 
-        
-        This enables the following benefits in 
+        Both Automatic and Explicit Client Registration support
+        the submission of the Trust Chain embedded in the Request,
+        calculated by the requestor and related to itself.
+
+        This enables the following benefits in
         a federation:
 
             <t anchor="MetadataUpdateHint">
-            It solves the problem of OPs using RP metadata that has become stale. 
-            This may occur when the OP uses cached RP metadata from a Trust Chain 
-            that hasn't reached its expiration time yet. By passing the 
-            <spanx style="verb">trust_chain</spanx>  
-            in the Request the RP can notify the OP that a 
-            change has taken place, thus letting the OP update its client 
+            It solves the problem of OPs using RP metadata that has become stale.
+            This may occur when the OP uses cached RP metadata from a Trust Chain
+            that hasn't reached its expiration time yet. By passing the
+            <spanx style="verb">trust_chain</spanx>
+            in the Request the RP can notify the OP that a
+            change has taken place, thus letting the OP update its client
             registration and prevent potential temporary faults due to stale metadata.
             </t>
-            
+
             <t anchor="TrustPathHint">
-            It enables the RP to pass a verifiable hint which trust path to 
-            take in order to build the Trust Chain. This can reduce the costs 
-            of RP Federation Entity Discovery for OPs in complex federations where the 
-            RP has multiple Trust Anchors or the Trust Chain resolution may 
+            It enables the RP to pass a verifiable hint which trust path to
+            take in order to build the Trust Chain. This can reduce the costs
+            of RP Federation Entity Discovery for OPs in complex federations where the
+            RP has multiple Trust Anchors or the Trust Chain resolution may
             result in dead-ends.
             </t>
 
             <t anchor="ECHint">
-            It enables direct passing of the Entity Configuration, including 
-            any present Trust Marks, thus saving the OP from having to make 
-            an HTTP request to the RP 
+            It enables direct passing of the Entity Configuration, including
+            any present Trust Marks, thus saving the OP from having to make
+            an HTTP request to the RP
             <spanx style="verb">/.well-known/openid-federation</spanx>
             endpoint.
             </t>
          </t>
-      </section>  
+      </section>
 
     </section>
 
@@ -6060,7 +6052,7 @@ Host: op.umu.se
           </t>
           <t>
             An RP doing only explicit client registration are not required to
-            publish and support a 
+            publish and support a
             <spanx style="verb">/.well-known/openid-federation</spanx>.
           </t>
           <t>
