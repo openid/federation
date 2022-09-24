@@ -615,22 +615,10 @@
         <t>
           A Trust Chain begins with a Leaf Entity Configuration,
           has zero or more Entity Statements
-          issued by intermediates about subordinates, 
-          including the Entity Statement issued by the 
-          Trust Anchor about the top-most intermediate 
-          (if there are intermediates) or the Leaf Entity 
-          (if there are no intermediates). 
-          The Trust Chain MAY end with the
-          Entity Configuration of the Trust Anchor.
-        </t>
-        <t>
-          If present, the Trust Anchor's Entity Configuration 
-          at the end of the chain contains configuration of the Federation, 
-          such as the public keys of the Trust Anchor and other parameters 
-          considered within the trust evaluation. 
-          When this is this case, the Trust Chain
-          consequentially contains the configuration of the Federation 
-          at the date of the evaluation of the chain.
+          issued by intermediates about subordinates, and ends with an
+          Entity Statement issued by the Trust Anchor about the top-most
+          intermediate (if there are intermediates) or the Leaf Entity
+          (if there are no intermediates).
         </t>
         <t>
           A simple example: If we have an RP that belongs to organization A
@@ -641,13 +629,16 @@
               an Entity Configuration about the RP published by the RP,
             </t>
             <t>
+              an Entity Configuration about the Organization A,
+            </t>
+            <t>
               an Entity Statement about the RP published by Organization A,
             </t>
             <t>
-              an Entity Statement about Organization A published by Trust Anchor F,
+              an Entity Configuration about the Federation F, and
             </t>
             <t>
-              the Entity Configuration about the Trust Anchor F.
+              an Entity Statement about Organization A published by Federation F.
             </t>
           </list>
         </t>
@@ -1943,13 +1934,12 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             limit is imposed.
           </t>
           <t>
-            Assuming that we have a Trust Chain with five Entity Statements:
+            Assuming that we have a Trust Chain with four Entity Statements:
             <list style="numbers">
-              <t>Leaf Entity (LE) Entity Configuration</t>
-              <t>Intermediate 1 (I1-LE) Entity Statement issued for LE</t>
-              <t>Intermediate 2 (I2-I1) Entity Statement issued for I1</t>
-              <t>Trust Anchor (TA-I2) Entity Statement issued for I2</t>
-              <t>Trust Anchor (TA) Entity Configuration</t>
+              <t>Leaf Entity (LE)</t>
+              <t>Intermediate 1 (I1)</t>
+              <t>Intermediate 2 (I2)</t>
+              <t>Trust Anchor (TA)</t>
             </list>
           </t>
           <t>
@@ -5767,9 +5757,6 @@ Host: op.umu.se
       <t>
         -23
         <list style="symbols">
-          <t>
-            Fixed #1634: Trust Chain explanatory text.
-          </t>
           <t>
             Federation Entity Discovery as defined term.
           </t>
