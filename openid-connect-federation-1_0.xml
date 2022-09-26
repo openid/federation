@@ -222,6 +222,10 @@
               well-scoped set of trust and/or interoperability requirements
               as determined by an accreditation authority.
             </t>
+            <t hangText="Federation Entity Keys">
+              Keys that an Entity uses to sign its Entity Configuration.
+              These keys are also used by an entity to sign Entity Statements.
+            </t>
           </list>
         </t>
       </section>
@@ -733,9 +737,8 @@
             <t hangText="signed_jwks_uri">
               <vspace/>
               OPTIONAL. A URI pointing to a signed JWT having the Entity's
-              JWK Set as its payload. The JWT is signed with a key that was included
-              in the JWK that the Entity published in its self-signed Entity
-              Statement.
+              JWK Set as its payload. The JWT MUST be signed using a Federation
+              Entity Key.
               If an Entity can use <spanx style="verb">signed_jwks_uri</spanx>,
               it MUST NOT use <spanx style="verb">jwks</spanx> or
               <spanx style="verb">jwks_uri</spanx>.
@@ -2013,8 +2016,11 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         </t>
         <t>
           The Trust Marks are signed by a federation accredited
-          authority. The validation of such a signed statement is performed
+          authority.
+          The validation of such a signed statement is performed
           in the same way that an Entity Configuration is validated.
+          To make this validation possible the key used by the Trust Mark
+          Issuer to sign Trust Marks MUST be one of its the Federation Entity Keys.
         </t>
         <t>
           Note that a federation MAY allow an Entity to self-sign
@@ -2607,9 +2613,10 @@ Host: openid.sunet.se
             verified Trust Marks. The response MAY also contain
             the sequence of the Entity Statements that compose the Trust Chain,
             sorted as shown in <xref target="trust_chain"/>.
-            The keys used by the resolver MUST be the
-            same keys used to construct its Entity Configuration.
-            The response SHOULD contain the aud claim only
+            The key used by the resolver to sign the response MUST be one of its
+            Federation Entity Keys.
+            The response SHOULD contain the 
+            <spanx style="verb">aud</spanx> claim only
             if the requesting client is authenticated.
           </t>
           <figure>
@@ -5758,6 +5765,12 @@ Host: op.umu.se
           </t>
           <t>
             Federation Entity Discovery as defined term.
+          </t>
+          <t>
+            Fixed #1645: Federation Entity Keys as defined term.
+          </t>
+          <t>
+            Fixed #1633: Explaination text about who signs the Trust Mark and how.
           </t>
         </list>
       </t>
