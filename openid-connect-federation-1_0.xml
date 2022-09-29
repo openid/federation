@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Connect Federation">OpenID Connect Federation 1.0 -
-      draft 22
+      draft 23
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -77,7 +77,7 @@
       </address>
     </author>
 
-    <date day="8" month="September" year="2022"/>
+    <date day="27" month="September" year="2022"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -223,7 +223,7 @@
               as determined by an accreditation authority.
             </t>
             <t hangText="Federation Entity Keys">
-              Keys that an entity uses to sign its Entity Configuration.
+              Keys that an Entity uses to sign its Entity Configuration.
               These keys are also used by an entity to sign Entity Statements.
             </t>
           </list>
@@ -728,8 +728,8 @@
             <t hangText="signed_jwks_uri">
               <vspace/>
               OPTIONAL. A URI pointing to a signed JWT having the Entity's
-              JWK Set as its payload. The JWT MUST be signed using the Federation
-              Entity Keys.
+              JWK Set as its payload. The JWT MUST be signed using a Federation
+              Entity Key.
               If an Entity can use <spanx style="verb">signed_jwks_uri</spanx>,
               it MUST NOT use <spanx style="verb">jwks</spanx> or
               <spanx style="verb">jwks_uri</spanx>.
@@ -1210,14 +1210,6 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
               <xref target="resolve"/>. Any federation Entity MAY publish a
                 <spanx style="verb">federation_resolve_endpoint</spanx>.
             </t>
-            <t hangText="federation_status_endpoint">
-              <vspace/>
-              OPTIONAL.
-              The Trust Mark status endpoint described in
-              <xref target="status_endpoint"/>. Trust mark issuers SHOULD
-              publish a
-                <spanx style="verb">federation_status_endpoint</spanx>.
-            </t>
             <t hangText="organization_name">
               <vspace/>
               OPTIONAL. A human-readable
@@ -1270,12 +1262,12 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         <t>
           The following properties are allowed:
           <list style="hanging">
-            <t hangText="status_endpoint">
+            <t hangText="federation_status_endpoint">
               <vspace/>
               OPTIONAL.
-              The endpoint for the status operation is described in
-              <xref target="status_endpoint"/>. Issuers of Trust Marks
-              MAY publish a <spanx style="verb">status_endpoint</spanx>.
+              The Trust Mark status endpoint described in
+              <xref target="status_endpoint"/>. Trust mark issuers SHOULD
+              publish a <spanx style="verb">federation_status_endpoint</spanx>.
             </t>
           </list>
         </t>
@@ -1283,7 +1275,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         <figure>
           <artwork><![CDATA[
 "trust_mark_issuer": {
-  "status_endpoint": "https://trust_marks_are_us.example.com/status"
+  "federation_status_endpoint": "https://trust_marks_are_us.example.com/status"
 }
 ]]></artwork>
         </figure>
@@ -2017,8 +2009,8 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
           authority.
           The validation of such a signed statement is performed
           in the same way that an Entity Configuration is validated.
-          To make this validation possible the keys used by the Trust Mark
-          Issuer to sign Trust Marks MUST be the Federation Entity Keys.
+          To make this validation possible the key used by the Trust Mark
+          Issuer to sign Trust Marks MUST be one of its the Federation Entity Keys.
         </t>
         <t>
           Note that a federation MAY allow an Entity to self-sign
@@ -2611,9 +2603,10 @@ Host: openid.sunet.se
             verified Trust Marks. The response MAY also contain
             the sequence of the Entity Statements that compose the Trust Chain,
             sorted as shown in <xref target="trust_chain"/>.
-            The keys used by the resolver to sign the response MUST be the
+            The key used by the resolver to sign the response MUST be one of its
             Federation Entity Keys.
-            The response SHOULD contain the aud claim only
+            The response SHOULD contain the 
+            <spanx style="verb">aud</spanx> claim only
             if the requesting client is authenticated.
           </t>
           <figure>
@@ -5759,6 +5752,12 @@ Host: op.umu.se
         <list style="symbols">
           <t>
             Federation Entity Discovery as defined term.
+          </t>
+          <t>
+            Fixed #1645: Federation Entity Keys as defined term.
+          </t>
+          <t>
+            Fixed #1633: Explaination text about who signs the Trust Mark and how.
           </t>
         </list>
       </t>
