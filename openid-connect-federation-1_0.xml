@@ -1908,8 +1908,7 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
         <section title="Max Path Length" anchor="max_path_length">
           <t>
             The <spanx style="verb">max_path_length</spanx> constraint specifies
-            the
-            maximum number of
+            the maximum number of
             Entity Statements a Trust Chain can have between the Entity Statement
             that contains the constraint specification and the Leaf's Entity
             Statement.
@@ -1919,11 +1918,12 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             indicates that no
             intermediaries MAY appear between this Entity and the
             Leaf Entity. Where it appears, the
-        <spanx style="verb">max_path_length</spanx> constraint
+            <spanx style="verb">max_path_length</spanx> constraint
             MUST have a value that is greater than or equal to zero.
-            Where <spanx style="verb">max_path_length</spanx> does not appear,
-            no
-            limit is imposed.
+          </t>
+          <t>
+            Not adding a max_path_length constrain just means that there is
+            no extra constraint apart from those already in effect.
           </t>
           <t>
             Assuming that we have a Trust Chain with four Entity Statements:
@@ -1935,30 +1935,28 @@ The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for
             </list>
           </t>
           <t>
-            Then the Trust Chain fulfills the constraints if:
+            Then the Trust Chain fulfills the constraints if for instance:
             <list style="symbols">
               <t>
                 The TA specifies a <spanx style="verb">max_path_length</spanx> that
-                is equal to or bigger
-                than 2.
+                is equal to or bigger than 2.
               </t>
               <t>
                 TA specifies <spanx style="verb">max_path_length</spanx> of 2,
                 I2
                 specifies <spanx style="verb">max_path_length</spanx> of 1,
-                and I1 specifies no <spanx style="verb">max_path_length</spanx> constraint.
+                and I1 sets no <spanx style="verb">max_path_length</spanx> constraint.
               </t>
               <t>Neither TA nor I2 specifies any
-            <spanx style="verb">max_path_length</spanx> constraint
-                while I1 specifies <spanx style="verb">max_path_length</spanx> of
-                0.
+                <spanx style="verb">max_path_length</spanx> constraint
+                while I1 sets <spanx style="verb">max_path_length</spanx> to 0.
               </t>
             </list>
           </t>
           <t>
-            The Trust Chain does not fulfil the constraints if:
+            The Trust Chain does not fulfil the constraints if for instance the:
             <list style="symbols">
-              <t>TA has specified <spanx style="verb">max_path_length</spanx> of
+              <t>TA's Entity Statement has set the <spanx style="verb">max_path_length</spanx> to
                 1.
               </t>
             </list>
@@ -2605,7 +2603,7 @@ Host: openid.sunet.se
             sorted as shown in <xref target="trust_chain"/>.
             The key used by the resolver to sign the response MUST be one of its
             Federation Entity Keys.
-            The response SHOULD contain the 
+            The response SHOULD contain the
             <spanx style="verb">aud</spanx> claim only
             if the requesting client is authenticated.
           </t>
