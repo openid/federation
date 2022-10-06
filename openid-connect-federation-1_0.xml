@@ -736,9 +736,6 @@
               OPTIONAL. A URI pointing to a signed JWT having the Entity's
               JWK Set as its payload. The JWT MUST be signed using a Federation
               Entity Key.
-              If an Entity uses <spanx style="verb">signed_jwks_uri</spanx>,
-              it MUST NOT use <spanx style="verb">jwks</spanx> or
-              <spanx style="verb">jwks_uri</spanx>.
               A signed JWT can contain the following claims, all except
               <spanx style="verb">keys</spanx> defined in
               <xref target="RFC7519"/>:
@@ -836,7 +833,8 @@
             "authorization_code",
             "implicit"
           ],
-          "signed_jwks_uri": "https://openid.sunet.se/rp/jwks.jose"
+          "signed_jwks_uri": "https://openid.sunet.se/rp/jwks.jose",
+          "jwks_uri":"https://op.umu.se/openid/signed_jwks.json"
         }
       },
       "jwks": {
@@ -867,9 +865,6 @@
               <vspace/>
               OPTIONAL. JSON Web Key Set document, passed by value, as
               defined in <xref target="RFC7517"/>.
-              If an Entity uses <spanx style="verb">jwks</spanx>,
-              it MUST NOT use <spanx style="verb">signed_jwks_uri</spanx> or
-              <spanx style="verb">jwks_uri</spanx>.
               This parameter is intended
               to be used by participants that, for some reason, are
               unable to use the <spanx style="verb">signed_jwks_uri</spanx>
@@ -882,6 +877,23 @@
 
         </list>
       </t>
+      </section>
+
+      <section title="Usage of the claims jwks, jwks_uri and signed_jwks_uri" anchor="jwks_usage">
+        <t>
+        It is RECOMMENDED that an Entity Configuration 
+        use only one of 
+        <spanx style="verb">jwks</spanx>, 
+        <spanx style="verb">jwks_uri</spanx>, and 
+        <spanx style="verb">signed_jwks_uri</spanx> in its OpenID Connect or OAuth2 metadata.  
+        However, there may be circumstances in which is it desirable to use multiple 
+        JWK Set representations, such as when an Entity is in multiple federations and the 
+        federations have different policies about the JWK Set representation to be used.  
+        When multiple JWK Set representations are used, the keys present in each 
+        representation SHOULD be the same.  Even if they are not completely the 
+        same at a given instant in time (which may be the case during key rollover operations), 
+        implementations MUST make them consistent in a timely manner.
+        </t>
       </section>
 
       <section title="RP Metadata" anchor="RP_metadata">
@@ -1130,13 +1142,6 @@
 }
 ]]></artwork>
         </figure>
-
-        <t>
-Note: An OpenID Connect OP MUST only use the keys published in a suitable element, such as <spanx style="verb">jwks</spanx>
-or <spanx style="verb">jwks_uri</spanx> or <spanx style="verb">signed_jwks_uri</spanx>, underneath the
-<spanx style="verb">metadata/openid_provider</spanx> element of the respective Entity Configuration for the OpenID Connect protocol.
-The example above uses a <spanx style="verb">signed_jwks_uri</spanx> element for that purpose.
-</t>
 
       </section>
       <section title="OAuth Authorization Server">
@@ -5770,6 +5775,9 @@ Host: op.umu.se
           </t>
           <t>
             Fixed #1650: typo in signed_jws_uri and jwks metadata claims.
+          </t>
+          <t>
+            Relaxed JWK Set representations: jwks, signed_jwks_uri and jwks_uri can coexist in the same Metadata for interoperability purposes across different Federations.
           </t>
         </list>
       </t>
