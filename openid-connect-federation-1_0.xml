@@ -2686,8 +2686,8 @@ Host: openid.sunet.se
         <section title="Considerations">
           <t>The basic assumption of this specification
             is that you should trust no one except the Trust Anchor and your
-            own capabilities.
-            NOTE: The security trust model changes when using this service.
+            own capabilities, however, 
+            the security trust model changes when using this service.
             If a party uses this service to obtain federation data, it trusts
             the resolver to perform the validation of the cryptographically
             protected metadata correctly and to provide it with authentic results.</t>
@@ -2841,6 +2841,99 @@ Content-Type: application/json
         </section>
       </section>
 
+      <section title="Federation Key Registry">
+          <t>
+            The Trust Anchor CAN publish its federation public keys at the endpoint 
+            <spanx style="verb">/.well-known/openid-federation-jwks</spanx>.
+            
+            The purpose of this endpoint is to provide the list of keys used in 
+            the signature operations, with the date of issuance and expiration.
+
+            The historical keys of the Trust Anchor 
+            guarantees participants the verifiability of the Trust Chains 
+            calculated in the past, even when the federation keys are changed.
+          </t>
+
+      
+      <section title="Federation Key Registry Request">
+        <t>
+            The request MUST be an HTTP request using the GET method and
+            the https scheme to the well known endpoint 
+            <spanx style="verb">openid-federation-jwks</spanx>.
+          </t>
+          <figure>
+            <preamble>
+              The following is a non-normative example of a
+              request:
+            </preamble>
+            <artwork><![CDATA[
+GET /.well-known/openid-federation-jwks HTTP/1.1
+Host: registry.spid.gov.it
+]]></artwork>
+          </figure>
+      </section>
+
+      <section title="Federation Key Registry Response">
+          <t>
+            The response MUST contain a signed JWT containing a 
+            JWK Set JSON data structure as defined in RFC 7517,
+            and with the following additional claims:
+          </t>
+          <t>
+            <list style="hanging">
+              <t hangText="iat">
+                <vspace/>
+                REQUIRED. Time at which the jwk was issued, in Unix datetime format.
+              </t>
+              <t hangText="exp">
+                <vspace/>
+                REQUIRED. Expiration time, in Unix datetime format,
+                 on or after which the jwk MUST NOT be considered as valid.
+              </t>
+              <t hangText="nbf">
+                <vspace/>
+                OPTIONAL. Not before time, in Unix datetime format,
+                 before which the jwk MUST NOT be considered valid.
+              </t>
+            </list>
+          </t>
+          
+          <figure>
+            <preamble>
+              The following is a non-normative example of a response, before serialization and adding a signature:
+            </preamble>
+            <artwork><![CDATA[
+HTTP/1.1 200 OK
+Last-Modified: Wed, 22 Jul 2018 19:15:56 GMT
+Content-Type: application/jose
+
+{
+    "keys":
+    [
+            {
+                "kty":"RSA",
+                "n":"5s4qi …",
+                "e":"AQAB",
+                "kid":"2HnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMEEs",
+                "iat": 123972394872,
+                "nbf": 123972394872
+            },
+            {
+                "kty":"RSA",
+                "n":"ng5jr …",
+                "e":"AQAB",
+                "kid":"8KnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMJJr",
+                "iat": 123972394872,
+                "nbf": 123972394872,
+                "exp": 123974394972
+            }
+    ]
+}
+]]></artwork>
+          </figure>
+      </section>
+      </section>
+      
       <section title="Generic Error Response" anchor="error_response">
         <t>
           If the request was malformed, or some error occurred during
