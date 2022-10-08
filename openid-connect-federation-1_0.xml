@@ -2483,9 +2483,10 @@ Host: edugain.org
 
         <section title="Fetch Entity Statements Response">
           <t>
-            A positive response is a signed Entity Statement where
-            the content type MUST be set to
-            <spanx style="verb">application/entity-statement+jwt</spanx>.
+            A successful response MUST use the HTTP status code 200 
+            and the content type set to 
+            <spanx style="verb">application/entity-statement+jwt</spanx>,
+            to make it clear that the response contains a signed Entity Statement.
             If it is a negative response, it will be a JSON object and the
             content type MUST be set to
             <spanx style="verb">application/json</spanx>.
@@ -2605,11 +2606,11 @@ Host: openid.sunet.se
 
         <section title="Resolve Response">
           <t>
-            The positive response is a signed JWT, where the content
-            type MUST be set to
+            A successful response MUST use the HTTP status code 200 
+            and the content type set to 
             <spanx style="verb">application/resolve-response+jwt</spanx>,
             containing resolved metadata and
-            verified Trust Marks. The response MAY also contain
+            verified Trust Marks. The resolve response JWT MAY also contain
             the sequence of the Entity Statements that compose the Trust Chain,
             sorted as shown in <xref target="trust_chain"/>.
             The key used by the resolver to sign the response MUST be one of its
@@ -2816,9 +2817,11 @@ Host: operations.swamid.se
         </section>
         <section title="Status Response">
           <t>
-            The HTTP response body MUST be a JSON
-            object containing the claims below and the content type MUST
-            be set to <spanx style="verb">application/json</spanx>.
+            A successful response MUST use the HTTP status code 200 
+            and the content type set to 
+            <spanx style="verb">application/json</spanx>,
+            to make it clear that the response contains a JSON
+            object containing the claim below.
           </t>
           <t>
             <list style="hanging">
