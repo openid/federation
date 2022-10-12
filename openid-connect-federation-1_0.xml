@@ -2033,7 +2033,7 @@
 
 
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
-          <t>These are the properties that occur in a Trust Mark:</t>
+          <t>These are the Claims that are REQUIRED in a Trust Mark:</t>
           <t>
             <list style="hanging">
               <t hangText="iss">
@@ -2617,16 +2617,20 @@ Host: openid.sunet.se
             if the requesting client is authenticated.
           </t>
           
-          <t>These are the properties that occur in the resolve response JWT:</t>
+          <t>These are the Claims that are REQUIRED in the resolve response JWT:</t>
           <t>
             <list style="hanging">
               <t hangText="iss">
                 <vspace/>
-                REQUIRED. String. The Entity that made the trust resolution and signed the JWT.
+                REQUIRED. String. 
+                URL corresponding to the federation's Entity Identifier 
+                of the issuer of the resolve response.
               </t>
               <t hangText="sub">
                 <vspace/>
-                REQUIRED. String. The subject for which the trust was resolved.
+                REQUIRED. String. 
+                URL corresponding to the federation's Entity Identifier
+                of the subject for which the resolve response refers to.
               </t>
               <t hangText="iat">
                 <vspace/>
@@ -2637,6 +2641,8 @@ Host: openid.sunet.se
                 <vspace/>
                 REQUIRED. Number. When this resolution is not valid anymore.
                 Expressed as Seconds Since the Epoch, as defined in <xref target="RFC7519"/>.
+                It MUST correspond to the <spanx style="verb">exp</spanx> value of 
+                the Trust Chain from which the resolve response was derived.
               </t>
               <t hangText="metadata">
                 <vspace/>
