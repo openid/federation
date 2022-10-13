@@ -2612,7 +2612,8 @@ Host: openid.sunet.se
             and the content type set to 
             <spanx style="verb">application/resolve-response+jwt</spanx>,
             containing resolved metadata and
-            verified Trust Marks. The resolve response JWT MAY also contain
+            verified Trust Marks. 
+            The resolve response JWT MAY also contain
             the sequence of the Entity Statements that compose the Trust Chain,
             sorted as shown in <xref target="trust_chain"/>.
             The key used by the resolver to sign the response MUST be one of its
@@ -2621,6 +2622,14 @@ Host: openid.sunet.se
             <spanx style="verb">aud</spanx> claim only
             if the requesting client is authenticated.
           </t>
+          
+          <t>
+            If the response is negative, it will be a JSON object and the
+            content type MUST be set to
+            <spanx style="verb">application/json</spanx>.
+            See more about error responses in <xref target="error_response"/>.
+          </t>
+          
           <figure>
             <preamble>
               The following is a non-normative example of a response, before
@@ -2734,9 +2743,19 @@ Host: openid.sunet.se
 
         <section title="Entity Listing Response">
           <t>
-            The response MUST contain a JSON list with the known Entity
+            A successful response MUST use the HTTP status code 200 
+            and the content type set to <spanx style="verb">application/json</spanx>,
+            containing a JSON list with the known Entity
             Identifiers.
           </t>
+          
+          <t>
+            If the response is negative, it will be a JSON object and the
+            content type MUST be set to
+            <spanx style="verb">application/json</spanx>.
+            See more about error responses in <xref target="error_response"/>.
+          </t>
+          
           <figure>
             <preamble>
               The following is a non-normative example of a response:
@@ -2825,6 +2844,14 @@ Host: operations.swamid.se
             to make it clear that the response contains a JSON
             object containing the claim below.
           </t>
+
+          <t>
+            If the response is negative, it will be a JSON object and the
+            content type MUST be set to
+            <spanx style="verb">application/json</spanx>.
+            See more about error responses in <xref target="error_response"/>.
+          </t>
+
           <t>
             <list style="hanging">
               <t hangText="active">
@@ -3654,6 +3681,19 @@ HTTP/1.1 302 Found
                     It will sign and return the registration response (a signed
                     Entity Statement) to the RP.
                   </t>
+                  
+                  <t>
+                    A successful response MUST use the HTTP status code 200 
+                    and the content type set to 
+                    <spanx style="verb">application/jose</spanx>.
+                  </t>
+                  <t>
+                    If the response is negative, it will be a JSON object and the
+                    content type MUST be set to
+                    <spanx style="verb">application/json</spanx>.
+                    See more about error responses in <xref target="error_response"/>.
+                  </t>
+                  
                 </list>
               </t>
             </section>
@@ -3662,7 +3702,8 @@ HTTP/1.1 302 Found
               <t>
                 <list style="numbers">
                   <t>
-                    The RP verifies the correctness of the received Entity
+                    If the response is positive, 
+                    the RP verifies the correctness of the received Entity
                     Statement, making sure that one of the
                     <spanx style="verb">authority_hints</spanx>
                     it added to the registration request will lead to the
