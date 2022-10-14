@@ -2033,7 +2033,7 @@
 
 
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
-          <t>These are the Claims that are REQUIRED in a Trust Mark:</t>
+          <t>These are the Trust Mark Claims:</t>
           <t>
             <list style="hanging">
               <t hangText="iss">
@@ -2617,7 +2617,7 @@ Host: openid.sunet.se
             if the requesting client is authenticated.
           </t>
           
-          <t>These are the Claims that are REQUIRED in the resolve response JWT:</t>
+          <t>These are the resolve response Claims:</t>
           <t>
             <list style="hanging">
               <t hangText="iss">
@@ -2646,7 +2646,10 @@ Host: openid.sunet.se
               </t>
               <t hangText="metadata">
                 <vspace/>
-                REQUIRED. JSON object including protocol specific metadata claims that represent the subject's metadata.
+                REQUIRED. JSON object containing the resolved subject metadata, 
+                according to the requested <spanx style="verb">type</spanx> 
+                and expressed in the <spanx style="verb">metadata</spanx> format 
+                defined in <xref target="entity-statement"></xref>.
               </t>
               <t hangText="trust_marks">
                 <vspace/>
@@ -2656,8 +2659,9 @@ Host: openid.sunet.se
               <t hangText="trust_chain">
                 <vspace/>
                 OPTIONAL. Array containing the sequence of the statements
-                that compose the Trust Chain between the RP that makes
-                the request and the selected Trust Anchor,
+                that compose 
+                the Trust Chain starting with the subject and 
+                ending with the selected Trust Anchor,
                 sorted as shown in <xref target="trust_chain"/>.
               </t>
             </list>
