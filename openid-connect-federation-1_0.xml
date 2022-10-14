@@ -2854,15 +2854,13 @@ Content-Type: application/json
         <t>
           The HTTP response code MUST be something in 400/500-range, giving an
           indication of the type of error. The response body MUST be a JSON
-          object containing the claims below and the content type MUST
+          object containing the claims below,
+	  as defined in <xref target="RFC6749"/>,
+	  and the content type MUST
           be set to <spanx style="verb">application/json</spanx>.
         </t>
         <t>
           <list style="hanging">
-            <t hangText="operation">
-              <vspace/>
-              REQUIRED. The operation of the request.
-            </t>
             <t hangText="error">
               <vspace/>
               REQUIRED. The error code.
@@ -2885,7 +2883,6 @@ Last-Modified: Wed, 22 Jul 2018 19:15:56 GMT
 Content-Type: application/json
 
 {
-  "operation": "resolve",
   "error": "invalid_request",
   "error_description":
     "Required request parameter [sub] was missing."
@@ -5757,6 +5754,9 @@ Host: op.umu.se
           <t>
             Fixed #1662: ID Token section removed.
           </t>
+	  <t>
+	    Fixed #1680: Removed "operation" parameter from error response.
+	  </t>
         </list>
       </t>
 
