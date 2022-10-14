@@ -2850,8 +2850,9 @@ Content-Type: application/json
             The Trust Anchor MAY publish its federation public keys at the endpoint 
             <spanx style="verb">/.well-known/openid-federation-jwks</spanx>.
             
-            The purpose of this endpoint is to provide the list of keys used in 
-            the signature operations, with the date of issuance and expiration.
+            The purpose of this endpoint is to provide the list 
+            of keys used by Trust anchor for 
+            signature operations, with the date of issuance and expiration.
 
             The historical keys of the Trust Anchor 
             guarantees participants the verifiability of the Trust Chains 
@@ -2915,26 +2916,31 @@ Last-Modified: Wed, 22 Jul 2018 19:15:56 GMT
 Content-Type: application/jose
 
 {
-    "keys":
-    [
-            {
-                "kty":"RSA",
-                "n":"5s4qi …",
-                "e":"AQAB",
-                "kid":"2HnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMEEs",
-                "iat": 123972394872,
-                "nbf": 123972394872
-            },
-            {
-                "kty":"RSA",
-                "n":"ng5jr …",
-                "e":"AQAB",
-                "kid":"8KnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMJJr",
-                "iat": 123972394872,
-                "nbf": 123972394872,
-                "exp": 123974394972
-            }
-    ]
+
+    "iss": "trust-anchor.federation.example.com",
+    "iat": 123972394272,
+    "jwks": {
+        "keys":
+            [
+                {
+                    "kty":"RSA",
+                    "n":"5s4qi …",
+                    "e":"AQAB",
+                    "kid":"2HnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMEEs",
+                    "iat": 123972394872,
+                    "nbf": 123972394872
+                },
+                {
+                    "kty":"RSA",
+                    "n":"ng5jr …",
+                    "e":"AQAB",
+                    "kid":"8KnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMJJr",
+                    "iat": 123972394872,
+                    "nbf": 123972394872,
+                    "exp": 123974394972
+                }
+            ]
+    }
 }
 ]]></artwork>
           </figure>
