@@ -2033,7 +2033,7 @@
 
 
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
-          <t>These are the properties that can occur in a Trust Mark:</t>
+          <t>These are the Trust Mark Claims:</t>
           <t>
             <list style="hanging">
               <t hangText="iss">
@@ -2621,10 +2621,66 @@ Host: openid.sunet.se
             if the requesting client is authenticated.
           </t>
           
+          <t>These are the resolve response Claims:</t>
+          <t>
+            <list style="hanging">
+              <t hangText="iss">
+                <vspace/>
+                REQUIRED. String. 
+                URL corresponding to the federation's Entity Identifier 
+                of the issuer of the resolve response.
+              </t>
+              <t hangText="sub">
+                <vspace/>
+                REQUIRED. String. 
+                URL corresponding to the federation's Entity Identifier
+                of the subject for which the resolve response refers to.
+              </t>
+              <t hangText="iat">
+                <vspace/>
+                REQUIRED. Number. When this resolution was issued.
+                Expressed as Seconds Since the Epoch, as defined in 
+                <xref target="RFC7519"/>.
+              </t>
+              <t hangText="exp">
+                <vspace/>
+                REQUIRED. Number. When this resolution is not valid anymore.
+                Expressed as Seconds Since the Epoch, as defined in <xref target="RFC7519"/>.
+                It MUST correspond to the <spanx style="verb">exp</spanx> value of 
+                the Trust Chain from which the resolve response was derived.
+              </t>
+              <t hangText="metadata">
+                <vspace/>
+                REQUIRED. JSON object containing the resolved subject metadata, 
+                according to the requested <spanx style="verb">type</spanx> 
+                and expressed in the <spanx style="verb">metadata</spanx> format 
+                defined in <xref target="entity-statement"></xref>.
+              </t>
+              <t hangText="trust_marks">
+                <vspace/>
+                OPTIONAL. A JSON array of objects, each representing a Trust Mark, 
+                as defined in <xref target="entity-statement"></xref>.
+              </t>
+              <t hangText="trust_chain">
+                <vspace/>
+                OPTIONAL. Array containing the sequence of the statements
+                that compose 
+                the Trust Chain starting with the subject and 
+                ending with the selected Trust Anchor,
+                sorted as shown in <xref target="trust_chain"/>.
+              </t>
+            </list>
+          </t>
+          <t>
+            Other claims MAY be used in conjunction with the claims outlined above.
+            The claim naming recommendations outlined in Section 5.1.2 of
+        <xref target="OpenID.Core">OpenID Connect Core 1.0</xref> apply.
+
           <t>
           If the response is negative, the response 
           SHOULD be produced in accordance with what is defined in
           <xref target="error_response"/>.
+
           </t>
           
           <figure>
@@ -5791,6 +5847,9 @@ Host: op.umu.se
           </t>
           <t>
             Relaxed JWK Set representations: jwks, signed_jwks_uri and jwks_uri can coexist in the same Metadata for interoperability purposes across different Federations.
+          </t>
+          <t>
+            Fixed #1673: added resolve endpoint JWT claims.
           </t>
           <t>
             Fixed #1663: clarifications on the http status codes returning from /.well-known/openid-federation.
