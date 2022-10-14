@@ -485,7 +485,7 @@
               Trust Mark identifiers and issuers are trusted by the federation.
               This claim MUST be ignored if present in an Entity Configuration that
               describes an entity that is not a Trust Anchor.
-              It is a JSON array with keys representing Trust Mark identifiers and values
+              It is a JSON object with keys representing Trust Mark identifiers and values
               being an array of trusted entities representing the accreditation authority.
               If the value list bound to a Trust Mark identifier is empty it
               means that anyone can issue Trust Marks with that identifier.
@@ -2114,20 +2114,22 @@
     {
      "id": "https://www.spid.gov.it/certification/rp/",
      "trust_mark":
-       "eyJhbGciOiJSUzI1NiIsImtpZCI6Ing0VnduN0RzRE1ib0dBOHRNV2pleVVjT0"
-       "RTTVBua1luSVdJN3R6eVVnRmsifQ.eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkL"
-       "mdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF"
-       "0IjoxNTc5NjIxMTYwLCJpZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2Nlc"
-       "nRpZmljYXRpb24vcnAiLCJsb2dvX3VyaSI6Imh0dHBzOi8vd3d3LmFnaWQuZ29"
-       "2Lml0L3RoZW1lcy9jdXN0b20vYWdpZC9sb2dvLnN2ZyIsInJlZiI6Imh0dHBzO"
-       "i8vZG9jcy5pdGFsaWEuaXQvaXRhbGlhL3NwaWQvc3BpZC1yZWdvbGUtdGVjbml"
-       "jaGUtb2lkYy9pdC9zdGFiaWxlL2luZGV4Lmh0bWwifQ.vkYH4CZou-BhFRlZC3"
-       "eORbPbXUf9kIcqss5N5cI6GK7JsUzvxwYk5TNm8clSpV0YZtZN4RQwEf85Q_fi"
-       "FLPCPYimR-FtElWO-4Uxg44WQA1N7RbSmMNRzLfObBunMpuXcA8Trwf2d7FZ7n"
-       "Zi6mXKR8B1_YDQbLiW9q1paT-RmlrwqYyHzG9yewpIj_EQEX6WOjpWj4-Jk6sT"
-       "ZdCiu8r4d0Y7bpKt4GiGQTkVGdLyrLyMeX7FFcTI_yztKXbi8mV1-b1l7iOaJb"
-       "FyGfpHeuFCyI3y1B00LTI5GCzuQU_hyVntTnB7Qw7csLnA6B-wwaxsQa2l9-Q8"
-       "eAGXhfAlzqSqRQ"
+        "eyJraWQiOiJmdWtDdUtTS3hwWWJjN09lZUk3Ynlya3N5a0E1bDhPb2RFSXVyOH"
+        "JoNFlBIiwidHlwIjoidHJ1c3QtbWFyaytqd3QiLCJhbGciOiJSUzI1NiJ9.e"
+        "yJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8"
+        "vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJpZCI6Imh0d"
+        "HBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJsb2dvX3V"
+        "yaSI6Imh0dHBzOi8vd3d3LmFnaWQuZ292Lml0L3RoZW1lcy9jdXN0b20vYWdpZ"
+        "C9sb2dvLnN2ZyIsInJlZiI6Imh0dHBzOi8vZG9jcy5pdGFsaWEuaXQvZG9jcy9"
+        "zcGlkLWNpZS1vaWRjLWRvY3MvaXQvdmVyc2lvbmUtY29ycmVudGUvIn0.AGf5Y"
+        "4MoJt22rznH4i7Wqpb2EF2LzE6BFEkTzY1dCBMCK-"
+        "8P_vj4Boz7335pUF45XXr2jx5_waDRgDoS5vOO-wfc0NWb4Zb_T1RCwcryrzV0"
+        "z3jJICePMPM_1hZnBZjTNQd4EsFNvKmUo_teR2yzAZjguR2Rid30O5PO8kJtGa"
+        "XDmz-"
+        "rWaHbmfLhlNGJnqcp9Lo1bhkU_4Cjpn2bdX7RN0JyfHVY5IJXwdxUMENxZd-"
+        "VtA5QYiw7kPExT53XcJO89ebe_ik4D0dl-"
+        "vINwYhrIz2RPnqgA1OdbK7jg0vm8Tb3aemRLG7oLntHwqLO-"
+        "gGYr6evM2_SgqwA0lQ9mB9yhw"
     }
   ],
   "metadata": {
@@ -2330,13 +2332,13 @@
           response MUST contain metadata for a federation Entity.
         </t>
         <t>
-          A positive response is a signed Entity Statement, where the content
-          type MUST be set to <spanx style="verb">application/entity-statement+jwt</spanx>.
-          In case of an error, the response
-          will be a JSON object, the content type MUST be set to
-          <spanx style="verb">application/json</spanx>,
-          and
-          the error response uses the applicable HTTP status code value.
+          A successful response MUST use the HTTP status code 200 
+          and the content type set to 
+          <spanx style="verb">application/entity-statement+jwt</spanx>,
+          to make it clear that the response contains a signed Entity Statement.
+          In case of an error, the response 
+          SHOULD be produced in accordance with what is defined in
+          <xref target="error_response"/>.
         </t>
         <t>The following is a non-normative example response from an
           intermediate Entity, before serialization and adding a signature:
@@ -2345,7 +2347,6 @@
           <figure>
             <artwork><![CDATA[
 200 OK
-Last-Modified: Thu, 29 Aug 2019 08:54:26 GMT
 Content-Type: application/entity-statement+jwt
 
 {
@@ -2441,7 +2442,8 @@ Content-Type: application/entity-statement+jwt
           <t>
             The request MUST be an HTTP request using the GET method and
             the https scheme to a resolved federation endpoint with the
-            following query string parameters:
+            following query string parameters, encoded in
+            <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
           <t>
             <list style="hanging">
@@ -2481,9 +2483,10 @@ Host: edugain.org
 
         <section title="Fetch Entity Statements Response">
           <t>
-            A positive response is a signed Entity Statement where
-            the content type MUST be set to
-            <spanx style="verb">application/entity-statement+jwt</spanx>.
+            A successful response MUST use the HTTP status code 200 
+            and the content type set to 
+            <spanx style="verb">application/entity-statement+jwt</spanx>,
+            to make it clear that the response contains a signed Entity Statement.
             If it is a negative response, it will be a JSON object and the
             content type MUST be set to
             <spanx style="verb">application/json</spanx>.
@@ -2496,7 +2499,6 @@ Host: edugain.org
             </preamble>
             <artwork><![CDATA[
 200 OK
-Last-Modified: Mon, 17 Dec 2018 11:15:56 GMT
 Content-Type: application/entity-statement+jwt
 
 {
@@ -2562,7 +2564,8 @@ Content-Type: application/entity-statement+jwt
           <t>
             The request MUST be an HTTP request using the GET method and
             the https scheme to a resolve endpoint with the
-            following query string parameters:
+            following query string parameters, encoded in
+            <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
           <t>
             <list style="hanging">
@@ -2603,11 +2606,12 @@ Host: openid.sunet.se
 
         <section title="Resolve Response">
           <t>
-            The positive response is a signed JWT, where the content
-            type MUST be set to
+            A successful response MUST use the HTTP status code 200 
+            and the content type set to 
             <spanx style="verb">application/resolve-response+jwt</spanx>,
             containing resolved metadata and
-            verified Trust Marks. The response MAY also contain
+            verified Trust Marks. 
+            The resolve response JWT MAY also contain
             the sequence of the Entity Statements that compose the Trust Chain,
             sorted as shown in <xref target="trust_chain"/>.
             The key used by the resolver to sign the response MUST be one of its
@@ -2635,7 +2639,8 @@ Host: openid.sunet.se
               <t hangText="iat">
                 <vspace/>
                 REQUIRED. Number. When this resolution was issued.
-        Expressed as Seconds Since the Epoch, as defined in <xref target="RFC7519"/>.
+                Expressed as Seconds Since the Epoch, as defined in 
+                <xref target="RFC7519"/>.
               </t>
               <t hangText="exp">
                 <vspace/>
@@ -2670,6 +2675,12 @@ Host: openid.sunet.se
             Other claims MAY be used in conjunction with the claims outlined above.
             The claim naming recommendations outlined in Section 5.1.2 of
         <xref target="OpenID.Core">OpenID Connect Core 1.0</xref> apply.
+
+          <t>
+          If the response is negative, the response 
+          SHOULD be produced in accordance with what is defined in
+          <xref target="error_response"/>.
+
           </t>
           
           <figure>
@@ -2785,16 +2796,24 @@ Host: openid.sunet.se
 
         <section title="Entity Listing Response">
           <t>
-            The response MUST contain a JSON list with the known Entity
+            A successful response MUST use the HTTP status code 200 
+            and the content type set to <spanx style="verb">application/json</spanx>,
+            containing a JSON list with the known Entity
             Identifiers.
           </t>
+          
+          <t>
+            If the response is negative, the response 
+            should be produced in accordance with what is defined in
+            <xref target="error_response"/>.
+          </t>
+          
           <figure>
             <preamble>
               The following is a non-normative example of a response:
             </preamble>
             <artwork><![CDATA[
 200 OK
-Last-Modified: Wed, 22 Jul 2018 19:15:56 GMT
 Content-Type: application/json
 
 [
@@ -2816,7 +2835,8 @@ Content-Type: application/json
           <t>
             The request MUST be an HTTP request using the GET method and
             the https scheme to a status endpoint with the
-            following query parameters:
+            following query parameters, encoded in
+            <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
           <t>
             <list style="hanging">
@@ -2870,10 +2890,19 @@ Host: operations.swamid.se
         </section>
         <section title="Status Response">
           <t>
-            The HTTP response body MUST be a JSON
-            object containing the claims below and the content type MUST
-            be set to <spanx style="verb">application/json</spanx>.
+            A successful response MUST use the HTTP status code 200 
+            and the content type set to 
+            <spanx style="verb">application/json</spanx>,
+            to make it clear that the response contains a JSON
+            object containing the claim below.
           </t>
+
+          <t>
+            If the response is negative, the response 
+            SHOULD be produced in accordance with what is defined in
+            <xref target="error_response"/>.
+          </t>
+
           <t>
             <list style="hanging">
               <t hangText="active">
@@ -2889,7 +2918,6 @@ Host: operations.swamid.se
               </preamble>
               <artwork><![CDATA[
 200 OK
-Last-Modified: Wed, 22 Jul 2018 19:15:56 GMT
 Content-Type: application/json
 
 {
@@ -2905,7 +2933,7 @@ Content-Type: application/json
         <t>
           If the request was malformed, or some error occurred during
           processing of the request, the following standardized error format
-          SHOULD be used regardless of the operation specified.
+          SHOULD be used.
         </t>
         <t>
           The HTTP response code MUST be something in 400/500-range, giving an
@@ -2915,10 +2943,6 @@ Content-Type: application/json
         </t>
         <t>
           <list style="hanging">
-            <t hangText="operation">
-              <vspace/>
-              REQUIRED. The operation of the request.
-            </t>
             <t hangText="error">
               <vspace/>
               REQUIRED. The error code.
@@ -2937,11 +2961,9 @@ Content-Type: application/json
           </preamble>
           <artwork><![CDATA[
 400 Bad request
-Last-Modified: Wed, 22 Jul 2018 19:15:56 GMT
 Content-Type: application/json
 
 {
-  "operation": "resolve",
   "error": "invalid_request",
   "error_description":
     "Required request parameter [sub] was missing."
@@ -3368,7 +3390,7 @@ https://server.example.com/authorize?
               </t>
               <t>
                 An RP MAY present to the OP a Trust Chain related to itself,
-                using the <spanx style="verb">trust_chain</spanx>
+                using the <xref target="trust_chain_param">trust_chain</xref>
                 parameter.
 
                 If the OP doesn't have a valid registration for the RP or
@@ -3394,7 +3416,8 @@ https://server.example.com/authorize?
                 parameter.
               </t>
               <t anchor="TrustChainParamAbsent">
-                If the RP doesn't include the <spanx style="verb">trust_chain</spanx>
+                If the RP doesn't include the
+                <xref target="trust_chain_param">trust_chain</xref>
                 in the request or the OP doesn't support this feature, it then MUST
                 validate the possible Trust Chains, starting with the RP's Entity
                 Configuration as described in <xref target="fetching-es"/>,
@@ -3705,6 +3728,18 @@ HTTP/1.1 302 Found
                     It will sign and return the registration response (a signed
                     Entity Statement) to the RP.
                   </t>
+                  
+                  <t>
+                    A successful response MUST use the HTTP status code 200 
+                    and the content type set to 
+                    <spanx style="verb">application/jose</spanx>.
+                  </t>
+                  <t>
+                    If the response is negative, the response 
+                    SHOULD be produced in accordance with what is defined in
+                    <xref target="error_response"/>.
+                  </t>
+                  
                 </list>
               </t>
             </section>
@@ -3713,7 +3748,8 @@ HTTP/1.1 302 Found
               <t>
                 <list style="numbers">
                   <t>
-                    The RP verifies the correctness of the received Entity
+                    If the response is positive, 
+                    the RP verifies the correctness of the received Entity
                     Statement, making sure that one of the
                     <spanx style="verb">authority_hints</spanx>
                     it added to the registration request will lead to the
@@ -3874,7 +3910,7 @@ HTTP/1.1 302 Found
             It solves the problem of OPs using RP metadata that has become stale.
             This may occur when the OP uses cached RP metadata from a Trust Chain
             that hasn't reached its expiration time yet. By passing the
-            <spanx style="verb">trust_chain</spanx>
+            <xref target="trust_chain_param">trust_chain</xref>
             in the Request the RP can notify the OP that a
             change has taken place, thus letting the OP update its client
             registration and prevent potential temporary faults due to stale metadata.
@@ -5814,7 +5850,16 @@ Host: op.umu.se
             Fixed #1673: added resolve endpoint JWT claims.
           </t>
           <t>
+            Fixed #1663: clarifications on the http status codes returning from /.well-known/openid-federation.
+          </t>
+          <t>
+            Fixed #1667: serialization format for federation endpoint made explicit.
+          </t>
+          <t>
             Fixed #1662: ID Token section removed.
+          </t>
+          <t>
+            Fixed #1680: removal of the claim operation in Generic Errors.
           </t>
         </list>
       </t>
