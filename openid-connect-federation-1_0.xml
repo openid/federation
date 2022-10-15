@@ -2659,7 +2659,7 @@ Host: openid.sunet.se
               <t hangText="trust_marks">
                 <vspace/>
                 OPTIONAL. A JSON array of objects, each representing a Trust Mark, 
-                as defined in <xref target="entity-statement"></xref>.
+                as defined in <xref target="entity-statement"/>.
               </t>
               <t hangText="trust_chain">
                 <vspace/>
@@ -2671,11 +2671,13 @@ Host: openid.sunet.se
               </t>
             </list>
           </t>
+          
           <t>
             Other claims MAY be used in conjunction with the claims outlined above.
             The claim naming recommendations outlined in Section 5.1.2 of
         <xref target="OpenID.Core">OpenID Connect Core 1.0</xref> apply.
-
+          </t>
+          
           <t>
           If the response is negative, the response 
           SHOULD be produced in accordance with what is defined in
@@ -2754,6 +2756,7 @@ Host: openid.sunet.se
 ]]></artwork>
           </figure>
         </section>
+
         <section title="Considerations">
           <t>The basic assumption of this specification
             is that you should trust no one except the Trust Anchor and your
@@ -2971,6 +2974,7 @@ Host: registry.spid.gov.it
             paramenters:
           </t>
           
+          <t>
           <list style="hanging">
               <t hangText="iss">
                 <vspace/>
@@ -2990,19 +2994,23 @@ Host: registry.spid.gov.it
                   representing the public part of the Trust Anchor signing keys. 
                   The corresponding private key is
                   used by Trust Anchor to sign Entity Statements.
-                  Every JWK in the JWK Set MUST have a Key ID (<spanx style="verb">kid</spanx>).
-                  It is RECOMMENDED that the Key ID be the JWK Thumbprint <xref target="RFC7638"/>
-                  using the SHA-256 hash function of the key.
                   
                   <t>
                     The JWK Set in the <spanx style="verb">jwts</spanx> claim,
                     in addition to what is defined in 
                     <xref target="RFC7517"> JSON Web Key Set (JWKS)</xref>
-                    also adds the following additional claims:
+                    also adopts the following claims:
                   </t>
                   
                   <t>
                     <list style="hanging">
+                      <t hangText="kid">
+                        <vspace/>
+                        REQUIRED. Parameter is used to match a specific key.
+                        It is RECOMMENDED that the Key ID be the 
+                        JWK Thumbprint <xref target="RFC7638"/> using 
+                        the SHA-256 hash function of the key.
+                      </t>
                       <t hangText="iat">
                         <vspace/>
                         REQUIRED. Time at which the jwk was issued, in Unix datetime format.
@@ -3022,7 +3030,7 @@ Host: registry.spid.gov.it
                   
               </t>
           </list>
-        
+        </t>
           
           
           <figure>
@@ -3063,7 +3071,44 @@ Content-Type: application/jose
 }
 ]]></artwork>
           </figure>
+        
       </section>
+      
+      <section  title="Rationale for the Federation Key Registry">
+        <t>
+            The Federation Key Registry MUST contain
+            the public keys used for 
+            the signature operations of the Entity Statements, 
+            each uniquely identified by the claim 
+            <spanx style="verb">kid</spanx>. 
+        </t>
+        
+        <t>
+            The federation public keys contained in the registry allow 
+            the validation of the present and past Trust Chains. 
+            Each Trust Chain contains the sequence of statements and 
+            each statement can also include the 
+            OpenID or OAuth2 <spanx style="verb">jwks</spanx> claim, 
+            respectively in 
+            <spanx style="verb">metadata</spanx> or 
+            <spanx style="verb">metadata_policy</spanx>. 
+
+            If this is true, the Trust Chain would also allow to prove 
+            the validity of non-Federation signature operations, which 
+            occurred in the present and in the past, 
+            relating to the OpenID Connect and OAuth2 profiles 
+            defined in the metadata roles.
+        </t>
+        
+        <t>
+            Each ID Token could be stored for the required time together with 
+            the related Trust Chain used to validate the ID Token
+            authenticity and integrity. 
+            The historical keys endpoint will provide the Trust Anchor to proof 
+            that the whole Trust Chain was valid at the time of ID Token validation.
+        </t>
+      </section>
+      
       </section>
       
       <section title="Generic Error Response" anchor="error_response">
