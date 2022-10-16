@@ -2932,17 +2932,18 @@ Content-Type: application/json
       <section title="Generic Error Response" anchor="error_response">
         <t>
           If the request was malformed, or some error occurred during
-          processing of the request, the following standardized error format
-          SHOULD be used.
+          processing of the request, 
+          the HTTP response status code MUST be something in 400/500-range and  
+          the response body MUST be a JSON object with the content type
+          set to <spanx style="verb">application/json</spanx>.
         </t>
+        
         <t>
-          The HTTP response code MUST be something in 400/500-range, giving an
-          indication of the type of error. The response body MUST be a JSON
-          object containing the claims below,
-	  as defined in <xref target="RFC6749"/>,
-	  and the content type MUST
-          be set to <spanx style="verb">application/json</spanx>.
+          In compliance with
+          <xref target="RFC6749"/> the following 
+          standardized error format SHOULD be used
         </t>
+
         <t>
           <list style="hanging">
             <t hangText="error">
@@ -2954,6 +2955,37 @@ Content-Type: application/json
               REQUIRED. A human-readable short
               text describing the error.
             </t>
+          </list>
+        </t>
+
+        <t>
+            Federation endpoints SHOULD adopt the following error types:
+        </t>
+
+        <t>
+          <list style="hanging">
+            <t hangText="invalid_request">
+              <vspace/>
+              The request is incomplete or does 
+              not comply with current specifications.
+            </t>
+            <t hangText="invalid_client">
+              <vspace/>
+              The Client/RP can not be authorized or is not intended to be
+              a valid participant of the Federation.
+            </t>
+            <t hangText="server_error">
+              <vspace/>
+              The authorization server encountered an unexpected
+              condition that prevented it from fulfilling the request.
+            </t>
+            <t hangText="temporarily_unavailable">
+              <vspace/>
+              The server hosting the Federation endpoint
+              is currently unable to handle
+              the request due to a temporary overloading or maintenance.
+            </t>
+
           </list>
         </t>
 
@@ -5862,6 +5894,9 @@ Host: op.umu.se
           </t>
           <t>
             Fixed #1680: removal of the claim operation in Generic Errors.
+          </t>
+          <t>
+            Fixed #1669: error types in the section Generic Error Response.
           </t>
         </list>
       </t>
