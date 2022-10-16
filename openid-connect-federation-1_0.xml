@@ -234,38 +234,49 @@
       <t>
         The basic component is the Entity Statement, which is a cryptographically
         signed <xref target="RFC7519">JSON Web Token (JWT)</xref>.
+        
         A set of Entity Statements can form a path from a Leaf Entity to
-        a Trust Anchor. Entity Configurations
-        issued by federation entities about themselves control the Trust Chain
-        resolution process.</t>
-      <t>Starting with the Entity Configuration of the Leaf Entity, you can find
-        the next level of Entity Configuration by following the authority hints.
-        And then repeat this until you hit a Trust Anchor. Using the federation APIs
-        exposed by the intermediate entities and the Trust Anchor, you can then
-        fetch the Entity Statements for the intermediate entities and the Leaf Entity.
+        a Trust Anchor. 
       </t>
       <t>
-        Once you have followed a path, you have collected a set of Entity Statements
-        that forms a chain. You can verify that this chain has not been tampered
-        with by verifying the signature of each statement. How this is
-        done is described in <xref target="trust_chain"/>.
+        The Entity Configurations of the Leaf Entities contains the reference to
+        the next level of the path, a parameter that shows where
+        the superior Entity Configurations is available to download
+        (<xref target="authority_hints">authority_hints</xref>).
+        One or more Entity Configurations can occour until the Trust Anchor is reached. 
+        
+        The Trust Anchor and its intermediaries issues Entity Statements
+        about their descendants. The sequence of Entity Configurations 
+        and Entity Statements that validate the relationship between 
+        a superior and a descendant along a path towards the Trust Anchor, 
+        form the elements can prove that a Leaf Entity is part of and compliant to
+        the Federation configured by the Trust Anchor.
       </t>
       <t>
-        With a verified Trust Chain in hand, you can now apply federation
-        policy to the published metadata. How this is done is described in
-        <xref target="federation_policy"/>.
+        The chain that links the statements each others is verifiable with 
+        the signature of each statement, as described in <xref target="trust_chain"/>.
       </t>
       <t>
-        Note that this specification is only dealing with trust in that the
-        other party is part of the same federation as you and that you can
-        trust that the metadata you get that describes the other party is
-        what was sent. The specification does not touch protocol operations
-        outside those of metadata exchange. In OpenID Connect terms, these are protocol
-        operations other than discovery and registration.
+        With a verified Trust Chain the federation policy is finally applied
+        and the metadata regarding a Leaf Entity within the Federation is then 
+        produced.
+        How this is done is described in <xref target="federation_policy"/>.
       </t>
       <t>
-        The fact that we use OpenID Connect in all the examples in this
-        specification does not mean that the specification can only be used
+        This specification deals with trust operations, 
+        it doesn't cover or touch protocol operations
+        outside those of metadata production and exchange. 
+        In OpenID Connect terms, these are protocol
+        operations other than 
+        <xref target="OpenID.Discovery">OpenID Connect Discovery 1.0</xref>
+         and
+        <xref target="OpenID.Registration">OpenID Connect Dynamic Client
+          Registration 1.0
+        </xref>.
+      </t>
+      <t>
+        OpenID Connect is in all the examples in this
+        specification, however this doesn't mean that this specification can only be used
         together with OpenID Connect. On the contrary, it can equally well be
         used to build an OAuth 2.0 federations or for that matter, other protocols
         that depend on dynamic exchange of Entity metadata.
@@ -337,8 +348,8 @@
               from an OP when the client is doing Explicit Registration.
               In all other cases it is REQUIRED.
               Every JWK in the JWK Set MUST have a Key ID (<spanx style="verb">kid</spanx>).
-          It is RECOMMENDED that the Key ID be the JWK Thumbprint <xref target="RFC7638"/>
-          using the SHA-256 hash function of the key.
+              It is RECOMMENDED that the Key ID be the JWK Thumbprint <xref target="RFC7638"/>
+              using the SHA-256 hash function of the key.
             </t>
             <t hangText="aud">
               <vspace/>
@@ -346,7 +357,7 @@
               The Entity Statement MAY be specifically created for an Entity.
               The Entity Identifier for that Entity MUST appear in this claim.
             </t>
-            <t hangText="authority_hints">
+            <t hangText="authority_hints" anchor="authority_hints">
               <vspace/>
               OPTIONAL. Array of strings representing
               the Entity Identifiers of intermediate entities or Trust Anchors
@@ -495,9 +506,10 @@
               <vspace/>
               OPTIONAL.
               An OP MUST use this claim to tell the RP which Trust Anchor it
-              chose to use when responding to an explicit client registration.
-              The value of <spanx style="verb">trust_anchor_id</spanx> is the Entity Identifier of a trust
-              anchor.
+              chose to use when responding to an explicit client registration 
+              (<xref target="explicit">Explicit Client Registration</xref>).
+              The value of <spanx style="verb">trust_anchor_id</spanx> is the 
+              Entity Identifier of a Trust Anchor.
             </t>
           </list>
         </t>
@@ -506,7 +518,7 @@
           Entity, in the form of a <xref target="RFC7515">JSON Web Signature
           (JWS)</xref>. Entities MUST support signing Entity Statements with
           the RSA SHA-256 algorithm (an <spanx style="verb">alg</spanx>
-      value of <spanx style="verb">RS256</spanx>). Consequently,
+          value of <spanx style="verb">RS256</spanx>). Consequently,
           entities MUST support signature verification where the statement was
           signed using RS256.
         </t>
@@ -598,8 +610,7 @@
           <list style="hanging">
             <t hangText="Trust anchor">
               <vspace/>
-              An Entity that represents a trusted
-              third party.
+              An Entity that represents a trusted third party.
             </t>
             <t hangText="Leaf">
               <vspace/>
