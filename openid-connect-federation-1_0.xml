@@ -2932,26 +2932,26 @@ Content-Type: application/json
         </section>
       </section>
 
-      <section title="Federation Key Registry">
+      <section title="Federation Historical Keys endpoint">
           <t>
-            The Trust Anchor MAY publish its federation public keys at the endpoint 
-            <spanx style="verb">/.well-known/openid-federation-jwks</spanx>.
+            The Trust Anchor MAY publish its expired 
+            federation public keys at the endpoint 
+            <spanx style="verb">/.well-known/openid-federation-historical-jwks</spanx>.
             
             The purpose of this endpoint is to provide the list 
-            of keys used by Trust anchor for 
-            signature operations, with the date of issuance and expiration.
+            of keys used in the past by Trust Anchor.
 
             The historical keys of the Trust Anchor 
             guarantees participants the verifiability of the Trust Chains 
-            calculated in the past, even when the federation keys are changed.
+            even when the federation keys are changed.
           </t>
 
       
-      <section title="Federation Key Registry Request">
+      <section title="Federation Historical Keys Request">
         <t>
             The request MUST be an HTTP request using the GET method and
             the https scheme to the well known endpoint 
-            <spanx style="verb">openid-federation-jwks</spanx>.
+            <spanx style="verb">openid-federation-historical-jwks</spanx>.
           </t>
           <figure>
             <preamble>
@@ -2959,17 +2959,17 @@ Content-Type: application/json
               request:
             </preamble>
             <artwork><![CDATA[
-GET /.well-known/openid-federation-jwks HTTP/1.1
+GET /.well-known/openid-federation-historical-jwks HTTP/1.1
 Host: registry.spid.gov.it
 ]]></artwork>
           </figure>
       </section>
 
-      <section title="Federation Key Registry Response">
+      <section title="Federation Historical Keys Response">
           <t>
             A successful response MUST use the HTTP status code 200 
             and the content type set to 
-            <spanx style="verb">application/jose</spanx>.
+            <spanx style="verb">application/jwk-set+jwt</spanx>.
             The response is a signed JWT containing the following 
             paramenters:
           </t>
@@ -3015,13 +3015,8 @@ Host: registry.spid.gov.it
                       </t>
                       <t hangText="exp">
                         <vspace/>
-                        OPTIONAL. Expiration time, in Unix datetime format,
+                        REQUIRED. Expiration time, in Unix datetime format,
                          on or after which the jwk MUST NOT be considered as valid.
-                      </t>
-                      <t hangText="nbf">
-                        <vspace/>
-                        OPTIONAL. Not before time, in Unix datetime format,
-                         before which the jwk MUST NOT be considered valid.
                       </t>
                     </list>
                   </t>
@@ -3029,15 +3024,14 @@ Host: registry.spid.gov.it
               </t>
           </list>
         </t>
-          
-          
+
           <figure>
             <preamble>
               The following is a non-normative example of a response, before serialization and adding a signature:
             </preamble>
             <artwork><![CDATA[
 HTTP/1.1 200 OK
-Content-Type: application/jose
+Content-Type: application/jwk-set+jwt
 
 {
     "iss": "https://trust-anchor.federation.example.com",
@@ -3050,7 +3044,8 @@ Content-Type: application/jose
                     "n":"5s4qi …",
                     "e":"AQAB",
                     "kid":"2HnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMEEs",
-                    "iat": 123972394872
+                    "iat": 123972394872,
+                    "exp": 123974395972
                 },
                 {
                     "kty":"RSA",
@@ -3068,7 +3063,7 @@ Content-Type: application/jose
         
       </section>
       
-      <section  title="Rationale for the Federation Key Registry">
+      <section  title="Rationale for the Federation Historical Keys endpoint">
         <t>
             The Federation Key Registry MUST contain
             the public keys used by The Trust Anchor to sign its 
@@ -3086,7 +3081,7 @@ Content-Type: application/jose
             <spanx style="verb">metadata</spanx> or 
             <spanx style="verb">metadata_policy</spanx>. 
 
-            If this is true, the Trust Chain would also allow to prove 
+            If this is true, the Trust Chain would also enable proving
             the validity of non-Federation signature operations, which 
             occurred in the present and in the past, 
             relating to the OpenID Connect and OAuth2 profiles, 
@@ -3097,7 +3092,7 @@ Content-Type: application/jose
             Each ID Token could be stored for the required time together with 
             the related Trust Chain used to validate the ID Token
             authenticity and integrity. 
-            The historical keys endpoint will provide the Trust Anchor to proof 
+            The historical keys endpoint will enable the Trust Anchor to proof 
             that the whole Trust Chain was valid at the time of ID Token validation.
         </t>
       </section>
@@ -6024,7 +6019,7 @@ Host: op.umu.se
             Relaxed JWK Set representations: jwks, signed_jwks_uri and jwks_uri can coexist in the same Metadata for interoperability purposes across different Federations.
           </t>
           <t>
-            Fixed #1641: Federation Key Registry endpoint.
+            Fixed #1641: Federation Historical Key endpoint.
           </t>
           <t>
             Fixed #1673: added resolve endpoint JWT claims.
