@@ -2932,8 +2932,7 @@ Content-Type: application/json
       <section title="Generic Error Response" anchor="error_response">
         <t>
           If the request was malformed, or some error occurred during
-          processing of the request, 
-          the HTTP response status code MUST be in the 4xx/5xx range and  
+          processing of the request,
           the response body SHOULD be a JSON object with the content type
           set to <spanx style="verb">application/json</spanx>.
         </t>
@@ -2955,22 +2954,27 @@ Content-Type: application/json
                   <vspace/>
                   The request is incomplete or does 
                   not comply with current specifications.
+                  The HTTP response status code SHOULD be 400 (Bad Request).
                 </t>
                 <t hangText="invalid_client">
                   <vspace/>
                   The Client/RP can not be authorized or is not intended to be
                   a valid participant of the federation.
+                  The HTTP response status code SHOULD be 401 (Unauthorized).
                 </t>
                 <t hangText="server_error">
                   <vspace/>
                   The server encountered an unexpected
                   condition that prevented it from fulfilling the request.
+                  The HTTP response status code SHOULD one in the 5xx range,
+                  like 500 (Internal Server Error).
                 </t>
                 <t hangText="temporarily_unavailable">
                   <vspace/>
                   The server hosting the federation endpoint
                   is currently unable to handle
                   the request due to a temporary overloading or maintenance.
+                  The HTTP response status code SHOULD be 503 (Service Unavailable).
                 </t>
               </list>
               
@@ -2978,8 +2982,7 @@ Content-Type: application/json
             
             <t hangText="error_description">
               <vspace/>
-              REQUIRED. A human-readable short
-              text describing the error.
+              REQUIRED. A human-readable short text describing the error.
             </t>
           </list>
         </t>
