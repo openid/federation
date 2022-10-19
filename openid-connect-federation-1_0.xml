@@ -2940,7 +2940,9 @@ Content-Type: application/json
           <t>
             The Trust Anchor MAY publish its expired 
             federation public keys at the endpoint 
-            <spanx style="verb">/.well-known/openid-federation-historical-jwks</spanx>.
+            <spanx style="verb">
+                /.well-known/openid-federation-historical-jwks
+            </spanx>.
             
             The purpose of this endpoint is to provide the list 
             of keys used in the past by Trust Anchor.
@@ -2964,7 +2966,7 @@ Content-Type: application/json
             </preamble>
             <artwork><![CDATA[
 GET /.well-known/openid-federation-historical-jwks HTTP/1.1
-Host: registry.spid.gov.it
+Host: trust-anchor.example.com
 ]]></artwork>
           </figure>
       </section>
@@ -2988,7 +2990,8 @@ Host: registry.spid.gov.it
               <t hangText="iat">
                 <vspace/>
                 REQUIRED. Number. When the signed JWT was issued,
-                expressed as Seconds Since the Epoch, as defined in 
+                using the time format defined for the 
+                <spanx style="verb">iat</spanx> claim in
                 <xref target="RFC7519"/>.
               </t>
               <t hangText="jwks">
@@ -3015,12 +3018,18 @@ Host: registry.spid.gov.it
                       </t>
                       <t hangText="iat">
                         <vspace/>
-                        REQUIRED. Time at which the jwk was issued, in Unix datetime format.
+                        REQUIRED. Time at which the JWK was issued,
+                        using the time format defined for the 
+                        <spanx style="verb">iat</spanx> claim in
+                        <xref target="RFC7519"/>.
                       </t>
                       <t hangText="exp">
                         <vspace/>
-                        REQUIRED. Expiration time, in Unix datetime format,
-                         on or after which the jwk MUST NOT be considered as valid.
+                        REQUIRED. Expiration time, 
+                        using the time format defined for the 
+                        <spanx style="verb">exp</spanx> claim in
+                        <xref target="RFC7519"/>.
+                         on or after which the JWK MUST NOT be considered as valid.
                       </t>
                     </list>
                   </t>
@@ -3067,7 +3076,7 @@ Content-Type: application/jwk-set+jwt
       
       <section  title="Rationale for the Federation Historical Keys endpoint">
         <t>
-            The Federation Federation Historical Keys MUST contain
+            The Federation Federation Historical Keys contains
             the expired public keys used in the past by the 
             Trust Anchor, to sign its 
             Entity Configuration and the Entity Statements issued for its 
@@ -3075,11 +3084,11 @@ Content-Type: application/jwk-set+jwt
         </t>
         
         <t>
-            The federation public keys contained in the registry allow 
-            the validation of the past Trust Chains. 
+            The federation public keys contained in the set of historical keys
+            allow the validation of the past Trust Chains. 
             Each Trust Chain contains the sequence of statements and 
             each statement MAY also include the 
-            OpenID or OAuth2 <spanx style="verb">jwks</spanx> claim, 
+            <spanx style="verb">jwks</spanx> claim, 
             respectively in 
             <spanx style="verb">metadata</spanx> or 
             <spanx style="verb">metadata_policy</spanx>. 
@@ -3089,14 +3098,6 @@ Content-Type: application/jwk-set+jwt
             occurred in the present and in the past, 
             relating to the OpenID Connect and OAuth2 profiles, 
             defined in the metadata roles.
-        </t>
-        
-        <t>
-            Each ID Token could be stored for the required time together with 
-            the related Trust Chain used to validate the ID Token
-            authenticity and integrity. 
-            The historical keys endpoint will enable the Trust Anchor to proof 
-            that the whole Trust Chain was valid at the time of ID Token validation.
         </t>
       </section>
       
@@ -6022,7 +6023,7 @@ Host: op.umu.se
             Relaxed JWK Set representations: jwks, signed_jwks_uri and jwks_uri can coexist in the same Metadata for interoperability purposes across different Federations.
           </t>
           <t>
-            Fixed #1641: Federation Historical Key endpoint.
+            Fixed #1641: Federation Historical Keys endpoint.
           </t>
           <t>
             Fixed #1673: added resolve endpoint JWT claims.
