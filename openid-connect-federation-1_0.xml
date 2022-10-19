@@ -236,7 +236,7 @@
         signed <xref target="RFC7519">JSON Web Token (JWT)</xref>.
         A set of Entity Statements can form a path from a Leaf Entity to
         a Trust Anchor. Entity Configurations
-        issued by federation entities about themselves control the Trust Chain
+        issued by Entities about themselves control the Trust Chain
         resolution process.</t>
       <t>Starting with the Entity Configuration of the Leaf Entity, you can find
         the next level of Entity Configuration by following the authority hints.
@@ -1190,7 +1190,8 @@
           <spanx style="verb">federation_entity</spanx>.
         </t>
         <t>
-          All entities participating in a federation are of this type.
+          All Entities who expose Federation API endpoints 
+          are of this type.
         </t>
         <t>
           The following properties are allowed:
@@ -1223,7 +1224,7 @@
             <t hangText="organization_name">
               <vspace/>
               OPTIONAL. A human-readable
-              name representing the organization owning the federation Entity.
+              name representing the organization owning the Entity.
               If the owner is a physical person
               this MAY be, for example, the name of a person.
             </t>
@@ -2090,7 +2091,7 @@
             Note that the Entity representing the accreditation authority
             SHOULD be well known and trusted for a given Trust Mark identifier.
             A Trust Anchor MAY publish a list of accreditation authorities
-            of Trust Marks that SHOULD be trusted by other federation entities.
+            of Trust Marks that SHOULD be trusted by other Entities.
             A Trust Anchor uses the <spanx style="verb">trust_marks_issuers</spanx> claim
             in its Entity Configuration to publish this information.
           </t>
@@ -2267,7 +2268,7 @@
             title="Obtaining Federation Entity Configuration Information"
             anchor="federation_configuration">
       <t>
-        The Entity Configuration of every federation Entity SHOULD be exposed at a well-known endpoint.
+        The Entity Configuration of every participant SHOULD be exposed at a well-known endpoint.
         The configuration endpoint is found using the
         <xref target="RFC8615">Well-Known URIs</xref>
         specification, with the suffix
@@ -2300,7 +2301,7 @@
         (even though this violates <xref target="RFC8615"/>).
       </t>
       <t>
-        Federation Entities SHOULD make an Entity Configuration Document
+        Entities SHOULD make an Entity Configuration document
         available at the configuration endpoint.
 	There is only one exception to this
         rule and that is for an RP that only does Explicit Registration.
@@ -2309,7 +2310,7 @@
       </t>
       <section title="Federation Entity Configuration Request">
         <t>
-          A federation Entity Configuration Document MUST be queried using an
+          An Entity Configuration document MUST be queried using an
           HTTP GET request at the previously specified path.
           The requesting party would make the following request to the Entity
           <spanx style="verb">https://openid.sunet.se</spanx>
@@ -2329,7 +2330,8 @@
         <t>The response is an Entity Configuration, as described in
           <xref target="entity-statement"/>.
           If the Entity is an intermediate Entity or a Trust Anchor, the
-          response MUST contain metadata for a federation Entity.
+          response MUST contain metadata for a federation Entity
+          (<spanx style="verb">federation_entity</spanx>).
         </t>
         <t>
           A successful response MUST use the HTTP status code 200 
@@ -2760,12 +2762,12 @@ Host: openid.sunet.se
             should have direct trust in no one except the Trust Anchor 
             and its own capabilities. 
             
-            However, Federation Entities may establish a kind of
+            However, Entities may establish a kind of
             transistive trust in other entities. For example, the 
             Trust Anchor states who its subordinates are
-            and entities may choose to trust these.
+            and Entities may choose to trust these.
             
-            If a party uses the resolve service of another participant
+            If a party uses the resolve service of another Entity
             to obtain federation data, it is trusting
             the resolver to perform the validation of the cryptographically
             protected metadata correctly and to provide it with authentic results.
