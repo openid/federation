@@ -3075,29 +3075,79 @@ Content-Type: application/jwk-set+jwt
       </section>
       
       <section  title="Rationale for the Federation Historical Keys endpoint">
+<!--
+  introduce the problem
+-->
         <t>
-            The Federation Federation Historical Keys contains
-            the expired public keys used in the past by the 
-            Trust Anchor, to sign its 
-            Entity Configuration and the Entity Statements issued for its 
-            descendants.
+            The Federation Historical Keys endpoint 
+            solves the problem of verifying historical 
+            Trust Chains when the Trust Anchor Federation Entity Keys
+            are changed. 
         </t>
-        
+
+<!--
+  describe the concept
+-->
         <t>
-            The federation public keys contained in the set of historical keys
-            allow the validation of the past Trust Chains. 
-            Each Trust Chain contains the sequence of statements and 
-            each statement MAY also include the 
+             The Federation Historical Keys endpoint 
+             publishes the list of public keys used in the past by Trust Anchor.
+             The given public keys are needed by all the Entities 
+             to verify the Trust Chains evaluated in the past with the
+             Federation Entity Keys not published anymore in the Trust Anchor's
+             Entity Configuration.
+        </t>
+
+<!--
+  give the technical details.
+-->
+        <t>
+            Federation Historical Keys endpoint response contains a signed JWT 
+            that attests all the expired Trust Anchor Keys.
+        </t>
+
+<!--
+  more technical details.
+-->
+        <t>
+            On the basis of the attributes contained in the Entity Statements 
+            that form a Trust Chain, it MAY be also possible to certify 
+            the non-federation public keys used in the past by a Leaf for the 
+            signature operations related to the OpenID Connect 
+            requests and responses.
+            For example an Entity Statement issued for a Leaf
+            MAY also include the 
             <spanx style="verb">jwks</spanx> claim, 
-            respectively in 
+            respectively in the claims
             <spanx style="verb">metadata</spanx> or 
             <spanx style="verb">metadata_policy</spanx>. 
-
-            If this is true, the Trust Chain would also enable proving
-            the validity of non-Federation signature operations, which 
-            occurred in the present and in the past, 
-            relating to the OpenID Connect and OAuth2 profiles, 
-            defined in the metadata roles.
+            
+            <t>
+              A simple example: in the following Trust Chain the 
+              Federation Intermediary attests the Leaf's OpenID Connect 
+              <spanx style="verb">jwks</spanx>
+              in the Entity Statement issued for the Leaf. The result is 
+              a Trust Chain that contains the Leaf's OIDC Core jwks, 
+              needed to verify historical signature on 
+              request objects, ID Tokens and any other signed JWT issued by the Leaf, 
+              if it is an RP or an OP.
+              
+              <list style="numbers">
+                <t>
+                  an Entity Configuration about the RP published by the RP,
+                </t>
+                <t>
+                  an Entity Statement about the RP published by Organization A,
+                  with the claim <spanx style="verb">jwks</spanx> contained in
+                  <spanx style="verb">metadata</spanx> or 
+                  <spanx style="verb">metadata_policy</spanx> attesting the 
+                  Leaf's OpenID Core <spanx style="verb">jwks</spanx>.
+                </t>
+                <t>
+                  an Entity Statement about Organization A published by Federation F.
+                </t>
+              </list>
+            </t>
+            
         </t>
       </section>
       
