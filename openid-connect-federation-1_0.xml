@@ -466,10 +466,26 @@
             <t hangText="trust_marks">
               <vspace/>
               OPTIONAL. A JSON array of objects, each representing
-              a Trust Mark. Each object contains two claims:
+              a Trust Mark.  
+              
+              Each JSON object MUST contain the following two claims 
+              and MAY contain other claims if needed. All the claims in the 
+              JSON object MUST have the same values of those 
+              contained in the Trust Mark JSON Web Token.
+              
               <list style="hanging">
                 <t hangText="id">
-                  The Trust Mark identifier
+                  The Trust Mark unique identifier, 
+                  it MUST be the same value of the id claim contained in the 
+                  Trust Mark JSON Web Token.
+                  The Trust Mark id MUST be collision-resistant 
+                  across multiple federation.
+                  It is RECOMMENDED that the id value is built 
+                  using the unique URL that uniquely identifies the federation, 
+                  or the trust framework, 
+                  within which it was issued. This is required to prevent
+                  that Trust Marks issued in different federations 
+                  may collide their unique identifiers.
                 </t>
                 <t hangText="trust_mark">
                   A signed JSON Web Token that represents a Trust Mark.
