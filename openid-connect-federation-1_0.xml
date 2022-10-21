@@ -624,11 +624,11 @@
         </t>
         <t>
           If present, the Trust Anchor's Entity Configuration
-          at the end of the chain contains configuration of the Federation,
+          at the end of the chain contains configuration of the federation,
           such as the public keys of the Trust Anchor and other parameters
           considered within the trust evaluation.
           When this is this case, the Trust Chain
-          consequentially contains the configuration of the Federation
+          consequentially contains the configuration of the federation
           at the date of the evaluation of the chain.
         </t>
         <t>
@@ -643,7 +643,7 @@
               an Entity Statement about the RP published by Organization A,
             </t>
             <t>
-              an Entity Statement about Organization A published by Federation F.
+              an Entity Statement about Organization A published by federation F.
             </t>
           </list>
         </t>
@@ -2936,27 +2936,62 @@ Content-Type: application/json
       <section title="Generic Error Response" anchor="error_response">
         <t>
           If the request was malformed, or some error occurred during
-          processing of the request, the following standardized error format
-          SHOULD be used.
+          processing of the request,
+          the response body SHOULD be a JSON object with the content type
+          set to <spanx style="verb">application/json</spanx>.
         </t>
+        
         <t>
-          The HTTP response code MUST be something in 400/500-range, giving an
-          indication of the type of error. The response body MUST be a JSON
-          object containing the claims below,
-	  as defined in <xref target="RFC6749"/>,
-	  and the content type MUST
-          be set to <spanx style="verb">application/json</spanx>.
+          In compliance with
+          <xref target="RFC6749"/>, the following 
+          standardized error format SHOULD be used:
         </t>
+
         <t>
           <list style="hanging">
             <t hangText="error">
               <vspace/>
-              REQUIRED. The error code.
+              REQUIRED. One of the following error codes SHOULD be used.
+              
+              <list style="hanging">
+                <t hangText="invalid_request">
+                  <vspace/>
+                  The request is incomplete or does 
+                  not comply with current specifications.
+                  The HTTP response status code SHOULD be 400 (Bad Request).
+                </t>
+                <t hangText="invalid_client">
+                  <vspace/>
+                  The Client can not be authorized or is not 
+                  a valid participant of the federation.
+                  The HTTP response status code SHOULD be 401 (Unauthorized).
+                </t>
+                <t hangText="not_found">
+                  <vspace/>
+                  The requested Entity Identifier is "not found".
+                  The HTTP response status code SHOULD be 404 (Not Found).
+                </t>
+                <t hangText="server_error">
+                  <vspace/>
+                  The server encountered an unexpected
+                  condition that prevented it from fulfilling the request.
+                  The HTTP response status code SHOULD be one in the 5xx range,
+                  like 500 (Internal Server Error).
+                </t>
+                <t hangText="temporarily_unavailable">
+                  <vspace/>
+                  The server hosting the federation endpoint
+                  is currently unable to handle
+                  the request due to a temporary overloading or maintenance.
+                  The HTTP response status code SHOULD be 503 (Service Unavailable).
+                </t>
+              </list>
+              
             </t>
+            
             <t hangText="error_description">
               <vspace/>
-              REQUIRED. A human-readable short
-              text describing the error.
+              REQUIRED. A human-readable short text describing the error.
             </t>
           </list>
         </t>
@@ -5866,6 +5901,9 @@ Host: op.umu.se
           </t>
           <t>
             Fixed #1680: removal of the claim operation in Generic Errors.
+          </t>
+          <t>
+            Fixed #1669: error types in the section Generic Error Response.
           </t>
         </list>
       </t>
