@@ -1243,6 +1243,13 @@
               <xref target="resolve"/>. Any federation Entity MAY publish a
                 <spanx style="verb">federation_resolve_endpoint</spanx>.
             </t>
+            <t hangText="federation_status_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The Trust Mark status endpoint described in
+              <xref target="status_endpoint"/>. Trust mark issuers SHOULD
+              publish a <spanx style="verb">federation_status_endpoint</spanx>.
+            </t>
             <t hangText="organization_name">
               <vspace/>
               OPTIONAL. A human-readable
@@ -1277,46 +1284,14 @@
     "https://example.com/federation_fetch",
   "federation_list_endpoint":
     "https://example.com/federation_list",
+  "federation_status_endpoint": "https://example.com/status"
   "organization_name": "The example cooperation",
   "homepage_uri": "https://www.example.com"
 }
 ]]></artwork>
         </figure>
       </section>
-      <section title="Trust Mark Issuer">
-        <t>
-          The metadata type identifier is
-          <spanx style="verb">trust_mark_issuer</spanx>.
-        </t>
-        <t>
-          All entities participating in a federation may be of this type.
-        </t>
 
-        <t>
-          The following properties are allowed:
-          <list style="hanging">
-            <t hangText="federation_status_endpoint">
-              <vspace/>
-              OPTIONAL.
-              The Trust Mark status endpoint described in
-              <xref target="status_endpoint"/>. Trust mark issuers SHOULD
-              publish a <spanx style="verb">federation_status_endpoint</spanx>.
-            </t>
-          </list>
-        </t>
-        <t>Example</t>
-        <figure>
-          <artwork><![CDATA[
-"trust_mark_issuer": {
-  "federation_status_endpoint": "https://trust_marks_are_us.example.com/status"
-}
-]]></artwork>
-        </figure>
-        <t>
-          Communication with the status endpoint is described in
-          <xref target="status_endpoint"/>.
-        </t>
-      </section>
     </section>
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
@@ -6166,6 +6141,9 @@ Host: op.umu.se
           </t>
           <t>
             Fixed #1695: entity_type url paramenter for Listing endpoint. 
+          </t>
+          <t>
+            Fixed #1702: removal of metadata type trust_mark_issuer, federation_status_endpoint moved in the federation_entity metadata. 
           </t>
         </list>
       </t>
