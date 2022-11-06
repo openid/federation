@@ -1434,9 +1434,9 @@
             <xref target="RFC7591"/> <spanx style="verb">subset_of</spanx>,
             <spanx style="verb">superset_of</spanx> and
             <spanx style="verb">default</spanx> are still expressed as lists of strings.
-	    This language from <xref target="RFC6749"/> also applies for such space-separated lists of strings:
-	    "If the value contains multiple space-delimited strings, their order does not matter,
-	    and each string adds an additional access range to the requested scope."
+        This language from <xref target="RFC6749"/> also applies for such space-separated lists of strings:
+        "If the value contains multiple space-delimited strings, their order does not matter,
+        and each string adds an additional access range to the requested scope."
           </t>
         </section>
         <section title="Restrictions on Policy Entries" anchor="policy_restr">
@@ -2008,7 +2008,7 @@
             permitted claim.
           </t>
           <t>
-	    Domain name constraints are as specified in Section 4.2.1.10 of <xref target="RFC5280"/>.
+        Domain name constraints are as specified in Section 4.2.1.10 of <xref target="RFC5280"/>.
             As stated there, a domain name constraint MUST be specified as a fully qualified domain name
             and MAY specify a host or a domain. Examples are
             "host.example.com" and ".example.com". When the domain name constraint begins
@@ -2336,9 +2336,9 @@
       <t>
         Entities SHOULD make an Entity Configuration document
         available at the configuration endpoint.
-	There is only one exception to this
+    There is only one exception to this
         rule and that is for an RP that only does Explicit Registration.
-	Since it posts the Entity Configuration to the OP during client
+    Since it posts the Entity Configuration to the OP during client
         registration, the OP has everything it needs from the RP.
       </t>
       <section title="Federation Entity Configuration Request">
@@ -2822,7 +2822,24 @@ Host: openid.sunet.se
         <section title="Entity Listings Request">
           <t>
             The request MUST be an HTTP request using the GET method and
-            the https scheme to a list endpoint.
+            the https scheme to a list endpoint with the
+            following query parameters, encoded in
+            <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
+          </t>
+          <t>
+            <list style="hanging">
+              <t hangText="entity_type">
+                <vspace/>
+                OPTIONAL. If the responder knows the 
+                metadata type identifier of all its subordinates, 
+                the result MUST be filtered accordingly. 
+                If the responder does not support this feature it MUST 
+                use the HTTP status code 400 and set the content type to 
+                <spanx style="verb">application/json</spanx>, with 
+                the error code set to
+                <spanx style="verb">unsupported_parameter</spanx>.
+              </t>
+            </list>
           </t>
           <figure>
             <preamble>
@@ -3242,6 +3259,10 @@ Content-Type: application/jwk-set+jwt
                   the request due to a temporary overloading or maintenance.
                   The HTTP response status code SHOULD be 503 (Service Unavailable).
                 </t>
+                <t hangText="unsupported_parameter">
+                  <vspace/>
+                  The server does not support the requested parameter.
+                </t>
               </list>
               
             </t>
@@ -3510,7 +3531,7 @@ Content-Type: application/json
       <t>
         There are two alternative approaches to establish trust between an
         RP and an OP, which we call Automatic and Explicit Registration.
-	Members of a federation or a community
+    Members of a federation or a community
         SHOULD agree upon which one to use. While implementations should
         support both methods, deployments MAY choose to disable the use of one
         of them.
@@ -3524,25 +3545,25 @@ Content-Type: application/json
 
       <section title="Automatic Registration" anchor="automatic">
         <t>
-	  Automatic Registration enables an RP to make Authentication Requests
-	  without a prior registration step with the OP.
-	  The OP resolves the RP's Entity Configuration from the Client ID in the Authentication Request,
-	  following the process defined in <xref target="resolving_trust"/>.
+      Automatic Registration enables an RP to make Authentication Requests
+      without a prior registration step with the OP.
+      The OP resolves the RP's Entity Configuration from the Client ID in the Authentication Request,
+      following the process defined in <xref target="resolving_trust"/>.
         </t>
         <t>
           Automatic Registration has the following characteristics:
           <list style="symbols">
             <t>
-	      In all interactions with the OP, the RP employs its Entity Identifier as the Client ID.
+          In all interactions with the OP, the RP employs its Entity Identifier as the Client ID.
               The Entity Identifier is the URL from which the OP can
               fetch the RP's Entity Configuration using the process
               described in <xref target="federation_configuration"/>.
             </t>
             <t>
-	      Since there is no registration step prior to the Authentication Request,
-	      the RP cannot be supplied with a Client Secret.
-	      Instead, the Automatic Registration model requires the RP to use
-	      asymmetric cryptography to authenticate its requests.
+          Since there is no registration step prior to the Authentication Request,
+          the RP cannot be supplied with a Client Secret.
+          Instead, the Automatic Registration model requires the RP to use
+          asymmetric cryptography to authenticate its requests.
             </t>
             <t>
               The OP MUST publish that it supports a request authentication
@@ -3890,23 +3911,23 @@ HTTP/1.1 302 Found
     &state=af0ifjsldkj
 ]]></artwork>
           </figure>
-	</section>
-	<section title="Possible Other Uses of Automatic Registration" anchor="AutomaticRegistrationOtherUses">
-	  <t>
-	    Note that we anticipate that Automatic Registration could be employed
-	    for use cases beyond OpenID Connect Federation.
-	    If used with pure OAuth 2.0, for instance,
-	    Automatic Registration would occur during Authorization Requests.
-	    If for a particular such use case the client does not need to be securely identified,
-	    then the requirement for signed requests could be relaxed.
-	  </t>
+    </section>
+    <section title="Possible Other Uses of Automatic Registration" anchor="AutomaticRegistrationOtherUses">
+      <t>
+        Note that we anticipate that Automatic Registration could be employed
+        for use cases beyond OpenID Connect Federation.
+        If used with pure OAuth 2.0, for instance,
+        Automatic Registration would occur during Authorization Requests.
+        If for a particular such use case the client does not need to be securely identified,
+        then the requirement for signed requests could be relaxed.
+      </t>
         </section>
 
       </section>
       <section title="Explicit Registration" anchor="explicit">
         <t>
-	  This method involves performing an explicit registration step for a new client
-	  before the RP interacts with an OP for the first time,
+      This method involves performing an explicit registration step for a new client
+      before the RP interacts with an OP for the first time,
           similarly to the process specified by
           <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>,
           but where the client registration request contains the Entity Configuration
@@ -4172,28 +4193,28 @@ HTTP/1.1 302 Found
       </section>
 
       <section title="Differences between Automatic Registration and Explicit Registration" anchor="AutomaticVsExplicit">
-	<t>
-	  The primary differences between Automatic Registration and Explicit Registration are:
+    <t>
+      The primary differences between Automatic Registration and Explicit Registration are:
           <list style="symbols">
             <t>
-	      With Automatic Registration, there is no registration step prior to the Authentication Request,
-	      whereas with Explicit Registration, there is.
-	      (<xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>
-	      and <xref target="RFC7591">OAuth 2.0 Dynamic Client Registration</xref>)
-	      also employ a prior registration step.)
-	    </t>
-	    <t>
-	      With Automatic Registration, the Client ID value is the RP's Entity Identifier,
-	      and is supplied to the OP by the RP,
-	      whereas with Explicit Registration, a Client ID is assigned by the OP and supplied to the RP.
-	    </t>
-	    <t>
-	      Instead of using a Client Secret to authenticate the client, with Automatic Registration,
-	      the client is authenticated by means of the RP proving that it controls a private key
-	      corresponding to one of its Entity Configuration's public keys.
-	    </t>
-	  </list>
-	</t>
+          With Automatic Registration, there is no registration step prior to the Authentication Request,
+          whereas with Explicit Registration, there is.
+          (<xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>
+          and <xref target="RFC7591">OAuth 2.0 Dynamic Client Registration</xref>)
+          also employ a prior registration step.)
+        </t>
+        <t>
+          With Automatic Registration, the Client ID value is the RP's Entity Identifier,
+          and is supplied to the OP by the RP,
+          whereas with Explicit Registration, a Client ID is assigned by the OP and supplied to the RP.
+        </t>
+        <t>
+          Instead of using a Client Secret to authenticate the client, with Automatic Registration,
+          the client is authenticated by means of the RP proving that it controls a private key
+          corresponding to one of its Entity Configuration's public keys.
+        </t>
+      </list>
+    </t>
       </section>
 
       <section title="Rationale for the Trust Chain in the Request" anchor="TrustChainParamRationale">
@@ -4237,51 +4258,51 @@ HTTP/1.1 302 Found
 
     <section anchor="ClaimsLanguagesAndScripts" title="Claims Languages and Scripts">
       <t>
-	Human-readable Claim Values and Claim Values that reference human-readable values
-	MAY be represented in multiple languages and scripts.
-	This specification enables such representations in the same manner as defined in
-	Section 5.2 of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
-	The paragraphs that follow are excerpted from there.
+    Human-readable Claim Values and Claim Values that reference human-readable values
+    MAY be represented in multiple languages and scripts.
+    This specification enables such representations in the same manner as defined in
+    Section 5.2 of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
+    The paragraphs that follow are excerpted from there.
       </t>
       <t>
-	To specify the languages and scripts, <xref
-	target="RFC5646">BCP47</xref> language tags are added to member names,
-	delimited by a <spanx style="verb">#</spanx> character.  For example,
-	<spanx style="verb">family_name#ja-Kana-JP</spanx> expresses the
-	Family Name in Katakana in Japanese, which is commonly used to index
-	and represent the phonetics of the Kanji representation of the same
-	represented as <spanx style="verb">family_name#ja-Hani-JP</spanx>.
-	As another example, both <spanx style="verb">website</spanx> and
-	<spanx style="verb">website#de</spanx> Claim Values might be returned,
-	referencing a Web site in an unspecified language and a Web site
-	in German.
+    To specify the languages and scripts, <xref
+    target="RFC5646">BCP47</xref> language tags are added to member names,
+    delimited by a <spanx style="verb">#</spanx> character.  For example,
+    <spanx style="verb">family_name#ja-Kana-JP</spanx> expresses the
+    Family Name in Katakana in Japanese, which is commonly used to index
+    and represent the phonetics of the Kanji representation of the same
+    represented as <spanx style="verb">family_name#ja-Hani-JP</spanx>.
+    As another example, both <spanx style="verb">website</spanx> and
+    <spanx style="verb">website#de</spanx> Claim Values might be returned,
+    referencing a Web site in an unspecified language and a Web site
+    in German.
       </t>
       <t>
-	Since Claim Names are case sensitive, it is strongly RECOMMENDED
-	that language tag values used in Claim Names be spelled using the
-	character case with which they are registered in the
-	IANA "Language Subtag Registry" <xref target="IANA.Language"/>.
-	In particular, normally language names are spelled with lowercase characters,
-	region names are spelled with uppercase characters, and
-	scripts are spelled with mixed case characters.
-	However, since BCP47 language tag values are case insensitive,
-	implementations SHOULD interpret the language tag values supplied
-	in a case-insensitive manner.
+    Since Claim Names are case sensitive, it is strongly RECOMMENDED
+    that language tag values used in Claim Names be spelled using the
+    character case with which they are registered in the
+    IANA "Language Subtag Registry" <xref target="IANA.Language"/>.
+    In particular, normally language names are spelled with lowercase characters,
+    region names are spelled with uppercase characters, and
+    scripts are spelled with mixed case characters.
+    However, since BCP47 language tag values are case insensitive,
+    implementations SHOULD interpret the language tag values supplied
+    in a case-insensitive manner.
       </t>
       <t>
-	Per the recommendations in BCP47, language tag values for Claims
-	SHOULD only be as specific as necessary.
-	For instance, using <spanx style="verb">fr</spanx> might be sufficient
-	in many contexts, rather than <spanx style="verb">fr-CA</spanx> or
-	<spanx style="verb">fr-FR</spanx>.
-	Where possible, OPs SHOULD try to match requested Claim locales with
-	Claims it has.  For instance, if the Client asks for a Claim with
-	a <spanx style="verb">de</spanx> (German) language tag and the OP
-	has a value tagged with <spanx style="verb">de-CH</spanx> (Swiss German)
-	and no generic German value, it would be appropriate for the OP
-	to return the Swiss German value to the Client.
-	(This intentionally moves as much of the complexity of language tag
-	matching to the OP as possible, to simplify Clients.)
+    Per the recommendations in BCP47, language tag values for Claims
+    SHOULD only be as specific as necessary.
+    For instance, using <spanx style="verb">fr</spanx> might be sufficient
+    in many contexts, rather than <spanx style="verb">fr-CA</spanx> or
+    <spanx style="verb">fr-FR</spanx>.
+    Where possible, OPs SHOULD try to match requested Claim locales with
+    Claims it has.  For instance, if the Client asks for a Claim with
+    a <spanx style="verb">de</spanx> (German) language tag and the OP
+    has a value tagged with <spanx style="verb">de-CH</spanx> (Swiss German)
+    and no generic German value, it would be appropriate for the OP
+    to return the Swiss German value to the Client.
+    (This intentionally moves as much of the complexity of language tag
+    matching to the OP as possible, to simplify Clients.)
       </t>
     </section>
 
@@ -4992,7 +5013,7 @@ HTTP/1.1 302 Found
           <author>
             <organization>IANA</organization>
           </author>
-	  <date/>
+      <date/>
         </front>
       </reference>
 
@@ -6126,7 +6147,7 @@ Host: op.umu.se
         Marcos Sanz,
         Peter Schober,
         Michael Schwartz,
-	Kristina Yasuda,
+    Kristina Yasuda,
         and
         the JRA3T3 task force of GEANT4-2.
       </t>
@@ -6146,6 +6167,9 @@ Host: op.umu.se
           </t>
           <t>
             Fixed #1701: removed recommendation of PAR and JAR for the trust_chain parameter.
+          </t>
+          <t>
+            Fixed #1695: entity_type url paramenter for Listing endpoint. 
           </t>
         </list>
       </t>
@@ -6183,9 +6207,9 @@ Host: op.umu.se
           <t>
             Fixed #1669: error types in the section Generic Error Response.
           </t>
-	  <t>
-	    Added Vladimir Dzhuvinov as an editor.
-	  </t>
+      <t>
+        Added Vladimir Dzhuvinov as an editor.
+      </t>
         </list>
       </t>
 
@@ -6243,9 +6267,9 @@ Host: op.umu.se
           <t>
             Fixed #1588: Explicitly described the differences between Automatic and Explicit Registration.
           </t>
-	  <t>
-	    Fixed #1606: Described situation in which the requirement for signed requests with Automatic Registration could be relaxed.
-	  </t>
+      <t>
+        Fixed #1606: Described situation in which the requirement for signed requests with Automatic Registration could be relaxed.
+      </t>
           <t>
             Fixed #1629: authz request object, audience explanatory text.
           </t>
@@ -6255,7 +6279,7 @@ Host: op.umu.se
           <t>
             Fixed #1608: submission of the Trust Chain in the Explicit Client Registration Request.
           </t>
-	</list>
+    </list>
       </t>
 
       <t>
@@ -6289,12 +6313,12 @@ Host: op.umu.se
         Fixed #1535: Removed the sub claim from the non-normative example of the Authorization Request Object.
       </t>
       <t>
-	Fixed #1528: Added Claims Languages and Scripts section.
+    Fixed #1528: Added Claims Languages and Scripts section.
       </t>
       <t>
-	Fixed #1456: Added language about space-delimited string parameters from RFC 6749.
+    Fixed #1456: Added language about space-delimited string parameters from RFC 6749.
       </t>
-	</list>
+    </list>
       </t>
 
       <t>
