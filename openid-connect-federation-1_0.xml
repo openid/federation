@@ -4891,6 +4891,18 @@ HTTP/1.1 302 Found
         collection (Federation Entity Discovery process) and evaluation of Trust Chains.
       </t>
     </section>
+    <section title="Unsigned Error Messages" anchor="UnsignedError">
+      <t>
+	One of the fundamental design goals of this protocol is to
+	protect messages end-to-end. This can not be accomplished by demanding
+	TLS since TLS, in lots of cases, is not end-to-end but ends in a HTTPS
+	to HTTP Reverse Proxy.
+	Allowing unsigned error messages therefore opens up an attack
+	vector for someone who wants to run a Denial of Service attack.
+	This is not specific to OpenID Connect Federation but equally valid for
+	other protocols when HTTPS to HTTP reverse proxies are used.
+      </t>
+    </section>
     </section>
   </middle>
 
@@ -6149,6 +6161,9 @@ Host: op.umu.se
         <list style="symbols">
           <t>
             Fixed #1684: disambiguation on the role federation_entity.
+          </t>
+	  <t>
+            Fixed #1703: Unsigned error response
           </t>
           <t>
             Fixed #1693: Trust mark status endpoint HTTP method changed to POST.
