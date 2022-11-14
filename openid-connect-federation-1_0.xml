@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Connect Federation">OpenID Connect Federation 1.0 -
-      draft 24
+      draft 25
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -77,7 +77,17 @@
       </address>
     </author>
 
-    <date day="3" month="October" year="2022"/>
+    <author fullname="Vladimir Dzhuvinov" initials="V." surname="Dzhuvinov">
+      <organization>Connect2id</organization>
+
+      <address>
+        <email>vladimir@connect2id.com</email>
+
+        <uri>https://twitter.com/dzhuvi</uri>
+      </address>
+    </author>
+
+    <date day="9" month="November" year="2022"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -236,20 +246,23 @@
         signed <xref target="RFC7519">JSON Web Token (JWT)</xref>.
         
         A set of Entity Statements can form a path from a Leaf Entity to
-        a Trust Anchor. 
+        a Trust Anchor. Entity Configurations
+        issued by Entities about themselves control the Trust Chain
+        resolution process.
       </t>
       <t>
-        The Entity Configurations of the Leaf Entities contain reference to
+        The Entity Configuration of the Leaf Entities contains reference to
         the next level of the path, a parameter that shows where
-        the superior Entity Configurations is available to download
+        the superior Entity Configuration is available to download
         (<xref target="authority_hints">authority_hints</xref>).
         One or more Entity Configurations can occur until the Trust Anchor is reached. 
-        
+      </t>
+      <t>
         The Trust Anchor and its intermediaries issues Entity Statements
         about their descendants. The sequence of Entity Configurations 
         and Entity Statements that validate the relationship between 
-        a superior and a descendant along a path towards the Trust Anchor 
-        form the elements can prove that a Leaf Entity is part of
+        a superior and a descendant, along a path towards the Trust Anchor,
+        form the prove that a Leaf Entity is part of
         the Federation configured by the Trust Anchor.
       </t>
       <t>
@@ -340,8 +353,8 @@
               Entity's signing keys. The corresponding private key is
               used by Leaf Entities to sign Entity Statements about themselves,
               and intermediate entities to sign statements about other entities.
-              The keys that can be found here are intended to sign
-              Entity Statements and SHOULD NOT be used in other protocols. Keys
+              The keys that can be found here are intended to verify the signature of the
+              issued Entity Statements and Trust Marks and SHOULD NOT be used in other protocols. Keys
               to be used in other protocols, such as OpenID Connect, are conveyed
               in the  <spanx style="verb">metadata</spanx> element of the respective Entity Statement.
               This claim is only OPTIONAL for the Entity Statement returned
@@ -477,10 +490,20 @@
             <t hangText="trust_marks">
               <vspace/>
               OPTIONAL. A JSON array of objects, each representing
-              a Trust Mark. Each object contains two claims:
+              a Trust Mark.  
+              
+              Each JSON object MUST contain the following two claims 
+              and MAY contain other claims if needed. All the claims in the 
+              JSON object MUST have the same values as those 
+              contained in the Trust Mark JSON Web Token.
+              
               <list style="hanging">
                 <t hangText="id">
-                  The Trust Mark identifier
+                  The Trust Mark unique identifier. 
+                  It MUST be the same value as the 
+                  <spanx style="verb">id</spanx>
+                  claim contained in the 
+                  Trust Mark JSON Web Token.
                 </t>
                 <t hangText="trust_mark">
                   A signed JSON Web Token that represents a Trust Mark.
@@ -516,11 +539,20 @@
         <t>
           The Entity Statement is signed using the private key of the issuer
           Entity, in the form of a <xref target="RFC7515">JSON Web Signature
+<<<<<<< HEAD
           (JWS)</xref>. Entities MUST support signing Entity Statements with
           the RSA SHA-256 algorithm (an <spanx style="verb">alg</spanx>
           value of <spanx style="verb">RS256</spanx>). Consequently,
           entities MUST support signature verification where the statement was
           signed using RS256.
+=======
+          (JWS)</xref>. 
+          Implementations SHOULD support signature verification with 
+          the RSA SHA-256 algorithm because OpenID Connect Core 
+          requires support for it (<spanx style="verb">alg</spanx>
+          value of <spanx style="verb">RS256</spanx>).
+          Federations MAY also specify different mandatory-to-implement algorithms.
+>>>>>>> master
         </t>
 
                       <figure>
@@ -635,11 +667,11 @@
         </t>
         <t>
           If present, the Trust Anchor's Entity Configuration
-          at the end of the chain contains configuration of the Federation,
+          at the end of the chain contains configuration of the federation,
           such as the public keys of the Trust Anchor and other parameters
           considered within the trust evaluation.
           When this is this case, the Trust Chain
-          consequentially contains the configuration of the Federation
+          consequentially contains the configuration of the federation
           at the date of the evaluation of the chain.
         </t>
         <t>
@@ -654,7 +686,7 @@
               an Entity Statement about the RP published by Organization A,
             </t>
             <t>
-              an Entity Statement about Organization A published by Federation F.
+              an Entity Statement about Organization A published by federation F.
             </t>
           </list>
         </t>
@@ -739,7 +771,8 @@
               OPTIONAL. A human-readable
               name representing the organization owning the Entity.
               If the owner is a physical person
-              this MAY be, for example, the name of a person.
+              this MAY be, for example, the name of a person. Note 
+              that this information will be publicly available.
             </t>
             <t hangText="signed_jwks_uri">
               <vspace/>
@@ -1201,7 +1234,9 @@
           <spanx style="verb">federation_entity</spanx>.
         </t>
         <t>
-          All entities participating in a federation are of this type.
+          All Entities in a federation MAY expose this metadata type. 
+          The Entities that expose federation API endpoints 
+          MUST expose this metadata type. 
         </t>
         <t>
           The following properties are allowed:
@@ -1231,12 +1266,23 @@
               <xref target="resolve"/>. Any federation Entity MAY publish a
                 <spanx style="verb">federation_resolve_endpoint</spanx>.
             </t>
+            <t hangText="federation_trust_mark_status_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The Trust Mark status endpoint described in
+              <xref target="status_endpoint"/>. Trust mark issuers SHOULD
+              publish a 
+              <spanx style="verb">federation_trust_mark_status_endpoint</spanx>.
+            </t>
             <t hangText="organization_name">
               <vspace/>
               OPTIONAL. A human-readable
-              name representing the organization owning the federation Entity.
+              name representing the organization owning the Entity.
               If the owner is a physical person
-              this MAY be, for example, the name of a person.
+              this MAY be, for example, the name of a person. Note
+              that this information will be publicly available.
+              It is RECOMMENDED that each federation Entity 
+              expose this claim.
             </t>
             <t hangText="contacts">
               <vspace/>
@@ -1244,6 +1290,12 @@
               strings representing contact persons at the Entity.
               These MAY contain names, e-mail addresses, descriptions, phone
               numbers, etc.
+            </t>
+            <t hangText="logo_uri">
+              <vspace/>
+              OPTIONAL. String. A URL that points to the logo of this Entity.
+              The file containing the logo SHOULD be published 
+              in a format that can be viewed via the web.
             </t>
             <t hangText="policy_uri">
               <vspace/>
@@ -1265,46 +1317,14 @@
     "https://example.com/federation_fetch",
   "federation_list_endpoint":
     "https://example.com/federation_list",
+  "federation_trust_mark_status_endpoint": "https://example.com/status"
   "organization_name": "The example cooperation",
   "homepage_uri": "https://www.example.com"
 }
 ]]></artwork>
         </figure>
       </section>
-      <section title="Trust Mark Issuer">
-        <t>
-          The metadata type identifier is
-          <spanx style="verb">trust_mark_issuer</spanx>.
-        </t>
-        <t>
-          All entities participating in a federation may be of this type.
-        </t>
 
-        <t>
-          The following properties are allowed:
-          <list style="hanging">
-            <t hangText="federation_status_endpoint">
-              <vspace/>
-              OPTIONAL.
-              The Trust Mark status endpoint described in
-              <xref target="status_endpoint"/>. Trust mark issuers SHOULD
-              publish a <spanx style="verb">federation_status_endpoint</spanx>.
-            </t>
-          </list>
-        </t>
-        <t>Example</t>
-        <figure>
-          <artwork><![CDATA[
-"trust_mark_issuer": {
-  "federation_status_endpoint": "https://trust_marks_are_us.example.com/status"
-}
-]]></artwork>
-        </figure>
-        <t>
-          Communication with the status endpoint is described in
-          <xref target="status_endpoint"/>.
-        </t>
-      </section>
     </section>
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
@@ -1422,9 +1442,9 @@
             <xref target="RFC7591"/> <spanx style="verb">subset_of</spanx>,
             <spanx style="verb">superset_of</spanx> and
             <spanx style="verb">default</spanx> are still expressed as lists of strings.
-	    This language from <xref target="RFC6749"/> also applies for such space-separated lists of strings:
-	    "If the value contains multiple space-delimited strings, their order does not matter,
-	    and each string adds an additional access range to the requested scope."
+        This language from <xref target="RFC6749"/> also applies for such space-separated lists of strings:
+        "If the value contains multiple space-delimited strings, their order does not matter,
+        and each string adds an additional access range to the requested scope."
           </t>
         </section>
         <section title="Restrictions on Policy Entries" anchor="policy_restr">
@@ -1996,7 +2016,7 @@
             permitted claim.
           </t>
           <t>
-	    Domain name constraints are as specified in Section 4.2.1.10 of <xref target="RFC5280"/>.
+        Domain name constraints are as specified in Section 4.2.1.10 of <xref target="RFC5280"/>.
             As stated there, a domain name constraint MUST be specified as a fully qualified domain name
             and MAY specify a host or a domain. Examples are
             "host.example.com" and ".example.com". When the domain name constraint begins
@@ -2057,7 +2077,18 @@
               </t>
               <t hangText="id">
                 <vspace/>
-                REQUIRED. String. An identifier of the Trust Mark.
+                REQUIRED. String. An identifier of the Trust Mark. 
+                The Trust Mark <spanx style="verb">id</spanx>
+                MUST be collision-resistant 
+                across multiple federations.
+                It is RECOMMENDED that the
+                <spanx style="verb">id</spanx>
+                value is built 
+                using the unique URL that uniquely identifies the federation, 
+                or the trust framework, 
+                within which it was issued. This is required to prevent
+                Trust Marks issued in different federations 
+                from having colliding identifiers.
               </t>
               <t hangText="iat">
                 <vspace/>
@@ -2101,7 +2132,7 @@
             Note that the Entity representing the accreditation authority
             SHOULD be well known and trusted for a given Trust Mark identifier.
             A Trust Anchor MAY publish a list of accreditation authorities
-            of Trust Marks that SHOULD be trusted by other federation entities.
+            of Trust Marks that SHOULD be trusted by other Entities.
             A Trust Anchor uses the <spanx style="verb">trust_marks_issuers</spanx> claim
             in its Entity Configuration to publish this information.
           </t>
@@ -2114,7 +2145,9 @@
         </section>
         <section title="Trust Mark Examples" anchor="trust_example">
           <figure>
-            <preamble>A non-normative example of a Trust Mark claim inside an Entity Configuration is:</preamble>
+            <preamble>
+                A non-normative example of a Trust Mark claim inside an Entity Configuration is:
+            </preamble>
             <artwork><![CDATA[
 {
   "iss": "https://rp.example.it/spid/",
@@ -2126,20 +2159,18 @@
      "id": "https://www.spid.gov.it/certification/rp/",
      "trust_mark":
         "eyJraWQiOiJmdWtDdUtTS3hwWWJjN09lZUk3Ynlya3N5a0E1bDhPb2RFSXVyOH"
-        "JoNFlBIiwidHlwIjoidHJ1c3QtbWFyaytqd3QiLCJhbGciOiJSUzI1NiJ9.e"
-        "yJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8"
-        "vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJpZCI6Imh0d"
-        "HBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJsb2dvX3V"
-        "yaSI6Imh0dHBzOi8vd3d3LmFnaWQuZ292Lml0L3RoZW1lcy9jdXN0b20vYWdpZ"
-        "C9sb2dvLnN2ZyIsInJlZiI6Imh0dHBzOi8vZG9jcy5pdGFsaWEuaXQvZG9jcy9"
-        "zcGlkLWNpZS1vaWRjLWRvY3MvaXQvdmVyc2lvbmUtY29ycmVudGUvIn0.AGf5Y"
-        "4MoJt22rznH4i7Wqpb2EF2LzE6BFEkTzY1dCBMCK-"
-        "8P_vj4Boz7335pUF45XXr2jx5_waDRgDoS5vOO-wfc0NWb4Zb_T1RCwcryrzV0"
-        "z3jJICePMPM_1hZnBZjTNQd4EsFNvKmUo_teR2yzAZjguR2Rid30O5PO8kJtGa"
-        "XDmz-"
-        "rWaHbmfLhlNGJnqcp9Lo1bhkU_4Cjpn2bdX7RN0JyfHVY5IJXwdxUMENxZd-"
-        "VtA5QYiw7kPExT53XcJO89ebe_ik4D0dl-"
-        "vINwYhrIz2RPnqgA1OdbK7jg0vm8Tb3aemRLG7oLntHwqLO-"
+        "JoNFlBIiwidHlwIjoidHJ1c3QtbWFyaytqd3QiLCJhbGciOiJSUzI1NiJ9.eyJ"
+        "pc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vc"
+        "nAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJpZCI6Imh0dHB"
+        "zOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJsb2dvX3Vya"
+        "SI6Imh0dHBzOi8vd3d3LmFnaWQuZ292Lml0L3RoZW1lcy9jdXN0b20vYWdpZC9"
+        "sb2dvLnN2ZyIsInJlZiI6Imh0dHBzOi8vZG9jcy5pdGFsaWEuaXQvZG9jcy9zc"
+        "GlkLWNpZS1vaWRjLWRvY3MvaXQvdmVyc2lvbmUtY29ycmVudGUvIn0.AGf5Y4M"
+        "oJt22rznH4i7Wqpb2EF2LzE6BFEkTzY1dCBMCK-8P_vj4Boz7335pUF45XXr2j"
+        "x5_waDRgDoS5vOO-wfc0NWb4Zb_T1RCwcryrzV0z3jJICePMPM_1hZnBZjTNQd"
+        "4EsFNvKmUo_teR2yzAZjguR2Rid30O5PO8kJtGaXDmz-rWaHbmfLhlNGJnqcp9"
+        "Lo1bhkU_4Cjpn2bdX7RN0JyfHVY5IJXwdxUMENxZd-VtA5QYiw7kPExT53XcJO"
+        "89ebe_ik4D0dl-vINwYhrIz2RPnqgA1OdbK7jg0vm8Tb3aemRLG7oLntHwqLO-"
         "gGYr6evM2_SgqwA0lQ9mB9yhw"
     }
   ],
@@ -2278,7 +2309,7 @@
             title="Obtaining Federation Entity Configuration Information"
             anchor="federation_configuration">
       <t>
-        The Entity Configuration of every federation Entity SHOULD be exposed at a well-known endpoint.
+        The Entity Configuration of every participant SHOULD be exposed at a well-known endpoint.
         The configuration endpoint is found using the
         <xref target="RFC8615">Well-Known URIs</xref>
         specification, with the suffix
@@ -2311,16 +2342,16 @@
         (even though this violates <xref target="RFC8615"/>).
       </t>
       <t>
-        Federation Entities SHOULD make an Entity Configuration Document
+        Entities SHOULD make an Entity Configuration document
         available at the configuration endpoint.
-	There is only one exception to this
+    There is only one exception to this
         rule and that is for an RP that only does Explicit Registration.
-	Since it posts the Entity Configuration to the OP during client
+    Since it posts the Entity Configuration to the OP during client
         registration, the OP has everything it needs from the RP.
       </t>
       <section title="Federation Entity Configuration Request">
         <t>
-          A federation Entity Configuration Document MUST be queried using an
+          An Entity Configuration document MUST be queried using an
           HTTP GET request at the previously specified path.
           The requesting party would make the following request to the Entity
           <spanx style="verb">https://openid.sunet.se</spanx>
@@ -2340,7 +2371,8 @@
         <t>The response is an Entity Configuration, as described in
           <xref target="entity-statement"/>.
           If the Entity is an intermediate Entity or a Trust Anchor, the
-          response MUST contain metadata for a federation Entity.
+          response MUST contain metadata for a federation Entity
+          (<spanx style="verb">federation_entity</spanx>).
         </t>
         <t>
           A successful response MUST use the HTTP status code 200 
@@ -2670,7 +2702,7 @@ Host: openid.sunet.se
               <t hangText="trust_marks">
                 <vspace/>
                 OPTIONAL. A JSON array of objects, each representing a Trust Mark, 
-                as defined in <xref target="entity-statement"></xref>.
+                as defined in <xref target="entity-statement"/>.
               </t>
               <t hangText="trust_chain">
                 <vspace/>
@@ -2682,11 +2714,13 @@ Host: openid.sunet.se
               </t>
             </list>
           </t>
+          
           <t>
             Other claims MAY be used in conjunction with the claims outlined above.
             The claim naming recommendations outlined in Section 5.1.2 of
         <xref target="OpenID.Core">OpenID Connect Core 1.0</xref> apply.
-
+          </t>
+          
           <t>
           If the response is negative, the response 
           SHOULD be produced in accordance with what is defined in
@@ -2765,18 +2799,23 @@ Host: openid.sunet.se
 ]]></artwork>
           </figure>
         </section>
+
         <section title="Considerations">
-          <t>The basic assumption of this specification
-            is that you should trust no one except the Trust Anchor and your
-            own capabilities.
-            NOTE: The security trust model changes when using this service.
-            If a party uses this service to obtain federation data, it trusts
-            the resolver to perform the validation of the cryptographically
-            protected metadata correctly and to provide it with authentic results.</t>
           <t>
-            You can, of course, use the service as a recommendation. A way to
-            get a quick response, a hint, that you can use as the basis for
-            going forward or not.</t>
+            The basic assumption of this specification is that an entity 
+            should have direct trust in no one except the Trust Anchor 
+            and its own capabilities. 
+            
+            However, Entities may establish a kind of
+            transistive trust in other entities. For example, the 
+            Trust Anchor states who its subordinates are
+            and Entities may choose to trust these.
+            
+            If a party uses the resolve service of another Entity
+            to obtain federation data, it is trusting
+            the resolver to perform the validation of the cryptographically
+            protected metadata correctly and to provide it with authentic results.
+          </t>
         </section>
       </section>
 
@@ -2791,7 +2830,24 @@ Host: openid.sunet.se
         <section title="Entity Listings Request">
           <t>
             The request MUST be an HTTP request using the GET method and
-            the https scheme to a list endpoint.
+            the https scheme to a list endpoint with the
+            following query parameters, encoded in
+            <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
+          </t>
+          <t>
+            <list style="hanging">
+              <t hangText="entity_type">
+                <vspace/>
+                OPTIONAL. If the responder knows the 
+                metadata type identifier of all its subordinates, 
+                the result MUST be filtered accordingly. 
+                If the responder does not support this feature it MUST 
+                use the HTTP status code 400 and set the content type to 
+                <spanx style="verb">application/json</spanx>, with 
+                the error code set to
+                <spanx style="verb">unsupported_parameter</spanx>.
+              </t>
+            </list>
           </t>
           <figure>
             <preamble>
@@ -2842,11 +2898,11 @@ Content-Type: application/json
           This is to allow an Entity to check whether a Trust Mark is still
           active or not. The query MUST be sent to the Trust Mark issuer.
         </t>
-        <section title="Status request">
+        <section title="Status Request">
           <t>
-            The request MUST be an HTTP request using the GET method and
+            The request MUST be an HTTP request using the POST method and
             the https scheme to a status endpoint with the
-            following query parameters, encoded in
+            following parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
           <t>
@@ -2889,7 +2945,7 @@ Content-Type: application/json
                 <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>:
               </preamble>
               <artwork><![CDATA[
-GET /federation_status_endpoint?
+GET /federation_trust_mark_status_endpoint?
 sub=https%3A%2F%2Fopenid.sunet.se%2FRP
 &id=https%3A%2F%2Frefeds.org%2Fsirtfi
 HTTP/1.1
@@ -2940,30 +2996,288 @@ Content-Type: application/json
         </section>
       </section>
 
+      <section title="Federation Historical Keys endpoint">
+          <t>
+            The Trust Anchor MAY publish its expired 
+            federation public keys at the endpoint 
+            <spanx style="verb">
+                /.well-known/openid-federation-historical-jwks
+            </spanx>.
+            
+            The purpose of this endpoint is to provide 
+            the list of keys previously used by the Trust Anchor
+            in order to provide non-repudiation of statements signed by 
+            the Trust Anchor after key rotation.
+
+            The historical keys of the Trust Anchor 
+            guarantees participants the verifiability of the Trust Chains 
+            even when the federation keys are changed.
+          </t>
+
+      
+      <section title="Federation Historical Keys Request">
+        <t>
+            The request MUST be an HTTP request using the GET method and
+            the https scheme to the well known endpoint 
+            <spanx style="verb">openid-federation-historical-jwks</spanx>.
+          </t>
+          <figure>
+            <preamble>
+              The following is a non-normative example of a
+              request:
+            </preamble>
+            <artwork><![CDATA[
+GET /.well-known/openid-federation-historical-jwks HTTP/1.1
+Host: trust-anchor.example.com
+]]></artwork>
+          </figure>
+      </section>
+
+      <section title="Federation Historical Keys Response">
+          <t>
+            A successful response MUST use the HTTP status code 200 
+            and the content type set to 
+            <spanx style="verb">application/jwk-set+jwt</spanx>.
+            The response is a signed JWT containing the following 
+            paramenters:
+          </t>
+          
+          <t>
+          <list style="hanging">
+              <t hangText="iss">
+                <vspace/>
+                REQUIRED. String. 
+                URL corresponding to the Trust Anchor Entity Identifier.
+              </t>
+              <t hangText="iat">
+                <vspace/>
+                REQUIRED. Number. When the signed JWT was issued,
+                using the time format defined for the 
+                <spanx style="verb">iat</spanx> claim in
+                <xref target="RFC7519"/>.
+              </t>
+              <t hangText="jwks">
+                  <vspace/>
+                  REQUIRED. A
+                  <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
+                  representing the public part of the Trust Anchor signing keys. 
+                  
+                  <t>
+                    The JWK Set in the <spanx style="verb">jwks</spanx> claim,
+                    in addition to what is defined in 
+                    <xref target="RFC7517"> JSON Web Key Set (JWKS)</xref>
+                    also adopts the following claims:
+                  </t>
+                  
+                  <t>
+                    <list style="hanging">
+                      <t hangText="kid">
+                        <vspace/>
+                        REQUIRED. Parameter is used to match a specific key.
+                        It is RECOMMENDED that the Key ID be the 
+                        JWK Thumbprint <xref target="RFC7638"/> using 
+                        the SHA-256 hash function of the key.
+                      </t>
+                      <t hangText="iat">
+                        <vspace/>
+                        REQUIRED. Time at which the JWK was issued,
+                        using the time format defined for the 
+                        <spanx style="verb">iat</spanx> claim in
+                        <xref target="RFC7519"/>.
+                      </t>
+                      <t hangText="exp">
+                        <vspace/>
+                        REQUIRED. Expiration time, 
+                        using the time format defined for the 
+                        <spanx style="verb">exp</spanx> claim in
+                        <xref target="RFC7519"/>.
+                         on or after which the JWK MUST NOT be considered as valid.
+                      </t>
+                    </list>
+                  </t>
+                  
+              </t>
+          </list>
+        </t>
+
+          <figure>
+            <preamble>
+              The following is a non-normative example of a response, before serialization and adding a signature:
+            </preamble>
+            <artwork><![CDATA[
+HTTP/1.1 200 OK
+Content-Type: application/jwk-set+jwt
+
+{
+    "iss": "https://trust-anchor.federation.example.com",
+    "iat": 123972394272,
+    "keys":
+        [
+            {
+                "kty":"RSA",
+                "n":"5s4qi …",
+                "e":"AQAB",
+                "kid":"2HnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMEEs",
+                "iat": 123972394872,
+                "exp": 123974395972
+            },
+            {
+                "kty":"RSA",
+                "n":"ng5jr …",
+                "e":"AQAB",
+                "kid":"8KnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMJJr",
+                "iat": 123972394872,
+                "exp": 123974394972
+            }
+        ]
+}
+]]></artwork>
+          </figure>
+        
+      </section>
+      
+      <section  title="Rationale for the Federation Historical Keys endpoint">
+<!--
+  introduce the problem
+-->
+        <t>
+            The Federation Historical Keys endpoint 
+            solves the problem of verifying historical 
+            Trust Chains when the Trust Anchor Federation Entity Keys
+            are changed. 
+        </t>
+
+<!--
+  describe the concept
+-->
+        <t>
+             The Federation Historical Keys endpoint 
+             publishes the list of public keys used in the past by Trust Anchor.
+             The given public keys are needed by all the Entities 
+             to verify the Trust Chains evaluated in the past with the
+             Federation Entity Keys not published anymore in the Trust Anchor's
+             Entity Configuration.
+        </t>
+
+<!--
+  give the technical details.
+-->
+        <t>
+            Federation Historical Keys endpoint response contains a signed JWT 
+            that attests all the expired Trust Anchor Keys.
+        </t>
+
+<!--
+  more technical details.
+-->
+        <t>
+            On the basis of the attributes contained in the Entity Statements 
+            that form a Trust Chain, it MAY be also possible to verify 
+            the non-federation public keys used in the past by a Leaf for the 
+            signature operations related to the OpenID Connect 
+            requests and responses.
+            For example an Entity Statement issued for a Leaf
+            MAY also include the 
+            <spanx style="verb">jwks</spanx> claim, 
+            respectively in the claims
+            <spanx style="verb">metadata</spanx> or 
+            <spanx style="verb">metadata_policy</spanx>. 
+            
+            <t>
+              A simple example: In the following Trust Chain the 
+              Federation Intermediary attests the Leaf's OpenID Connect 
+              <spanx style="verb">jwks</spanx>
+              in the Entity Statement issued for the Leaf. The result is 
+              a Trust Chain that contains the Leaf's OIDC Core jwks, 
+              needed to verify historical signature on 
+              request objects, ID Tokens and any other signed JWT issued by the Leaf, 
+              if it is an RP or an OP.
+              
+              <list style="numbers">
+                <t>
+                  an Entity Configuration about the RP published by the RP,
+                </t>
+                <t>
+                  an Entity Statement about the RP published by Organization A,
+                  with the claim <spanx style="verb">jwks</spanx> contained in
+                  <spanx style="verb">metadata</spanx> or 
+                  <spanx style="verb">metadata_policy</spanx> attesting the 
+                  Leaf's OpenID Core <spanx style="verb">jwks</spanx>.
+                </t>
+                <t>
+                  an Entity Statement about Organization A published by Federation F.
+                </t>
+              </list>
+            </t>
+            
+        </t>
+      </section>
+      
+      </section>
+      
       <section title="Generic Error Response" anchor="error_response">
         <t>
           If the request was malformed, or some error occurred during
-          processing of the request, the following standardized error format
-          SHOULD be used.
+          processing of the request,
+          the response body SHOULD be a JSON object with the content type
+          set to <spanx style="verb">application/json</spanx>.
         </t>
+        
         <t>
-          The HTTP response code MUST be something in 400/500-range, giving an
-          indication of the type of error. The response body MUST be a JSON
-          object containing the claims below,
-	  as defined in <xref target="RFC6749"/>,
-	  and the content type MUST
-          be set to <spanx style="verb">application/json</spanx>.
+          In compliance with
+          <xref target="RFC6749"/>, the following 
+          standardized error format SHOULD be used:
         </t>
+
         <t>
           <list style="hanging">
             <t hangText="error">
               <vspace/>
-              REQUIRED. The error code.
+              REQUIRED. One of the following error codes SHOULD be used.
+              
+              <list style="hanging">
+                <t hangText="invalid_request">
+                  <vspace/>
+                  The request is incomplete or does 
+                  not comply with current specifications.
+                  The HTTP response status code SHOULD be 400 (Bad Request).
+                </t>
+                <t hangText="invalid_client">
+                  <vspace/>
+                  The Client can not be authorized or is not 
+                  a valid participant of the federation.
+                  The HTTP response status code SHOULD be 401 (Unauthorized).
+                </t>
+                <t hangText="not_found">
+                  <vspace/>
+                  The requested Entity Identifier is "not found".
+                  The HTTP response status code SHOULD be 404 (Not Found).
+                </t>
+                <t hangText="server_error">
+                  <vspace/>
+                  The server encountered an unexpected
+                  condition that prevented it from fulfilling the request.
+                  The HTTP response status code SHOULD be one in the 5xx range,
+                  like 500 (Internal Server Error).
+                </t>
+                <t hangText="temporarily_unavailable">
+                  <vspace/>
+                  The server hosting the federation endpoint
+                  is currently unable to handle
+                  the request due to a temporary overloading or maintenance.
+                  The HTTP response status code SHOULD be 503 (Service Unavailable).
+                </t>
+                <t hangText="unsupported_parameter">
+                  <vspace/>
+                  The server does not support the requested parameter.
+                </t>
+              </list>
+              
             </t>
+            
             <t hangText="error_description">
               <vspace/>
-              REQUIRED. A human-readable short
-              text describing the error.
+              REQUIRED. A human-readable short text describing the error.
             </t>
           </list>
         </t>
@@ -3225,7 +3539,7 @@ Content-Type: application/json
       <t>
         There are two alternative approaches to establish trust between an
         RP and an OP, which we call Automatic and Explicit Registration.
-	Members of a federation or a community
+    Members of a federation or a community
         SHOULD agree upon which one to use. While implementations should
         support both methods, deployments MAY choose to disable the use of one
         of them.
@@ -3239,25 +3553,25 @@ Content-Type: application/json
 
       <section title="Automatic Registration" anchor="automatic">
         <t>
-	  Automatic Registration enables an RP to make Authentication Requests
-	  without a prior registration step with the OP.
-	  The OP resolves the RP's Entity Configuration from the Client ID in the Authentication Request,
-	  following the process defined in <xref target="resolving_trust"/>.
+      Automatic Registration enables an RP to make Authentication Requests
+      without a prior registration step with the OP.
+      The OP resolves the RP's Entity Configuration from the Client ID in the Authentication Request,
+      following the process defined in <xref target="resolving_trust"/>.
         </t>
         <t>
           Automatic Registration has the following characteristics:
           <list style="symbols">
             <t>
-	      In all interactions with the OP, the RP employs its Entity Identifier as the Client ID.
-              The Entity Identifier is the URL from which the OP can
-              fetch the RP's Entity Configuration using the process
+          In all interactions with the OP, the RP employs its Entity Identifier as the Client ID.
+              The OP retrieves the RP's Entity Configuration
+	      from a URL derived from the Entity Identifier, as
               described in <xref target="federation_configuration"/>.
             </t>
             <t>
-	      Since there is no registration step prior to the Authentication Request,
-	      the RP cannot be supplied with a Client Secret.
-	      Instead, the Automatic Registration model requires the RP to use
-	      asymmetric cryptography to authenticate its requests.
+          Since there is no registration step prior to the Authentication Request,
+          the RP cannot be supplied with a Client Secret.
+          Instead, the Automatic Registration model requires the RP to use
+          asymmetric cryptography to authenticate its requests.
             </t>
             <t>
               The OP MUST publish that it supports a request authentication
@@ -3327,9 +3641,12 @@ Content-Type: application/json
                   that compose the Trust Chain between the RP that makes
                   the request and the selected Trust Anchor,
                   sorted as shown in <xref target="trust_chain"/>.
-                  Due to the large size of a Trust Chain it could be necessary to use
-                  a <xref target="RFC9101">JWT-Secured Authorization Request (JAR)</xref> or
-                  <xref target="RFC9126">Pushed Authorization Request</xref>.
+                  Due to the large size of a Trust Chain it could be necessary 
+                  to use the HTTP POST method,
+                  <spanx style="verb">request_uri</spanx>
+                   or 
+                  <xref target="RFC9126">Pushed Authorization Request</xref>
+                  for the request.
                 </t>
               </list>
             </t>
@@ -3604,23 +3921,23 @@ HTTP/1.1 302 Found
     &state=af0ifjsldkj
 ]]></artwork>
           </figure>
-	</section>
-	<section title="Possible Other Uses of Automatic Registration" anchor="AutomaticRegistrationOtherUses">
-	  <t>
-	    Note that we anticipate that Automatic Registration could be employed
-	    for use cases beyond OpenID Connect Federation.
-	    If used with pure OAuth 2.0, for instance,
-	    Automatic Registration would occur during Authorization Requests.
-	    If for a particular such use case the client does not need to be securely identified,
-	    then the requirement for signed requests could be relaxed.
-	  </t>
+    </section>
+    <section title="Possible Other Uses of Automatic Registration" anchor="AutomaticRegistrationOtherUses">
+      <t>
+        Note that we anticipate that Automatic Registration could be employed
+        for use cases beyond OpenID Connect Federation.
+        If used with pure OAuth 2.0, for instance,
+        Automatic Registration would occur during Authorization Requests.
+        If for a particular such use case the client does not need to be securely identified,
+        then the requirement for signed requests could be relaxed.
+      </t>
         </section>
 
       </section>
       <section title="Explicit Registration" anchor="explicit">
         <t>
-	  This method involves performing an explicit registration step for a new client
-	  before the RP interacts with an OP for the first time,
+      This method involves performing an explicit registration step for a new client
+      before the RP interacts with an OP for the first time,
           similarly to the process specified by
           <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>,
           but where the client registration request contains the Entity Configuration
@@ -3886,28 +4203,28 @@ HTTP/1.1 302 Found
       </section>
 
       <section title="Differences between Automatic Registration and Explicit Registration" anchor="AutomaticVsExplicit">
-	<t>
-	  The primary differences between Automatic Registration and Explicit Registration are:
+    <t>
+      The primary differences between Automatic Registration and Explicit Registration are:
           <list style="symbols">
             <t>
-	      With Automatic Registration, there is no registration step prior to the Authentication Request,
-	      whereas with Explicit Registration, there is.
-	      (<xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>
-	      and <xref target="RFC7591">OAuth 2.0 Dynamic Client Registration</xref>)
-	      also employ a prior registration step.)
-	    </t>
-	    <t>
-	      With Automatic Registration, the Client ID value is the RP's Entity Identifier,
-	      and is supplied to the OP by the RP,
-	      whereas with Explicit Registration, a Client ID is assigned by the OP and supplied to the RP.
-	    </t>
-	    <t>
-	      Instead of using a Client Secret to authenticate the client, with Automatic Registration,
-	      the client is authenticated by means of the RP proving that it controls a private key
-	      corresponding to one of its Entity Configuration's public keys.
-	    </t>
-	  </list>
-	</t>
+          With Automatic Registration, there is no registration step prior to the Authentication Request,
+          whereas with Explicit Registration, there is.
+          (<xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>
+          and <xref target="RFC7591">OAuth 2.0 Dynamic Client Registration</xref>)
+          also employ a prior registration step.)
+        </t>
+        <t>
+          With Automatic Registration, the Client ID value is the RP's Entity Identifier,
+          and is supplied to the OP by the RP,
+          whereas with Explicit Registration, a Client ID is assigned by the OP and supplied to the RP.
+        </t>
+        <t>
+          Instead of using a Client Secret to authenticate the client, with Automatic Registration,
+          the client is authenticated by means of the RP proving that it controls a private key
+          corresponding to one of its Entity Configuration's public keys.
+        </t>
+      </list>
+    </t>
       </section>
 
       <section title="Rationale for the Trust Chain in the Request" anchor="TrustChainParamRationale">
@@ -3951,51 +4268,51 @@ HTTP/1.1 302 Found
 
     <section anchor="ClaimsLanguagesAndScripts" title="Claims Languages and Scripts">
       <t>
-	Human-readable Claim Values and Claim Values that reference human-readable values
-	MAY be represented in multiple languages and scripts.
-	This specification enables such representations in the same manner as defined in
-	Section 5.2 of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
-	The paragraphs that follow are excerpted from there.
+    Human-readable Claim Values and Claim Values that reference human-readable values
+    MAY be represented in multiple languages and scripts.
+    This specification enables such representations in the same manner as defined in
+    Section 5.2 of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
+    The paragraphs that follow are excerpted from there.
       </t>
       <t>
-	To specify the languages and scripts, <xref
-	target="RFC5646">BCP47</xref> language tags are added to member names,
-	delimited by a <spanx style="verb">#</spanx> character.  For example,
-	<spanx style="verb">family_name#ja-Kana-JP</spanx> expresses the
-	Family Name in Katakana in Japanese, which is commonly used to index
-	and represent the phonetics of the Kanji representation of the same
-	represented as <spanx style="verb">family_name#ja-Hani-JP</spanx>.
-	As another example, both <spanx style="verb">website</spanx> and
-	<spanx style="verb">website#de</spanx> Claim Values might be returned,
-	referencing a Web site in an unspecified language and a Web site
-	in German.
+    To specify the languages and scripts, <xref
+    target="RFC5646">BCP47</xref> language tags are added to member names,
+    delimited by a <spanx style="verb">#</spanx> character.  For example,
+    <spanx style="verb">family_name#ja-Kana-JP</spanx> expresses the
+    Family Name in Katakana in Japanese, which is commonly used to index
+    and represent the phonetics of the Kanji representation of the same
+    represented as <spanx style="verb">family_name#ja-Hani-JP</spanx>.
+    As another example, both <spanx style="verb">website</spanx> and
+    <spanx style="verb">website#de</spanx> Claim Values might be returned,
+    referencing a Web site in an unspecified language and a Web site
+    in German.
       </t>
       <t>
-	Since Claim Names are case sensitive, it is strongly RECOMMENDED
-	that language tag values used in Claim Names be spelled using the
-	character case with which they are registered in the
-	IANA "Language Subtag Registry" <xref target="IANA.Language"/>.
-	In particular, normally language names are spelled with lowercase characters,
-	region names are spelled with uppercase characters, and
-	scripts are spelled with mixed case characters.
-	However, since BCP47 language tag values are case insensitive,
-	implementations SHOULD interpret the language tag values supplied
-	in a case-insensitive manner.
+    Since Claim Names are case sensitive, it is strongly RECOMMENDED
+    that language tag values used in Claim Names be spelled using the
+    character case with which they are registered in the
+    IANA "Language Subtag Registry" <xref target="IANA.Language"/>.
+    In particular, normally language names are spelled with lowercase characters,
+    region names are spelled with uppercase characters, and
+    scripts are spelled with mixed case characters.
+    However, since BCP47 language tag values are case insensitive,
+    implementations SHOULD interpret the language tag values supplied
+    in a case-insensitive manner.
       </t>
       <t>
-	Per the recommendations in BCP47, language tag values for Claims
-	SHOULD only be as specific as necessary.
-	For instance, using <spanx style="verb">fr</spanx> might be sufficient
-	in many contexts, rather than <spanx style="verb">fr-CA</spanx> or
-	<spanx style="verb">fr-FR</spanx>.
-	Where possible, OPs SHOULD try to match requested Claim locales with
-	Claims it has.  For instance, if the Client asks for a Claim with
-	a <spanx style="verb">de</spanx> (German) language tag and the OP
-	has a value tagged with <spanx style="verb">de-CH</spanx> (Swiss German)
-	and no generic German value, it would be appropriate for the OP
-	to return the Swiss German value to the Client.
-	(This intentionally moves as much of the complexity of language tag
-	matching to the OP as possible, to simplify Clients.)
+    Per the recommendations in BCP47, language tag values for Claims
+    SHOULD only be as specific as necessary.
+    For instance, using <spanx style="verb">fr</spanx> might be sufficient
+    in many contexts, rather than <spanx style="verb">fr-CA</spanx> or
+    <spanx style="verb">fr-FR</spanx>.
+    Where possible, OPs SHOULD try to match requested Claim locales with
+    Claims it has.  For instance, if the Client asks for a Claim with
+    a <spanx style="verb">de</spanx> (German) language tag and the OP
+    has a value tagged with <spanx style="verb">de-CH</spanx> (Swiss German)
+    and no generic German value, it would be appropriate for the OP
+    to return the Swiss German value to the Client.
+    (This intentionally moves as much of the complexity of language tag
+    matching to the OP as possible, to simplify Clients.)
       </t>
     </section>
 
@@ -4596,6 +4913,18 @@ HTTP/1.1 302 Found
         collection (Federation Entity Discovery process) and evaluation of Trust Chains.
       </t>
     </section>
+    <section title="Unsigned Error Messages" anchor="UnsignedError">
+      <t>
+	One of the fundamental design goals of this protocol is to
+	protect messages end-to-end. This can not be accomplished by demanding
+	TLS since TLS, in lots of cases, is not end-to-end but ends in a HTTPS
+	to HTTP Reverse Proxy.
+	Allowing unsigned error messages therefore opens up an attack
+	vector for someone who wants to run a Denial of Service attack.
+	This is not specific to OpenID Connect Federation but equally valid for
+	other protocols when HTTPS to HTTP reverse proxies are used.
+      </t>
+    </section>
     </section>
   </middle>
 
@@ -4706,7 +5035,7 @@ HTTP/1.1 302 Found
           <author>
             <organization>IANA</organization>
           </author>
-	  <date/>
+      <date/>
         </front>
       </reference>
 
@@ -5830,7 +6159,6 @@ Host: op.umu.se
       <t>
         The authors wish to acknowledge the contributions of the following
         individuals and organizations to this specification:
-        Vladimir Dzhuvinov,
         Heather Flanagan,
         Samuel Gulliksson,
         Takahiko Kawasaki,
@@ -5841,7 +6169,7 @@ Host: op.umu.se
         Marcos Sanz,
         Peter Schober,
         Michael Schwartz,
-	Kristina Yasuda,
+    Kristina Yasuda,
         and
         the JRA3T3 task force of GEANT4-2.
       </t>
@@ -5851,6 +6179,39 @@ Host: op.umu.se
       <t>[[ To be removed from the final specification ]]</t>
 
       <t>
+        -25
+        <list style="symbols">
+          <t>
+            Fixed #1684: disambiguation on the role federation_entity.
+          </t>
+	  <t>
+            Fixed #1703: Unsigned error response
+          </t>
+          <t>
+            Fixed #1693: Trust mark status endpoint HTTP method changed to POST.
+          </t>
+          <t>
+            Fixed #1681: RS256 is not mandatory anymore for federation operations signatures.
+          </t>
+          <t>
+            Fixed #1701: trust_chain parameter with PAR and redirect_uri.
+          </t>
+          <t>
+            Fixed #1695: entity_type url paramenter for Listing endpoint. 
+          </t>
+          <t>
+            Fixed #1712: federation_entity claims: organization_name is recommended, logo_uri is added. 
+          </t>
+          <t>
+            Fixed #1702: removal of metadata type trust_mark_issuer, federation_status_endpoint moved in the federation_entity metadata and renamed to federation_trust_mark_status_endpoint. 
+          </t>
+          <t>
+            Fixed #1716: Clarified how to retrieve the RP's Entity Configuration when using Automatic Registration.
+          </t>
+        </list>
+      </t>
+
+      <t>
         -24
         <list style="symbols">
           <t>
@@ -5858,6 +6219,9 @@ Host: op.umu.se
           </t>
           <t>
             Relaxed JWK Set representations: jwks, signed_jwks_uri and jwks_uri can coexist in the same Metadata for interoperability purposes across different Federations.
+          </t>
+          <t>
+            Fixed #1641: Federation Historical Keys endpoint.
           </t>
           <t>
             Fixed #1673: added resolve endpoint JWT claims.
@@ -5874,6 +6238,12 @@ Host: op.umu.se
           <t>
             Fixed #1680: removal of the claim operation in Generic Errors.
           </t>
+          <t>
+            Fixed #1669: error types in the section Generic Error Response.
+          </t>
+      <t>
+        Added Vladimir Dzhuvinov as an editor.
+      </t>
         </list>
       </t>
 
@@ -5931,9 +6301,9 @@ Host: op.umu.se
           <t>
             Fixed #1588: Explicitly described the differences between Automatic and Explicit Registration.
           </t>
-	  <t>
-	    Fixed #1606: Described situation in which the requirement for signed requests with Automatic Registration could be relaxed.
-	  </t>
+      <t>
+        Fixed #1606: Described situation in which the requirement for signed requests with Automatic Registration could be relaxed.
+      </t>
           <t>
             Fixed #1629: authz request object, audience explanatory text.
           </t>
@@ -5943,7 +6313,7 @@ Host: op.umu.se
           <t>
             Fixed #1608: submission of the Trust Chain in the Explicit Client Registration Request.
           </t>
-	</list>
+    </list>
       </t>
 
       <t>
@@ -5977,12 +6347,12 @@ Host: op.umu.se
         Fixed #1535: Removed the sub claim from the non-normative example of the Authorization Request Object.
       </t>
       <t>
-	Fixed #1528: Added Claims Languages and Scripts section.
+    Fixed #1528: Added Claims Languages and Scripts section.
       </t>
       <t>
-	Fixed #1456: Added language about space-delimited string parameters from RFC 6749.
+    Fixed #1456: Added language about space-delimited string parameters from RFC 6749.
       </t>
-	</list>
+    </list>
       </t>
 
       <t>
