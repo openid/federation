@@ -98,7 +98,7 @@
     <abstract>
       <t>
         A federation can be expressed as an agreement between parties that trust each other.
-        In bilateral federations, you can have direct trust between the parties.
+        In bilateral federations, direct trust can be established between the parties.
         In a multilateral federation, bilateral agreements might not be practical,
         in which case, trust can be mediated by a third party.
         That is the model used in this specification.
@@ -111,7 +111,7 @@
     and that it adheres to the federation's policies.
       </t>
       <t>
-        This specification describes the basic components you will need to build
+        This specification describes the basic components to build
         a multilateral federation and it provides a guide on how to apply them when
         the underlying protocol used is OpenID Connect.
       </t>
@@ -1003,7 +1003,7 @@
               to established standards and not in conflict with the operating
               principles of this specification.
               In OpenID Connect Core, no client authentication is performed at the authentication
-              endpoint. Instead, you can say that the request itself is authenticated.
+              endpoint. Instead, because the request itself is authenticated.
               What it amounts to is that the OP maps
               information in the request (like the redirect_uri) to information it has gained
               on the client, through static or dynamic registration.
@@ -1620,7 +1620,7 @@
             <list style="numbers">
               <t>
                 If there is a <spanx style="verb">value</spanx> operator in the
-                policy, apply that and you are done.
+                policy, its value would be applied without any additional action.
               </t>
               <t>
                 Add whatever value is specified in an <spanx style="verb">add</spanx>
@@ -2468,8 +2468,8 @@ Content-Type: application/entity-statement+jwt
         <t>
           To fetch an Entity Statement, an Entity needs to know the
           identifier of the Entity to ask (the issuer), the fetch
-          endpoint of that Entity and the identifier of the Entity that you
-          want the statement to be about (the subject).
+          endpoint of that Entity and the identifier of the 
+          Entity, that's the subject of the statement.
         </t>
 
         <section title="Fetch Entity Statements Request"
@@ -2485,17 +2485,17 @@ Content-Type: application/entity-statement+jwt
               <t hangText="iss">
                 <vspace/>
                 OPTIONAL. The Entity Identifier of the issuer
-                from which you want an Entity Statement issued. Because of the
+                from which the Entity Statement issued. Because of the
                 normalization of the URL, multiple issuers MAY resolve to a
                 shared fetch endpoint. This parameter makes it explicit exactly
-                which issuer you want Entity Statements from. Without this
+                which issuer the Entity Statements must came from. Without this
                 parameter, the issuer matches to the Entity at
                 which the request was made.
               </t>
               <t hangText="sub">
                 <vspace/>
                 OPTIONAL. The Entity Identifier of the subject
-                for which you would like an Entity Statement issued. If this
+                for which the Entity Statement is issued. If this
                 parameter is left out, it is considered to be the same as the
                 issuer and would indicate a request for a self-signed
                 statement.
@@ -4883,8 +4883,8 @@ HTTP/1.1 302 Found
         Automatic Client Registration (<xref target="automatic"/>), can
         be exploited as vectors of http propagation attacks.
 
-        If you plan to provide these endpoints, you should consider
-        applying some adequate defense methods, such as those described below and in
+        If these endpoints are provided, some adequate defense methods are required, 
+        such as those described below and in
         <xref target="RFC4732"/>.
       </t>
       <t>
@@ -5116,28 +5116,27 @@ HTTP/1.1 302 Found
 
       <section title="Setting Up a Federation" anchor="federation_intro">
         <t>
-          These are the steps you have to go through to set up your own federation.
-          What you minimally have to do is:
+          These are the steps to set up a federation infrastructure.
           <list style="symbols">
             <t>
-              Generate a signing key. This must be a public/private key pair.
+              Generation signing keys. This must be a public/private key pair.
             </t>
             <t>
               Set up a signing service that can sign JWTs/Entity Statements
-              using the federation operator's signing key.
+              using the Federation Entity Keys.
             </t>
             <t>
-              Set up web services that can publish signed Entity Statements.
-              You need at least two:
+              Set up web services that can publish signed Entity Statements,
               one for the URL corresponding to the federation's Entity Identifier returning
               an Entity Configuration and the other one providing the fetch
-              Entity Statement request API, as described in
+              Entity Statement endpoint, as described in
               <xref target="fetch_statement"/>.
             </t>
           </list>
         </t>
         <t>
-          Once you have this, you can start adding entities to your federation.
+          Once the previous requirements have been satisfied, a Federation Operator 
+          can add Entities to the federation.
           Adding an Entity comes down to:
           <list style="symbols">
             <t>
@@ -5901,8 +5900,8 @@ Host: op.umu.se
               </list>
             </t>
             <t>
-              If you combine these and apply them to the metadata for
-              wiki.ligo.org :
+              Combining these and apply them to the metadata for
+              wiki.ligo.org:
             </t>
             <figure>
               <artwork><![CDATA[
@@ -5929,7 +5928,7 @@ Host: op.umu.se
 ]]></artwork>
             </figure>
             <t>
-              You will get
+              The final result is:
             </t>
             <figure>
               <artwork><![CDATA[
