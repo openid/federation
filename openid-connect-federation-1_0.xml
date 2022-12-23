@@ -105,9 +105,9 @@
         That is the model used in this specification.
       </t>
       <t>
-        An Entity in the federation must be able to trust that other entities
+        An Entity in the federation must be able to trust that other Entities
     it is interacting with belong to the same federation.
-    It must also be able to trust that the information the other entities
+    It must also be able to trust that the information the other Entities
     publish about themselves has not been tampered with during transport
     and that it adheres to the federation's policies.
       </t>
@@ -122,11 +122,11 @@
   <middle>
     <section anchor="Introduction" title="Introduction">
       <t>
-        This specification describes how two entities that would like to
+        This specification describes how two Entities that would like to
         interact can dynamically fetch and resolve trust and metadata for a
         given protocol through the use of third-party Trust Anchor. A trust
         anchor is an Entity whose main purpose is to issue statements
-        about entities, such as OpenID Connect Relying Parties, OpenID
+        about Entities, such as OpenID Connect Relying Parties, OpenID
         Providers, and participating organizations.
         An identity federation can be realized using this specification using
         one or more levels of trust issuers. This specification does not mandate
@@ -136,7 +136,7 @@
         federation.
       </t>
       <t>
-        Note that this specification only concerns itself with how entities
+        Note that this specification only concerns itself with how Entities
         in a federation get to know about each other.
         Furthermore, note that a company, as with any real-world organization,
         MAY be represented by more than one Entity in a federation.
@@ -175,7 +175,7 @@
             <t hangText="Entity">
               <vspace/>
               Something that has a separate and distinct existence and that can
-              be identified in a context. All entities in an OpenID Connect
+              be identified in a context. All Entities in an OpenID Connect
               federation MUST have a globally unique identifier.
             </t>
             <t hangText="Entity Identifier">
@@ -187,17 +187,17 @@
           Signed JWT that contains the information needed
           for an Entity to participate in federation(s),
           including metadata about itself
-          and policies that apply to other entities that it is authoritative for.
+          and policies that apply to other Entities that it is authoritative for.
             </t>
             <t hangText="Entity Configuration">
               <vspace/>
               An Entity Statement issued by an Entity about itself. It contains
-              the entities' signing keys and further data used to control the
+              the Entities' signing keys and further data used to control the
               Trust Chain resolution process, such as authority hints.
             </t>
         <t hangText="Federation Operator">
           An organization that is authoritative for a federation.
-          A federation operator administers the Trust Anchor(s) for entities in its federation.
+          A federation operator administers the Trust Anchor(s) for Entities in its federation.
         </t>
             <t hangText="Intermediate Entity">
               <vspace/>
@@ -229,13 +229,15 @@
               starting at a Leaf Entity and ending in a Trust Anchor.
             </t>
             <t hangText="Trust Mark">
-              A trust mark represents a statement of conformance to a
+              Statement of conformance to a
               well-scoped set of trust and/or interoperability requirements
               as determined by an accreditation authority.
             </t>
             <t hangText="Federation Entity Keys">
-              Keys that an Entity uses to sign its Entity Configuration.
-              These keys are also used by an entity to sign Entity Statements.
+              Keys that an Entity publishes within its Entity Configuration 
+              and that it uses for all the cryptogaphic signature required by  
+              the federation endpoints for the trust mechanisms 
+              defined in this document.
             </t>
           </list>
         </t>
@@ -243,14 +245,19 @@
     </section>
     <section title="Overall Architecture" anchor="architecture">
       <t>
-        The basic component is the Entity Statement, which is a cryptographically
-        signed <xref target="RFC7519">JSON Web Token (JWT)</xref>.
-        
+        The basic component is the Entity Statement, a
+        <xref target="RFC7519">JSON Web Token (JWT)</xref> which is
+        cryptographically signed 
+        using the <spanx style="verb">Federation Entity Key</spanx>.
+      </t>
+
+      <t>
         A set of Entity Statements can form a path from a Leaf Entity to
         a Trust Anchor. Entity Configurations
         issued by Entities about themselves control the Trust Chain
         resolution process.
       </t>
+
       <t>
         The Entity Configuration of a Leaf Entity contains one or more 
         references to its superiors, found in the 
@@ -354,7 +361,7 @@
               representing the public part of the subject
               Entity's signing keys. The corresponding private key is
               used by Leaf Entities to sign Entity Statements about themselves,
-              and intermediate entities to sign statements about other entities.
+              and intermediate Entities to sign statements about other Entities.
               The keys that can be found here are intended to verify the signature of the
               issued Entity Statements and Trust Marks and SHOULD NOT be used in other protocols. Keys
               to be used in other protocols, such as OpenID Connect, are conveyed
@@ -375,10 +382,11 @@
             <t hangText="authority_hints" anchor="authority_hints">
               <vspace/>
               OPTIONAL. Array of strings representing
-              the Entity Identifiers of intermediate entities or Trust Anchors
+              the Entity Identifiers of intermediate Entities or Trust Anchors
               that MAY issue an Entity Statement about the issuer Entity.
-              For all entities except for Trust Anchors that do not have any
-              superiors this is REQUIRED and MUST NOT be the empty list [].
+              For all Entities except for Trust Anchors that do not have any
+              superiors this is REQUIRED and MUST NOT be the empty list 
+              <spanx style="verb">[]</spanx>.
               This claim MUST be absent from an
               Entity Configuration issued by a Trust Anchor with no superiors.
             </t>
@@ -404,17 +412,17 @@
               Entity identified by <spanx style="verb">sub</spanx>.
               If a <spanx style="verb">metadata</spanx> claim appears beside a
               <spanx style="verb">metadata_policy</spanx> claim in an
-              Entity Statement then for each entity type, claims that appear in
+              Entity Statement then for each Entity type, claims that appear in
               <spanx style="verb">metadata</spanx> MUST NOT appear in
               <spanx style="verb">metadata_policy</spanx>
             </t>
             <t hangText="metadata_policy">
               <vspace/>
               REQUIRED Conditional. JSON object that describes
-              a metadata policy.
-              A metadata_policy applies to the entity described in this
-              Entity Statement as well as to all entities that appear beneath the
-              entity described in this Entity Statement. This distinguishes
+              a <spanx style="verb">metadata policy</spanx>.
+              A <spanx style="verb">metadata_policy</spanx> applies to the Entity described in this
+              Entity Statement as well as to all Entities that appear beneath the
+              Entity described in this Entity Statement. This distinguishes
               <spanx style="verb">metadata_policy</spanx> from
               <spanx style="verb">metadata</spanx> which only applies to the
               subject itself.
@@ -425,7 +433,7 @@
               metadata policy statements, but only one for each metadata type.
               Only non Leaf Entities MAY contain a
               <spanx style="verb">metadata_policy</spanx>
-              claim. Leaf entities MUST NOT contain a
+              claim. Leaf Entities MUST NOT contain a
           <spanx style="verb">metadata_policy</spanx> claim.
             </t>
             <t hangText="constraints">
@@ -520,9 +528,9 @@
               A Trust Anchor MAY use this claim to tell which combination of
               Trust Mark identifiers and issuers are trusted by the federation.
               This claim MUST be ignored if present in an Entity Configuration that
-              describes an entity that is not a Trust Anchor.
+              describes an Entity that is not a Trust Anchor.
               It is a JSON object with keys representing Trust Mark identifiers and values
-              being an array of trusted entities representing the accreditation authority.
+              being an array of trusted Entities representing the accreditation authority.
               If the value list bound to a Trust Mark identifier is empty it
               means that anyone can issue Trust Marks with that identifier.
               There is more about Trust Marks in <xref target="trust_marks"/>.
@@ -631,7 +639,7 @@
 
       <section title="Trust Chain" anchor="trust_chain">
         <t>
-          In an OpenID Connect identity federation, entities that together build
+          In an OpenID Connect identity federation, Entities that together build
           a Trust Chain can be categorized as:
           <list style="hanging">
             <t hangText="Trust anchor">
@@ -947,7 +955,7 @@
         </t>
         <t>
           In addition, the parameters defined in <xref target="metadata"/>
-          for OpenID Connect and OAuth2 entities and the following are added:
+          for OpenID Connect and OAuth2 Entities and the following are added:
           <list style="hanging">
             <t hangText="client_registration_types">
               <vspace/>
@@ -974,7 +982,7 @@
         </t>
         <t>
           In addition, the parameters defined in <xref target="metadata"/>
-          for OpenID Connect and OAuth2 entities and the following are added:
+          for OpenID Connect and OAuth2 Entities and the following are added:
         </t>
         <t>
           <list style="hanging">
@@ -1206,7 +1214,7 @@
           <xref target="RFC7591">RFC 7591</xref>
           are applicable.
           In addition, the parameters defined in <xref target="metadata"/>
-          for OpenID Connect and OAuth2 entities are added.
+          for OpenID Connect and OAuth2 Entities are added.
         </t>
       </section>
 
@@ -1219,7 +1227,7 @@
               draft-jones-oauth-resource-metadata
           </xref>,
           the parameters defined in <xref target="metadata"/>
-          for OpenID Connect and OAuth2 entities are added.
+          for OpenID Connect and OAuth2 Entities are added.
         </t>
       </section>
       <section title="Federation Entity">
@@ -1239,19 +1247,19 @@
               <vspace/>
               OPTIONAL.
               The fetch endpoint described in
-              <xref target="fetch_endpoint"/>. Intermediate entities and
+              <xref target="fetch_endpoint"/>. Intermediate Entities and
               Trust Anchors MUST publish a
                 <spanx style="verb">federation_fetch_endpoint</spanx>.
-              Leaf entities MUST NOT.
+              Leaf Entities MUST NOT.
             </t>
             <t hangText="federation_list_endpoint">
               <vspace/>
               OPTIONAL.
               The list endpoint described in
-              <xref target="entity_listing"/>. Intermediate entities and
+              <xref target="entity_listing"/>. Intermediate Entities and
               Trust Anchors MUST publish a
                 <spanx style="verb">federation_list_endpoint</spanx>.
-              Leaf entities MUST NOT.
+              Leaf Entities MUST NOT.
             </t>
             <t hangText="federation_resolve_endpoint">
               <vspace/>
@@ -1324,12 +1332,12 @@
       <section title="Metadata Policy" anchor="metadata_policy">
         <t>
           An Entity can publish metadata policies pertaining to subordinate
-          entities of a specific type. Entity type identifiers specified in
+          Entities of a specific type. Entity type identifiers specified in
           this document can be found in <xref target="metadata"/>.
         </t>
         <section title="metadata_policy">
         <t>
-          A <spanx style="verb">metadata_policy</spanx> for a specific entity
+          A <spanx style="verb">metadata_policy</spanx> for a specific Entity
           type has the following structure:
           <list style="symbols">
             <t>It consists of one or more policy entries.</t>
@@ -1898,18 +1906,18 @@
               <vspace/>
               OPTIONAL. JSON object. Restriction on the Entity Identifiers of
               the
-              entities below this Entity. The behavior of this claim mimics
+              Entities below this Entity. The behavior of this claim mimics
               what is defined in Section 4.2.1.10 of <xref target="RFC5280"/>.
               Restrictions are defined in terms of permitted or excluded name
               subtrees.
             </t>
             <t hangText="allowed_leaf_entity_types">
               <vspace/>
-              OPTIONAL. Array of strings. Each string is an entity type.
+              OPTIONAL. Array of strings. Each string is an Entity type.
               Entity type identifiers specified in this document
               can be found in <xref target="metadata"/>.
               This constraint restricts what types of Leaf Entities that MAY
-              appear beneath the entity described in this Entity Statement.
+              appear beneath the Entity described in this Entity Statement.
             </t>
           </list>
         </t>
@@ -2025,8 +2033,8 @@
                  anchor="leaf_entity_type_constraints">
           <t>
             The <spanx style="verb">allowed_leaf_entity_types</spanx> constraint
-            specifies what entity types are possible for Leaf Entities beneath an
-            entity. If there is no <spanx style="verb">allowed_leaf_entity_types</spanx>
+            specifies what Entity types are possible for Leaf Entities beneath an
+            Entity. If there is no <spanx style="verb">allowed_leaf_entity_types</spanx>
             defined it means that any type is allowed.
           </t>
         </section>
@@ -2132,7 +2140,7 @@
           </t>
           <t>
             For other externally issued Trust Marks, it is an out-of-band process
-            to define and announce accreditation authorities to other entities
+            to define and announce accreditation authorities to other Entities
             and it is left to the discretion of the receiving party to assign
             an appropriate level of trust to such Trust Marks.
           </t>
@@ -2461,7 +2469,7 @@ Content-Type: application/entity-statement+jwt
       <section title="Fetching Entity Statements" anchor="fetch_endpoint">
         <t>
           All Entities that are expected to publish Entity Statements about other
-          entities MUST expose a Fetch endpoint.
+          Entities MUST expose a Fetch endpoint.
         </t>
         <t>
           Fetching Entity Statements is performed to collect Entity Statements
@@ -2796,12 +2804,12 @@ Host: openid.sunet.se
 
         <section title="Considerations">
           <t>
-            The basic assumption of this specification is that an entity 
+            The basic assumption of this specification is that an Entity 
             should have direct trust in no one except the Trust Anchor 
             and its own capabilities. 
             
             However, Entities may establish a kind of
-            transistive trust in other entities. For example, the 
+            transistive trust in other Entities. For example, the 
             Trust Anchor states who its subordinates are
             and Entities may choose to trust these.
             
@@ -2816,7 +2824,7 @@ Host: openid.sunet.se
       <section title="Entity Listings" anchor="entity_listing">
         <t>
           An Entity MAY query another Entity for a list of all the
-          entities immediately subordinate to that Entity and about which
+          Entities immediately subordinate to that Entity and about which
           that Entity is prepared to issue statements about.
           (In some cases, this MAY be a very large list.)
         </t>
@@ -2846,7 +2854,7 @@ Host: openid.sunet.se
           <figure>
             <preamble>
               The following is a non-normative example of an API
-              request for a list of entities:
+              request for a list of Entities:
             </preamble>
             <artwork><![CDATA[
 GET /list HTTP/1.1
@@ -5094,10 +5102,10 @@ HTTP/1.1 302 Found
         the EduGAIN federation.
       </t>
       <t>
-        SWAMID and InCommon are different in how they register entities.
+        SWAMID and InCommon are different in how they register Entities.
         SWAMID registers organizations and lets the organizations register
-        entities that belong to the organization, while InCommon registers all
-        entities directly and not beneath any organization Entity.
+        Entities that belong to the organization, while InCommon registers all
+        Entities directly and not beneath any organization Entity.
         Hence the differences in depth in the federations.
       </t>
       <t>
@@ -5153,7 +5161,7 @@ HTTP/1.1 302 Found
           </list>
         </t>
         <t>
-          Now before the federation operator starts adding entities, there have to
+          Now before the federation operator starts adding Entities, there have to
           be policies in place on who can be part of the federation and the
           layout of the federation. Is it supposed to be a one-layer federation
           like InCommon, a two-layer one like the SWAMID federation,
@@ -5175,7 +5183,7 @@ HTTP/1.1 302 Found
           <xref target="federation_configuration"/>.
           What follows thereafter is this sequence of steps:
           <list style="numbers">
-            <t>Pick out the immediate superior entities using the authority
+            <t>Pick out the immediate superior Entities using the authority
               hints
             </t>
             <t>
@@ -6211,7 +6219,7 @@ Host: op.umu.se
         -24
         <list style="symbols">
           <t>
-            Fixed #1654: Text cleanup on how and who publishes the entity configuration.
+            Fixed #1654: Text cleanup on how and who publishes the Entity Configuration.
           </t>
           <t>
             Relaxed JWK Set representations: jwks, signed_jwks_uri and jwks_uri can coexist in the same Metadata for interoperability purposes across different Federations.
@@ -6424,7 +6432,7 @@ Host: op.umu.se
         -19
         <list style="symbols">
       <t>
-        Fixed #1497 - Removed <spanx style="verb">trust_mark</spanx> claim from federation entity metadata.
+        Fixed #1497 - Removed <spanx style="verb">trust_mark</spanx> claim from federation Entity metadata.
       </t>
       <t>
         Fixed #1446 - Added <spanx style="verb">trust_chain</spanx> and removed <spanx style="verb">is_leaf</spanx>.
@@ -6487,7 +6495,7 @@ Host: op.umu.se
             Trust Marks: added non-normative examples.
           </t>
           <t>
-            Expanded Section 8.1: Included entity configurations.
+            Expanded Section 8.1: Included Entity configurations.
           </t>
       <t>
         Fixed #1373 - More clearly defined the term Entity Statement,
@@ -6548,18 +6556,18 @@ Host: op.umu.se
         -13
         <list style="symbols">
           <t>
-            Added 'trust_marks' as a parameter in the entity statement.
+            Added 'trust_marks' as a parameter in the Entity Statement.
           </t>
           <t>
-            An RP's self-signed entity statement MUST have the OP's issuer
+            An RP's self-signed Entity Statement MUST have the OP's issuer
             identifier
             as the value of 'aud'.
           </t>
           <t>
-            Added RS256 as default signing algorithm for entity statements.
+            Added RS256 as default signing algorithm for Entity Statements.
           </t>
           <t>
-            Specified that the value of 'aud' in the entity statement use in
+            Specified that the value of 'aud' in the Entity Statement use in
             automatic client registration MUST have the ASs authorization
             endpoint
             URL as value. Also, the 'sub' claim MUST NOT be present.
@@ -6574,17 +6582,17 @@ Host: op.umu.se
             <spanx style="verb">/.well-known/openid-federation</spanx>.
           </t>
           <t>
-            Every key in a JWK Set in an entity statement MUST have a kid.
+            Every key in a JWK Set in an Entity Statement MUST have a kid.
           </t>
         </list>
         -12
         <list style="symbols">
           <t>
-            Made JWK Set OPTIONAL in an entity statement returned by OP as response
+            Made JWK Set OPTIONAL in an Entity Statement returned by OP as response
             of an explicit client registration
           </t>
           <t>
-            Renamed entity type to client registration type.
+            Renamed Entity type to client registration type.
           </t>
           <t>
             Added more text describing
@@ -6630,7 +6638,7 @@ Host: op.umu.se
             Incorporated additional review feedback from Marcos Sanz.
             The primary change was moving constraints to their own section of
             the
-            entity statement.
+            Entity Statement.
           </t>
         </list>
       </t>
@@ -6642,7 +6650,7 @@ Host: op.umu.se
             Major changes were as follows.
           </t>
           <t>
-            Separated entity configuration discovery from operations provided
+            Separated Entity configuration discovery from operations provided
             by the federation API.
           </t>
           <t>
@@ -6661,7 +6669,7 @@ Host: op.umu.se
             Major changes were as follows.
           </t>
           <t>
-            Deleted <spanx style="verb">sub_is_leaf</spanx> entity statement
+            Deleted <spanx style="verb">sub_is_leaf</spanx> Entity Statement
             since it was redundant.
           </t>
           <t>
@@ -6690,7 +6698,7 @@ Host: op.umu.se
           <t>
             Added <spanx style="verb">crit</spanx> and
             <spanx style="verb">policy_language_crit</spanx>,
-            enabling control over which entity statement and policy language
+            enabling control over which Entity Statement and policy language
             extensions
             MUST be understood and processed.
           </t>
