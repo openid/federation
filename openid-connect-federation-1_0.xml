@@ -245,16 +245,18 @@
     </section>
     <section title="Overall Architecture" anchor="architecture">
       <t>
-        The basic component is the Entity Statement, a
-        <xref target="RFC7519">JSON Web Token (JWT)</xref> which is
-        cryptographically signed 
-        using the <spanx style="verb">Federation Entity Key</spanx>.
+        The basic component is the Entity Statement, a signed
+        <xref target="RFC7519">JSON Web Token (JWT)</xref>. The 
+        Entity Statement is signed using the corresponding private key of the 
+        <spanx style="verb">Federation Entity Key</spanx>, published in 
+        the Entity Configuration of its issuer.
       </t>
 
       <t>
-        A set of Entity Statements can form a path from a Leaf Entity to
-        a Trust Anchor. Entity Configurations
-        issued by Entities about themselves control the Trust Chain
+        A set of Entity Statements form a path from a Leaf Entity to
+        a Trust Anchor. The Entity Statements are verifiable
+        using the <spanx style="verb">Federation Entity Key</spanx> of its issuer.
+        Entity Configurations issued by Entities about themselves control the Trust Chain
         resolution process.
       </t>
 
@@ -574,8 +576,7 @@
         <figure>
           <preamble>
             The following is a non-normative example of an Entity Statement
-            before
-            serialization and adding a signature. The example contains
+            before adding a signature. The example contains
             a critical extension <spanx style="verb">jti</spanx> (JWT ID) to the
             Entity Statement and one critical extension to the policy language
             <spanx style="verb">regexp</spanx>
@@ -706,7 +707,8 @@
               ES[j]['iss'] == ES[j+1]['sub'], j=0,...,i-1 .
             </t>
             <t>
-              There MUST always be a signing key carried in the
+              There MUST always be a 
+              <spanx style="verb">Federation Entity Key</spanx> carried in the
               <spanx style="verb">jwks</spanx>
               claim in
               ES[j] that can be used to verify the signature of ES[j-1],
@@ -1549,15 +1551,12 @@
         <section title="Combining Policies">
           <t>
             If there is more than one metadata policy in a Trust Chain, then the
-            policies
-            MUST be combined before they are applied to the metadata statement.
+            policies MUST be combined before they are applied to the metadata statement.
           </t>
           <t>
             Using the notation we have defined in <xref target="trust_chain"/>, policies are
-            combined
-            starting with ES[i] and then adding the policies from ES[j]
-            j=i-1,..,1
-            before applying the combined policy to the Entity's metadata.
+            combined starting with ES[i] and then adding the policies from ES[j]
+            j=i-1,..,1 before applying the combined policy to the Entity's metadata.
           </t>
           <t>
             After each combination, the policy for each parameter MUST
@@ -2041,17 +2040,21 @@
       </section>
       <section title="Trust Marks" anchor="trust_marks">
         <t>
-          Technically, Trust Marks as used by this specification are signed
-          JWTs.
+          The Trust Marks used by this specification are
+          signed JWTs.  
         </t>
+
         <t>
           The Trust Marks are signed by a federation accredited
           authority.
-          The validation of such a signed statement is performed
-          in the same way that an Entity Configuration is validated.
-          To make this validation possible the key used by the Trust Mark
-          Issuer to sign Trust Marks MUST be one of its the Federation Entity Keys.
         </t>
+
+        <t>
+          The key used by the Trust Mark
+          Issuer to sign its Trust Marks MUST be one of its the 
+          <spanx style="verb">Federation Entity Keys</spanx>.
+        </t>
+        
         <t>
           Note that a federation MAY allow an Entity to self-sign
           some Trust Marks.
@@ -2346,9 +2349,9 @@
       <t>
         Entities SHOULD make an Entity Configuration document
         available at the configuration endpoint.
-    There is only one exception to this
+        There is only one exception to this
         rule and that is for an RP that only does Explicit Registration.
-    Since it posts the Entity Configuration to the OP during client
+        Since it posts the Entity Configuration to the OP during client
         registration, the OP has everything it needs from the RP.
       </t>
       <section title="Federation Entity Configuration Request">
