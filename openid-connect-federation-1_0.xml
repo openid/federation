@@ -1383,23 +1383,23 @@
             <list style="hanging">
               <t hangText="value">
                 <vspace/>
-                Disregarding what value the parameter had, if any, the
-                parameter's value will be set to the operator's value.
+                Disregarding what value the parameter has, if any, the
+                metadata parameter MUST be set to the specified value.
               </t>
               <t hangText="add">
                 <vspace/>
-                Adds the value or values specified to the metadata parameter.
-                If any of the specified values are already present
-                as values of the parameter, they will not be added.
-                If the parameter has no value,
-                then the parameter is initialized with the specified value(s).
+                The specified value or values MUST be added to the metadata
+                parameter. If any of the specified values are already present
+                as values of the parameter, they MUST NOT be added. If the
+                parameter has no value, then the parameter MUST BE initialized
+                with the specified value(s).
               </t>
 
 
               <t hangText="default">
                 <vspace/>
-                If no value is assigned to this parameter, then the parameter's
-                value will be set to the operator's value(s).
+                If the metadata parameter has no value, then it MUST be set to
+                the specified default value(s).
               </t>
             </list>
           </t>
@@ -1408,21 +1408,29 @@
             <list style="hanging">
               <t hangText="one_of">
                 <vspace/>
-                The value of the parameter MUST be one of the ones listed in
-                this directive.
+                The value of the metadata parameter MUST be one of those listed
+                in the directive. The presence of the metadata parameter becomes
+                optional when the directive occurs in conjunction with an
+                <spanx style="verb">essential</spanx> set to
+                <spanx style="verb">false</spanx>.
               </t>
               <t hangText="subset_of">
                 <vspace/>
-                The resulting value of the parameter will be the intersection of
-                the
-                values in the directive and the values of the parameter.
+                The resulting value of the metadata parameter MUST be the
+                intersection of the values in the directive and the values of
+                the parameter. The presence of the metadata parameter becomes
+                optional when the directive occurs in conjunction with an
+                <spanx style="verb">essential</spanx> set to
+                <spanx style="verb">false</spanx>.
               </t>
               <t hangText="superset_of">
                 <vspace/>
-                The values of the parameter MUST contain the ones in the
-                directive.
-                We mathematically define superset; equality is
-                included.
+                The values of the metadata parameter MUST contain those
+                specified in the directive. We mathematically define superset;
+                equality is included. The presence of the metadata parameter
+                becomes optional when the directive occurs in conjunction with
+                an <spanx style="verb">essential</spanx> set to
+                <spanx style="verb">false</spanx>.
               </t>
               <t hangText="essential">
                 <vspace/>
@@ -6168,6 +6176,16 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+
+      <t>
+        -27
+        <list style="symbols">
+          <t>
+              The "essential" policy operator can be used in conjunction with
+              one_of, subset_of, superset_of to make their presence optional.
+          </t>
+        </list>
+      </t>
 
       <t>
         -26
