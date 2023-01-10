@@ -585,7 +585,10 @@
     },
     "oauth_client": {
       "grant_types": {
-        "subset_of": ["authorization_code", "client_credentials"]}
+        "subset_of": ["authorization_code", "client_credentials"]},
+      "scope": {
+        "subset_of": ["openid", "profile", "email", "phone"]}
+    }
   },
   "constraints": {
     "max_path_length": 2
@@ -1413,7 +1416,7 @@
           </t>
           <t>
             Note that when a parameter is defined to be a space-separated
-            list of strings like for <spanx style="verb">grant_types</spanx> in
+            list of strings like for <spanx style="verb">scope</spanx> in
             <xref target="RFC7591"/> <spanx style="verb">subset_of</spanx>,
             <spanx style="verb">superset_of</spanx> and
             <spanx style="verb">default</spanx> are still expressed as lists of strings.
@@ -1650,10 +1653,19 @@
             </preamble>
             <artwork><![CDATA[
 {
-  "grant_types": {
-    "subset_of": ["authorization_code", "implicit", "refresh_token"],
-    "superset_of": ["authorization_code"],
-    "default": ["authorization_code", "refresh_token"]
+  "scope": {
+    "subset_of": [
+      "openid",
+      "eduperson",
+      "phone"
+    ],
+    "superset_of": [
+      "openid"
+    ],
+    "default": [
+      "openid",
+      "eduperson"
+    ]
   },
   "token_endpoint_auth_method": {
     "one_of": [
@@ -1673,9 +1685,16 @@
             </preamble>
             <artwork><![CDATA[
 {
-  "grant_types": {
-    "subset_of": ["authorization_code", "refresh_token", "implicit"],
-    "default": ["authorization_code", "refresh_token"]
+  "scope": {
+    "subset_of": [
+      "openid",
+      "eduperson",
+      "address"
+    ],
+    "default": [
+      "openid",
+      "eduperson"
+    ]
   },
   "token_endpoint_auth_method": {
     "one_of": [
@@ -1696,10 +1715,18 @@
             </preamble>
             <artwork><![CDATA[
 {
-  "grant_types": {
-    "subset_of": ["authorization_code", "refresh_token"],
-    "superset_of": ["authorization_code"],
-    "default": ["authorization_code", "refresh_token"]
+  "scope": {
+    "subset_of": [
+      "openid",
+      "eduperson"
+    ],
+    "superset_of": [
+      "openid"
+    ],
+    "default": [
+      "openid",
+      "eduperson"
+    ]
   },
   "token_endpoint_auth_method": {
     "one_of": [
