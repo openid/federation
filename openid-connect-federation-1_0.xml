@@ -192,7 +192,7 @@
             <t hangText="Entity Configuration">
               <vspace/>
               An Entity Statement issued by an Entity about itself. It contains
-              the Entities' signing keys and further data used to control the
+              the Entity's signing keys and further data used to control the
               Trust Chain resolution process, such as authority hints.
             </t>
             <t hangText="Federation Operator">
@@ -357,7 +357,7 @@
               representing the public part of the subject
               Entity's signing keys. The corresponding private key is
               used by Leaf Entities to sign Entity Configurations about themselves,
-              and intermediate Entities to sign Entity Statements about other Entities.
+              and Intermediate Entities to sign Entity Statements about other Entities.
               The keys that can be found here are intended to verify the signature of the
               issued Entity Statements and Trust Marks and SHOULD NOT be used in other protocols. Keys
               to be used in other protocols, such as OpenID Connect, are conveyed
@@ -378,10 +378,10 @@
             <t hangText="authority_hints" anchor="authority_hints">
               <vspace/>
               OPTIONAL. Array of strings representing
-              the Entity Identifiers of intermediate Entities or Trust Anchors
+              the Entity Identifiers of Intermediate Entities or Trust Anchors
               that MAY issue an Entity Statement about the issuer Entity.
               For all Entities except for Trust Anchors that do not have any
-              superiors this is REQUIRED and MUST NOT be the empty list 
+              superiors, this is REQUIRED and MUST NOT be the empty list 
               <spanx style="verb">[]</spanx>.
               This claim MUST be absent from an
               Entity Configuration issued by a Trust Anchor with no superiors.
@@ -703,7 +703,7 @@
             </t>
             <t>
               There MUST always be a 
-              <spanx style="verb">Federation Entity Key</spanx> carried in the
+              Federation Entity Key carried in the
               <spanx style="verb">jwks</spanx>
               claim in
               ES[j] that can be used to verify the signature of ES[j-1],
@@ -955,7 +955,7 @@
           <list style="hanging">
             <t hangText="client_registration_types">
               <vspace/>
-              REQUIRED. An array of strings specifying the client registration
+              REQUIRED. Array of strings specifying the client registration
               types the RP wants to use. Values defined by this specification
               are
               <spanx style="verb">automatic</spanx>
@@ -984,7 +984,7 @@
           <list style="hanging">
             <t hangText="client_registration_types_supported">
               <vspace/>
-              REQUIRED. An array specifying the federation types supported.
+              REQUIRED. Array specifying the federation types supported.
               Federation-type values defined by this specification are
               <spanx style="verb">automatic</spanx>
               and <spanx style="verb">explicit</spanx>.
@@ -1908,7 +1908,7 @@
               OPTIONAL. Array of strings. Each string is an Entity type.
               Entity type identifiers specified in this document
               can be found in <xref target="metadata"/>.
-              This constraint restricts what types of Leaf Entities that MAY
+              This constraint restricts what types of Leaf Entities MAY
               appear beneath the Entity described in this Entity Statement.
             </t>
           </list>
@@ -4472,7 +4472,7 @@ HTTP/1.1 302 Found
               </t>
               <t>
                 Client Metadata Description:
-                An array of strings specifying the client registration types the RP wants to use
+                Array of strings specifying the client registration types the RP wants to use
               </t>
               <t>
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
@@ -5283,7 +5283,8 @@ HTTP/1.1 302 Found
           </figure>
           <t>
             The <spanx style="verb">authority_hints</spanx> points to the
-            intermediate https://umu.se. So that is the next step.
+            Intermediate Entity <spanx style="verb">https://umu.se</spanx>. 
+            So that is the next step.
           </t>
           <t>
             This Entity Configuration is the first link in the Trust Chain.
@@ -6175,11 +6176,17 @@ Host: op.umu.se
       <t>[[ To be removed from the final specification ]]</t>
 
       <t>
-        -26
+        -27
         <list style="symbols">
           <t>
             Fixed #1755: clarification on the key to be used for Federation operations.
           </t>
+        </list>
+      </t>
+
+      <t>
+        -26
+        <list style="symbols">
           <t>
             Applied editorial improvements by Heather Flanagan.
           </t>
