@@ -195,6 +195,14 @@
               the Entity's signing keys and further data used to control the
               Trust Chain resolution process, such as authority hints.
             </t>
+            <t hangText="Entity Type">
+              <vspace/>
+              The type of an Entity expresses its roles and functions
+              within a federation. An Entity MUST be of at 
+              least one type and MAY be of many types. 
+              For example, an Entity can be both an OpenID Provider 
+              and Relying Party at the same time.
+            </t>
             <t hangText="Federation Operator">
               An organization that is authoritative for a federation.
               A federation operator administers the Trust Anchor(s) for Entities in its federation.
@@ -389,7 +397,9 @@
             <t hangText="metadata">
               <vspace/>
               REQUIRED Conditional. JSON object including
-              protocol-specific metadata claims.
+              protocol-specific metadata claims that represent the 
+              Entity's Type and metadata.
+
               Each key of the JSON object represents a metadata type
               identifier, and each value MUST be a JSON object representing
               the metadata according to the metadata schema of that metadata
@@ -724,8 +734,8 @@
         This specification allows new metadata
         types to be defined to support use cases outside OpenID Connect
         federations.
-        The metadata type identifier will uniquely identify which metadata
-        specification to utilize.
+        The metadata type identifier uniquely identifies the Entity Type 
+        of the participants and which metadata specification to utilize.
       </t>
       <t>
         The metadata document MUST be a JSON object. Beyond that, there is
@@ -6183,6 +6193,9 @@ Host: op.umu.se
           <t>
               The "essential" policy operator can be used in conjunction with
               one_of, subset_of, superset_of to make their presence optional.
+          </t>
+          <t>
+            Fixed #1779: Entity Type as defined term.
           </t>
         </list>
       </t>
