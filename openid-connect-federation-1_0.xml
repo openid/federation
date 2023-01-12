@@ -601,10 +601,8 @@
     },
     "oauth_client": {
       "grant_types": {
-        "subset_of": ["authorization_code", "client_credentials"]},
-      "scope": {
-        "subset_of": ["openid", "profile", "email", "phone"]}
-    }
+        "subset_of": ["authorization_code", "client_credentials"]
+      },
   },
   "constraints": {
     "max_path_length": 2
@@ -1430,7 +1428,7 @@
           </t>
           <t>
             Note that when a parameter is defined as a space-separated
-            list of strings like for <spanx style="verb">scope</spanx> in
+            list of strings like for <spanx style="verb">grant_types</spanx> in
             <xref target="RFC7591"/> <spanx style="verb">subset_of</spanx>,
             <spanx style="verb">superset_of</spanx> and
             <spanx style="verb">default</spanx> are still expressed as lists of strings.
@@ -1667,19 +1665,13 @@
             </preamble>
             <artwork><![CDATA[
 {
-  "scope": {
-    "subset_of": [
-      "openid",
-      "eduperson",
-      "phone"
-    ],
-    "superset_of": [
-      "openid"
-    ],
-    "default": [
-      "openid",
-      "eduperson"
-    ]
+  "grant_types": {
+
+    "subset_of": ["authorization_code", "implicit", "refresh_token"],
+
+    "superset_of": ["authorization_code"],
+
+    "default": ["authorization_code", "refresh_token"]
   },
   "token_endpoint_auth_method": {
     "one_of": [
@@ -1699,16 +1691,9 @@
             </preamble>
             <artwork><![CDATA[
 {
-  "scope": {
-    "subset_of": [
-      "openid",
-      "eduperson",
-      "address"
-    ],
-    "default": [
-      "openid",
-      "eduperson"
-    ]
+  "grant_types": {
+    "subset_of": ["authorization_code", "refresh_token", "implicit"],
+    "default": ["authorization_code", "refresh_token"]
   },
   "token_endpoint_auth_method": {
     "one_of": [
@@ -1729,18 +1714,10 @@
             </preamble>
             <artwork><![CDATA[
 {
-  "scope": {
-    "subset_of": [
-      "openid",
-      "eduperson"
-    ],
-    "superset_of": [
-      "openid"
-    ],
-    "default": [
-      "openid",
-      "eduperson"
-    ]
+  "grant_types": {
+    "subset_of": ["authorization_code", "refresh_token"],
+    "superset_of": ["authorization_code"],
+    "default": ["authorization_code", "refresh_token"]
   },
   "token_endpoint_auth_method": {
     "one_of": [
@@ -6188,6 +6165,15 @@ Host: op.umu.se
           <t>
             Fixed #1747: Client Registration Response content-type set to application/entity-statement+jwt.
           </t>   
+        </list>
+      </t>
+
+      <t>
+        -27
+        <list style="symbols">
+          <t>
+            Fixed #1740: Metadata policy example for OIDC, removed scopes.
+          </t>
         </list>
       </t>
 
