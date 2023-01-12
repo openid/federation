@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Connect Federation">OpenID Connect Federation 1.0 -
-      draft 26
+      draft 27
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="8" month="January" year="2022"/>
+    <date day="12" month="January" year="2022"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -110,7 +110,7 @@
         It must also be able to trust that the information the other Entities
         publish about themselves has not been tampered with during transport
         and that it adheres to the federation's policies.
-      </t>
+          </t>
       <t>
         This specification describes the basic components to build
         a multilateral federation and provides a guide on how to apply them when
@@ -237,13 +237,15 @@
               starting at a Leaf Entity and ending in a Trust Anchor.
             </t>
             <t hangText="Trust Mark">
-              A trust mark represents a statement of conformance to a
+              Statement of conformance to a
               well-scoped set of trust and/or interoperability requirements
               as determined by an accreditation authority.
             </t>
             <t hangText="Federation Entity Keys">
-              Keys that an Entity uses to sign its Entity Configuration.
-              These keys are also used by an Entity to sign Entity Statements.
+              Keys used for all the cryptogaphic signatures required by  
+              the trust mechanisms defined in this document.
+              Every participant in a Federation publishes its 
+              Federation Entity Keys in its Entity Configuration.
             </t>
           </list>
         </t>
@@ -258,6 +260,7 @@
         issued by Entities about themselves control the Trust Chain
         resolution process.
       </t>
+
       <t>
         The Entity Configuration of a Leaf Entity contains one or more
         references to its superiors, found in the
@@ -360,17 +363,16 @@
               REQUIRED Conditional. A
               <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
               representing the public part of the subject
-              Entity's signing keys.
-              Leaf Entities use the corresponding private key
-              to sign Entity Statements about themselves
-              and Intermediate Entities to sign statements about other Entities.
-              The keys found here are intended to verify the signature of the
+              Entity's signing keys. The corresponding private key is
+              used by Leaf Entities to sign Entity Configurations about themselves,
+              and Intermediate Entities to sign Entity Statements about other Entities.
+              The keys that can be found here are intended to verify the signature of the
               issued Entity Statements and Trust Marks and SHOULD NOT be used in other protocols. Keys
               to be used in other protocols, such as OpenID Connect, are conveyed
               in the <spanx style="verb">metadata</spanx> elements of the respective Entity Statement.
               This claim is only OPTIONAL for the Entity Statement returned
               from an OP when the client is doing Explicit Registration.
-              In all other cases, it is REQUIRED.
+              In all other cases it is REQUIRED.
               Every JWK in the JWK Set MUST have a Key ID (<spanx style="verb">kid</spanx>).
               It is RECOMMENDED that the Key ID be the JWK Thumbprint <xref target="RFC7638"/>
               using the SHA-256 hash function of the key.
@@ -386,8 +388,9 @@
               OPTIONAL. An array of strings representing
               the Entity Identifiers of Intermediate Entities or Trust Anchors
               that MAY issue an Entity Statement about the issuer Entity.
-              For all Entities, except for Trust Anchors that do not have any
-              superiors, this is REQUIRED and MUST NOT be the empty list [].
+              For all Entities except for Trust Anchors that do not have any
+              superiors, this is REQUIRED and MUST NOT be the empty list 
+              <spanx style="verb">[]</spanx>.
               This claim MUST be absent from an
               Entity Configuration issued by a Trust Anchor with no superiors.
             </t>
@@ -396,22 +399,21 @@
               REQUIRED Conditional. JSON object including
               protocol-specific metadata claims that represent the 
               Entity's Type and metadata.
+
               Each key of the JSON object represents a metadata type
               identifier, and each value MUST be a JSON object representing
               the metadata according to the metadata schema of that metadata
-              type. An Entity Statement MAY contain multiple
+              type. Such a JSON object may be empty.
+              An Entity Statement MAY contain multiple
               metadata statements, but only one for each metadata type.
               If the Entity Statement is an Entity Configuration,
               then the Entity Statement MUST contain a
-              <spanx style="verb">metadata</spanx>
-              claim.
-              If <spanx style="verb">iss</spanx> and
-              <spanx style="verb">sub</spanx>
-              are not the same,
-              then the Entity Statement MAY contain a
-              <spanx style="verb">metadata</spanx>
-              claim containing metadata asserted by a superior about the
-              Entity identified by <spanx style="verb">sub</spanx>.
+              <spanx style="verb">metadata</spanx> claim.
+              In some cases, a superior may want to be explicit about what metadata
+              should be used for a subordinate. In that case
+              <spanx style="verb">metadata</spanx> can be used. If
+              <spanx style="verb">metadata</spanx> is used it is only valid for the
+              subject of the Entity Statement and has no impact on its subordinates.
               If a <spanx style="verb">metadata</spanx> claim appears beside a
               <spanx style="verb">metadata_policy</spanx> claim in an
               Entity Statement, then for each Entity Type, claims that appear in
@@ -422,7 +424,7 @@
               <vspace/>
               REQUIRED Conditional. JSON object that describes
               a metadata policy.
-              A metadata_policy applies to the Entity described in this
+              A <spanx style="verb">metadata_policy</spanx> applies to the Entity described in this
               Entity Statement as well as to all Entities that appear beneath the
               Entity described in this Entity Statement. This distinguishes
               <spanx style="verb">metadata_policy</spanx> from
@@ -435,7 +437,7 @@
               metadata policy statements, but only one for each metadata type.
               Only non Leaf Entities MAY contain a
               <spanx style="verb">metadata_policy</spanx>
-              claim. Leaf Entities MUST NOT contain a
+              claim. Entity Configurations MUST NOT contain a
               <spanx style="verb">metadata_policy</spanx> claim.
             </t>
             <t hangText="constraints">
@@ -533,6 +535,7 @@
               describes an Entity that is not a Trust Anchor.
               It is a JSON object with keys representing Trust Mark identifiers and values
               being an array of trusted Entities representing the accreditation authority.
+
               If the value list bound to a Trust Mark identifier is empty,
               anyone can issue Trust Marks with that identifier.
               There is more about Trust Marks in <xref target="trust_marks"/>.
@@ -576,8 +579,7 @@
         <figure>
           <preamble>
             The following is a non-normative example of an Entity Statement
-            before
-            serialization and adding a signature. The example contains
+            before adding a signature. The example contains
             a critical extension <spanx style="verb">jti</spanx> (JWT ID) to the
             Entity Statement and one critical extension to the policy language
             <spanx style="verb">regexp</spanx>
@@ -612,10 +614,8 @@
     },
     "oauth_client": {
       "grant_types": {
-        "subset_of": ["authorization_code", "client_credentials"]},
-      "scope": {
-        "subset_of": ["openid", "profile", "email", "phone"]}
-    }
+        "subset_of": ["authorization_code", "client_credentials"]
+      },
   },
   "constraints": {
     "max_path_length": 2
@@ -708,7 +708,8 @@
               ES[j]['iss'] == ES[j+1]['sub'], j=0,...,i-1 .
             </t>
             <t>
-              There MUST always be a signing key carried in the
+              There MUST always be a 
+              Federation Entity Key carried in the
               <spanx style="verb">jwks</spanx>
               claim in
               ES[j] that can be used to verify the signature of ES[j-1],
@@ -989,7 +990,7 @@
           <list style="hanging">
             <t hangText="client_registration_types_supported">
               <vspace/>
-              REQUIRED. An array specifying the federation types supported.
+              REQUIRED. Array specifying the federation types supported.
               Federation-type values defined by this specification are
               <spanx style="verb">automatic</spanx>
               and <spanx style="verb">explicit</spanx>.
@@ -1059,7 +1060,7 @@
               <list style="hanging">
                 <t hangText="request_object">
                   <vspace/>
-                  This metadata type identifier uses a Request Object as described in
+                  A Request Object, as described in
                   <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
                   There is more about this in
                   <xref target="automatic"/>.
@@ -1320,7 +1321,7 @@
     "https://example.com/federation_fetch",
   "federation_list_endpoint":
     "https://example.com/federation_list",
-  "federation_trust_mark_status_endpoint": "https://example.com/status"
+  "federation_trust_mark_status_endpoint": "https://example.com/status",
   "organization_name": "The example cooperation",
   "homepage_uri": "https://www.example.com"
 }
@@ -1392,23 +1393,23 @@
             <list style="hanging">
               <t hangText="value">
                 <vspace/>
-                Disregarding what value the parameter had, if any, the
-                parameter's value will be set to the operator's value.
+                Disregarding what value the parameter has, if any, the
+                metadata parameter MUST be set to the specified value.
               </t>
               <t hangText="add">
                 <vspace/>
-                Adds the value or values specified to the metadata parameter.
-                If any of the specified values are already present
-                as values of the parameter, they will not be added.
-                If the parameter has no value,
-                then the parameter is initialized with the specified value(s).
+                The specified value or values MUST be added to the metadata
+                parameter. If any of the specified values are already present
+                as values of the parameter, they MUST NOT be added. If the
+                parameter has no value, then the parameter MUST BE initialized
+                with the specified value(s).
               </t>
 
 
               <t hangText="default">
                 <vspace/>
-                If no value is assigned to this parameter, then the parameter's
-                value will be set to the operator's value(s).
+                If the metadata parameter has no value, then it MUST be set to
+                the specified default value(s).
               </t>
             </list>
           </t>
@@ -1417,21 +1418,29 @@
             <list style="hanging">
               <t hangText="one_of">
                 <vspace/>
-                The value of the parameter MUST be one of the ones listed in
-                this directive.
+                The value of the metadata parameter MUST be one of those listed
+                in the directive. The presence of the metadata parameter becomes
+                optional when the directive occurs in conjunction with an
+                <spanx style="verb">essential</spanx> set to
+                <spanx style="verb">false</spanx>.
               </t>
               <t hangText="subset_of">
                 <vspace/>
-                The resulting value of the parameter will be the intersection of
-                the
-                values in the directive and the values of the parameter.
+                The resulting value of the metadata parameter MUST be the
+                intersection of the values in the directive and the values of
+                the parameter. The presence of the metadata parameter becomes
+                optional when the directive occurs in conjunction with an
+                <spanx style="verb">essential</spanx> set to
+                <spanx style="verb">false</spanx>.
               </t>
               <t hangText="superset_of">
                 <vspace/>
-                The values of the parameter MUST contain the ones in the
-                directive.
-                We mathematically define superset; equality is
-                included.
+                The values of the metadata parameter MUST contain those
+                specified in the directive. We mathematically define superset;
+                equality is included. The presence of the metadata parameter
+                becomes optional when the directive occurs in conjunction with
+                an <spanx style="verb">essential</spanx> set to
+                <spanx style="verb">false</spanx>.
               </t>
               <t hangText="essential">
                 <vspace/>
@@ -1441,7 +1450,7 @@
           </t>
           <t>
             Note that when a parameter is defined as a space-separated
-            list of strings like for <spanx style="verb">scope</spanx> in
+            list of strings like for <spanx style="verb">grant_types</spanx> in
             <xref target="RFC7591"/> <spanx style="verb">subset_of</spanx>,
             <spanx style="verb">superset_of</spanx> and
             <spanx style="verb">default</spanx> are still expressed as lists of strings.
@@ -1550,15 +1559,12 @@
         <section title="Combining Policies">
           <t>
             If there is more than one metadata policy in a Trust Chain, then the
-            policies
-            MUST be combined before they are applied to the metadata statement.
+            policies MUST be combined before they are applied to the metadata statement.
           </t>
           <t>
             Using the notation we have defined in <xref target="trust_chain"/>, policies are
-            combined
-            starting with ES[i] and then adding the policies from ES[j]
-            j=i-1,..,1
-            before applying the combined policy to the Entity's metadata.
+            combined starting with ES[i] and then adding the policies from ES[j]
+            j=i-1,..,1 before applying the combined policy to the Entity's metadata.
           </t>
           <t>
             After each combination, the policy for each parameter MUST
@@ -1678,19 +1684,13 @@
             </preamble>
             <artwork><![CDATA[
 {
-  "scope": {
-    "subset_of": [
-      "openid",
-      "eduperson",
-      "phone"
-    ],
-    "superset_of": [
-      "openid"
-    ],
-    "default": [
-      "openid",
-      "eduperson"
-    ]
+  "grant_types": {
+
+    "subset_of": ["authorization_code", "implicit", "refresh_token"],
+
+    "superset_of": ["authorization_code"],
+
+    "default": ["authorization_code", "refresh_token"]
   },
   "token_endpoint_auth_method": {
     "one_of": [
@@ -1710,16 +1710,9 @@
             </preamble>
             <artwork><![CDATA[
 {
-  "scope": {
-    "subset_of": [
-      "openid",
-      "eduperson",
-      "address"
-    ],
-    "default": [
-      "openid",
-      "eduperson"
-    ]
+  "grant_types": {
+    "subset_of": ["authorization_code", "refresh_token", "implicit"],
+    "default": ["authorization_code", "refresh_token"]
   },
   "token_endpoint_auth_method": {
     "one_of": [
@@ -1740,18 +1733,10 @@
             </preamble>
             <artwork><![CDATA[
 {
-  "scope": {
-    "subset_of": [
-      "openid",
-      "eduperson"
-    ],
-    "superset_of": [
-      "openid"
-    ],
-    "default": [
-      "openid",
-      "eduperson"
-    ]
+  "grant_types": {
+    "subset_of": ["authorization_code", "refresh_token"],
+    "superset_of": ["authorization_code"],
+    "default": ["authorization_code", "refresh_token"]
   },
   "token_endpoint_auth_method": {
     "one_of": [
@@ -2034,24 +2019,29 @@
           <t>
             The <spanx style="verb">allowed_leaf_entity_types</spanx> constraint
             specifies what Entity Types are possible for Leaf Entities beneath an
-            Entity. If there are no <spanx style="verb">allowed_leaf_entity_types</spanx>
-            defined, it means that any type is allowed.
+            Entity. If there is no <spanx style="verb">allowed_leaf_entity_types</spanx>
+            defined it means that any type is allowed.
           </t>
         </section>
       </section>
       <section title="Trust Marks" anchor="trust_marks">
         <t>
-          Technically, Trust Marks as used by this specification are signed
-          JWTs.
+          The Trust Marks used by this specification are
+          signed JWTs.  
         </t>
+
         <t>
           The Trust Marks are signed by a federation-accredited
           authority.
-          The validation of such a signed statement is performed
-          in the same way that an Entity Configuration is validated.
-          To make this validation possible the key used by the Trust Mark
-          Issuer to sign Trust Marks MUST be one of its Federation Entity Keys.
         </t>
+
+        <t>
+          The key used by the Trust Mark
+          Issuer to sign its Trust Marks MUST be one of the private keys
+          related to its 
+          <spanx style="verb">Federation Entity Keys</spanx>.
+        </t>
+        
         <t>
           Note that a federation MAY allow an Entity to self-sign
           some Trust Marks.
@@ -2063,7 +2053,6 @@
           <spanx style="verb">trust-mark+jwt</spanx>. This is done to prevent
           cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
         </t>
-
 
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
           <t>These are the Trust Mark Claims:</t>
@@ -2140,8 +2129,8 @@
           </t>
           <t>
             For other externally issued Trust Marks, it is an out-of-band process
-            to define and announce accreditation authorities to other Entities;
-            it is left to the discretion of the receiving party to assign
+            to define and announce accreditation authorities to other Entities
+            and it is left to the discretion of the receiving party to assign
             an appropriate level of trust to such Trust Marks.
           </t>
         </section>
@@ -2346,7 +2335,7 @@
         Entities SHOULD make an Entity Configuration document
         available at the configuration endpoint.
         There is only one exception to this
-        rule, and that is for an RP that only does Explicit Registration.
+        rule and that is for an RP that only does Explicit Registration.
         Since it posts the Entity Configuration to the OP during client
         registration, the OP has everything it needs from the RP.
       </t>
@@ -2803,12 +2792,12 @@ Host: openid.sunet.se
 
         <section title="Considerations">
           <t>
-            The basic assumption of this specification is that an Entity
-            should have direct trust in no one except the Trust Anchor
-            and its own capabilities.
-
+            The basic assumption of this specification is that an Entity 
+            should have direct trust in no one except the Trust Anchor 
+            and its own capabilities. 
+            
             However, Entities may establish a kind of
-            transistive trust in other Entities. For example, the
+            transistive trust in other Entities. For example, the 
             Trust Anchor states who its subordinates are
             and Entities may choose to trust these.
 
@@ -2945,11 +2934,12 @@ Content-Type: application/json
                 <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>:
               </preamble>
               <artwork><![CDATA[
-GET /federation_trust_mark_status_endpoint?
+POST /federation_trust_mark_status_endpoint HTTP/1.1
+Host: op.example.org
+Content-Type: application/x-www-form-urlencoded
+
 sub=https%3A%2F%2Fopenid.sunet.se%2FRP
 &id=https%3A%2F%2Frefeds.org%2Fsirtfi
-HTTP/1.1
-Host: operations.swamid.se
 ]]></artwork>
             </figure>
 
@@ -4061,7 +4051,7 @@ HTTP/1.1 302 Found
                   <t>
                     A successful response MUST use the HTTP status code 200
                     and the content type set to
-                    <spanx style="verb">application/jose</spanx>.
+                    <spanx style="verb">application/entity-statement+jwt</spanx>.
                   </t>
                   <t>
                     If the response is negative, the response
@@ -5287,7 +5277,8 @@ HTTP/1.1 302 Found
           </figure>
           <t>
             The <spanx style="verb">authority_hints</spanx> points to the
-            intermediate https://umu.se. So that is the next step.
+            Intermediate Entity <spanx style="verb">https://umu.se</spanx>. 
+            So that is the next step.
           </t>
           <t>
             This Entity Configuration is the first link in the Trust Chain.
@@ -6090,6 +6081,10 @@ Host: op.umu.se
 {
   "application_type": "web",
   "client_name": "LIGO Wiki",
+  "client_id": "m3GyHw",
+  "client_secret_expires_at": 1604049619,
+  "client_secret": "cb44eed577f3b5edf3e08362d47a0dc44630b3dc6ea99f7a79205"
+  "client_id_issued_at": 1601457619,
   "contacts": [
     "ops@edugain.geant.org",
     "ops@incommon.org",
@@ -6177,10 +6172,28 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
-
       <t>
         -27
         <list style="symbols">
+          <t>
+            Added text about the usage of metadata besides metadata_policy.
+          </t>
+          <t>
+            Fixed #1745 #1746: Non normative example of Trust Mark status endpoint.
+          </t> 
+          <t>
+            Fixed #1747: Client Registration Response content-type set to application/entity-statement+jwt.
+          </t>   
+          <t>
+            Fixed #1740: Metadata policy example for OIDC, removed scopes.
+          </t>
+          <t>
+            Fixed #1755: clarification on the key to be used for Federation operations.
+          </t>
+          <t>
+              The "essential" policy operator can be used in conjunction with
+              one_of, subset_of, superset_of to make their presence optional.
+          </t>
           <t>
             Fixed #1779: Entity Type as defined term.
           </t>
@@ -6192,7 +6205,7 @@ Host: op.umu.se
         <list style="symbols">
           <t>
             Applied editorial improvements by Heather Flanagan.
-          </t>
+          </t>       
         </list>
       </t>
 
@@ -6203,7 +6216,7 @@ Host: op.umu.se
             Fixed #1684: disambiguation on the role federation_entity.
           </t>
           <t>
-            Fixed #1703: Unsigned error response
+            Fixed #1703: Unsigned error response.
           </t>
           <t>
             Fixed #1693: Trust mark status endpoint HTTP method changed to POST.
@@ -6236,7 +6249,7 @@ Host: op.umu.se
         -24
         <list style="symbols">
           <t>
-            Fixed #1654: Text cleanup on how and who publishes the entity configuration.
+            Fixed #1654: Text cleanup on how and who publishes the Entity Configuration.
           </t>
           <t>
             Relaxed JWK Set representations: jwks, signed_jwks_uri and jwks_uri can coexist in the same Metadata for interoperability purposes across different Federations.
@@ -6512,7 +6525,7 @@ Host: op.umu.se
             Trust Marks: added non-normative examples.
           </t>
           <t>
-            Expanded Section 8.1: Included entity configurations.
+            Expanded Section 8.1: Included Entity configurations.
           </t>
           <t>
             Fixed #1373 - More clearly defined the term Entity Statement,
@@ -6573,18 +6586,18 @@ Host: op.umu.se
         -13
         <list style="symbols">
           <t>
-            Added 'trust_marks' as a parameter in the entity statement.
+            Added 'trust_marks' as a parameter in the Entity Statement.
           </t>
           <t>
-            An RP's self-signed entity statement MUST have the OP's issuer
+            An RP's self-signed Entity Statement MUST have the OP's issuer
             identifier
             as the value of 'aud'.
           </t>
           <t>
-            Added RS256 as default signing algorithm for entity statements.
+            Added RS256 as default signing algorithm for Entity Statements.
           </t>
           <t>
-            Specified that the value of 'aud' in the entity statement use in
+            Specified that the value of 'aud' in the Entity Statement use in
             automatic client registration MUST have the ASs authorization
             endpoint
             URL as value. Also, the 'sub' claim MUST NOT be present.
@@ -6599,17 +6612,17 @@ Host: op.umu.se
             <spanx style="verb">/.well-known/openid-federation</spanx>.
           </t>
           <t>
-            Every key in a JWK Set in an entity statement MUST have a kid.
+            Every key in a JWK Set in an Entity Statement MUST have a kid.
           </t>
         </list>
         -12
         <list style="symbols">
           <t>
-            Made JWK Set OPTIONAL in an entity statement returned by OP as response
+            Made JWK Set OPTIONAL in an Entity Statement returned by OP as response
             of an explicit client registration
           </t>
           <t>
-            Renamed entity type to client registration type.
+            Renamed Entity type to client registration type.
           </t>
           <t>
             Added more text describing
@@ -6655,7 +6668,7 @@ Host: op.umu.se
             Incorporated additional review feedback from Marcos Sanz.
             The primary change was moving constraints to their own section of
             the
-            entity statement.
+            Entity Statement.
           </t>
         </list>
       </t>
@@ -6667,7 +6680,7 @@ Host: op.umu.se
             Major changes were as follows.
           </t>
           <t>
-            Separated entity configuration discovery from operations provided
+            Separated Entity configuration discovery from operations provided
             by the federation API.
           </t>
           <t>
@@ -6686,7 +6699,7 @@ Host: op.umu.se
             Major changes were as follows.
           </t>
           <t>
-            Deleted <spanx style="verb">sub_is_leaf</spanx> entity statement
+            Deleted <spanx style="verb">sub_is_leaf</spanx> Entity Statement
             since it was redundant.
           </t>
           <t>
@@ -6715,7 +6728,7 @@ Host: op.umu.se
           <t>
             Added <spanx style="verb">crit</spanx> and
             <spanx style="verb">policy_language_crit</spanx>,
-            enabling control over which entity statement and policy language
+            enabling control over which Entity Statement and policy language
             extensions
             MUST be understood and processed.
           </t>
