@@ -1309,7 +1309,7 @@
     "https://example.com/federation_fetch",
   "federation_list_endpoint":
     "https://example.com/federation_list",
-  "federation_trust_mark_status_endpoint": "https://example.com/status"
+  "federation_trust_mark_status_endpoint": "https://example.com/status",
   "organization_name": "The example cooperation",
   "homepage_uri": "https://www.example.com"
 }
@@ -2934,11 +2934,12 @@ Content-Type: application/json
                 <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>:
               </preamble>
               <artwork><![CDATA[
-GET /federation_trust_mark_status_endpoint?
+POST /federation_trust_mark_status_endpoint HTTP/1.1
+Host: op.example.org
+Content-Type: application/x-www-form-urlencoded
+
 sub=https%3A%2F%2Fopenid.sunet.se%2FRP
 &id=https%3A%2F%2Frefeds.org%2Fsirtfi
-HTTP/1.1
-Host: operations.swamid.se
 ]]></artwork>
             </figure>
 
@@ -4050,7 +4051,7 @@ HTTP/1.1 302 Found
                   <t>
                     A successful response MUST use the HTTP status code 200
                     and the content type set to
-                    <spanx style="verb">application/jose</spanx>.
+                    <spanx style="verb">application/entity-statement+jwt</spanx>.
                   </t>
                   <t>
                     If the response is negative, the response
@@ -6179,11 +6180,23 @@ Host: op.umu.se
         </list>
       </t>
       <t>
+        -27
+        <list style="symbols">
+          <t>
+            Fixed #1745 #1746: Non normative example of Trust Mark status endpoint.
+          </t> 
+          <t>
+            Fixed #1747: Client Registration Response content-type set to application/entity-statement+jwt.
+          </t>   
+        </list>
+      </t>
+
+      <t>
         -26
         <list style="symbols">
           <t>
             Applied editorial improvements by Heather Flanagan.
-          </t>
+          </t>       
         </list>
       </t>
 
