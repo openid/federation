@@ -386,23 +386,21 @@
             <t hangText="metadata">
               <vspace/>
               REQUIRED Conditional. JSON object including
-              protocol-specific metadata claims that represent the Entity's metadata.
+              protocol-specific metadata claims.
               Each key of the JSON object represents a metadata type
               identifier, and each value MUST be a JSON object representing
               the metadata according to the metadata schema of that metadata
-              type. An Entity Statement MAY contain multiple
+              type. Such a JSON object may be empty.
+              An Entity Statement MAY contain multiple
               metadata statements, but only one for each metadata type.
               If the Entity Statement is an Entity Configuration,
               then the Entity Statement MUST contain a
-              <spanx style="verb">metadata</spanx>
-              claim.
-              If <spanx style="verb">iss</spanx> and
-              <spanx style="verb">sub</spanx>
-              are not the same,
-              then the Entity Statement MAY contain a
-              <spanx style="verb">metadata</spanx>
-              claim containing metadata asserted by a superior about the
-              Entity identified by <spanx style="verb">sub</spanx>.
+              <spanx style="verb">metadata</spanx> claim.
+              In some cases, a superior may want to be explicit about what metadata
+              should be used for a subordinate. In that case
+              <spanx style="verb">metadata</spanx> can be used. If
+              <spanx style="verb">metadata</spanx> is used it is only valid for the
+              subject of the Entity Statement and has no impact on its subordinates.
               If a <spanx style="verb">metadata</spanx> claim appears beside a
               <spanx style="verb">metadata_policy</spanx> claim in an
               Entity Statement, then for each Entity Type, claims that appear in
@@ -426,7 +424,7 @@
               metadata policy statements, but only one for each metadata type.
               Only non Leaf Entities MAY contain a
               <spanx style="verb">metadata_policy</spanx>
-              claim. Leaf Entities MUST NOT contain a
+              claim. Entity Configurations MUST NOT contain a
               <spanx style="verb">metadata_policy</spanx> claim.
             </t>
             <t hangText="constraints">
@@ -6081,6 +6079,10 @@ Host: op.umu.se
 {
   "application_type": "web",
   "client_name": "LIGO Wiki",
+  "client_id": "m3GyHw",
+  "client_secret_expires_at": 1604049619,
+  "client_secret": "cb44eed577f3b5edf3e08362d47a0dc44630b3dc6ea99f7a79205"
+  "client_id_issued_at": 1601457619,
   "contacts": [
     "ops@edugain.geant.org",
     "ops@incommon.org",
@@ -6168,7 +6170,14 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
-
+      <t>
+        -27
+        <list style="symbols">
+          <t>
+            Added text about the usage of metadata besides metadata_policy.
+          </t>
+        </list>
+      </t>
       <t>
         -26
         <list style="symbols">
