@@ -2993,25 +2993,26 @@ Content-Type: application/json
           <spanx style="verb">
             /.well-known/openid-federation-historical-jwks
           </spanx>.
-
+        </t>
+        <t>
           The purpose of this endpoint is to provide
           the list of keys previously used by the Federation Entity 
           in order to provide non-repudiation of statements signed by
           it after key rotation. This endpoint also discloses the 
           reason for the retraction of the keys, whether they were 
           expired or revoked, including the reason for the revocation.
-        
+        </t>
+        <t>
           Note that an expired key can be later additionally marked as 
           revoked, to indicate a key compromise event discovered 
           after the expiration of the key.
-            
-          The historical keys of the Federation Entity 
-          guarantees participants the verifiability of the Trust Chains
-          even when the federation keys are changed, and the security of 
-          being able to trust a Trust Chain calculated in the past, if 
-          the key had only been expired and not revoked for security reasons.
         </t>
-
+        <t>
+          The publishing of the historical keys guarantees that Trust Chains 
+          will remain verifiable and usable as inputs to trust decisions 
+          after the key expiration, unless the key becomes revoked 
+          for a security reason.
+        </t>
 
         <section title="Federation Historical Keys Request">
           <t>
@@ -3184,8 +3185,8 @@ Content-Type: application/jwk-set+jwt
           <t>
             The Federation Historical Keys endpoint
             solves the problem of verifying historical
-            Trust Chains when the Federation Entities Keys
-            are changed, if expired or revoked.
+            Trust Chains when the Federation Entity Keys
+            are changed, due to expiry or revocation.
           </t>
 
           <!--
