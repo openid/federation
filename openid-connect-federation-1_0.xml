@@ -2988,7 +2988,7 @@ Content-Type: application/json
 
       <section title="Federation Historical Keys endpoint">
         <t>
-          Each Federation Entity MAY publish its expired
+          Each Federation Entity MAY publish its previously used
           federation public keys at the endpoint
           <spanx style="verb">
             /.well-known/openid-federation-historical-jwks
@@ -2998,8 +2998,8 @@ Content-Type: application/json
           the list of keys previously used by the Federation Entity 
           in order to provide non-repudiation of statements signed by
           it after key rotation. This endpoint also discloses the 
-          reason for the unusability of the keys, whether they have 
-          expired or revoked, and the reason for the revocation.
+          reason for the retraction of the keys, whether they have 
+          expired or revoked, including the reason for the revocation.
 
           The historical keys of the Federation Entity 
           guarantees participants the verifiability of the Trust Chains
@@ -3054,7 +3054,7 @@ Host: trust-anchor.example.com
                 <vspace/>
                 REQUIRED. A
                 <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
-                representing the public part of the Federation Entity signing keys.
+                representing the public Federation Entity signing keys.
 
                 <t>
                   The JWK Set in the <spanx style="verb">jwks</spanx> claim,
@@ -3081,7 +3081,7 @@ Host: trust-anchor.example.com
                     </t>
                     <t hangText="exp">
                       <vspace/>
-                      Conditional REQUIRED. Expiration time,
+                      Conditionally REQUIRED. Expiration time,
                       using the time format defined for the
                       <spanx style="verb">exp</spanx> claim in
                       <xref target="RFC7519"/>.
@@ -3091,7 +3091,7 @@ Host: trust-anchor.example.com
                     </t>
                     <t hangText="revoked">
                       <vspace/>
-                      Conditional REQUIRED. JSON objects that contains the 
+                      Conditionally REQUIRED. JSON objects that contains the 
                       properties of the revocation, defined below. 
                       It MUST be present if the key doesn't have the
                       <spanx style="verb">exp</spanx> claim.
