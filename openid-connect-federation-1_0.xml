@@ -2998,9 +2998,13 @@ Content-Type: application/json
           the list of keys previously used by the Federation Entity 
           in order to provide non-repudiation of statements signed by
           it after key rotation. This endpoint also discloses the 
-          reason for the retraction of the keys, whether they have 
+          reason for the retraction of the keys, whether they were 
           expired or revoked, including the reason for the revocation.
-
+        
+          Note that an expired key can be later additionally marked as 
+          revoked, to indicate a key compromise event discovered 
+          after the expiration of the key.
+            
           The historical keys of the Federation Entity 
           guarantees participants the verifiability of the Trust Chains
           even when the federation keys are changed, and the security of 
@@ -3091,7 +3095,7 @@ Host: trust-anchor.example.com
                     </t>
                     <t hangText="revoked">
                       <vspace/>
-                      Conditionally REQUIRED. JSON objects that contains the 
+                      Conditionally REQUIRED. JSON object that contains the 
                       properties of the revocation, defined below. 
                       It MUST be present if the key doesn't have the
                       <spanx style="verb">exp</spanx> claim.
@@ -3100,7 +3104,8 @@ Host: trust-anchor.example.com
                       <list style="hanging">
                         <t hangText="revoked_at">
                           <vspace/>
-                          REQUIRED. Time at which the key was revoked,
+                          REQUIRED. Time at which the key was revoked 
+                          or must be considered revoked,
                           using the time format defined for the
                           <spanx style="verb">iat</spanx> claim in
                           <xref target="RFC7519"/>.
@@ -3110,14 +3115,14 @@ Host: trust-anchor.example.com
                           <vspace/>
                           REQUIRED. Human readable value
                           that identifies the reason 
-                          for the key revocation, as defined in the
+                          for the key revocation, as defined in
                           Section 5.3.1 of <xref target="RFC5280"/>.
                         </t>
 
                         <t hangText="reason_code">
                           <vspace/>
                           REQUIRED. Integer that identifies the reason 
-                          for the key revocation, as defined in the
+                          for the key revocation, as defined in
                           Section 5.3.1 of <xref target="RFC5280"/>.
                         </t>
 
