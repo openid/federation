@@ -3344,6 +3344,62 @@ Content-Type: application/json
           way of establishing trust in the remote peer's information. How the
           consumer deals with this is out of scope for this specification.
         </t>
+
+      <figure>
+        <preamble>
+          Resolving Trust Chain and Metadata: the perspective of an OP.
+        </preamble>
+        <artwork><![CDATA[
++-----+                            +-----+                                    +-------------+
+| RP  |                            | OP  |                                    | TrustAnchor |
++-----+                            +-----+                                    +-------------+
+   |                                  |                                              |
+   |     Entity Configuration Request |                                              |
+   |<---------------------------------|                                              |
+   |                                  |                                              |
+   | Entity Configuration Response    |                                              |
+   |--------------------------------->|                                              |
+   |                                  |                                              |
+   |                                  | Entity Configuration Request                 |
+   |                                  |--------------------------------------------->|
+   |                                  |                                              |
+   |                                  |                Entity Configuration Response |
+   |                                  |<---------------------------------------------|
+   |                                  |                                              |
+   |                                  | Obtains TA's Fetch endpoint                  |
+   |                                  |----------------------------                  |
+   |                                  |                           |                  |
+   |                                  |<---------------------------                  |
+   |                                  |                                              |
+   |                                  | Request Entity Statement about the RP        |
+   |                                  |--------------------------------------------->|
+   |                                  |                                              |
+   |                                  |                Entity Statement about the RP |
+   |                                  |<---------------------------------------------|
+   |                                  |                                              |
+   |                                  | Validates RP's Entity Configuration          |
+   |                                  |-------------------------------------         |
+   |                                  |                                    |         |
+   |                                  |<------------------------------------         |
+   |                                  |                                              |
+   |                                  | Creates and stores the Trust Chain           |
+   |                                  |----------------------------------            |
+   |                                  |                                 |            |
+   |                                  |<---------------------------------            |
+   |                                  |                                              |
+   |                                  | Applies metadata policies                    |
+   |                                  |--------------------------                    |
+   |                                  |                         |                    |
+   |                                  |<-------------------------                    |
+   |                                  |                                              |
+   |                                  | Derivates the RP's final metadata            |
+   |                                  |----------------------------------            |
+   |                                  |                                 |            |
+   |                                  |<---------------------------------            |
+   |                                  |                                              |
+]]></artwork>
+      </figure>
+
       </section>
 
       <section title="Validating a Trust Chain" anchor="trust_chain_validation">
@@ -6197,6 +6253,9 @@ Host: op.umu.se
           </t>
           <t>
             Fixed #1779: Entity Type as defined term.
+          </t>
+          <t>
+            Added Sequence Diagram representing a Federation Entity Discovery and metadata evaluation.
           </t>
         </list>
       </t>
