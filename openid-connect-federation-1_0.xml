@@ -4125,7 +4125,6 @@ HTTP/1.1 302 Found
                     to make its Federation Entity Discovery procedure more efficient,
                     especially if the RP shows more than a single authority
                     hint in its Entity Configuration.
-
                   </t>
                   <t>
                     At this point, if there already exists a client
@@ -4137,24 +4136,23 @@ HTTP/1.1 302 Found
                     archived data.
                   </t>
                   <t>
-                    The OP will now construct metadata policies and assertions
-                    that, if applied to the RP's metadata statement, will result
-                    in metadata that the OP finds acceptable.
-                    Note
-                    that the Client ID the OP chooses does not have to be
-                    the same as the Entity Identifier of the RP.
-                    It MUST add a
-                    <spanx style="verb">trust_anchor_id</spanx> claim
-                    to the Entity Statement that contains the Trust Anchor chosen in step 2.
+                    The OP will now construct an Entity Statement with metadata
+                    policies and assertions that when applied to the RP's
+                    metadata statement will result in metadata that the OP
+                    finds acceptable. Note that the Client ID the OP chooses
+                    does not have to be the Entity Identifier of the RP. The
+                    Entity Statement MUST include a
+                    <spanx style="verb">trust_anchor_id</spanx> claim and a
+                    single-valued <spanx style="verb">authority_hints</spanx>
+                    claim that correspond to the Trust Chain chosen in step 2.
                   </t>
                   <t>
-                    It will sign and return the registration response (a signed
-                    Entity Statement) to the RP.
+                    The OP will sign the Entity Statement and return it as the
+                    registration response to the RP.
                   </t>
-
                   <t>
-                    A successful response MUST use the HTTP status code 200
-                    and the content type set to
+                    A successful response MUST have an HTTP status code 200 and
+                    a content type set to
                     <spanx style="verb">application/entity-statement+jwt</spanx>.
                   </t>
                   <t>
@@ -6279,6 +6277,10 @@ Host: op.umu.se
       <t>
         -27
         <list style="symbols">
+          <t>
+            Fixed #1756: Clarified that the authority_hints in the Entity
+            Statement of an explicit registration response is single-valued.
+          </t>
           <t>
             Added text about the usage of metadata besides metadata_policy.
           </t>
