@@ -880,7 +880,8 @@
             "authorization_code",
             "implicit"
           ],
-          "signed_jwks_uri":"https://openid.sunet.se/rp/signed_jwks.jose"
+          "signed_jwks_uri":"https://openid.sunet.se/rp/signed_jwks.jose",
+          "jwks_uri": "https://openid.sunet.se/rp/signed_jwks.json"
         }
       },
       "jwks": {
@@ -2995,21 +2996,21 @@ Content-Type: application/json
         </t>
         <t>
           The purpose of this endpoint is to provide
-          the list of keys previously used by the Federation Entity 
+          the list of keys previously used by the Federation Entity
           in order to provide non-repudiation of statements signed by
-          it after key rotation. This endpoint also discloses the 
-          reason for the retraction of the keys, whether they were 
+          it after key rotation. This endpoint also discloses the
+          reason for the retraction of the keys, whether they were
           expired or revoked, including the reason for the revocation.
         </t>
         <t>
-          Note that an expired key can be later additionally marked as 
-          revoked, to indicate a key compromise event discovered 
+          Note that an expired key can be later additionally marked as
+          revoked, to indicate a key compromise event discovered
           after the expiration of the key.
         </t>
         <t>
-          The publishing of the historical keys guarantees that Trust Chains 
-          will remain verifiable and usable as inputs to trust decisions 
-          after the key expiration, unless the key becomes revoked 
+          The publishing of the historical keys guarantees that Trust Chains
+          will remain verifiable and usable as inputs to trust decisions
+          after the key expiration, unless the key becomes revoked
           for a security reason.
         </t>
 
@@ -3093,13 +3094,13 @@ Host: trust-anchor.example.com
                     </t>
                     <t hangText="revoked">
                       <vspace/>
-                      OPTIONAL. JSON object that contains the 
-                      properties of the revocation, defined below. 
+                      OPTIONAL. JSON object that contains the
+                      properties of the revocation, defined below.
                       <t>
                       <list style="hanging">
                         <t hangText="revoked_at">
                           <vspace/>
-                          REQUIRED. Time at which the key was revoked 
+                          REQUIRED. Time at which the key was revoked
                           or must be considered revoked,
                           using the time format defined for the
                           <spanx style="verb">iat</spanx> claim in
@@ -3109,21 +3110,21 @@ Host: trust-anchor.example.com
                         <t hangText="reason">
                           <vspace/>
                           REQUIRED. Human readable value
-                          that identifies the reason 
+                          that identifies the reason
                           for the key revocation, as defined in
                           Section 5.3.1 of <xref target="RFC5280"/>.
                         </t>
 
                         <t hangText="reason_code">
                           <vspace/>
-                          REQUIRED. Integer that identifies the reason 
+                          REQUIRED. Integer that identifies the reason
                           for the key revocation, as defined in
                           Section 5.3.1 of <xref target="RFC5280"/>.
                         </t>
 
                       </list>
                       </t>
-                      
+
                     </t>
                   </list>
                 </t>
@@ -3164,7 +3165,7 @@ Content-Type: application/jwk-set+jwt
                   "revoked_at": 123972495172,
                   "reason": "keyCompromise",
                   "reason_code": 1
-                } 
+                }
             }
         ]
 }
