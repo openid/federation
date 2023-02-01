@@ -218,6 +218,15 @@
               An Entity defined by a protocol,
               e.g., OpenID Connect Relying Party or Provider.
             </t>
+            <t hangText="Subordinate Entity">
+              <vspace/>
+                An Entity recognized by the Trust Anchor or its Intermediary, 
+                which does not necessarily appear to be of the Leaf type. 
+                A Subordinate Entity can in turn be Intermediary for 
+                another Entity, either Intermediary or Leaf. 
+                A Subordinate Entity is accredited to a superior 
+                Entity, for which it is its Subordinate.
+            </t>
             <t hangText="Trust Anchor">
               <vspace/>
               An Entity that represents a trusted third party.
@@ -410,10 +419,10 @@
               then the Entity Statement MUST contain a
               <spanx style="verb">metadata</spanx> claim.
               In some cases, a superior may want to be explicit about what metadata
-              should be used for a subordinate. In that case
+              should be used for a Subordinate. In that case
               <spanx style="verb">metadata</spanx> can be used. If
               <spanx style="verb">metadata</spanx> is used it is only valid for the
-              subject of the Entity Statement and has no impact on its subordinates.
+              subject of the Entity Statement and has no impact on its Subordinates.
               If a <spanx style="verb">metadata</spanx> claim appears beside a
               <spanx style="verb">metadata_policy</spanx> claim in an
               Entity Statement, then for each Entity Type, claims that appear in
@@ -661,7 +670,7 @@
         <t>
           A Trust Chain begins with a Leaf Entity Configuration,
           and has zero or more Entity Statements
-          issued by Intermediates about subordinates,
+          issued by Intermediates about Subordinates,
           including the Entity Statement issued by the
           Trust Anchor about the top-most Intermediate
           (if there are Intermediates) or the Leaf Entity
@@ -1333,7 +1342,7 @@
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
         <t>
-          An Entity can publish metadata policies pertaining to subordinate
+          An Entity can publish metadata policies pertaining to Subordinate
           Entities of a specific type. Entity Type identifiers specified in
           this document can be found in <xref target="metadata"/>.
         </t>
@@ -1610,13 +1619,13 @@
                 <t hangText="essential">
                   <vspace/>
                   If a superior has specified <spanx style="verb">essential=true</spanx>,
-                  then a subordinate
+                  then a Subordinate
                   cannot change that. If a superior has specified
                   <spanx style="verb">essential=false</spanx>, then a
-                  subordinate is allowed to change that to
+                  Subordinate is allowed to change that to
                   <spanx style="verb">essential=true</spanx>.
                   If a superior has not specified
-                  <spanx style="verb">essential</spanx>, then a subordinate
+                  <spanx style="verb">essential</spanx>, then a Subordinate
                   can set <spanx style="verb">essential</spanx> to
                   <spanx style="verb">true</spanx> or <spanx style="verb">false</spanx>.
                 </t>
@@ -1924,12 +1933,12 @@
 ]]></artwork>
         </figure>
         <t>
-          If a subordinate Entity Statement contains a constraint specification
+          If a Subordinate Entity Statement contains a constraint specification
           that is more restrictive than the one in effect, then the more
           restrictive constraint is in effect from here on.
         </t>
         <t>
-          If a subordinate Entity Statement contains a constraint specification
+          If a Subordinate Entity Statement contains a constraint specification
           that is less restrictive than the one in effect, then it MUST be
           ignored.
         </t>
@@ -1993,7 +2002,7 @@
           <t>
             The <spanx style="verb">naming_constraints</spanx> member
             specifies a namespace within which all subject
-            Entity Identifiers in subordinate Entity Statements in a Trust Chain
+            Entity Identifiers in Subordinate Entity Statements in a Trust Chain
             MUST be located.
           </t>
           <t>
@@ -2798,7 +2807,7 @@ Host: openid.sunet.se
             
             However, Entities may establish a kind of
             transistive trust in other Entities. For example, the 
-            Trust Anchor states who its subordinates are
+            Trust Anchor states who its Subordinates are
             and Entities may choose to trust these.
 
             If a party uses the resolve service of another Entity
@@ -2812,7 +2821,7 @@ Host: openid.sunet.se
       <section title="Entity Listings" anchor="entity_listing">
         <t>
           An Entity MAY query another Entity for a list of all the
-          Entities immediately subordinate to that Entity and about which
+          Entities immediately Subordinate to that Entity and about which
           that Entity is prepared to issue statements.
           (In some cases, this MAY be a very large list.)
         </t>
@@ -2829,7 +2838,7 @@ Host: openid.sunet.se
               <t hangText="entity_type">
                 <vspace/>
                 OPTIONAL. If the responder knows the
-                metadata type identifier of all its subordinates,
+                metadata type identifier of all its Subordinates,
                 the result MUST be filtered accordingly.
                 If the responder does not support this feature it MUST
                 use the HTTP status code 400 and set the content type to
@@ -3583,7 +3592,7 @@ Content-Type: application/json
             <t>
               Keep signing the Entity Configuration and the Entity Statements using
               the old keys for a long enough time period to allow all
-              subordinates to have gotten access to the new keys.
+              Subordinates to have gotten access to the new keys.
             </t>
             <t>
               Switch to signing with the new keys.
@@ -5284,7 +5293,7 @@ HTTP/1.1 302 Found
             </t>
             <t>
               Using the fetch endpoint of the superiors to
-              ask for information about the subordinate Entity
+              ask for information about the Subordinate Entity
               <xref target="fetch_statement"/>.
             </t>
           </list>
@@ -5297,7 +5306,7 @@ HTTP/1.1 302 Found
         </t>
         <t>
           When building the Trust Chain, the Entity Statements issued
-          by a superior about its subordinate are used together with the
+          by a superior about its Subordinate are used together with the
           Entity Configuration issued by the Leaf.
         </t>
         <t>
@@ -5773,7 +5782,7 @@ Host: geant.org
           </t>
           <t>Combining the metadata policies from the tree Entity Statements we
             have by
-            a superior about its subordinate and applying the combined policy
+            a superior about its Subordinate and applying the combined policy
             to the
             metadata statement that the Leaf Entity presented, we get:
           </t>
