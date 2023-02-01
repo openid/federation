@@ -279,7 +279,7 @@
         until the Trust Anchor is reached.
       </t>
       <t>
-        The Trust Anchor and its intermediaries issue Entity Statements
+        The Trust Anchor and its Intermediates issue Entity Statements
         about their Subordinates. The sequence of Entity Configurations
         and Entity Statements that validate the relationship between
         a superior and a Subordinate, along a path towards the Trust Anchor,
@@ -405,7 +405,7 @@
             </t>
             <t hangText="metadata">
               <vspace/>
-              REQUIRED Conditional. JSON object including
+              REQUIRED Conditional. JSON object that includes
               protocol-specific metadata claims that represent the 
               Entity's Type and metadata.
 
@@ -435,9 +435,10 @@
               a metadata policy.
               A <spanx style="verb">metadata_policy</spanx> applies to the Entity described in this
               Entity Statement as well as to all Entities that appear beneath the
-              Entity described in this Entity Statement. This distinguishes
+              Entity described in this Entity Statement. 
+              Applying to Subordinate Entities distinguishes
               <spanx style="verb">metadata_policy</spanx> from
-              <spanx style="verb">metadata</spanx> which only applies to the
+              <spanx style="verb">metadata</spanx>, which only applies to the
               subject itself.
               Each key of the JSON object represents a metadata type
               identifier, and each value MUST be a JSON object representing
@@ -1024,11 +1025,11 @@
               to established standards and not in conflict with the operating
               principles of this specification.
               In OpenID Connect Core, no client authentication is performed at the authentication
-              endpoint. Instead, because the request itself is authenticated.
-              What it amounts to is that the OP maps
+              endpoint. Instead, the request itself is authenticated.
+              The OP maps
               information in the request (like the redirect_uri) to information it has gained
               on the client through static or dynamic registration.
-              If the map is successful, the request can be processed.
+              If the mapping is successful, the request can be processed.
               If the RP uses Automatic Registration, as defined in <xref target="automatic"/>,
               the OP has no prior knowledge
               of the RP. Therefore, the OP must start by gathering
@@ -1040,7 +1041,7 @@
               a client authentication or verification method that proves that
               the RP is in possession of a key that appears in the RP's metadata.
               <vspace/>
-              Client authentication methods are, for instance:
+              Client authentication methods that MAY be used include:
               <list style="hanging">
                 <t hangText="private_key_jwt">
                   <vspace/>
@@ -1342,7 +1343,7 @@
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
         <t>
-          An Entity can publish metadata policies pertaining to Subordinate
+          An Entity MAY publish metadata policies pertaining to Subordinate
           Entities of a specific type. Entity Type identifiers specified in
           this document can be found in <xref target="metadata"/>.
         </t>
@@ -1425,6 +1426,10 @@
           <t>
             Value checks are:
             <list style="hanging">
+              <t hangText="essential">
+                <vspace/>
+                If <spanx style="verb">true</spanx>, then the parameter MUST have a value.
+              </t>
               <t hangText="one_of">
                 <vspace/>
                 The value of the metadata parameter MUST be one of those listed
@@ -1450,10 +1455,6 @@
                 becomes optional when the directive occurs in conjunction with
                 an <spanx style="verb">essential</spanx> set to
                 <spanx style="verb">false</spanx>.
-              </t>
-              <t hangText="essential">
-                <vspace/>
-                If <spanx style="verb">true</spanx>, then the parameter MUST have a value.
               </t>
             </list>
           </t>
@@ -1486,7 +1487,7 @@
                 while <spanx style="verb">one_of</spanx> applies to
                 parameters that can only have one value (for instance,
                 <spanx style="verb">id_token_signed_response_alg</spanx>).
-                This means that <spanx style="verb">one_of</spanx> cannot
+                Therefore, <spanx style="verb">one_of</spanx> cannot
                 appear beside
                 <spanx style="verb">subset_of</spanx>/
                 <spanx style="verb">superset_of</spanx>
@@ -1953,7 +1954,7 @@
           <t>
             A <spanx style="verb">max_path_length</spanx> constraint of zero
             indicates that no
-            intermediaries MAY appear between this Entity and the
+            Intermediates MAY appear between this Entity and the
             Leaf Entity. Where it appears, the
             <spanx style="verb">max_path_length</spanx> constraint
             MUST have a value greater than or equal to zero.
@@ -2116,7 +2117,7 @@
           </t>
           <t>
             Other claims MAY be used in conjunction with the claims outlined above.
-            The claim naming recommendations outlined in Section 5.1.2 of
+            The recommendations for claim naming described in Section 5.1.2 of
             <xref target="OpenID.Core">OpenID Connect Core 1.0</xref> apply.
           </t>
         </section>
@@ -2918,10 +2919,10 @@ Content-Type: application/json
                 <vspace/>
                 OPTIONAL. When the Trust Mark was issued. If
                 <spanx style="verb">iat</spanx> is not specified and the
-                trust issuer have issued several Trust Marks with the
+                Trust Mark Issuer has issued several Trust Marks with the
                 <spanx style="verb">id</spanx> specified in the request to the
-                Entity identified by <spanx style="verb">sub</spanx>; the
-                last one is assumed.
+                Entity identified by <spanx style="verb">sub</spanx>, the
+                most recent one is assumed.
               </t>
               <t hangText="trust_mark">
                 <vspace/>
@@ -3232,7 +3233,7 @@ Content-Type: application/jwk-set+jwt
 
             <t>
               A simple example: In the following Trust Chain the
-              Federation Intermediary attests the Leaf's OpenID Connect
+              Federation Intermediate attests the Leaf's OpenID Connect
               <spanx style="verb">jwks</spanx>
               in the Entity Statement issued for the Leaf. The result is
               a Trust Chain that contains the Leaf's OIDC Core jwks,
@@ -5003,8 +5004,8 @@ HTTP/1.1 302 Found
           could exploit the Federation Entity Discovery mechanism and use an OIDC Federation
           to propagate many HTTP requests. For each authorization request crafted
           by an anonymous client, the OP would produce approximately three HTTP requests to third parties
-          in the absence of intermediaries, and at least five HTTP requests with at
-          least one intermediary. If an OP doesn't find at least one
+          in the absence of Intermediates, and at least five HTTP requests with at
+          least one Intermediate. If an OP doesn't find at least one
           valid Trust Mark in an Entity Configuration, it should reject the request and
           temporary ban the requestor.
         </t>
@@ -5131,6 +5132,15 @@ HTTP/1.1 302 Found
         </front>
       </reference>
 
+    </references>
+
+    <references title="Informative References">
+      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2046.xml"?>
+      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6749.xml"?>
+      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"?>
+      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8725.xml"?>
+      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8446.xml"?>
+
       <reference anchor="IANA.Language" target="https://www.iana.org/assignments/language-subtag-registry">
         <front>
           <title>Language Subtag Registry</title>
@@ -5140,15 +5150,6 @@ HTTP/1.1 302 Found
           <date/>
         </front>
       </reference>
-
-    </references>
-
-    <references title="Informative References">
-      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2046.xml"?>
-      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6749.xml"?>
-      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"?>
-      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8725.xml"?>
-      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8446.xml"?>
 
       <reference anchor="IANA.OAuth.Parameters" target="http://www.iana.org/assignments/oauth-parameters">
         <front>
