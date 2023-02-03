@@ -182,6 +182,10 @@
               <vspace/>
               A globally unique URI that is bound to one Entity.
             </t>
+            <t hangText="Trust Anchor">
+              <vspace/>
+              An Entity that represents a trusted third party.
+            </t>
             <t hangText="Entity Statement">
               <vspace/>
               A signed JWT that contains the information needed
@@ -212,15 +216,19 @@
               An Entity that issues
               an Entity Statement appearing somewhere in between those
               issued by the Trust Anchor and the Leaf Entity in a Trust Chain.
+              The terms Intermediate Entity and Intermediary are used 
+              interchangeably in this specification.
             </t>
             <t hangText="Leaf Entity">
               <vspace/>
               An Entity defined by a protocol,
               e.g., OpenID Connect Relying Party or Provider.
             </t>
-            <t hangText="Trust Anchor">
+            <t hangText="Subordinate Entity">
               <vspace/>
-              An Entity that represents a trusted third party.
+                An Entity accredited by a Trust Anchor or an Intermediate Entity, 
+                which can be a Leaf Entity but also an Entity that acts as 
+                Intermediate for other Entities.
             </t>
             <t hangText="Federation Entity Discovery">
               <vspace/>
@@ -270,10 +278,10 @@
         until the Trust Anchor is reached.
       </t>
       <t>
-        The Trust Anchor and its intermediaries issue Entity Statements
-        about their descendants. The sequence of Entity Configurations
+        The Trust Anchor and its Intermediates issue Entity Statements
+        about their Subordinates. The sequence of Entity Configurations
         and Entity Statements that validate the relationship between
-        a superior and a descendant, along a path towards the Trust Anchor,
+        a superior and a Subordinate, along a path towards the Trust Anchor,
         forms the proof that a Leaf Entity is part of
         the Federation configured by the Trust Anchor.
       </t>
@@ -396,8 +404,8 @@
             </t>
             <t hangText="metadata">
               <vspace/>
-              REQUIRED Conditional. JSON object including
-              protocol-specific metadata claims that represent the
+              REQUIRED Conditional. JSON object that includes
+              protocol-specific metadata claims that represent the 
               Entity's Type and metadata.
 
               Each key of the JSON object represents a metadata type
@@ -410,10 +418,10 @@
               then the Entity Statement MUST contain a
               <spanx style="verb">metadata</spanx> claim.
               In some cases, a superior may want to be explicit about what metadata
-              should be used for a subordinate. In that case
+              should be used for a Subordinate. In that case
               <spanx style="verb">metadata</spanx> can be used. If
               <spanx style="verb">metadata</spanx> is used it is only valid for the
-              subject of the Entity Statement and has no impact on its subordinates.
+              subject of the Entity Statement and has no impact on its Subordinates.
               If a <spanx style="verb">metadata</spanx> claim appears beside a
               <spanx style="verb">metadata_policy</spanx> claim in an
               Entity Statement, then for each Entity Type, claims that appear in
@@ -426,9 +434,10 @@
               a metadata policy.
               A <spanx style="verb">metadata_policy</spanx> applies to the Entity described in this
               Entity Statement as well as to all Entities that appear beneath the
-              Entity described in this Entity Statement. This distinguishes
+              Entity described in this Entity Statement. 
+              Applying to Subordinate Entities distinguishes
               <spanx style="verb">metadata_policy</spanx> from
-              <spanx style="verb">metadata</spanx> which only applies to the
+              <spanx style="verb">metadata</spanx>, which only applies to the
               subject itself.
               Each key of the JSON object represents a metadata type
               identifier, and each value MUST be a JSON object representing
@@ -661,7 +670,7 @@
         <t>
           A Trust Chain begins with a Leaf Entity Configuration,
           and has zero or more Entity Statements
-          issued by Intermediates about subordinates,
+          issued by Intermediates about Subordinates,
           including the Entity Statement issued by the
           Trust Anchor about the top-most Intermediate
           (if there are Intermediates) or the Leaf Entity
@@ -1015,11 +1024,11 @@
               to established standards and not in conflict with the operating
               principles of this specification.
               In OpenID Connect Core, no client authentication is performed at the authentication
-              endpoint. Instead, because the request itself is authenticated.
-              What it amounts to is that the OP maps
+              endpoint. Instead, the request itself is authenticated.
+              The OP maps
               information in the request (like the redirect_uri) to information it has gained
               on the client through static or dynamic registration.
-              If the map is successful, the request can be processed.
+              If the mapping is successful, the request can be processed.
               If the RP uses Automatic Registration, as defined in <xref target="automatic"/>,
               the OP has no prior knowledge
               of the RP. Therefore, the OP must start by gathering
@@ -1031,7 +1040,7 @@
               a client authentication or verification method that proves that
               the RP is in possession of a key that appears in the RP's metadata.
               <vspace/>
-              Client authentication methods are, for instance:
+              Client authentication methods that MAY be used include:
               <list style="hanging">
                 <t hangText="private_key_jwt">
                   <vspace/>
@@ -1333,7 +1342,7 @@
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
         <t>
-          An Entity can publish metadata policies pertaining to subordinate
+          An Entity MAY publish metadata policies pertaining to Subordinate
           Entities of a specific type. Entity Type identifiers specified in
           this document can be found in <xref target="metadata"/>.
         </t>
@@ -1416,6 +1425,10 @@
           <t>
             Value checks are:
             <list style="hanging">
+              <t hangText="essential">
+                <vspace/>
+                If <spanx style="verb">true</spanx>, then the parameter MUST have a value.
+              </t>
               <t hangText="one_of">
                 <vspace/>
                 The value of the metadata parameter MUST be one of those listed
@@ -1441,10 +1454,6 @@
                 becomes optional when the directive occurs in conjunction with
                 an <spanx style="verb">essential</spanx> set to
                 <spanx style="verb">false</spanx>.
-              </t>
-              <t hangText="essential">
-                <vspace/>
-                If <spanx style="verb">true</spanx>, then the parameter MUST have a value.
               </t>
             </list>
           </t>
@@ -1477,7 +1486,7 @@
                 while <spanx style="verb">one_of</spanx> applies to
                 parameters that can only have one value (for instance,
                 <spanx style="verb">id_token_signed_response_alg</spanx>).
-                This means that <spanx style="verb">one_of</spanx> cannot
+                Therefore, <spanx style="verb">one_of</spanx> cannot
                 appear beside
                 <spanx style="verb">subset_of</spanx>/
                 <spanx style="verb">superset_of</spanx>
@@ -1610,13 +1619,13 @@
                 <t hangText="essential">
                   <vspace/>
                   If a superior has specified <spanx style="verb">essential=true</spanx>,
-                  then a subordinate
+                  then a Subordinate
                   cannot change that. If a superior has specified
                   <spanx style="verb">essential=false</spanx>, then a
-                  subordinate is allowed to change that to
+                  Subordinate is allowed to change that to
                   <spanx style="verb">essential=true</spanx>.
                   If a superior has not specified
-                  <spanx style="verb">essential</spanx>, then a subordinate
+                  <spanx style="verb">essential</spanx>, then a Subordinate
                   can set <spanx style="verb">essential</spanx> to
                   <spanx style="verb">true</spanx> or <spanx style="verb">false</spanx>.
                 </t>
@@ -1924,12 +1933,12 @@
 ]]></artwork>
         </figure>
         <t>
-          If a subordinate Entity Statement contains a constraint specification
+          If a Subordinate Entity Statement contains a constraint specification
           that is more restrictive than the one in effect, then the more
           restrictive constraint is in effect from here on.
         </t>
         <t>
-          If a subordinate Entity Statement contains a constraint specification
+          If a Subordinate Entity Statement contains a constraint specification
           that is less restrictive than the one in effect, then it MUST be
           ignored.
         </t>
@@ -1944,7 +1953,7 @@
           <t>
             A <spanx style="verb">max_path_length</spanx> constraint of zero
             indicates that no
-            intermediaries MAY appear between this Entity and the
+            Intermediates MAY appear between this Entity and the
             Leaf Entity. Where it appears, the
             <spanx style="verb">max_path_length</spanx> constraint
             MUST have a value greater than or equal to zero.
@@ -1993,7 +2002,7 @@
           <t>
             The <spanx style="verb">naming_constraints</spanx> member
             specifies a namespace within which all subject
-            Entity Identifiers in subordinate Entity Statements in a Trust Chain
+            Entity Identifiers in Subordinate Entity Statements in a Trust Chain
             MUST be located.
           </t>
           <t>
@@ -2107,7 +2116,7 @@
           </t>
           <t>
             Other claims MAY be used in conjunction with the claims outlined above.
-            The claim naming recommendations outlined in Section 5.1.2 of
+            The recommendations for claim naming described in Section 5.1.2 of
             <xref target="OpenID.Core">OpenID Connect Core 1.0</xref> apply.
           </t>
         </section>
@@ -2797,8 +2806,8 @@ Host: openid.sunet.se
             and its own capabilities.
 
             However, Entities may establish a kind of
-            transistive trust in other Entities. For example, the
-            Trust Anchor states who its subordinates are
+            transistive trust in other Entities. For example, the 
+            Trust Anchor states who its Subordinates are
             and Entities may choose to trust these.
 
             If a party uses the resolve service of another Entity
@@ -2812,7 +2821,7 @@ Host: openid.sunet.se
       <section title="Entity Listings" anchor="entity_listing">
         <t>
           An Entity MAY query another Entity for a list of all the
-          Entities immediately subordinate to that Entity and about which
+          Entities immediately Subordinate to that Entity and about which
           that Entity is prepared to issue statements.
           (In some cases, this MAY be a very large list.)
         </t>
@@ -2829,7 +2838,7 @@ Host: openid.sunet.se
               <t hangText="entity_type">
                 <vspace/>
                 OPTIONAL. If the responder knows the
-                metadata type identifier of all its subordinates,
+                metadata type identifier of all its Subordinates,
                 the result MUST be filtered accordingly.
                 If the responder does not support this feature it MUST
                 use the HTTP status code 400 and set the content type to
@@ -2909,10 +2918,10 @@ Content-Type: application/json
                 <vspace/>
                 OPTIONAL. When the Trust Mark was issued. If
                 <spanx style="verb">iat</spanx> is not specified and the
-                trust issuer have issued several Trust Marks with the
+                Trust Mark Issuer has issued several Trust Marks with the
                 <spanx style="verb">id</spanx> specified in the request to the
-                Entity identified by <spanx style="verb">sub</spanx>; the
-                last one is assumed.
+                Entity identified by <spanx style="verb">sub</spanx>, the
+                most recent one is assumed.
               </t>
               <t hangText="trust_mark">
                 <vspace/>
@@ -3222,7 +3231,7 @@ Content-Type: application/jwk-set+jwt
 
             <t>
               A simple example: In the following Trust Chain the
-              Federation Intermediary attests the Leaf's OpenID Connect
+              Federation Intermediate attests the Leaf's OpenID Connect
               <spanx style="verb">jwks</spanx>
               in the Entity Statement issued for the Leaf. The result is
               a Trust Chain that contains the Leaf's OIDC Core jwks,
@@ -3582,7 +3591,7 @@ Content-Type: application/json
             <t>
               Keep signing the Entity Configuration and the Entity Statements using
               the old keys for a long enough time period to allow all
-              subordinates to have gotten access to the new keys.
+              Subordinates to have gotten access to the new keys.
             </t>
             <t>
               Switch to signing with the new keys.
@@ -4994,8 +5003,8 @@ HTTP/1.1 302 Found
           could exploit the Federation Entity Discovery mechanism and use an OIDC Federation
           to propagate many HTTP requests. For each authorization request crafted
           by an anonymous client, the OP would produce approximately three HTTP requests to third parties
-          in the absence of intermediaries, and at least five HTTP requests with at
-          least one intermediary. If an OP doesn't find at least one
+          in the absence of Intermediates, and at least five HTTP requests with at
+          least one Intermediate. If an OP doesn't find at least one
           valid Trust Mark in an Entity Configuration, it should reject the request and
           temporary ban the requestor.
         </t>
@@ -5122,6 +5131,15 @@ HTTP/1.1 302 Found
         </front>
       </reference>
 
+    </references>
+
+    <references title="Informative References">
+      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2046.xml"?>
+      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6749.xml"?>
+      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"?>
+      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8725.xml"?>
+      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8446.xml"?>
+
       <reference anchor="IANA.Language" target="https://www.iana.org/assignments/language-subtag-registry">
         <front>
           <title>Language Subtag Registry</title>
@@ -5131,15 +5149,6 @@ HTTP/1.1 302 Found
           <date/>
         </front>
       </reference>
-
-    </references>
-
-    <references title="Informative References">
-      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2046.xml"?>
-      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6749.xml"?>
-      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"?>
-      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8725.xml"?>
-      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.8446.xml"?>
 
       <reference anchor="IANA.OAuth.Parameters" target="http://www.iana.org/assignments/oauth-parameters">
         <front>
@@ -5284,7 +5293,7 @@ HTTP/1.1 302 Found
             </t>
             <t>
               Using the fetch endpoint of the superiors to
-              ask for information about the subordinate Entity
+              ask for information about the Subordinate Entity
               <xref target="fetch_statement"/>.
             </t>
           </list>
@@ -5297,7 +5306,7 @@ HTTP/1.1 302 Found
         </t>
         <t>
           When building the Trust Chain, the Entity Statements issued
-          by a superior about its subordinate are used together with the
+          by a superior about its Subordinate are used together with the
           Entity Configuration issued by the Leaf.
         </t>
         <t>
@@ -5773,7 +5782,7 @@ Host: geant.org
           </t>
           <t>Combining the metadata policies from the tree Entity Statements we
             have by
-            a superior about its subordinate and applying the combined policy
+            a superior about its Subordinate and applying the combined policy
             to the
             metadata statement that the Leaf Entity presented, we get:
           </t>
@@ -6308,6 +6317,9 @@ Host: op.umu.se
           </t>
           <t>
             Fixed #1757: Federation Historical Keys endpoint support for revocation status. Endpoint enabled for all the Federation Entities.
+          </t>
+          <t>
+            Fixed #1803: Subordinate is a defined term and other small editorial changes after Heather's revision.
           </t>
         </list>
       </t>
