@@ -1410,7 +1410,7 @@
                 The specified value or values MUST be added to the metadata
                 parameter. If any of the specified values are already present
                 as values of the parameter, they MUST NOT be added. If the
-                parameter has no value, then the parameter MUST BE initialized
+                parameter has no value, then the parameter MUST be initialized
                 with the specified value(s).
               </t>
 
@@ -1428,6 +1428,12 @@
               <t hangText="essential">
                 <vspace/>
                 If <spanx style="verb">true</spanx>, then the parameter MUST have a value.
+                If the value is false, it indicates that it is a Voluntary Claim, 
+                as defined in Section 5.5.1 of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
+                The default is <spanx style="verb">false</spanx>, so 
+                if it is missing as an operator, 
+                essential is to be treated as if set to 
+                <spanx style="verb">false</spanx>.
               </t>
               <t hangText="one_of">
                 <vspace/>
@@ -1619,13 +1625,13 @@
                 <t hangText="essential">
                   <vspace/>
                   If a superior has specified <spanx style="verb">essential=true</spanx>,
-                  then a Subordinate
+                  then an Intermediate
                   cannot change that. If a superior has specified
                   <spanx style="verb">essential=false</spanx>, then a
-                  Subordinate is allowed to change that to
+                  Intermediate is allowed to change that to
                   <spanx style="verb">essential=true</spanx>.
                   If a superior has not specified
-                  <spanx style="verb">essential</spanx>, then a Subordinate
+                  <spanx style="verb">essential</spanx>, then a Intermediate
                   can set <spanx style="verb">essential</spanx> to
                   <spanx style="verb">true</spanx> or <spanx style="verb">false</spanx>.
                 </t>
@@ -1657,10 +1663,7 @@
                 <spanx style="verb">default</spanx> if there is one.
               </t>
               <t>
-                Do the essential check. If <spanx style="verb">essential</spanx> is
-                missing as an operator,
-                <spanx style="verb">essential</spanx>
-                is to be treated as if set to <spanx style="verb">false</spanx>.
+                Do the essential check. 
                 If <spanx style="verb">essential</spanx> is defined to be
                 <spanx style="verb">true</spanx>,
                 then the claim
