@@ -2559,7 +2559,9 @@ Content-Type: application/entity-statement+jwt
     ]
   },
   "metadata":{
-    "organization_name":"SUNET"
+    "federation_entity": {
+        "organization_name":"SUNET"
+    }
   }
   "metadata_policy": {
     "openid_provider": {
@@ -3758,7 +3760,7 @@ Content-Type: application/json
               </preamble>
               <artwork><![CDATA[
 {
-  "aud": "https://op.example.org/authorization",
+  "aud": "https://op.example.org",
   "client_id": "https://rp.example.com",
   "exp": 1589699162,
   "iat": 1589699102,
@@ -3789,24 +3791,26 @@ https://server.example.com/authorize?
     &scope=openid+profile+email+address+phone
     &response_type=code
     &client_id=https%3A%2F%2Frp.example.com
-    &request=eyJhbGciOiJSUzI1NiIsImtpZCI6IjJIbm9GUzNZbkM5dGppQ2FpdmhXTFZVSjNB
-      eHdHR3pfOTh1UkZhcU1FRXMifQ.eyJhdWQiOiJodHRwczovL29wLmV4YW1wbGUub
-      3JnL2F1dGhvcml6YXRpb24iLCJjbGllbnRfaWQiOiJodHRwczovL3JwLmV4YW1wb
-      GUuY29tIiwiZXhwIjoxNTg5Njk5MTYyLCJpYXQiOjE1ODk2OTkxMDIsImlzcyI6I
-      mh0dHBzOi8vcnAuZXhhbXBsZS5jb20iLCJqdGkiOiI0ZDNlYzBmODFmMTM0ZWU5Y
-      Tk3ZTA0NDliZTZkMzJiZSIsIm5vbmNlIjoiNExYMG1GTXhkQmprR210eDdhOFdJT
-      25CIiwicmVkaXJlY3RfdXJpIjoiaHR0cHM6Ly9ycC5leGFtcGxlLmNvbS9hdXRoe
-      l9jYiIsInJlc3BvbnNlX3R5cGUiOiJjb2RlIiwic2NvcGUiOiJvcGVuaWQgcHJvZ
-      mlsZSBlbWFpbCBhZGRyZXNzIHBob25lIiwic3RhdGUiOiJZbVg4UE05STdXYk5vT
-      W5uaWVLS0JpcHRWVzBzUDJPWiIsInN1YiI6Imh0dHBzOi8vcnAuZXhhbXBsZS5jb
-      20iLCJ0cnVzdF9wYXRoX2hpbnQiOlsiaHR0cHM6Ly9pbnRlcm1lZGlhcnktb25lL
-      m9yZyIsImh0dHBzOi8vaW50ZXJtZWRpYXJ5LXR3by5vcmciLCJodHRwczovL3Ryd
-      XN0LWFuY2hvci5vcmciXX0.yJz8KKF-TZPzxG1iKRkhldlVzn6NtNpgpFK0Bm93v
-      AGnDu6XxSfK1pHFOTYCnG8DH-c8k2QsL4zHQQjwVElcWJyNJKXUAkOhNufssJD09
-      6CizIjDdHuzMs9-LAJH6e7eKbsE_-17xY7JvtxZGLDNAx9Dm4gBEl7H_8U5SorGW
-      dSN8biVe3gySBivy7czrG2_afitpaEFMxDgy7wuU5aWKo9L1aaRSpcKpDHNq45Mz
-      Ir4JTaSzob0Eil8H-QYUqqQR-ob86_gy7bHFhQMN-0lfXHkIl3riCo2JlxnjLctf
-      IRa4r6OKgFMNDqPzGqgwPuXMbjhBTuJptUgsmbEwdsGYw
+    &request=eyJhbGciOiJSUzI1NiIsImtpZCI6IlVyMTBiTkt3TXBRSUZvTnQtTkp4RE9PY1hh
+      bHppMHNQLWdMSjAwZFJaalEifQ.eyJhdWQiOiJodHRwczovL29wLmV4YW1wbGUub
+      3JnIiwiY2xpZW50X2lkIjoiaHR0cHM6Ly9ycC5leGFtcGxlLmNvbSIsImV4cCI6M
+      TU4OTY5OTE2MiwiaWF0IjoxNTg5Njk5MTAyLCJpc3MiOiJodHRwczovL3JwLmV4Y
+      W1wbGUuY29tIiwianRpIjoiNGQzZWMwZjgxZjEzNGVlOWE5N2UwNDQ5YmU2ZDMyY
+      mUiLCJub25jZSI6IjRMWDBtRk14ZEJqa0dtdHg3YThXSU9uQiIsInJlZGlyZWN0X
+      3VyaSI6Imh0dHBzOi8vcnAuZXhhbXBsZS5jb20vYXV0aHpfY2IiLCJyZXNwb25zZ
+      V90eXBlIjoiY29kZSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwgYWRkc
+      mVzcyBwaG9uZSIsInN0YXRlIjoiWW1YOFBNOUk3V2JOb01ubmllS0tCaXB0Vlcwc
+      1AyT1oiLCJzdWIiOiJodHRwczovL3JwLmV4YW1wbGUuY29tIiwidHJ1c3RfY2hha
+      W4iOlsiZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNkltczFORWhSZEVScFlub
+      EhZM001V2xkV1RXWjJhVWhtIC4uLiIsImV5SmhiR2NpT2lKU1V6STFOaUlzSW10c
+      FpDSTZJa0pZZG1aeWJHNW9RVTExU0ZJd04yRnFWVzFCWTBKUyAuLi4iLCJleUpoY
+      kdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SWtKWWRtWnliRzVvUVUxMVNGSXdOMkZxV
+      lcxQlkwSlMgLi4uIl19.GQyzPEdaJ4qOzeUJyh-wU04GfiyFZTa2afk_VPX3mFmd
+      gLl1VTzlapbSipyNLGNu6M_iQup6zYsAdfZSBWjNN-ARws0A6qJfb06uaR2ILoE-
+      UtIKYJ_4NSnh3SLA_rW_MFS-flmZOf-YDvarbShh0-ashcH5L_D7ZGwDSTMlw4ll
+      laiELKqggdXpVG6vz6itYOvTLo-2vipFeTSK0bZYs22ozAv6-npZlQO2_IZbvyXv
+      S6IAgyw9dRIYZSUXoS2g0nJgBIMsnor2CFY79VH2iRMwi34K2R3hGA9jHqDtom5R
+      DR5NraOtD06F5gPgB4vORG567hFkTq7uhtnz0W_21A
 ]]></artwork>
             </figure>
             <section title="Processing the Authentication Request" anchor="AuthzRequestProcessing">
