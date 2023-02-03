@@ -202,9 +202,9 @@
             <t hangText="Entity Type">
               <vspace/>
               The type of an Entity expresses its roles and functions
-              within a federation. An Entity MUST be of at 
-              least one type and MAY be of many types. 
-              For example, an Entity can be both an OpenID Provider 
+              within a federation. An Entity MUST be of at
+              least one type and MAY be of many types.
+              For example, an Entity can be both an OpenID Provider
               and Relying Party at the same time.
             </t>
             <t hangText="Federation Operator">
@@ -250,9 +250,9 @@
               as determined by an accreditation authority.
             </t>
             <t hangText="Federation Entity Keys">
-              Keys used for all the cryptogaphic signatures required by  
+              Keys used for all the cryptogaphic signatures required by
               the trust mechanisms defined in this document.
-              Every participant in a Federation publishes its 
+              Every participant in a Federation publishes its
               Federation Entity Keys in its Entity Configuration.
             </t>
           </list>
@@ -397,7 +397,7 @@
               the Entity Identifiers of Intermediate Entities or Trust Anchors
               that MAY issue an Entity Statement about the issuer Entity.
               For all Entities except for Trust Anchors that do not have any
-              superiors, this is REQUIRED and MUST NOT be the empty list 
+              superiors, this is REQUIRED and MUST NOT be the empty list
               <spanx style="verb">[]</spanx>.
               This claim MUST be absent from an
               Entity Configuration issued by a Trust Anchor with no superiors.
@@ -717,7 +717,7 @@
               ES[j]['iss'] == ES[j+1]['sub'], j=0,...,i-1 .
             </t>
             <t>
-              There MUST always be a 
+              There MUST always be a
               Federation Entity Key carried in the
               <spanx style="verb">jwks</spanx>
               claim in
@@ -743,7 +743,7 @@
         This specification allows new metadata
         types to be defined to support use cases outside OpenID Connect
         federations.
-        The metadata type identifier uniquely identifies the Entity Type 
+        The metadata type identifier uniquely identifies the Entity Type
         of the participants and which metadata specification to utilize.
       </t>
       <t>
@@ -889,8 +889,8 @@
             "authorization_code",
             "implicit"
           ],
-          "signed_jwks_uri": "https://openid.sunet.se/rp/jwks.jose",
-          "jwks_uri":"https://openid.sunet.se/rp/signed_jwks.json"
+          "signed_jwks_uri":"https://openid.sunet.se/rp/signed_jwks.jose",
+          "jwks_uri": "https://openid.sunet.se/rp/jwks.json"
         }
       },
       "jwks": {
@@ -2036,7 +2036,7 @@
       <section title="Trust Marks" anchor="trust_marks">
         <t>
           The Trust Marks used by this specification are
-          signed JWTs.  
+          signed JWTs.
         </t>
 
         <t>
@@ -2047,10 +2047,10 @@
         <t>
           The key used by the Trust Mark
           Issuer to sign its Trust Marks MUST be one of the private keys
-          related to its 
+          related to its
           <spanx style="verb">Federation Entity Keys</spanx>.
         </t>
-        
+
         <t>
           Note that a federation MAY allow an Entity to self-sign
           some Trust Marks.
@@ -2801,10 +2801,10 @@ Host: openid.sunet.se
 
         <section title="Considerations">
           <t>
-            The basic assumption of this specification is that an Entity 
-            should have direct trust in no one except the Trust Anchor 
-            and its own capabilities. 
-            
+            The basic assumption of this specification is that an Entity
+            should have direct trust in no one except the Trust Anchor
+            and its own capabilities.
+
             However, Entities may establish a kind of
             transistive trust in other Entities. For example, the 
             Trust Anchor states who its Subordinates are
@@ -3002,24 +3002,23 @@ Content-Type: application/json
           <spanx style="verb">
             /.well-known/openid-federation-historical-jwks
           </spanx>.
-        </t>
-        <t>
+
           The purpose of this endpoint is to provide
-          the list of keys previously used by the Federation Entity 
+          the list of keys previously used by the Federation Entity
           in order to provide non-repudiation of statements signed by
-          it after key rotation. This endpoint also discloses the 
-          reason for the retraction of the keys, whether they were 
+          it after key rotation. This endpoint also discloses the
+          reason for the retraction of the keys, whether they were
           expired or revoked, including the reason for the revocation.
         </t>
         <t>
-          Note that an expired key can be later additionally marked as 
-          revoked, to indicate a key compromise event discovered 
+          Note that an expired key can be later additionally marked as
+          revoked, to indicate a key compromise event discovered
           after the expiration of the key.
         </t>
         <t>
-          The publishing of the historical keys guarantees that Trust Chains 
-          will remain verifiable and usable as inputs to trust decisions 
-          after the key expiration, unless the key becomes revoked 
+          The publishing of the historical keys guarantees that Trust Chains
+          will remain verifiable and usable as inputs to trust decisions
+          after the key expiration, unless the key becomes revoked
           for a security reason.
         </t>
 
@@ -3103,37 +3102,37 @@ Host: trust-anchor.example.com
                     </t>
                     <t hangText="revoked">
                       <vspace/>
-                      OPTIONAL. JSON object that contains the 
-                      properties of the revocation, defined below. 
+                      OPTIONAL. JSON object that contains the
+                      properties of the revocation, defined below.
                       <t>
                       <list style="hanging">
                         <t hangText="revoked_at">
                           <vspace/>
-                          REQUIRED. Time at which the key was revoked 
+                          REQUIRED. Time at which the key was revoked
                           or must be considered revoked,
                           using the time format defined for the
                           <spanx style="verb">iat</spanx> claim in
-                          <xref target="RFC7519"/>.
+                      <xref target="RFC7519"/>.
                         </t>
 
                         <t hangText="reason">
                           <vspace/>
                           REQUIRED. Human readable value
-                          that identifies the reason 
+                          that identifies the reason
                           for the key revocation, as defined in
                           Section 5.3.1 of <xref target="RFC5280"/>.
                         </t>
 
                         <t hangText="reason_code">
                           <vspace/>
-                          REQUIRED. Integer that identifies the reason 
+                          REQUIRED. Integer that identifies the reason
                           for the key revocation, as defined in
                           Section 5.3.1 of <xref target="RFC5280"/>.
                         </t>
 
                       </list>
                       </t>
-                      
+
                     </t>
                   </list>
                 </t>
@@ -3174,7 +3173,7 @@ Content-Type: application/jwk-set+jwt
                   "revoked_at": 123972495172,
                   "reason": "keyCompromise",
                   "reason_code": 1
-                } 
+                }
             }
         ]
 }
@@ -4134,6 +4133,7 @@ HTTP/1.1 302 Found
                     to make its Federation Entity Discovery procedure more efficient,
                     especially if the RP shows more than a single authority
                     hint in its Entity Configuration.
+
                   </t>
                   <t>
                     At this point, if there already exists a client
@@ -5209,7 +5209,7 @@ HTTP/1.1 302 Found
         Hence the differences in depth in the federations.
       </t>
       <t>
-        Let us assume a researcher from Umeå University would like to
+        Let us assume a researcher from Umea University would like to
         login to
         the LIGO Wiki. At the Wiki, the researcher will use some kind of
         discovery service to find the home identity provider (op.umu.se)
@@ -5388,7 +5388,7 @@ HTTP/1.1 302 Found
           </figure>
           <t>
             The <spanx style="verb">authority_hints</spanx> points to the
-            Intermediate Entity <spanx style="verb">https://umu.se</spanx>. 
+            Intermediate Entity <spanx style="verb">https://umu.se</spanx>.
             So that is the next step.
           </t>
           <t>
@@ -6295,10 +6295,10 @@ Host: op.umu.se
           </t>
           <t>
             Fixed #1745 #1746: Non normative example of Trust Mark status endpoint.
-          </t> 
+          </t>
           <t>
             Fixed #1747: Client Registration Response content-type set to application/entity-statement+jwt.
-          </t>   
+          </t>
           <t>
             Fixed #1740: Metadata policy example for OIDC, removed scopes.
           </t>
@@ -6329,7 +6329,7 @@ Host: op.umu.se
         <list style="symbols">
           <t>
             Applied editorial improvements by Heather Flanagan.
-          </t>       
+          </t>
         </list>
       </t>
 
