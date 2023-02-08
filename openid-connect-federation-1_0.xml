@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="12" month="January" year="2022"/>
+    <date day="6" month="February" year="2023"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -4045,6 +4045,7 @@ HTTP/1.1 302 Found
         </section>
 
       </section>
+
       <section title="Explicit Registration" anchor="explicit">
         <t>
           This method involves performing an explicit registration step for a new client
@@ -4053,6 +4054,7 @@ HTTP/1.1 302 Found
           <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>,
           but where the client registration request contains the Entity Configuration
           or an entire Trust Chain.
+	  <xref target="ExplicitRegExample"/> contains an example using explicit client registration.
         </t>
         <section anchor="Clireg" title="Client Registration">
           <section anchor="Cliregreq" title="Client Registration Request">
@@ -4102,6 +4104,8 @@ HTTP/1.1 302 Found
                   is sent, using POST, to the
                   <spanx style="verb">federation_registration_endpoint</spanx>
                   defined in this document.
+		  There are no parameters in the POST;
+		  the Entity Configuration or Trust Chain is the entire POST body.
                 </t>
                 <t>
                   The content type of the Registration Request MUST be set to
@@ -4232,7 +4236,7 @@ HTTP/1.1 302 Found
           </section>
         </section>
 
-        <section title="After Client Registration">
+        <section title="After Explicit Client Registration" anchor="AfterExplicitReg">
           <t>
             A client registration using the explicit method is not expected to
             be valid forever. The Entity Statements exchanged all have
@@ -5877,8 +5881,7 @@ Host: geant.org
             </t>
           </list>
         </t>
-        <section
-                title="RP Sends Authentication Request (Automatic Registration)">
+        <section title="RP Sends Authentication Request (Automatic Registration)" anchor="AutomaticRegExample">
           <t>
             The LIGO Wiki RP does not do any registration but goes directly to
             sending an Authentication Request.
@@ -6087,8 +6090,7 @@ Host: op.umu.se
             </t>
           </section>
         </section>
-        <section
-                title="Client Starts with Registration (Explicit Client Registration)">
+        <section title="Client Starts with Registration (Explicit Client Registration)" anchor="ExplicitRegExample">
           <t>
             Here the LIGO Wiki RP sends a client registration request to the
             <spanx style="verb">federation_registration_endpoint</spanx>
@@ -6332,6 +6334,9 @@ Host: op.umu.se
           <t>
             Fixed #1803: Subordinate is a defined term and other small editorial changes after Heather's revision.
           </t>
+	  <t>
+	    Fixed #1660: Clarified that Explicit Client Registrration uses no parameters.
+	  </t>
         </list>
       </t>
 
