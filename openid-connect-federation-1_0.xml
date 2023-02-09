@@ -766,46 +766,29 @@
         </t>
       </section>
     </section>
+
     <section anchor="metadata" title="Metadata">
       <t>
-        This specification allows new metadata
-        types to be defined to support use cases outside OpenID Connect
-        federations.
+      </t>
+      <t>
+	This specification defines metadata types for OpenID Connect and OAuth2 objects.
         The metadata type identifier uniquely identifies the Entity Type
-        of the participants and which metadata specification to utilize.
+        of the participant and the format of metadata for that Entity Type.
+	It reuses existing OpenID Connect and OAuth metadata standards
+	that are applicable to each metadata type.
+        Each metadata document is a JSON object.
       </t>
       <t>
-        The metadata document MUST be a JSON object. Beyond that, there is
-        no restriction.
-      </t>
-      <t>
-        Metadata used in federations typically reuses existing metadata
-        standards.
-        If needed, the metadata schema is extended
-        with additional properties relevant in a federated context.
+        This specification also allows new metadata types to be defined to
+	support use cases outside OpenID Connect and OAuth2 federations.
       </t>
 
-      <section title="OpenID Connect and OAuth2 Metadata" anchor="common_metadata">
+      <section title="OpenID Connect and OAuth2 Metadata Extensions" anchor="common_metadata">
         <t>
-          For instance, for OpenID Connect federations, this specification uses
-          metadata values from
-          <xref target="OpenID.Discovery">OpenID Connect Discovery 1.0</xref>
-          and
-          <xref target="OpenID.Registration">OpenID Connect Dynamic Client
-            Registration 1.0
-          </xref>
-          and adds additional values used for federations.
+	  For the OpenID Connect and OAuth2 metadata types below,
+	  the following additional metadata properties are defined,
+	  which MAY be used with all those metadata types:
         </t>
-        <t>
-          For OAuth2 federations, this specification uses metadata values from
-          OAuth 2.0 Authorization Server Metadata as specified in <xref target="RFC8414"/>.
-        </t>
-
-        <t>
-          For both OpenID Connect and OAuth2 metadata, the following additional properties
-          are defined:
-        </t>
-
         <t>
           <list style="hanging">
             <t hangText="organization_name">
@@ -961,23 +944,23 @@
 
           </list>
         </t>
-      </section>
 
-      <section title="Usage of the claims jwks, jwks_uri and signed_jwks_uri" anchor="jwks_usage">
-        <t>
-          It is RECOMMENDED that an Entity Configuration
-          use only one of
-          <spanx style="verb">jwks</spanx>,
-          <spanx style="verb">jwks_uri</spanx>, and
-          <spanx style="verb">signed_jwks_uri</spanx> in its OpenID Connect or OAuth2 metadata.
-          However, there may be circumstances in which is it desirable to use multiple
-          JWK Set representations, such as when an Entity is in multiple federations and the
-          federations have different policies about the JWK Set representation to be used.
-          When multiple JWK Set representations are used, the keys present in each
-          representation SHOULD be the same.  Even if they are not completely the
-          same at a given instant in time (which may be the case during key rollover operations),
-          implementations MUST make them consistent in a timely manner.
-        </t>
+	<section title="Usage of jwks, jwks_uri, and signed_jwks_uri" anchor="jwks_usage">
+	  <t>
+	    It is RECOMMENDED that an Entity Configuration
+	    use only one of
+	    <spanx style="verb">jwks</spanx>,
+	    <spanx style="verb">jwks_uri</spanx>, and
+	    <spanx style="verb">signed_jwks_uri</spanx> in its OpenID Connect or OAuth2 metadata.
+	    However, there may be circumstances in which is it desirable to use multiple
+	    JWK Set representations, such as when an Entity is in multiple federations and the
+	    federations have different policies about the JWK Set representation to be used.
+	    When multiple JWK Set representations are used, the keys present in each
+	    representation SHOULD be the same.  Even if they are not completely the
+	    same at a given instant in time (which may be the case during key rollover operations),
+	    implementations MUST make them consistent in a timely manner.
+	  </t>
+	</section>
       </section>
 
       <section title="RP Metadata" anchor="RP_metadata">
@@ -987,14 +970,14 @@
         </t>
         <t>
           All parameters defined in Section 2 of
-          <xref target="OpenID.Registration">OpenID Connect Dynamic Client
-            Registration 1.0
-          </xref>
-          are allowed in a metadata statement.
+          <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>
+          and <xref target="common_metadata"/> are applicable,
+	  as well as additional parameters registered in the
+	  IANA "OAuth Dynamic Client Registration Metadata" registry
+	  <xref target="IANA.OAuth.Parameters"/>.
         </t>
         <t>
-          In addition, the parameters defined in <xref target="metadata"/>
-          for OpenID Connect and OAuth2 Entities and the following are added:
+          In addition, the following RP metadata parameter is defined:
           <list style="hanging">
             <t hangText="client_registration_types">
               <vspace/>
@@ -1006,7 +989,6 @@
             </t>
           </list>
         </t>
-
       </section>
 
       <section title="OP Metadata" anchor="OP_metadata">
@@ -1017,11 +999,13 @@
         <t>
           All parameters defined in Section 3 of
           <xref target="OpenID.Discovery">OpenID Connect Discovery 1.0</xref>
-          are applicable.
+          and <xref target="common_metadata"/> are applicable,
+	  as well as additional parameters registered in the
+	  IANA "OAuth Authorization Server Metadata" registry
+	  <xref target="IANA.OAuth.Parameters"/>.
         </t>
         <t>
-          In addition, the parameters defined in <xref target="metadata"/>
-          for OpenID Connect and OAuth2 Entities and the following are added:
+          In addition, the following OP metadata parameters are defined:
         </t>
         <t>
           <list style="hanging">
@@ -1236,10 +1220,10 @@
         <t>
           All parameters defined in Section 2 of
           <xref target="RFC8414">RFC 8414</xref>
-          and <xref target="common_metadata"/> are applicable.
-          In addition, all the parameters defined
-          for <xref target="OP_metadata"/>  are
-          applicable for this Entity.
+          and <xref target="common_metadata"/> are applicable,
+	  as well as additional parameters registered in the
+	  IANA "OAuth Dynamic Client Registration Metadata" registry
+	  <xref target="IANA.OAuth.Parameters"/>.
         </t>
       </section>
 
@@ -1250,10 +1234,11 @@
         </t>
         <t>
           All parameters defined in Section 2 of
-          <xref target="RFC7591">RFC 7591</xref>
-          are applicable.
-          In addition, the parameters defined in <xref target="metadata"/>
-          for OpenID Connect and OAuth2 Entities are added.
+          <xref target="RFC7591">OAuth 2.0 Dynamic Client Registration Protocol</xref>
+          and <xref target="common_metadata"/> are applicable,
+	  as well as additional parameters registered in the
+	  IANA "OAuth Dynamic Client Registration Metadata" registry
+	  <xref target="IANA.OAuth.Parameters"/>.
         </t>
       </section>
 
@@ -1261,14 +1246,13 @@
         <t>
           The metadata type identifier is
           <spanx style="verb">oauth_resource</spanx>.
-          The parameters defined in <xref target="metadata"/>
-          for OpenID Connect and OAuth2 Entities are applicable to
-	  protected resource metadata.
+	  The parameters defined in <xref target="common_metadata"/> are applicable.
 	  In addition, while it is not presently a standard,
 	  some deployments are using the protected resource metadata parameters
 	  defined in <xref target="I-D.jones-oauth-resource-metadata"/>.
         </t>
       </section>
+
       <section title="Federation Entity">
         <t>
           The metadata type identifier is
@@ -6368,6 +6352,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #1809: Replaced use of "trust issuers" terminology.
+	  </t>
+	  <t>
+	    Fixed #1661: Tightened descriptions of metadata standards used.
 	  </t>
         </list>
       </t>
