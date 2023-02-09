@@ -318,7 +318,32 @@
         that depend on the dynamic exchange of Entity metadata
         (e.g., OAuth 2.0).
       </t>
+
+      <section title="Cryptographic Trust Mechanism" anchor="CryptographicTrustMechanism">
+	<t>
+	  The objects defined by this specification
+	  that are used to establish cryptographic trust between participants
+	  are secured as signed JWTs using public key cryptography.
+	  In particular, the keys used for securing these objects are managed by
+	  the Entities controlling those objects, with the public keys securing them
+	  being distributed through those objects themselves.
+	  This kind of trust mechanism has been utilized by
+	  research and academic federations for over a decade.
+	</t>
+	<t>
+	  Note that this cryptographic trust mechanim intentionally does not rely on
+	  Web PKI / TLS certificates for signing keys.
+	  Which TLS certificates are considered trusted can vary considerably between systems
+	  depending upon which certificate authorities are considered trusted
+	  and there are have been notable examples of ostensibly trusted certificates being compromised.
+	  For those reasons, this specification explicitly eschews reliance on Web PKI
+	  in favor of self-managed public keys, in this case,
+	  keys represented as JSON Web Keys (JWKs) <xref target="RFC7517"/>.
+	</t>
+      </section>
+
     </section>
+
     <section title="Components" anchor="components">
       <section anchor="entity-statement" title="Entity Statement">
         <t>
@@ -1236,12 +1261,12 @@
         <t>
           The metadata type identifier is
           <spanx style="verb">oauth_resource</spanx>.
-          In addition to those defined in
-          <xref target="draft-jones-oauth-resource-metadata">
-            draft-jones-oauth-resource-metadata
-          </xref>,
-          the parameters defined in <xref target="metadata"/>
-          for OpenID Connect and OAuth2 Entities are added.
+          The parameters defined in <xref target="metadata"/>
+          for OpenID Connect and OAuth2 Entities are applicable to
+	  protected resource metadata.
+	  In addition, while it is not presently a standard,
+	  some deployments are using the protected resource metadata parameters
+	  defined in <xref target="I-D.jones-oauth-resource-metadata"/>.
         </t>
       </section>
       <section title="Federation Entity">
@@ -4048,6 +4073,7 @@ HTTP/1.1 302 Found
         </section>
 
       </section>
+
       <section title="Explicit Registration" anchor="explicit">
         <t>
           This method involves performing an explicit registration step for a new client
@@ -4056,6 +4082,7 @@ HTTP/1.1 302 Found
           <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>,
           but where the client registration request contains the Entity Configuration
           or an entire Trust Chain.
+	  <xref target="ExplicitRegExample"/> contains an example using explicit client registration.
         </t>
         <section anchor="Clireg" title="Client Registration">
           <section anchor="Cliregreq" title="Client Registration Request">
@@ -4105,6 +4132,8 @@ HTTP/1.1 302 Found
                   is sent, using POST, to the
                   <spanx style="verb">federation_registration_endpoint</spanx>
                   defined in this document.
+		  There are no parameters in the POST;
+		  the Entity Configuration or Trust Chain is the entire POST body.
                 </t>
                 <t>
                   The content type of the Registration Request MUST be set to
@@ -4235,7 +4264,7 @@ HTTP/1.1 302 Found
           </section>
         </section>
 
-        <section title="After Client Registration">
+        <section title="After Explicit Client Registration" anchor="AfterExplicitReg">
           <t>
             A client registration using the explicit method is not expected to
             be valid forever. The Entity Statements exchanged all have
@@ -4574,13 +4603,6 @@ HTTP/1.1 302 Found
           <xref target="IANA.OAuth.Parameters"/>
           established by <xref target="RFC7591"/>.
         </t>
-        <section anchor="draft-jones-oauth-resource-metadata" title="OAuth 2.0 Protected Resource Metadata">
-          <t>
-            This specification defines a metadata format that an OAuth 2.0 client
-            can use to obtain the information needed to interact with an OAuth
-            2.0 protected resource.
-          </t>
-        </section>
         <section anchor="DynRegContents" title="Registry Contents">
           <t>
             <?rfc subcompact="yes"?>
@@ -5182,6 +5204,8 @@ HTTP/1.1 302 Found
           <date/>
         </front>
       </reference>
+
+      <?rfc include="https://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-jones-oauth-resource-metadata-01.xml" ?>
 
     </references>
 
@@ -5880,8 +5904,7 @@ Host: geant.org
             </t>
           </list>
         </t>
-        <section
-                title="RP Sends Authentication Request (Automatic Registration)">
+        <section title="RP Sends Authentication Request (Automatic Registration)" anchor="AutomaticRegExample">
           <t>
             The LIGO Wiki RP does not do any registration but goes directly to
             sending an Authentication Request.
@@ -6090,8 +6113,7 @@ Host: op.umu.se
             </t>
           </section>
         </section>
-        <section
-                title="Client Starts with Registration (Explicit Client Registration)">
+        <section title="Client Starts with Registration (Explicit Client Registration)" anchor="ExplicitRegExample">
           <t>
             Here the LIGO Wiki RP sends a client registration request to the
             <spanx style="verb">federation_registration_endpoint</spanx>
@@ -6335,6 +6357,15 @@ Host: op.umu.se
           <t>
             Fixed #1803: Subordinate is a defined term and other small editorial changes after Heather's revision.
           </t>
+	  <t>
+	    Added Cryptographic Trust Mechanism description.
+	  </t>
+	  <t>
+	    Fixed #1660: Clarified that Explicit Client Registrration uses no parameters.
+	  </t>
+	  <t>
+	    Fixed #1782: Reference protected resource metadata draft.
+	  </t>
 	  <t>
 	    Fixed #1809: Replaced use of "trust issuers" terminology.
 	  </t>
