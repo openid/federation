@@ -315,7 +315,32 @@
         that depend on the dynamic exchange of Entity metadata
         (e.g., OAuth 2.0).
       </t>
+
+      <section title="Cryptographic Trust Mechanism" anchor="CryptographicTrustMechanism">
+	<t>
+	  The objects defined by this specification
+	  that are used to establish cryptographic trust between participants
+	  are secured as signed JWTs using public key cryptography.
+	  In particular, the keys used for securing these objects are managed by
+	  the Entities controlling those objects, with the public keys securing them
+	  being distributed through those objects themselves.
+	  This kind of trust mechanism has been utilized by
+	  research and academic federations for over a decade.
+	</t>
+	<t>
+	  Note that this cryptographic trust mechanim intentionally does not rely on
+	  Web PKI / TLS certificates for signing keys.
+	  Which TLS certificates are considered trusted can vary considerably between systems
+	  depending upon which certificate authorities are considered trusted
+	  and there are have been notable examples of ostensibly trusted certificates being compromised.
+	  For those reasons, this specification explicitly eschews reliance on Web PKI
+	  in favor of self-managed public keys, in this case,
+	  keys represented as JSON Web Keys (JWKs) <xref target="RFC7517"/>.
+	</t>
+      </section>
+
     </section>
+
     <section title="Components" anchor="components">
       <section anchor="entity-statement" title="Entity Statement">
         <t>
@@ -6334,6 +6359,9 @@ Host: op.umu.se
           <t>
             Fixed #1803: Subordinate is a defined term and other small editorial changes after Heather's revision.
           </t>
+	  <t>
+	    Added Cryptographic Trust Mechanism description.
+	  </t>
 	  <t>
 	    Fixed #1660: Clarified that Explicit Client Registrration uses no parameters.
 	  </t>
