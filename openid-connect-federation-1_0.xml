@@ -219,7 +219,7 @@
               An Entity that issues
               an Entity Statement appearing somewhere in between those
               issued by the Trust Anchor and the Leaf Entity in a Trust Chain.
-              The terms Intermediate Entity and Intermediate are used 
+              The terms Intermediate Entity and Intermediate are used
               interchangeably in this specification.
             </t>
             <t hangText="Leaf Entity">
@@ -229,8 +229,8 @@
             </t>
             <t hangText="Subordinate Entity">
               <vspace/>
-                An Entity accredited by a Trust Anchor or an Intermediate Entity, 
-                which can be a Leaf Entity but also an Entity that acts as 
+                An Entity accredited by a Trust Anchor or an Intermediate Entity,
+                which can be a Leaf Entity but also an Entity that acts as
                 Intermediate for other Entities.
             </t>
             <t hangText="Federation Entity Discovery">
@@ -433,7 +433,7 @@
             <t hangText="metadata">
               <vspace/>
               REQUIRED Conditional. JSON object that includes
-              protocol-specific metadata claims that represent the 
+              protocol-specific metadata claims that represent the
               Entity's Type and metadata.
 
               Each key of the JSON object represents a metadata type
@@ -462,7 +462,7 @@
               a metadata policy.
               A <spanx style="verb">metadata_policy</spanx> applies to the Entity described in this
               Entity Statement as well as to all Entities that appear beneath the
-              Entity described in this Entity Statement. 
+              Entity described in this Entity Statement.
               Applying to Subordinate Entities distinguishes
               <spanx style="verb">metadata_policy</spanx> from
               <spanx style="verb">metadata</spanx>, which only applies to the
@@ -1440,9 +1440,9 @@
               <t hangText="essential">
                 <vspace/>
                 If <spanx style="verb">true</spanx>, then the parameter MUST have a value.
-                If <spanx style="verb">false</spanx>, the parameter is 
+                If <spanx style="verb">false</spanx>, the parameter is
                 voluntary and is not required to have a value.
-                If essential is missing as an operator, it is treated as if set to 
+                If essential is missing as an operator, it is treated as if set to
                 <spanx style="verb">false</spanx>.
               </t>
               <t hangText="one_of">
@@ -1673,7 +1673,7 @@
                 <spanx style="verb">default</spanx> if there is one.
               </t>
               <t>
-                Do the essential check. 
+                Do the essential check.
                 If <spanx style="verb">essential</spanx> is
                 <spanx style="verb">true</spanx>,
                 then the claim
@@ -2827,7 +2827,7 @@ Host: openid.sunet.se
             and its own capabilities.
 
             However, Entities may establish a kind of
-            transistive trust in other Entities. For example, the 
+            transistive trust in other Entities. For example, the
             Trust Anchor states who its Subordinates are
             and Entities may choose to trust these.
 
@@ -5710,10 +5710,10 @@ Host: edugain.geant.org
           <t>
             Within the Trust Anchor Entity Configuration, the Relying Party
             looks for the <spanx style="verb">federation_fetch_endpoint</spanx>
-            and gets the updated Federation Entity Keys of the Trust Anchor. 
-            Each Entity within a 
-            Federation may change their Federation Entity Keys, 
-            or any other attributes, at any time. See 
+            and gets the updated Federation Entity Keys of the Trust Anchor.
+            Each Entity within a
+            Federation may change their Federation Entity Keys,
+            or any other attributes, at any time. See
             <xref target="key_rollover_anchor"/> for futhers details.
           </t>
         </section>
@@ -6089,11 +6089,11 @@ Host: op.umu.se
 ]]></artwork>
             </figure>
             <t>
-              Once the Trust Chain and the final Relying Party metadata 
-              have been obtained, the OpenID Provider has 
+              Once the Trust Chain and the final Relying Party metadata
+              have been obtained, the OpenID Provider has
               everything needed to validate the signature of the
-              Request Object in the Authentication Request, using the 
-              public keys made available at the 
+              Request Object in the Authentication Request, using the
+              public keys made available at the
               <spanx style="verb">signed_jwks_uri</spanx> endpoint.
             </t>
           </section>
@@ -6106,7 +6106,32 @@ Host: op.umu.se
             What it sends is an Entity Configuration.
           </t>
           <t>
-            Once the OP has the Entity Statement, it proceeds with the same
+            The <spanx style="verb">metadata</spanx> claim of that Entity
+            Configuration might look like this:
+          </t>
+            <figure>
+              <artwork><![CDATA[
+{
+  "metadata": {
+    "openid_relying_party": {
+      "application_type": "web",
+      "client_name": "LIGO Wiki",
+      "contacts": ["ops@ligo.org"],
+      "grant_types": ["authorization_code"],
+      "id_token_signed_response_alg": "RS256",
+      "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
+      "redirect_uris": [
+        "https://wiki.ligo.org/openid/callback"
+      ],
+      "response_types": ["code"],
+      "subject_type": "public"
+    }
+  }
+}
+          ]]></artwork>
+            </figure>
+          <t>
+            Once the OP has the Entity Configuration, it proceeds with the same
             sequence of steps as laid out in <xref target="op_discovery"/>.
           </t>
           <t>
