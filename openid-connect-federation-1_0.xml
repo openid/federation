@@ -2674,6 +2674,17 @@ Host: openid.sunet.se
             <spanx style="verb">application/resolve-response+jwt</spanx>,
             containing resolved metadata and
             verified Trust Marks.
+          </t>
+
+          <t>
+            The response is a signed JWT, explicitly typed by setting the
+            <spanx style="verb">typ</spanx> header parameter to
+            <spanx style="verb">application/resolve-response+jwt</spanx>. 
+            This is done to prevent
+            cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
+          </t>
+
+          <t>
             The resolve response JWT MAY also contain
             the sequence of the Entity Statements that compose the Trust Chain,
             sorted as shown in <xref target="trust_chain"/>.
@@ -3066,8 +3077,11 @@ Host: trust-anchor.example.com
             A successful response MUST use the HTTP status code 200
             and the content type set to
             <spanx style="verb">application/jwk-set+jwt</spanx>.
-            The response is a signed JWT containing the following
-            paramenters:
+            The response is a signed JWT, explicitly typed by setting the
+            <spanx style="verb">typ</spanx> header parameter to
+            <spanx style="verb">application/jwk-set+jwt</spanx>. This is done to prevent
+            cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
+            The response JWT contains the following parameters.
           </t>
 
           <t>
