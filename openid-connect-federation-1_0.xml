@@ -1448,7 +1448,7 @@
               <t hangText="one_of">
                 <vspace/>
                 If the metadata parameter has no value and is voluntary 
-                (<spanx style="verb">essential</spanx> policy is set to 
+                (<spanx style="verb">essential</spanx> policy is missing or set to 
                 <spanx style="verb">false</spanx>), then 
                 the <spanx style="verb">one_of</spanx> check MUST be ignored.
                 Otherwise the value of the metadata parameter MUST be 
@@ -1457,7 +1457,7 @@
               <t hangText="subset_of">
                 <vspace/>
                 If the metadata parameter has no value and is voluntary 
-                (<spanx style="verb">essential</spanx> policy is set to 
+                (<spanx style="verb">essential</spanx> policy is missing or set to 
                 <spanx style="verb">false</spanx>), then 
                 the <spanx style="verb">subset_of</spanx> check MUST be ignored.
                 Otherwise the resulting value of the metadata parameter MUST be the
@@ -1467,7 +1467,7 @@
               <t hangText="superset_of">
                 <vspace/>
                 If the metadata parameter has no value and is voluntary 
-                (<spanx style="verb">essential</spanx> policy is set to 
+                (<spanx style="verb">essential</spanx> policy is missing or set to 
                 <spanx style="verb">false</spanx>), then 
                 the <spanx style="verb">superset_of</spanx> check MUST be ignored.
                 Otherwise the values of the metadata parameter MUST contain those
@@ -1475,10 +1475,32 @@
                 supersets, equality is included.
               </t>
             </list>
+      
+	  <figure>
+        <preamble>
+          The table below represents the expected outputs from combinations of Metadata Policy operators.
+        </preamble>
+        <artwork><![CDATA[
++-----------------------+-------------------------------------+
+| Policy                | Metadata parameter                  |
++-----------+-----------+----------------------+--------------+
+| essential | subset_of | input                | output       |
++-----------+-----------+----------------------+--------------+
+| true      | [a,b,c]   | [a,e]                | [a]          |
+| false     | [a,b,c]   | [a,e]                | [a]          |
+| true      | [a,b,c]   | [d,e]                | error        |
+| false     | [a,b,c]   | [d,e]                | no parameter |
+| true      | [a,b,c]   | null or no parameter | error        |
+| false     | [a,b,c]   | null or no parameter | no parameter |
++-----------+-----------+----------------------+--------------+
+        ]]></artwork>
+      </figure>
+            
+            
           </t>
           <t>
             Note that when a parameter is defined as a space-separated
-            list of strings like for <spanx style="verb">grant_types</spanx> in
+            list of strings like for <spanx style="verb">scopes</spanx> in
             <xref target="RFC7591"/> <spanx style="verb">subset_of</spanx>,
             <spanx style="verb">superset_of</spanx> and
             <spanx style="verb">default</spanx> are still expressed as lists of strings.
@@ -1637,12 +1659,12 @@
                 </t>
                 <t hangText="essential">
                   <vspace/>
-                  If a superior has specified <spanx style="verb">essential=true</spanx>,
+                  If a superior has specified <spanx style="verb">essential = true</spanx>,
                   then an Intermediate
                   cannot change that. If a superior has specified
-                  <spanx style="verb">essential=false</spanx>, then an
+                  <spanx style="verb">essential = false</spanx>, then an
                   Intermediate is allowed to change that to
-                  <spanx style="verb">essential=true</spanx>.
+                  <spanx style="verb">essential = true</spanx>.
                   If a superior has not specified
                   <spanx style="verb">essential</spanx>, then an Intermediate
                   can set <spanx style="verb">essential</spanx> to
