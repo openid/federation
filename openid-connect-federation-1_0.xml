@@ -1447,29 +1447,32 @@
               </t>
               <t hangText="one_of">
                 <vspace/>
-                The value of the metadata parameter MUST be one of those listed
-                in the directive. The presence of the metadata parameter becomes
-                optional when the directive occurs in conjunction with an
-                <spanx style="verb">essential</spanx> set to
-                <spanx style="verb">false</spanx>.
+                If the metadata parameter has no value and is voluntary 
+                (<spanx style="verb">essential</spanx> policy is set to 
+                <spanx style="verb">false</spanx>), then 
+                the <spanx style="verb">one_of</spanx> check MUST be ignored.
+                Otherwise the value of the metadata parameter MUST be 
+                one of those listed in the directive.
               </t>
               <t hangText="subset_of">
                 <vspace/>
-                The resulting value of the metadata parameter MUST be the
+                If the metadata parameter has no value and is voluntary 
+                (<spanx style="verb">essential</spanx> policy is set to 
+                <spanx style="verb">false</spanx>), then 
+                the <spanx style="verb">subset_of</spanx> check MUST be ignored.
+                Otherwise the resulting value of the metadata parameter MUST be the
                 intersection of the values in the directive and the values of
-                the parameter. The presence of the metadata parameter becomes
-                optional when the directive occurs in conjunction with an
-                <spanx style="verb">essential</spanx> set to
-                <spanx style="verb">false</spanx>.
+                the parameter.
               </t>
               <t hangText="superset_of">
                 <vspace/>
-                The values of the metadata parameter MUST contain those
-                specified in the directive. We mathematically define superset;
-                equality is included. The presence of the metadata parameter
-                becomes optional when the directive occurs in conjunction with
-                an <spanx style="verb">essential</spanx> set to
-                <spanx style="verb">false</spanx>.
+                If the metadata parameter has no value and is voluntary 
+                (<spanx style="verb">essential</spanx> policy is set to 
+                <spanx style="verb">false</spanx>), then 
+                the <spanx style="verb">superset_of</spanx> check MUST be ignored.
+                Otherwise the values of the metadata parameter MUST contain those
+                specified in the directive. By mathematically defining 
+                supersets, equality is included.
               </t>
             </list>
           </t>
@@ -6363,6 +6366,9 @@ Host: op.umu.se
       <t>
         -28
         <list style="symbols">
+          <t>
+            Fixed #1823: Metadata policy clarification text on essential term and sub_set, one_of, superset_of.
+          </t>
           <t>
             Historical keys endpoint, references to rfc7517 and use of claim keys, correction in the normative text.
           </t>
