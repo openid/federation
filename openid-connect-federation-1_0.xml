@@ -2852,10 +2852,25 @@ Host: openid.sunet.se
 
       <section title="Entity Listings" anchor="entity_listing">
         <t>
-          An Entity MAY query another Entity for a list of all the
-          Entities immediately Subordinate to that Entity and about which
-          that Entity is prepared to issue statements.
-          (In some cases, this MAY be a very large list.)
+		  The listing endpoint is exposed by Federation Entities 
+		  acting as Intermediates or Trust Mark issuers. 
+		</t>
+		<t>
+		  When exposed by an 
+		  Intermediate,
+		  the endpoint lists the Entities immediately Subordinates, about which
+          the Intermediate issues Entity Statements. 
+          This is the default response, provided by the endpoint 
+          if no parameters are provided in the request.
+        </t>
+        <t>
+		  As Trust Mark issuer,
+          the endpoint lists the Entities for which Trust Marks 
+          have been issued and are still valid.
+        </t>
+        <t>
+          In both cases, the list contained in the result
+          MAY be a very large list.
         </t>
 
         <section title="Entity Listings Request">
@@ -2870,7 +2885,7 @@ Host: openid.sunet.se
               <t hangText="entity_type">
                 <vspace/>
                 OPTIONAL. If the responder knows the
-                metadata type identifier of all its Subordinates,
+                metadata type identifier of all its Entities,
                 the result MUST be filtered accordingly.
                 If the responder does not support this feature it MUST
                 use the HTTP status code 400 and set the content type to
@@ -2878,13 +2893,27 @@ Host: openid.sunet.se
                 the error code set to
                 <spanx style="verb">unsupported_parameter</spanx>.
               </t>
+              <t hangText="trust_marked_entities">
+				<vspace/>
+                OPTIONAL. If the responder has issued Trust Marks to one or more
+                Entities,
+                the list obtained in the response contains all the Entities 
+                for which at least a valid Trust Mark has been 
+                issued. 
+                
+                If the responder does not support this feature it MUST 
+                use the HTTP status code 400 and set the content type to 
+                <spanx style="verb">application/json</spanx>, with 
+                the error code set to 
+                <spanx style="verb">unsupported_parameter</spanx>.
+			  </t>
               <t hangText="trust_mark_id">
                 <vspace/>
                 OPTIONAL. If the responder has issued Trust Marks with the
                 <spanx style="verb">trust_mark_id</spanx>,
                 the list obtained in the response MUST be filtered with 
-                the Subordinates for which that Trust Mark id has been 
-                issued and result still valid. 
+                the Entities for which that Trust Mark id has been 
+                issued and is still valid. 
                 
                 If the responder does not support this feature it MUST 
                 use the HTTP status code 400 and set the content type to 
@@ -2921,7 +2950,8 @@ Host: openid.sunet.se
 
           <figure>
             <preamble>
-              The following is a non-normative example of a response:
+              The following is a non-normative example of a response, containing
+              the Subordinate Entities:
             </preamble>
             <artwork><![CDATA[
 200 OK
@@ -6378,7 +6408,7 @@ Host: op.umu.se
         -28
         <list style="symbols">
           <t>
-            Listing endpoint - added the parameter trust_mark_id
+            Listing endpoint - added the parameters trust_marked_entities and trust_mark_id
           </t>
           <t>
             Historical keys endpoint, references to rfc7517 and use of claim keys, correction in the normative text.
