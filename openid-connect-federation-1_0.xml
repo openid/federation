@@ -1482,29 +1482,8 @@
                 supersets, equality is included.
               </t>
             </list>
-      
-	  <figure>
-        <preamble>
-          The table below represents the expected outputs from combinations of the <spanx style="verb">essential</spanx> and <spanx style="verb">subset_of</spanx> Metadata Policy operators.
-        </preamble>
-        <artwork><![CDATA[
-+-----------------------+-------------------------------------+
-| Policy                | Metadata parameter                  |
-+-----------+-----------+----------------------+--------------+
-| essential | subset_of | input                | output       |
-+-----------+-----------+----------------------+--------------+
-| true      | [a,b,c]   | [a,e]                | [a]          |
-| false     | [a,b,c]   | [a,e]                | [a]          |
-| true      | [a,b,c]   | [d,e]                | error        |
-| false     | [a,b,c]   | [d,e]                | no parameter |
-| true      | [a,b,c]   | null or no parameter | error        |
-| false     | [a,b,c]   | null or no parameter | no parameter |
-+-----------+-----------+----------------------+--------------+
-        ]]></artwork>
-      </figure>
-            
-            
           </t>
+
           <t>
             Note that when a parameter is defined as a space-separated
             list of strings like for <spanx style="verb">scope</spanx> in
@@ -1515,6 +1494,67 @@
             "If the value contains multiple space-delimited strings, their order does not matter,
             and each string adds an additional access range to the requested scope."
           </t>
+          
+        <table>
+          <name>Map of the outputs produced by combining metadata policies with different input values.</name>
+          <thead>
+            <tr>
+              <td colspan="2">Policy</td>
+              <td colspan="2">Metadata parameter</td>
+            </tr>
+            <tr>
+              <td colspan="">essential</td>
+              <td colspan="">subset_of</td>
+              <td colspan="">input</td>
+              <td colspan="">output</td>
+            </tr>
+          </thead>
+        
+          <tbody>
+            <tr>
+              <td>true</td>
+              <td>[a,b,c]</td>
+              <td>[a,e]</td>
+              <td>[a]</td>
+            </tr>
+        
+            <tr>
+              <td>false</td>
+              <td>[a,b,c]</td>
+              <td>[a,e]</td>
+              <td>[a]</td>
+            </tr>
+        
+            <tr>
+              <td>true</td>
+              <td>[a,b,c]</td>
+              <td>[d,e]</td>
+              <td>error</td>
+            </tr>
+        
+            <tr>
+              <td>false</td>
+              <td>[a,b,c]</td>
+              <td>[d,e]</td>
+              <td>no parameter</td>
+            </tr>
+        
+            <tr>
+              <td>true</td>
+              <td>[a,b,c]</td>
+              <td>null or no parameter</td>
+              <td>error</td>
+            </tr>
+        
+            <tr>
+              <td>false</td>
+              <td>[a,b,c]</td>
+              <td>null or no parameter</td>
+              <td>no parameter</td>
+            </tr>
+          </tbody>
+        </table>
+        
         </section>
         <section title="Restrictions on Policy Entries" anchor="policy_restr">
           <t>
@@ -1707,11 +1747,11 @@
               </t>
               <t>
                 Do the essential check.
-                If <spanx style="verb">essential</spanx> is
-                <spanx style="verb">true</spanx>,
-                then the claim
-                MUST have a value. Otherwise, applying the operator MUST
-                fail.
+                If <spanx style="verb">essential</spanx> is 
+                <spanx style="verb">true</spanx> the parameter 
+                MUST have a value, else the operator MUST fail.
+                If the parameter is voluntary and has no value
+                any other value checks MUST be skipped.
               </t>
               <t>
                 Do the other checks. Verify that the value is
