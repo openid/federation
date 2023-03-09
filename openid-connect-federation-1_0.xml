@@ -1460,9 +1460,16 @@
                 (<spanx style="verb">essential</spanx> policy is missing or set to 
                 <spanx style="verb">false</spanx>), then 
                 the <spanx style="verb">subset_of</spanx> check MUST be ignored.
-                Otherwise the resulting value of the metadata parameter MUST be the
-                intersection of the values in the directive and the values of
-                the parameter.
+                Otherwise, this operator MUST compute the intersection of the 
+                values in the directive and the values of the parameter. 
+                If the resulting intersection is non-empty the parameter 
+                MUST be set to the values in the intersection. If the 
+                intersection is empty the outcome depends on the 
+                <spanx style="verb">essential</spanx> parameter
+                : when the value is defined as essential, 
+                the parameter MUST be rejected with a policy error, 
+                else the parameter MUST be removed 
+                (implying a <spanx style="verb">null</spanx> value).
               </t>
               <t hangText="superset_of">
                 <vspace/>
