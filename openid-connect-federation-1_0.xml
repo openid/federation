@@ -2856,18 +2856,17 @@ Host: openid.sunet.se
 		  acting as Trust Anchor, Intermediates or Trust Mark issuers. 
 		</t>
 		<t>
-		  When exposed by a Trust Anchor or Intermediate,
-		  the endpoint lists the Entities immediately Subordinates, about which
+		  The endpoint lists the Entities immediately Subordinates, about which
           the Trust Anchor or Intermediate issues Entity Statements. 
           This is the default response, provided by the endpoint 
           if the scope of the request is not made explicit in the request.
         </t>
         <t>
 		  As Trust Mark issuer,
-          the endpoint lists the Entities for which Trust Marks 
+          the endpoint lists the Subordinates for which Trust Marks 
           have been issued and are still valid, if the request containes
-          the <spanx style="verb">scope</spanx> valued to 
-          <spanx style="verb">trust_marked</spanx>.
+          the parameter <spanx style="verb">trust_marked</spanx> valued to 
+          <spanx style="verb">true</spanx>.
         </t>
         <t>
           In both cases, the list contained in the result
@@ -2894,24 +2893,15 @@ Host: openid.sunet.se
                 the error code set to
                 <spanx style="verb">unsupported_parameter</spanx>.
               </t>
-              <t hangText="scope">
+              <t hangText="trust_marked">
 				<vspace/>
-                OPTIONAL. 
-                The value of this parameter can be set to 
-                <spanx style="verb">subordinate</spanx>,
-                <spanx style="verb">trust_marked</spanx> or
-                <spanx style="verb">any</spanx>.
-                
-                If valued with <spanx style="verb">subordinate</spanx> or not present, 
-                the result contains only the Subordinates (default behaviour). 
-                
-                If valued with <spanx style="verb">trust_marked</spanx>, 
-                the response contains only the Entities for which 
-                valid Trust Marks have been issued.
-                
-                If valued with <spanx style="verb">any</spanx>,
-                the response contains the Subordinates and also the Entities
-                for which valid Trust Marks have been issued.
+                OPTIONAL. Boolean. 
+               
+                If the parameter 
+                <spanx style="verb">trust_marked</spanx> is present and 
+                set to <spanx style="verb">true</spanx>, 
+                the result contains only the Subordinates for which 
+                at least a valid Trust Mark have been issued.
                 
                 If the responder does not support this feature it MUST 
                 use the HTTP status code 400 and set the content type to 
