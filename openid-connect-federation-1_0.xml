@@ -1425,8 +1425,6 @@
                 parameter has no value, then the parameter MUST be initialized
                 with the specified value(s).
               </t>
-
-
               <t hangText="default">
                 <vspace/>
                 If the metadata parameter has no value, then it MUST be set to
@@ -1463,13 +1461,17 @@
                 Otherwise, this operator MUST compute the intersection of the 
                 values in the directive and the values of the parameter. 
                 If the resulting intersection is non-empty the parameter 
-                MUST be set to the values in the intersection. If the 
+                MUST be set to the values in the intersection. 
+                Note that this behavior makes <spanx style="verb">subset_of</spanx> 
+                a potential value modifier and thus it is not a pure value check.
+                If the 
                 intersection is empty the outcome depends on the 
                 <spanx style="verb">essential</spanx> parameter
                 : when the value is defined as essential, 
                 the parameter MUST be rejected with a policy error, 
                 else the parameter MUST be removed 
                 (implying a <spanx style="verb">null</spanx> value).
+                
               </t>
               <t hangText="superset_of">
                 <vspace/>
@@ -1706,12 +1708,12 @@
                 </t>
                 <t hangText="essential">
                   <vspace/>
-                  If a superior has specified <spanx style="verb">essential = true</spanx>,
+                  If a superior has specified <spanx style="verb">essential=true</spanx>,
                   then an Intermediate
                   cannot change that. If a superior has specified
-                  <spanx style="verb">essential = false</spanx>, then an
+                  <spanx style="verb">essential=false</spanx>, then an
                   Intermediate is allowed to change that to
-                  <spanx style="verb">essential = true</spanx>.
+                  <spanx style="verb">essential=true</spanx>.
                   If a superior has not specified
                   <spanx style="verb">essential</spanx>, then an Intermediate
                   can set <spanx style="verb">essential</spanx> to
