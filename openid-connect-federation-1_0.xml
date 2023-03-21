@@ -2852,10 +2852,23 @@ Host: openid.sunet.se
 
       <section title="Entity Listings" anchor="entity_listing">
         <t>
-          An Entity MAY query another Entity for a list of all the
-          Entities immediately Subordinate to that Entity and about which
-          that Entity is prepared to issue statements.
-          (In some cases, this MAY be a very large list.)
+		  The listing endpoint is exposed by Federation Entities 
+		  acting as Trust Anchor, Intermediates or Trust Mark issuers. 
+		</t>
+		<t>
+		  The endpoint lists the Subordinates, about which
+          the Trust Anchor or Intermediate issues Entity Statements. 
+        </t>
+        <t>
+		  As Trust Mark issuer,
+          the endpoint MAY list the Subordinates for which Trust Marks 
+          have been issued and are still valid, if the issuer
+          exposing this endpoint supports Trust Mark filtering, as 
+          defined below.
+        </t>
+        <t>
+          In both cases, the list contained in the result
+          MAY be a very large list.
         </t>
 
         <section title="Entity Listings Request">
@@ -2870,7 +2883,7 @@ Host: openid.sunet.se
               <t hangText="entity_type">
                 <vspace/>
                 OPTIONAL. If the responder knows the
-                metadata type identifier of all its Subordinates,
+                Entity Type of all its Subordinates,
                 the result MUST be filtered accordingly.
                 If the responder does not support this feature it MUST
                 use the HTTP status code 400 and set the content type to
@@ -2878,12 +2891,42 @@ Host: openid.sunet.se
                 the error code set to
                 <spanx style="verb">unsupported_parameter</spanx>.
               </t>
+              <t hangText="trust_marked">
+				<vspace/>
+                OPTIONAL. Boolean. 
+               
+                If the parameter 
+                <spanx style="verb">trust_marked</spanx> is present and 
+                set to <spanx style="verb">true</spanx>, 
+                the result contains only the Subordinates for which 
+                at least one Trust Mark have been issued and is still valid.
+                
+                If the responder does not support this feature it MUST 
+                use the HTTP status code 400 and set the content type to 
+                <spanx style="verb">application/json</spanx>, with 
+                the error code set to 
+                <spanx style="verb">unsupported_parameter</spanx>.
+			  </t>
+              <t hangText="trust_mark_id">
+                <vspace/>
+                OPTIONAL. If the responder has issued Trust Marks with the
+                <spanx style="verb">trust_mark_id</spanx>,
+                the list obtained in the response MUST be filtered with 
+                the Subordinates for which that Trust Mark identifier has been 
+                issued and is still valid. 
+                
+                If the responder does not support this feature it MUST 
+                use the HTTP status code 400 and set the content type to 
+                <spanx style="verb">application/json</spanx>, with 
+                the error code set to 
+                <spanx style="verb">unsupported_parameter</spanx>.
+              </t>
             </list>
           </t>
           <figure>
             <preamble>
               The following is a non-normative example of an API
-              request for a list of Entities:
+              request for a list of Subordinates:
             </preamble>
             <artwork><![CDATA[
 GET /list HTTP/1.1
@@ -2907,7 +2950,8 @@ Host: openid.sunet.se
 
           <figure>
             <preamble>
-              The following is a non-normative example of a response:
+              The following is a non-normative example of a response, containing
+              the Subordinate Entities:
             </preamble>
             <artwork><![CDATA[
 200 OK
@@ -6350,6 +6394,9 @@ Host: op.umu.se
       <t>
         -28
         <list style="symbols">
+          <t>
+            Listing endpoint - added the parameters <spanx style="verb">trust_marked</spanx> and <spanx style="verb">trust_mark_id</spanx>.
+          </t>
           <t>
             Historical keys endpoint, references to rfc7517 and use of claim keys, correction in the normative text.
           </t>
