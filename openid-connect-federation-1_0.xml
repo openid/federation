@@ -1299,6 +1299,13 @@
               publish a
               <spanx style="verb">federation_trust_mark_status_endpoint</spanx>.
             </t>
+            <t hangText="federation_trust_mark_list_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The endpoint described in
+              <xref target="tm_listing"/>. Trust Mark issuers MAY publish a
+              <spanx style="verb">federation_trust_mark_list_endpoint</spanx>.
+            </t>
             <t hangText="organization_name">
               <vspace/>
               OPTIONAL. A human-readable
@@ -1343,6 +1350,7 @@
   "federation_list_endpoint":
     "https://example.com/federation_list",
   "federation_trust_mark_status_endpoint": "https://example.com/status",
+  "federation_trust_mark_list_endpoint": "https://example.com/trust_marked_list",
   "organization_name": "The example cooperation",
   "homepage_uri": "https://www.example.com"
 }
@@ -2945,7 +2953,7 @@ Host: openid.sunet.se
           MAY be a very large list.
         </t>
 
-        <section title="Entity Listings Request">
+        <section title="Subordinate Listing Request">
           <t>
             The request MUST be an HTTP request using the GET method and
             the <spanx style="verb">https</spanx> scheme to a list endpoint with the
@@ -3009,7 +3017,7 @@ Host: openid.sunet.se
           </figure>
         </section>
 
-        <section title="Entity Listing Response">
+        <section title="Subordinate Listing Response">
           <t>
             A successful response MUST use the HTTP status code 200
             and the content type set to <spanx style="verb">application/json</spanx>,
@@ -3142,6 +3150,75 @@ Content-Type: application/json
 ]]></artwork>
             </figure>
           </t>
+        </section>
+      </section>
+
+     <section title="Trust Marked Entities Listing" anchor="tm_listing">
+        <t>
+		  The Trust Marked Entities listing endpoint is exposed Trust Mark issuers 
+          and lists all the Entities for which Trust Marks 
+          have been issued and are still valid.
+        </t>
+
+        <section title="Trust Marked Entities Listing Request">
+          <t>
+            The request MUST be an HTTP request using the GET method and
+            the <spanx style="verb">https</spanx> scheme to a list endpoint with the
+            following query parameters, encoded in
+            <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
+          </t>
+          <t>
+            <list style="hanging">
+              <t hangText="trust_mark_id">
+                <vspace/>
+                REQUIRED. If the responder has issued Trust Marks with the
+                <spanx style="verb">trust_mark_id</spanx>,
+                the list obtained in the response MUST be filtered with 
+                the Entities for which that Trust Mark identifier has been 
+                issued and is still valid.
+              </t>
+            </list>
+          </t>
+          <figure>
+            <preamble>
+              The following is a non-normative example of an API
+              request for a list of Trust Marked Entities:
+            </preamble>
+            <artwork><![CDATA[
+GET /trust_marked_list?trust_mark_id=https%3A%2F%2Ffederation.example.org%2Fopenid_relying_party%2Fprivate%2Funder-age HTTP/1.1
+Host: trust-mark-issuer.example.org
+]]></artwork>
+          </figure>
+        </section>
+
+        <section title="Trust Marked Entities Listing Response">
+          <t>
+            A successful response MUST use the HTTP status code 200
+            and the content type set to <spanx style="verb">application/json</spanx>,
+            containing a JSON list with Entity Identifiers.
+          </t>
+
+          <t>
+            If the response is negative, the response
+            should be produced in accordance with what is defined in
+            <xref target="error_response"/>.
+          </t>
+
+          <figure>
+            <preamble>
+              The following is a non-normative example of a response, containing
+              the Trust Marked Entities:
+            </preamble>
+            <artwork><![CDATA[
+200 OK
+Content-Type: application/json
+
+[
+  "https://blackboard.ntnu.no/openid/rp",
+  "https://that-rp.example.org"
+]
+]]></artwork>
+          </figure>
         </section>
       </section>
 
@@ -6481,6 +6558,9 @@ Host: op.umu.se
           </t>
           <t>
             Historical keys endpoint, references to rfc7517 and use of claim keys, correction in the normative text.
+          </t>
+          <t>
+            Added the endpoint <spanx style="verb">federation_trust_mark_list_endpoint</spanx> for Trust Mark issuers.
           </t>
         </list>
       </t>
