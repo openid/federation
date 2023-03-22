@@ -1425,8 +1425,6 @@
                 parameter has no value, then the parameter MUST be initialized
                 with the specified value(s).
               </t>
-
-
               <t hangText="default">
                 <vspace/>
                 If the metadata parameter has no value, then it MUST be set to
@@ -1447,35 +1445,50 @@
               </t>
               <t hangText="one_of">
                 <vspace/>
-                The value of the metadata parameter MUST be one of those listed
-                in the directive. The presence of the metadata parameter becomes
-                optional when the directive occurs in conjunction with an
-                <spanx style="verb">essential</spanx> set to
-                <spanx style="verb">false</spanx>.
+                If the metadata parameter has no value and is voluntary 
+                (<spanx style="verb">essential</spanx> policy is missing or set to 
+                <spanx style="verb">false</spanx>), then 
+                the <spanx style="verb">one_of</spanx> check MUST be ignored.
+                Otherwise the value of the metadata parameter MUST be 
+                one of those listed in the directive.
               </t>
               <t hangText="subset_of">
                 <vspace/>
-                The resulting value of the metadata parameter MUST be the
-                intersection of the values in the directive and the values of
-                the parameter. The presence of the metadata parameter becomes
-                optional when the directive occurs in conjunction with an
-                <spanx style="verb">essential</spanx> set to
-                <spanx style="verb">false</spanx>.
+                If the metadata parameter has no value and is voluntary 
+                (<spanx style="verb">essential</spanx> policy is missing or set to 
+                <spanx style="verb">false</spanx>), then 
+                the <spanx style="verb">subset_of</spanx> check MUST be ignored.
+                Otherwise, this operator MUST compute the intersection of the 
+                values in the directive and the values of the parameter. 
+                If the resulting intersection is non-empty the parameter 
+                MUST be set to the values in the intersection. 
+                Note that this behavior makes <spanx style="verb">subset_of</spanx> 
+                a potential value modifier and thus it is not a pure value check.
+                If the 
+                intersection is empty the outcome depends on the 
+                <spanx style="verb">essential</spanx> parameter
+                : when the value is defined as essential, 
+                the parameter MUST be rejected with a policy error, 
+                else the parameter MUST be removed 
+                (implying a <spanx style="verb">null</spanx> value).
+                
               </t>
               <t hangText="superset_of">
                 <vspace/>
-                The values of the metadata parameter MUST contain those
-                specified in the directive. We mathematically define superset;
-                equality is included. The presence of the metadata parameter
-                becomes optional when the directive occurs in conjunction with
-                an <spanx style="verb">essential</spanx> set to
-                <spanx style="verb">false</spanx>.
+                If the metadata parameter has no value and is voluntary 
+                (<spanx style="verb">essential</spanx> policy is missing or set to 
+                <spanx style="verb">false</spanx>), then 
+                the <spanx style="verb">superset_of</spanx> check MUST be ignored.
+                Otherwise the values of the metadata parameter MUST contain those
+                specified in the directive. By mathematically defining 
+                supersets, equality is included.
               </t>
             </list>
           </t>
+
           <t>
             Note that when a parameter is defined as a space-separated
-            list of strings like for <spanx style="verb">grant_types</spanx> in
+            list of strings like for <spanx style="verb">scope</spanx> in
             <xref target="RFC7591"/> <spanx style="verb">subset_of</spanx>,
             <spanx style="verb">superset_of</spanx> and
             <spanx style="verb">default</spanx> are still expressed as lists of strings.
@@ -1483,6 +1496,67 @@
             "If the value contains multiple space-delimited strings, their order does not matter,
             and each string adds an additional access range to the requested scope."
           </t>
+          
+        <table>
+          <name>Map of the outputs produced by combining metadata policies with different input values.</name>
+          <thead>
+            <tr>
+              <td colspan="2">Policy</td>
+              <td colspan="2">Metadata parameter</td>
+            </tr>
+            <tr>
+              <td colspan="">essential</td>
+              <td colspan="">subset_of</td>
+              <td colspan="">input</td>
+              <td colspan="">output</td>
+            </tr>
+          </thead>
+        
+          <tbody>
+            <tr>
+              <td>true</td>
+              <td>[a,b,c]</td>
+              <td>[a,e]</td>
+              <td>[a]</td>
+            </tr>
+        
+            <tr>
+              <td>false</td>
+              <td>[a,b,c]</td>
+              <td>[a,e]</td>
+              <td>[a]</td>
+            </tr>
+        
+            <tr>
+              <td>true</td>
+              <td>[a,b,c]</td>
+              <td>[d,e]</td>
+              <td>error</td>
+            </tr>
+        
+            <tr>
+              <td>false</td>
+              <td>[a,b,c]</td>
+              <td>[d,e]</td>
+              <td>no parameter</td>
+            </tr>
+        
+            <tr>
+              <td>true</td>
+              <td>[a,b,c]</td>
+              <td>null or no parameter</td>
+              <td>error</td>
+            </tr>
+        
+            <tr>
+              <td>false</td>
+              <td>[a,b,c]</td>
+              <td>null or no parameter</td>
+              <td>no parameter</td>
+            </tr>
+          </tbody>
+        </table>
+        
         </section>
         <section title="Restrictions on Policy Entries" anchor="policy_restr">
           <t>
@@ -1662,7 +1736,8 @@
             <list style="numbers">
               <t>
                 If there is a <spanx style="verb">value</spanx> operator in the
-                policy, its value would be applied without any additional action.
+                policy, its value MUST be applied to the parameter and 
+                further action stopped.
               </t>
               <t>
                 Add whatever value is specified in an <spanx style="verb">add</spanx>
@@ -1674,11 +1749,11 @@
               </t>
               <t>
                 Do the essential check.
-                If <spanx style="verb">essential</spanx> is
-                <spanx style="verb">true</spanx>,
-                then the claim
-                MUST have a value. Otherwise, applying the operator MUST
-                fail.
+                If <spanx style="verb">essential</spanx> is 
+                <spanx style="verb">true</spanx> the parameter 
+                MUST have a value, else the operator MUST fail.
+                If the parameter is voluntary and has no value
+                any other value checks MUST be skipped.
               </t>
               <t>
                 Do the other checks. Verify that the value is
@@ -1691,10 +1766,9 @@
               <t>
                 If more than one value is specified in
                 <spanx style="verb">one_of</spanx> and the Leaf Entity
-                does not specify the metadata claim for which
-                <spanx style="verb">one_of</spanx> is referred to,
-                it is an implementation choice which of the values in
-                the <spanx style="verb">one_of</spanx> array will be used.
+                does not specify a metadata parameter value,
+                it is an implementation choice which value in the 
+                <spanx style="verb">one_of</spanx> array to use.
               </t>
             </list>
           </t>
@@ -6399,6 +6473,9 @@ Host: op.umu.se
       <t>
         -28
         <list style="symbols">
+          <t>
+            Fixed #1823: Metadata policy clarification text on essential term and sub_set, one_of, superset_of.
+          </t>
           <t>
             Listing endpoint - added the parameters <spanx style="verb">trust_marked</spanx> and <spanx style="verb">trust_mark_id</spanx>.
           </t>
