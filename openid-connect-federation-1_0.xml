@@ -390,12 +390,11 @@
             </t>
             <t hangText="jwks">
               <vspace/>
-              REQUIRED Conditional. A
-              <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
-              representing the public part of the subject
-              Entity's signing keys. The corresponding private key is
-              used by Leaf Entities to sign Entity Configurations about themselves,
-              and Intermediate Entities to sign Entity Statements about other Entities.
+              REQUIRED. A <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
+              representing the public part of the subject Federation
+              Entity signing keys. The corresponding private key is
+              used by Entities to sign Entity Configurations about themselves,
+              and Intermediate Entities to sign Entity Statements about their Subordinates.
               The keys that can be found here are intended to verify the signature of the
               issued Entity Statements and Trust Marks and SHOULD NOT be used in other protocols. Keys
               to be used in other protocols, such as OpenID Connect, are conveyed
@@ -426,9 +425,9 @@
             </t>
             <t hangText="metadata">
               <vspace/>
-              REQUIRED Conditional. JSON object that includes
+              OPTIONAL. JSON object that includes
               protocol-specific metadata claims that represent the
-              Entity's Type and metadata.
+              Entity Type.
 
               Each key of the JSON object represents a metadata type
               identifier, and each value MUST be a JSON object representing
@@ -437,7 +436,7 @@
               An Entity Statement MAY contain multiple
               metadata statements, but only one for each metadata type.
               If the Entity Statement is an Entity Configuration,
-              then the Entity Statement MUST contain a
+              then the Entity Statement SHOULD contain a
               <spanx style="verb">metadata</spanx> claim.
               In some cases, a superior may want to be explicit about what metadata
               should be used for a Subordinate. In that case
@@ -452,8 +451,7 @@
             </t>
             <t hangText="metadata_policy">
               <vspace/>
-              REQUIRED Conditional. JSON object that describes
-              a metadata policy.
+              OPTIONAL. JSON object that describes a metadata policy.
               A <spanx style="verb">metadata_policy</spanx> applies to the Entity described in this
               Entity Statement as well as to all Entities that appear beneath the
               Entity described in this Entity Statement.
