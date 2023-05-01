@@ -764,6 +764,23 @@
           Trust Chain in some secure out-of-band way not described in this
           document.
         </t>
+        
+        <section title="\"trust_chain\" (Trust Chain) Header Parameter" anchor="trust_chain_param">
+          <t>
+            The following Header Parameter name for use in JWSs are registered
+            in the IANA "JSON Web Signature and Encryption Header Parameters"
+            registry established by <xref target="JwtHeaderRegistry"/>.
+          </t>
+          <t>
+          The "trust_chain" (Trust Chain) Header Parameter is the
+          JSON array containing the sequence of the statements
+          that proves trust relationship between the issuer of the JWT
+          and the selected Trust Anchor, sorted as shown in <xref target="trust_chain"/>.
+          Accordingly, the Trust Chain contains the public key used to verify the JWS.
+          Use of this Header Parameter is OPTIONAL.
+          </t>
+        </section>
+        
       </section>
     </section>
 
@@ -3971,27 +3988,43 @@ Content-Type: application/json
                   <vspace/>
                   OPTIONAL. Time at which the JWT was issued.
                 </t>
-                <t hangText="trust_chain" anchor="trust_chain_param">
-                  <vspace/>
-                  OPTIONAL. Array containing the sequence of the statements
-                  that compose the Trust Chain between the RP that makes
-                  the request and the selected Trust Anchor,
-                  sorted as shown in <xref target="trust_chain"/>.
-                  Due to the large size of a Trust Chain, it could be necessary
-                  to use the HTTP POST method,
-                  <spanx style="verb">request_uri</spanx>
-                  or
-                  <xref target="RFC9126">Pushed Authorization Request</xref>
-                  for the request.
-                </t>
               </list>
             </t>
+            
+            <section title="\"trust_chain\" (Trust Chain) Header Parameter" anchor="trust_chain_param_authz">
+              <t>
+              When the <spanx style="verb">trust_chain</spanx> header parameter 
+              is used in the Authorization request object, the Relying Party
+              informs the OP about the sequence of the statements
+              that proves trust relationship between it 
+              and the selected Trust Anchor.
+              </t>
+              <t>
+              Due to the large size of a Trust Chain, it could be necessary
+              to use the HTTP POST method,
+              <spanx style="verb">request_uri</spanx>
+              or
+              <xref target="RFC9126">Pushed Authorization Request</xref>
+              for the request.
+              </t>
+            </section>
+
             <figure>
               <preamble>
                 The following is a non-normative example of the Claims in a
                 Request Object before base64url encoding and signing:
               </preamble>
               <artwork><![CDATA[
+{
+  "alg": "RS256",
+  "kid": "that-kid-which-points-to-a-jwk-contained-in-the-trust-chain",
+  "trust_chain" : [
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6Ims1NEhRdERpYnlHY3M5WldWTWZ2aUhm ...",
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ...",
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ..."
+  ]
+}
+.                  
 {
   "aud": "https://op.example.org",
   "client_id": "https://rp.example.com",
@@ -4003,12 +4036,7 @@ Content-Type: application/json
   "redirect_uri": "https://rp.example.com/authz_cb",
   "response_type": "code",
   "scope": "openid profile email address phone",
-  "state": "YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ",
-  "trust_chain" : [
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6Ims1NEhRdERpYnlHY3M5WldWTWZ2aUhm ...",
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ...",
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ..."
-  ]
+  "state": "YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ"
 }
 ]]></artwork>
             </figure>
@@ -4024,26 +4052,26 @@ https://server.example.com/authorize?
     &scope=openid+profile+email+address+phone
     &response_type=code
     &client_id=https%3A%2F%2Frp.example.com
-    &request=eyJhbGciOiJSUzI1NiIsImtpZCI6IlVyMTBiTkt3TXBRSUZvTnQtTkp4RE9PY1hh
-      bHppMHNQLWdMSjAwZFJaalEifQ.eyJhdWQiOiJodHRwczovL29wLmV4YW1wbGUub
-      3JnIiwiY2xpZW50X2lkIjoiaHR0cHM6Ly9ycC5leGFtcGxlLmNvbSIsImV4cCI6M
-      TU4OTY5OTE2MiwiaWF0IjoxNTg5Njk5MTAyLCJpc3MiOiJodHRwczovL3JwLmV4Y
-      W1wbGUuY29tIiwianRpIjoiNGQzZWMwZjgxZjEzNGVlOWE5N2UwNDQ5YmU2ZDMyY
-      mUiLCJub25jZSI6IjRMWDBtRk14ZEJqa0dtdHg3YThXSU9uQiIsInJlZGlyZWN0X
-      3VyaSI6Imh0dHBzOi8vcnAuZXhhbXBsZS5jb20vYXV0aHpfY2IiLCJyZXNwb25zZ
-      V90eXBlIjoiY29kZSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwgYWRkc
-      mVzcyBwaG9uZSIsInN0YXRlIjoiWW1YOFBNOUk3V2JOb01ubmllS0tCaXB0Vlcwc
-      1AyT1oiLCJzdWIiOiJodHRwczovL3JwLmV4YW1wbGUuY29tIiwidHJ1c3RfY2hha
-      W4iOlsiZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNkltczFORWhSZEVScFlub
-      EhZM001V2xkV1RXWjJhVWhtIC4uLiIsImV5SmhiR2NpT2lKU1V6STFOaUlzSW10c
-      FpDSTZJa0pZZG1aeWJHNW9RVTExU0ZJd04yRnFWVzFCWTBKUyAuLi4iLCJleUpoY
-      kdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SWtKWWRtWnliRzVvUVUxMVNGSXdOMkZxV
-      lcxQlkwSlMgLi4uIl19.GQyzPEdaJ4qOzeUJyh-wU04GfiyFZTa2afk_VPX3mFmd
-      gLl1VTzlapbSipyNLGNu6M_iQup6zYsAdfZSBWjNN-ARws0A6qJfb06uaR2ILoE-
-      UtIKYJ_4NSnh3SLA_rW_MFS-flmZOf-YDvarbShh0-ashcH5L_D7ZGwDSTMlw4ll
-      laiELKqggdXpVG6vz6itYOvTLo-2vipFeTSK0bZYs22ozAv6-npZlQO2_IZbvyXv
-      S6IAgyw9dRIYZSUXoS2g0nJgBIMsnor2CFY79VH2iRMwi34K2R3hGA9jHqDtom5R
-      DR5NraOtD06F5gPgB4vORG567hFkTq7uhtnz0W_21A
+    &request=eyJ0cnVzdF9jaGFpbiI6WyJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SW1z
+      MU5FaFJkRVJwWW5sSFkzTTVXbGRXVFdaMmFVaG0gLi4uIiwiZXlKaGJHY2lPaUpT
+      VXpJMU5pSXNJbXRwWkNJNklrSllkbVp5Ykc1b1FVMTFTRkl3TjJGcVZXMUJZMEpT
+      IC4uLiIsImV5SmhiR2NpT2lKU1V6STFOaUlzSW10cFpDSTZJa0pZZG1aeWJHNW9R
+      VTExU0ZJd04yRnFWVzFCWTBKUyAuLi4iXSwiYWxnIjoiUlMyNTYiLCJraWQiOiI2
+      X2VGcGNoNXpTYm1QT3hMdGRGLXlrM1dqVFJvUGpBMll6UTd5YnJmV2dvIn0.eyJh
+      dWQiOiJodHRwczovL29wLmV4YW1wbGUub3JnIiwiY2xpZW50X2lkIjoiaHR0cHM6
+      Ly9ycC5leGFtcGxlLmNvbSIsImV4cCI6MTU4OTY5OTE2MiwiaWF0IjoxNTg5Njk5
+      MTAyLCJpc3MiOiJodHRwczovL3JwLmV4YW1wbGUuY29tIiwianRpIjoiNGQzZWMw
+      ZjgxZjEzNGVlOWE5N2UwNDQ5YmU2ZDMyYmUiLCJub25jZSI6IjRMWDBtRk14ZEJq
+      a0dtdHg3YThXSU9uQiIsInJlZGlyZWN0X3VyaSI6Imh0dHBzOi8vcnAuZXhhbXBs
+      ZS5jb20vYXV0aHpfY2IiLCJyZXNwb25zZV90eXBlIjoiY29kZSIsInNjb3BlIjoi
+      b3BlbmlkIHByb2ZpbGUgZW1haWwgYWRkcmVzcyBwaG9uZSIsInN0YXRlIjoiWW1Y
+      OFBNOUk3V2JOb01ubmllS0tCaXB0Vlcwc1AyT1oiLCJzdWIiOiJodHRwczovL3Jw
+      LmV4YW1wbGUuY29tIn0.Gjo1NSYAx5PIllnUJhRCzZT-ezqyofU95pnGsgzclTfj
+      cYCwSef_g2cniIWX4-35cAYR-NcAGEzaDIvQgzQ90O_24HlCtZ6yvUlb65uhZGGt
+      O1TvsI7bl-92yrYCKD8fmaWH73R7qXZ8uLNspRy0L4emGXdUrFJ8RozE5asEdY_L
+      _1orhot6uwWWrYE5cSyxJqCk_G1ackqKRmOlHB3EX3pNmVZodz6DQyONLeBqiMId
+      xpvVALEkmpAQavEwrfpA-s4K3QIJrKAbEVQ1AfyQR0cGDd7fF4bju-wigYhBura0
+      Pv4PrEFSNYG22b5ZPoubTPoFe-7W5Ypec_Io1aXNDA
 ]]></artwork>
             </figure>
             <section title="Processing the Authentication Request" anchor="AuthzRequestProcessing">
@@ -4059,7 +4087,7 @@ https://server.example.com/authorize?
               <t>
                 An RP MAY present to the OP a Trust Chain related to itself,
                 using the <xref target="trust_chain_param">trust_chain</xref>
-                parameter.
+                header parameter in the request object JWS.
 
                 If the OP doesn't have a valid registration for the RP or
                 its registration has expired, the OP MAY use the received
@@ -4081,11 +4109,11 @@ https://server.example.com/authorize?
                 all of its statements. This is true whether these statements
                 are retrieved from their URLs or whether they
                 are provided via the <spanx style="verb">trust_chain</spanx>
-                parameter.
+                header parameter.
               </t>
               <t anchor="TrustChainParamAbsent">
                 If the RP doesn't include the
-                <xref target="trust_chain_param">trust_chain</xref>
+                <xref target="trust_chain_param">trust_chain</xref> header parameter
                 in the request or the OP doesn't support this feature, it then MUST
                 validate the possible Trust Chains, starting with the RP's Entity
                 Configuration as described in <xref target="fetching-es"/>,
@@ -4583,7 +4611,7 @@ HTTP/1.1 302 Found
             This stale data may occur when the OP uses cached RP metadata from a Trust Chain
             that hasn't reached its expiration time yet. 
             The RP MAY notify the OP that a change has taken place by passing 
-            the <xref target="trust_chain_param">trust_chain</xref> 
+            the <xref target="trust_chain_param">trust_chain</xref> header parameter
             in the Request, thus letting the OP update its client
             registration and prevent potential temporary faults due to stale metadata.
           </t>
@@ -5184,29 +5212,32 @@ HTTP/1.1 302 Found
         </section>
       </section>
 
-      <section anchor="ParameterRegistry" title="OAuth Parameter Registry">
+      <section anchor="JwtHeaderRegistry" title="JWT Header Registry">
         <t>
-          This specification registers the following parameter name in the IANA "OAuth
-          Parameters" registry <xref target="IANA.OAuth.Parameters"/> established
-          by <xref target="RFC6749"/>.
+          This specification registers the following JWT header name in the IANA "JSON Web Signature and
+          Encryption Header Parameters" registry <xref target="IANA.OAuth.Parameters"/> established
+          by <xref target="RFC7515"/>.
         </t>
 
-        <section anchor="ParameterContents" title="Registry Contents">
+        <section anchor="HeaderContents" title="Registry Contents">
           <t>
             <?rfc subcompact="yes"?>
             <list style='symbols'>
               <t>
-                Parameter Name:
+                Header Parameter Name:
                 <spanx style="verb">trust_chain</spanx>
               </t>
               <t>
-                Parameter Usage Location: authorization request
+                Header Parameter Description: OpenID Connect Federation Trust Chain
+              </t>
+              <t>
+                Header Parameter Usage Location: JWS
               </t>
               <t>
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): Section <xref target="AuthzRequestProcessing"/> of [[ this specification ]]
+                Specification Document(s): Section <xref target="trust_chain"/> of [[ this specification ]]
               </t>
             </list>
           </t>
@@ -6553,6 +6584,15 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+
+      <t>
+        -29
+        <list style="symbols">
+          <t>
+            Fixed #1921: trust_chain Authorization Request parameter moved to JWS Header parameter.
+          </t>
+        </list>
+      </t>
 
       <t>
         -28
