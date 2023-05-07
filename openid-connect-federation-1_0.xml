@@ -767,16 +767,16 @@
         
         <section title="\"trust_chain\" (Trust Chain) Header Parameter" anchor="trust_chain_param">
           <t>
-            The following Header Parameter name for use in JWSs are registered
-            in the IANA "JSON Web Signature and Encryption Header Parameters"
-            registry established by <xref target="JwtHeaderRegistry"/>.
+            This JWS Header Parameter is registered in the IANA 
+            "JSON Web Signature and Encryption Header Parameters"
+            registry established by <xref target="JwsHeaderRegistry"/>.
           </t>
           <t>
-          The "trust_chain" (Trust Chain) Header Parameter is the
+          The "trust_chain" (Trust Chain) Header Parameter is a
           JSON array containing the sequence of the statements
-          that proves trust relationship between the issuer of the JWT
+          that proves the trust relationship between the issuer of the JWT
           and the selected Trust Anchor, sorted as shown in <xref target="trust_chain"/>.
-          Accordingly, the Trust Chain contains the public key used to verify the JWS.
+          The Trust Chain contains the public key used to verify the JWS.
           Use of this Header Parameter is OPTIONAL.
           </t>
         </section>
@@ -3996,7 +3996,7 @@ Content-Type: application/json
               When the <spanx style="verb">trust_chain</spanx> header parameter 
               is used in the Authorization request object, the Relying Party
               informs the OP about the sequence of the statements
-              that proves trust relationship between it 
+              that proves the trust relationship between it 
               and the selected Trust Anchor.
               </t>
               <t>
@@ -4109,7 +4109,7 @@ https://server.example.com/authorize?
                 all of its statements. This is true whether these statements
                 are retrieved from their URLs or whether they
                 are provided via the <spanx style="verb">trust_chain</spanx>
-                header parameter.
+                JWS header parameter.
               </t>
               <t anchor="TrustChainParamAbsent">
                 If the RP doesn't include the
@@ -5212,9 +5212,9 @@ HTTP/1.1 302 Found
         </section>
       </section>
 
-      <section anchor="JwtHeaderRegistry" title="JWT Header Registry">
+      <section anchor="JwsHeaderRegistry" title="JWS Header Registry">
         <t>
-          This specification registers the following JWT header name in the IANA "JSON Web Signature and
+          This specification registers the following JWS header name in the IANA "JSON Web Signature and
           Encryption Header Parameters" registry <xref target="IANA.OAuth.Parameters"/> established
           by <xref target="RFC7515"/>.
         </t>
