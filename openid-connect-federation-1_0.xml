@@ -3991,13 +3991,31 @@ Content-Type: application/json
                   <vspace/>
                   OPTIONAL. Time at which the JWT was issued.
                 </t>
+                <t hangText="trust_chain" anchor="trust_chain_param">
+                  <vspace/>
+                  OPTIONAL. Array containing the sequence of the statements
+                  that compose the Trust Chain between the RP that makes
+                  the request and the selected Trust Anchor,
+                  sorted as shown in <xref target="trust_chain"/>.
+                </t>
               </list>
             </t>
             
-            <section title="\"trust_chain\" (Trust Chain) Header Parameter" anchor="trust_chain_param_authz">
+            <section title="\"trust_chain\" (Trust Chain) Parameter" anchor="trust_chain_param_authz">
+              <t>
+              When the 
+              <spanx style="verb">trust_chain</spanx> 
+              <xref target="RFC7515">JWS</xref> header parameter is
+              used in conjunction with the <spanx style="verb">trust_chain</spanx> 
+              <spanx style="verb">request</spanx> parameter, 
+              both contents MUST be identical, otherwise the request MUST be rejected.
+              </t>
+              
               <t>
               When the <spanx style="verb">trust_chain</spanx> 
-              <xref target="RFC7515">JWS</xref> header parameter 
+              <xref target="RFC7515">JWS</xref> header parameter or the
+              <spanx style="verb">trust_chain</spanx> 
+              <spanx style="verb">request</spanx> parameter
               is used in the Authorization request object, the Relying Party
               informs the OP about the sequence of the statements
               that proves the trust relationship between it 
@@ -4091,6 +4109,8 @@ https://server.example.com/authorize?
               <t>
                 An RP MAY present to the OP a Trust Chain related to itself,
                 using the <xref target="trust_chain_param">trust_chain</xref>
+                <spanx style="verb">request</spanx> parameter or the
+                <xref target="trust_chain_param">trust_chain</xref>
                 <xref target="RFC7515">JWS</xref> header parameter 
                 in the request object.
 
@@ -4114,13 +4134,17 @@ https://server.example.com/authorize?
                 all of its statements. This is true whether these statements
                 are retrieved from their URLs or whether they
                 are provided via the <spanx style="verb">trust_chain</spanx>
-                <xref target="RFC7515">JWS</xref> header parameter.
+                <spanx style="verb">request</spanx> parameter or the
+                <xref target="RFC7515">JWS</xref> header parameter 
+                in the request object.
               </t>
               <t anchor="TrustChainParamAbsent">
                 If the RP doesn't include the
-                <xref target="trust_chain_param">trust_chain</xref> 
-                <xref target="RFC7515">JWS</xref> header parameter
-                in the request or the OP doesn't support this feature, it then MUST
+                <xref target="trust_chain_param">trust_chain</xref>
+                <spanx style="verb">request</spanx> parameter or the
+                <xref target="RFC7515">JWS</xref> header parameter 
+                in the request object,
+                or the OP doesn't support this feature, it then MUST
                 validate the possible Trust Chains, starting with the RP's Entity
                 Configuration as described in <xref target="fetching-es"/>,
                 and resolve the RP metadata with type
