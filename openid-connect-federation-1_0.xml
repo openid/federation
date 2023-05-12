@@ -773,13 +773,16 @@
             registry established by <xref target="JwsHeaderRegistry"/>.
           </t>
           <t>
-          The <xref target="trust_chain"/> (Trust Chain) header parameter is a
+          The <xref target="trust_chain"/> header parameter is a
           JSON array containing the sequence of the statements
           that proves the trust relationship between the issuer of the 
           <xref target="RFC7515">JWS</xref>
           and the selected Trust Anchor, sorted as shown in <xref target="trust_chain"/>.
           The Trust Chain contains the public key used to verify the 
           <xref target="RFC7515">JWS</xref>.
+          The issuer of the JWS SHOULD select the Trust Anchor that has in common 
+          with the audience of the JWS, otherwise the issuer is free to select the 
+          Trust Anchor he deems most significant.
           Use of this header parameter is OPTIONAL.
           </t>
         </section>
@@ -1138,7 +1141,8 @@
             <t hangText="request_authentication_signing_alg_values_supported">
               <vspace/>
               OPTIONAL.
-              JSON array containing a list of the <xref target="RFC7515">JWS</xref> signing algorithms
+              JSON array containing a list of the supported 
+              <xref target="RFC7515">JWS</xref> signing algorithms
               (<spanx style="verb">alg</spanx> values)
               supported for the signature on the JWT <xref target="RFC7519" />
               used in the <spanx style="verb">request_object</spanx>
@@ -3955,7 +3959,7 @@ Content-Type: application/json
               specified in Section 3.1.2 in
               <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
               The JWT MUST be signed and MAY be encrypted.
-              The following restrictions apply to the JWT:
+              The following parameters apply to the JWT:
             
               <list style="hanging">
                 <t hangText="aud">
@@ -3999,11 +4003,15 @@ Content-Type: application/json
                   that compose the Trust Chain between the RP that makes
                   the request and the selected Trust Anchor,
                   sorted as shown in <xref target="trust_chain"/>.
+                  When the RP and the OP are part of the same federation 
+                  the RP MUST select the Trust Anchor that has in common 
+                  with the OP, otherwise the RP is free to select the 
+                  Trust Anchor he deems most significant.
                 </t>
               </list>
             </t>
 
-            <section title="Trust Chain Authorization Request Parameter" anchor="trust_chain_param_authz">
+            <section title="Authorization Request with a Trust Chain" anchor="trust_chain_authz">
 
               <t>
               When the 
@@ -4033,8 +4041,6 @@ Content-Type: application/json
               <xref target="RFC9126">Pushed Authorization Request</xref>
               for the request.
               </t>
-              
-            </section>
 
             <figure>
               <preamble>
@@ -4101,6 +4107,8 @@ https://server.example.com/authorize?
       Pv4PrEFSNYG22b5ZPoubTPoFe-7W5Ypec_Io1aXNDA
 ]]></artwork>
             </figure>
+            </section>
+            
             <section title="Processing the Authentication Request" anchor="AuthzRequestProcessing">
               <t>
                 When the OP receives an incoming Authentication Request,
