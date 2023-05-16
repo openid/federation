@@ -780,9 +780,9 @@
           and the selected Trust Anchor, sorted as shown in <xref target="trust_chain"/>.
           The Trust Chain contains the public key used to verify the 
           <xref target="RFC7515">JWS</xref>.
-          The issuer of the JWS SHOULD select the Trust Anchor that has in common 
+          The issuer of the JWS SHOULD select the Trust Anchor that it has in common 
           with the audience of the JWS, otherwise the issuer is free to select the 
-          Trust Anchor he deems most significant.
+          Trust Anchor it deems most significant.
           Use of this header parameter is OPTIONAL.
           </t>
         </section>
@@ -4006,7 +4006,7 @@ Content-Type: application/json
                   When the RP and the OP are part of the same federation 
                   the RP MUST select the Trust Anchor that has in common 
                   with the OP, otherwise the RP is free to select the 
-                  Trust Anchor he deems most significant.
+                  Trust Anchor it deems most significant.
                 </t>
               </list>
             </t>
@@ -4122,7 +4122,7 @@ https://server.example.com/authorize?
               <t>
                 An RP MAY present to the OP a Trust Chain related to itself,
                 using the <xref target="trust_chain_param">trust_chain</xref>
-                <spanx style="verb">request</spanx> parameter or the
+                request parameter or the
                 <xref target="trust_chain_head_param">trust_chain</xref>
                 <xref target="RFC7515">JWS</xref> header parameter 
                 in the request object.
@@ -4154,7 +4154,7 @@ https://server.example.com/authorize?
               <t anchor="TrustChainParamAbsent">
                 If the RP doesn't include the
                 <xref target="trust_chain_param">trust_chain</xref>
-                <spanx style="verb">request</spanx> parameter or the
+                request parameter or the
                 <xref target="RFC7515">JWS</xref> header parameter 
                 in the request object,
                 or the OP doesn't support this feature, it then MUST
@@ -4654,9 +4654,9 @@ HTTP/1.1 302 Found
             This stale data may occur when the OP uses cached RP metadata from a Trust Chain
             that hasn't reached its expiration time yet. 
             The RP MAY notify the OP that a change has taken place by passing 
-            in the Request the <xref target="trust_chain_head_param">trust_chain</xref> header parameter
+            in the request the <xref target="trust_chain_head_param">trust_chain</xref> header parameter
             or the <spanx style="verb">trust_chain</spanx> 
-            <spanx style="verb">request</spanx> parameter
+            request parameter
             , thus letting the OP update its client
             registration and prevent potential temporary faults due to stale metadata.
           </t>
@@ -5287,7 +5287,7 @@ HTTP/1.1 302 Found
       <section anchor="JwsHeaderRegistry" title="JWS Header Registry">
         <t>
           This specification registers the following JWS header name in the IANA "JSON Web Signature and
-          Encryption Header Parameters" registry <xref target="IANA.OAuth.Parameters"/> established
+          Encryption Header Parameters" registry <xref target="IANA.JOSE"/> established
           by <xref target="RFC7515"/>.
         </t>
 
@@ -6661,7 +6661,7 @@ Host: op.umu.se
         -29
         <list style="symbols">
           <t>
-            Fixed #1921: brand new JWS Header parameter, trust_chain.
+            Fixed #1921: brand new JWS Header parameter, <spanx style="verb">trust_chain</spanx>.
           </t>
         </list>
       </t>
