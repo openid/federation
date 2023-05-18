@@ -1145,7 +1145,7 @@
               <xref target="RFC7515">JWS</xref> algorithms
               (<spanx style="verb">alg</spanx> values)
               for signing the <xref target="RFC7519">JWT</xref>
-              used in the <spanx style="verb">request_object</spanx>
+              used in the Request Object
               contained in the request parameter of an authorization request or
               in the <spanx style="verb">private_key_jwt</spanx> of a pushed authorization request.
               This entry MUST be present if either of these authentication methods are specified
@@ -3495,7 +3495,7 @@ Content-Type: application/jwk-set+jwt
               in the Entity Statement issued for the Leaf. The result is
               a Trust Chain that contains the Leaf's OIDC Core jwks,
               needed to verify historical signature on
-              request objects, ID Tokens and any other signed JWT issued by the Leaf,
+              Request Objects, ID Tokens and any other signed JWT issued by the Leaf,
               if it is an RP or an OP.
 
               <list style="numbers">
@@ -4018,7 +4018,7 @@ Content-Type: application/json
               <spanx style="verb">trust_chain</spanx> 
               <xref target="RFC7515">JWS</xref> header parameter is
               used in conjunction with the <spanx style="verb">trust_chain</spanx> 
-              <spanx style="verb">request</spanx> parameter, 
+              request parameter, 
               both contents MUST be identical, otherwise the request MUST be rejected.
               </t>
               
@@ -4026,8 +4026,8 @@ Content-Type: application/json
               When the <spanx style="verb">trust_chain</spanx> 
               <xref target="RFC7515">JWS</xref> header parameter or the
               <spanx style="verb">trust_chain</spanx> 
-              <spanx style="verb">request</spanx> parameter
-              is used in the Authorization request object, the Relying Party
+              request parameter
+              is used in the Authorization Request Object, the Relying Party
               informs the OP about the sequence of the statements
               that proves the trust relationship between it 
               and the selected Trust Anchor.
@@ -4125,7 +4125,7 @@ https://server.example.com/authorize?
                 request parameter or the
                 <xref target="trust_chain_head_param">trust_chain</xref>
                 <xref target="RFC7515">JWS</xref> header parameter 
-                in the request object.
+                in the Request Object.
 
                 If the OP doesn't have a valid registration for the RP or
                 its registration has expired, the OP MAY use the received
@@ -4149,14 +4149,14 @@ https://server.example.com/authorize?
                 are provided via the <spanx style="verb">trust_chain</spanx>
                 request parameter or the
                 <xref target="RFC7515">JWS</xref> header parameter 
-                in the request object.
+                in the Request Object.
               </t>
               <t anchor="TrustChainParamAbsent">
                 If the RP doesn't include the
                 <xref target="trust_chain_param">trust_chain</xref>
                 request parameter or the
                 <xref target="RFC7515">JWS</xref> header parameter 
-                in the request object,
+                in the Request Object,
                 or the OP doesn't support this feature, it then MUST
                 validate the possible Trust Chains, starting with the RP's Entity
                 Configuration as described in <xref target="fetching-es"/>,
@@ -4213,7 +4213,7 @@ https://server.example.com/authorize?
                   based on public key infrastructure (PKI).
                 </t>
                 <t>
-                  A request object as described in Section 6 of
+                  A Request Object as described in Section 6 of
                   <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>
                 </t>
               </list>
@@ -5271,6 +5271,9 @@ HTTP/1.1 302 Found
               <t>
                 Parameter Name:
                 <spanx style="verb">trust_chain</spanx>
+              </t>
+              <t>
+                Parameter Usage Location: authorization request
               </t>
               <t>
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
@@ -6882,7 +6885,7 @@ Host: op.umu.se
             Fixed #1606: Described situation in which the requirement for signed requests with Automatic Registration could be relaxed.
           </t>
           <t>
-            Fixed #1629: authz request object, audience explanatory text.
+            Fixed #1629: authz Request Object, audience explanatory text.
           </t>
           <t>
             Fixed #1630: Resolve endpoint response content type.
