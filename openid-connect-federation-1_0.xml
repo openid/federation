@@ -123,16 +123,15 @@
     <section anchor="Introduction" title="Introduction">
       <t>
         This specification describes how two Entities that would like to
-        interact can dynamically fetch and resolve trust and metadata for a
-        given protocol using a third-party Trust Anchor. A trust
-        anchor is an Entity whose main purpose is to issue statements
-        about Entities, such as OpenID Connect Relying Parties, OpenID
-        Providers, and participating organizations.
+        interact can resolve trust between them, by means of a third trusted party 
+        called Trust Anchor.
+        A Trust Anchor is an Entity whose main purpose is to issue statements
+        about Entities.
         An identity federation can be realized using this specification using
         one or more levels of authorities.
-	Examples of authorities are federation operators, organizations,
-	departments within organizations, and individual sites.
-	This specification does not mandate
+        Examples of authorities are federation operators, organizations,
+        departments within organizations, and individual sites.
+        This specification does not mandate
         a specific way or restrict how a federation may be built. Instead, the
         specification provides the basic technical trust infrastructure building
         blocks needed to create a dynamic and distributed trust network, such as a
@@ -144,15 +143,6 @@
         Furthermore, note that an organization
         MAY be represented by more than one Entity in a federation.
         It is also true that an Entity can be part of more than one federation.
-      </t>
-      <t>
-        OpenID Connect Federation Trust Chains rely on
-        cryptographically signed
-        <xref target="RFC7519">JSON Web Token (JWT)</xref>
-        documents, and the Trust Chain does not at
-        all rely on TLS
-        <xref target="RFC8446"/>
-        to establish trust.
       </t>
 
       <section title="Requirements Language">
@@ -314,9 +304,7 @@
         OpenID Connect is used in all of the examples in this
         specification, however this doesn't mean that this specification can only be used
         together with OpenID Connect. On the contrary, it can also be
-        used to build federations based on any other protocols
-        that depend on the dynamic exchange of Entity metadata
-        (e.g., OAuth 2.0).
+        used to build federations based on any other protocols.
       </t>
 
       <section title="Cryptographic Trust Mechanism" anchor="CryptographicTrustMechanism">
@@ -396,12 +384,11 @@
             </t>
             <t hangText="jwks">
               <vspace/>
-              REQUIRED Conditional. A
-              <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
-              representing the public part of the subject
-              Entity's signing keys. The corresponding private key is
-              used by Leaf Entities to sign Entity Configurations about themselves,
-              and Intermediate Entities to sign Entity Statements about other Entities.
+              REQUIRED. A <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
+              representing the public part of the subject Federation
+              Entity signing keys. The corresponding private key is
+              used by Entities to sign Entity Configurations about themselves,
+              and Intermediate Entities to sign Entity Statements about their Subordinates.
               The keys that can be found here are intended to verify the signature of the
               issued Entity Statements and Trust Marks and SHOULD NOT be used in other protocols. Keys
               to be used in other protocols, such as OpenID Connect, are conveyed
@@ -432,7 +419,7 @@
             </t>
             <t hangText="metadata">
               <vspace/>
-              REQUIRED Conditional. JSON object that includes
+              REQUIRED. JSON object that includes
               protocol-specific metadata claims that represent the
               Entity's Type and metadata.
 
@@ -443,7 +430,7 @@
               An Entity Statement MAY contain multiple
               metadata statements, but only one for each metadata type.
               If the Entity Statement is an Entity Configuration,
-              then the Entity Statement MUST contain a
+              then the Entity Statement SHOULD contain a
               <spanx style="verb">metadata</spanx> claim.
               In some cases, a superior may want to be explicit about what metadata
               should be used for a Subordinate. In that case
@@ -458,8 +445,7 @@
             </t>
             <t hangText="metadata_policy">
               <vspace/>
-              REQUIRED Conditional. JSON object that describes
-              a metadata policy.
+              OPTIONAL. JSON object that describes a metadata policy.
               A <spanx style="verb">metadata_policy</spanx> applies to the Entity described in this
               Entity Statement as well as to all Entities that appear beneath the
               Entity described in this Entity Statement.
@@ -678,8 +664,7 @@
 
       <section title="Trust Chain" anchor="trust_chain">
         <t>
-          In an OpenID Connect identity federation, Entities that together build
-          a Trust Chain can be categorized as:
+          Entities whose statements build a Trust Chain are categorized as: 
           <list style="hanging">
             <t hangText="Trust anchor">
               <vspace/>
@@ -790,27 +775,28 @@
       </section>
     </section>
 
-    <section anchor="metadata" title="Metadata">
+    <section anchor="metadata" title="Metadata Type Identifiers">
       <t>
       </t>
       <t>
-	This specification defines metadata types for OpenID Connect and OAuth2 objects.
+	    This specification defines metadata type identifiers
+        for OpenID Connect and OAuth 2.0 objects.
         The metadata type identifier uniquely identifies the Entity Type
         of the participant and the format of metadata for that Entity Type.
-	It reuses existing OpenID Connect and OAuth metadata standards
-	that are applicable to each metadata type.
+        It reuses existing OpenID Connect and OAuth 2.0 metadata standards
+        that are applicable to each metadata type.
         Each metadata document is a JSON object.
       </t>
       <t>
         This specification also allows new metadata types to be defined to
-	support use cases outside OpenID Connect and OAuth2 federations.
+        support use cases outside OpenID Connect and OAuth 2.0 federations.
       </t>
 
-      <section title="OpenID Connect and OAuth2 Metadata Extensions" anchor="common_metadata">
+      <section title="OpenID Connect and OAuth 2.0 Metadata Extensions" anchor="common_metadata">
         <t>
-	  For the OpenID Connect and OAuth2 metadata types below,
-	  the following additional metadata properties are defined,
-	  which MAY be used with all those metadata types:
+        For the OpenID Connect and OAuth 2.0 metadata types below,
+        the following additional metadata properties are defined,
+        which MAY be used with all those metadata types:
         </t>
         <t>
           <list style="hanging">
@@ -974,7 +960,7 @@
 	    use only one of
 	    <spanx style="verb">jwks</spanx>,
 	    <spanx style="verb">jwks_uri</spanx>, and
-	    <spanx style="verb">signed_jwks_uri</spanx> in its OpenID Connect or OAuth2 metadata.
+	    <spanx style="verb">signed_jwks_uri</spanx> in its OpenID Connect or OAuth 2.0 metadata.
 	    However, there may be circumstances in which is it desirable to use multiple
 	    JWK Set representations, such as when an Entity is in multiple federations and the
 	    federations have different policies about the JWK Set representation to be used.
@@ -986,7 +972,7 @@
 	</section>
       </section>
 
-      <section title="RP Metadata" anchor="RP_metadata">
+      <section title="OpenID Connect Relying Party" anchor="RP_metadata">
         <t>
           The metadata type identifier is
           <spanx style="verb">openid_relying_party</spanx>.
@@ -1014,7 +1000,7 @@
         </t>
       </section>
 
-      <section title="OP Metadata" anchor="OP_metadata">
+      <section title="OpenID Provider" anchor="OP_metadata">
         <t>
           The metadata type identifier is
           <spanx style="verb">openid_provider</spanx>.
@@ -1814,7 +1800,7 @@
         <section title="Policy Combination Example">
           <figure>
             <preamble>
-              A federation's policy for OAuth2 clients:
+              A federation's policy for OAuth 2.0 clients:
             </preamble>
             <artwork><![CDATA[
 {
@@ -1840,7 +1826,7 @@
           </figure>
           <figure>
             <preamble>
-              An organization's policy for OAuth2 clients:
+              An organization's policy for OAuth 2.0 clients:
             </preamble>
             <artwork><![CDATA[
 {
@@ -2962,7 +2948,7 @@ Host: openid.sunet.se
         </section>
       </section>
 
-      <section title="Entity Listings" anchor="entity_listing">
+      <section title="Subordinate Listings" anchor="entity_listing">
         <t>
 		  The listing endpoint is exposed by Federation Entities 
 		  acting as Trust Anchor, Intermediates or Trust Mark issuers. 
@@ -6666,6 +6652,9 @@ Host: op.umu.se
           <t>
             Fixed #1921: brand new JWS Header parameter, <spanx style="verb">trust_chain</spanx>.
           </t>
+          <t>
+            Fixed #1879, #1881, #1883, #1885: introductionary text, metadata section, editorials.
+          </t>
         </list>
       </t>
 
@@ -6912,7 +6901,7 @@ Host: op.umu.se
             Resolve endpoint: Removed iss paramenter in the request and specified the usage of the aud claim in the response.
           </t>
           <t>
-            Fixed #1513: request_authentication_methods_supported according to IANA OAuth2 AS metadata registered names.
+            Fixed #1513: request_authentication_methods_supported according to IANA OAuth 2.0 AS metadata registered names.
           </t>
           <t>
             Fixed #1527: Defined the Trust Mark term and added non-normative examples.
