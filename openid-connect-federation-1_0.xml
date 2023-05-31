@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="22" month="May" year="2023"/>
+    <date day="31" month="May" year="2023"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -123,7 +123,7 @@
     <section anchor="Introduction" title="Introduction">
       <t>
         This specification describes how two Entities that would like to
-        interact can resolve trust between them, by means of a third trusted party 
+        interact can resolve trust between them, by means of a third trusted party
         called Trust Anchor.
         A Trust Anchor is an Entity whose main purpose is to issue statements
         about Entities.
@@ -572,6 +572,30 @@
               The value of <spanx style="verb">trust_anchor_id</spanx> is the
               Entity Identifier of a Trust Anchor.
             </t>
+            <t hangText="trust_mark_owners">
+              <vspace/>
+              OPTIONAL.
+              If a Federation Operator knows that a Trust Mark ID is owned
+              by an entity different from the Trust Mark Issuers then that
+              knowledge has to be expressed in this claim.
+              This claim MUST be ignored if present in an Entity Configuration
+              that describes an Entity that is not a Trust Anchor.
+              The value is a JSON object with keys representing Trust Mark identifiers
+              and the object values being a set of claims. The claims are:
+              <list style="hanging">
+                <t hangText="sub">
+                  <vspace/>
+                  REQUIRED
+                  An identifier of the Trust Mark owner
+                </t>
+                <t hangText="jwks">
+                  <vspace/>
+                  REQUIRED
+                  A <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
+                  representing the public part of the owners signing keys.
+                </t>
+              </list>
+            </t>
           </list>
         </t>
         <t>
@@ -588,11 +612,38 @@
         <figure>
           <preamble>
             The following is a non-normative example of
+            a <spanx style="verb">trust_marks_owners</spanx> claim:
+          </preamble>
+          <artwork><![CDATA[
+{
+  "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf":
+    {
+      "sub": "https://refeds.org/sirtfi",
+      "jwks" : {
+        "keys": [
+          {
+            "alg": "RS256",
+            "e": "AQAB",
+            "kid": "key1",
+            "kty": "RSA",
+            "n": "pnXBOusEANuug6ewezb9J_...",
+            "use": "sig"
+          }
+        ]
+      }
+    }
+}
+              ]]></artwork>
+        </figure>
+
+        <figure>
+          <preamble>
+            The following is a non-normative example of
             a <spanx style="verb">trust_marks_issuers</spanx> claim value:
           </preamble>
           <artwork><![CDATA[
 {
-  "https://openid.net/certification/op": ["*"],
+  "https://openid.net/certification/op": [],
   "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf":
     ["https://swamid.se"]
 }
@@ -664,7 +715,7 @@
 
       <section title="Trust Chain" anchor="trust_chain">
         <t>
-          Entities whose statements build a Trust Chain are categorized as: 
+          Entities whose statements build a Trust Chain are categorized as:
           <list style="hanging">
             <t hangText="Trust anchor">
               <vspace/>
@@ -749,29 +800,29 @@
           Trust Chain in some secure out-of-band way not described in this
           document.
         </t>
-        
+
         <section title="Trust Chain Header Parameter" anchor="trust_chain_head_param">
           <t>
-            This <xref target="RFC7515">JWS</xref> 
-            header parameter is registered in the IANA 
+            This <xref target="RFC7515">JWS</xref>
+            header parameter is registered in the IANA
             "JSON Web Signature and Encryption Header Parameters"
             registry established by <xref target="JwsHeaderRegistry"/>.
           </t>
           <t>
           The <xref target="trust_chain"/> header parameter is a
           JSON array containing the sequence of the statements
-          that proves the trust relationship between the issuer of the 
+          that proves the trust relationship between the issuer of the
           <xref target="RFC7515">JWS</xref>
           and the selected Trust Anchor, sorted as shown in <xref target="trust_chain"/>.
-          The Trust Chain contains the public key used to verify the 
+          The Trust Chain contains the public key used to verify the
           <xref target="RFC7515">JWS</xref>.
-          The issuer of the JWS SHOULD select the Trust Anchor that it has in common 
-          with the audience of the JWS, otherwise the issuer is free to select the 
+          The issuer of the JWS SHOULD select the Trust Anchor that it has in common
+          with the audience of the JWS, otherwise the issuer is free to select the
           Trust Anchor it deems most significant.
           Use of this header parameter is OPTIONAL.
           </t>
         </section>
-        
+
       </section>
     </section>
 
@@ -1127,7 +1178,7 @@
             <t hangText="request_authentication_signing_alg_values_supported">
               <vspace/>
               OPTIONAL.
-              JSON array containing a list of the supported 
+              JSON array containing a list of the supported
               <xref target="RFC7515">JWS</xref> algorithms
               (<spanx style="verb">alg</spanx> values)
               for signing the <xref target="RFC7519">JWT</xref>
@@ -1463,42 +1514,42 @@
               </t>
               <t hangText="one_of">
                 <vspace/>
-                If the metadata parameter has no value and is voluntary 
-                (<spanx style="verb">essential</spanx> policy is missing or set to 
-                <spanx style="verb">false</spanx>), then 
+                If the metadata parameter has no value and is voluntary
+                (<spanx style="verb">essential</spanx> policy is missing or set to
+                <spanx style="verb">false</spanx>), then
                 the <spanx style="verb">one_of</spanx> check MUST be ignored.
-                Otherwise the value of the metadata parameter MUST be 
+                Otherwise the value of the metadata parameter MUST be
                 one of those listed in the directive.
               </t>
               <t hangText="subset_of">
                 <vspace/>
-                If the metadata parameter has no value and is voluntary 
-                (<spanx style="verb">essential</spanx> policy is missing or set to 
-                <spanx style="verb">false</spanx>), then 
+                If the metadata parameter has no value and is voluntary
+                (<spanx style="verb">essential</spanx> policy is missing or set to
+                <spanx style="verb">false</spanx>), then
                 the <spanx style="verb">subset_of</spanx> check MUST be ignored.
-                Otherwise, this operator MUST compute the intersection of the 
-                values in the directive and the values of the parameter. 
-                If the resulting intersection is non-empty the parameter 
-                MUST be set to the values in the intersection. 
-                Note that this behavior makes <spanx style="verb">subset_of</spanx> 
+                Otherwise, this operator MUST compute the intersection of the
+                values in the directive and the values of the parameter.
+                If the resulting intersection is non-empty the parameter
+                MUST be set to the values in the intersection.
+                Note that this behavior makes <spanx style="verb">subset_of</spanx>
                 a potential value modifier and thus it is not a pure value check.
-                If the 
-                intersection is empty the outcome depends on the 
+                If the
+                intersection is empty the outcome depends on the
                 <spanx style="verb">essential</spanx> parameter
-                : when the value is defined as essential, 
-                the parameter MUST be rejected with a policy error, 
-                else the parameter MUST be removed 
+                : when the value is defined as essential,
+                the parameter MUST be rejected with a policy error,
+                else the parameter MUST be removed
                 (implying a <spanx style="verb">null</spanx> value).
-                
+
               </t>
               <t hangText="superset_of">
                 <vspace/>
-                If the metadata parameter has no value and is voluntary 
-                (<spanx style="verb">essential</spanx> policy is missing or set to 
-                <spanx style="verb">false</spanx>), then 
+                If the metadata parameter has no value and is voluntary
+                (<spanx style="verb">essential</spanx> policy is missing or set to
+                <spanx style="verb">false</spanx>), then
                 the <spanx style="verb">superset_of</spanx> check MUST be ignored.
                 Otherwise the values of the metadata parameter MUST contain those
-                specified in the directive. By mathematically defining 
+                specified in the directive. By mathematically defining
                 supersets, equality is included.
               </t>
             </list>
@@ -1520,7 +1571,7 @@
             "If the value contains multiple space-delimited strings, their order does not matter,
             and each string adds an additional access range to the requested scope."
           </t>
-          
+
         <table>
           <name>Map of the outputs produced by combining metadata policies with different input values.</name>
           <thead>
@@ -1535,7 +1586,7 @@
               <td colspan="">output</td>
             </tr>
           </thead>
-        
+
           <tbody>
             <tr>
               <td>true</td>
@@ -1543,35 +1594,35 @@
               <td>[a,e]</td>
               <td>[a]</td>
             </tr>
-        
+
             <tr>
               <td>false</td>
               <td>[a,b,c]</td>
               <td>[a,e]</td>
               <td>[a]</td>
             </tr>
-        
+
             <tr>
               <td>true</td>
               <td>[a,b,c]</td>
               <td>[d,e]</td>
               <td>error</td>
             </tr>
-        
+
             <tr>
               <td>false</td>
               <td>[a,b,c]</td>
               <td>[d,e]</td>
               <td>no parameter</td>
             </tr>
-        
+
             <tr>
               <td>true</td>
               <td>[a,b,c]</td>
               <td>null or no parameter</td>
               <td>error</td>
             </tr>
-        
+
             <tr>
               <td>false</td>
               <td>[a,b,c]</td>
@@ -1580,7 +1631,7 @@
             </tr>
           </tbody>
         </table>
-        
+
         </section>
         <section title="Restrictions on Policy Entries" anchor="policy_restr">
           <t>
@@ -1760,7 +1811,7 @@
             <list style="numbers">
               <t>
                 If there is a <spanx style="verb">value</spanx> operator in the
-                policy, its value MUST be applied to the parameter and 
+                policy, its value MUST be applied to the parameter and
                 further action stopped.
               </t>
               <t>
@@ -1773,8 +1824,8 @@
               </t>
               <t>
                 Do the essential check.
-                If <spanx style="verb">essential</spanx> is 
-                <spanx style="verb">true</spanx> the parameter 
+                If <spanx style="verb">essential</spanx> is
+                <spanx style="verb">true</spanx> the parameter
                 MUST have a value, else the operator MUST fail.
                 If the parameter is voluntary and has no value
                 any other value checks MUST be skipped.
@@ -1791,7 +1842,7 @@
                 If more than one value is specified in
                 <spanx style="verb">one_of</spanx> and the Leaf Entity
                 does not specify a metadata parameter value,
-                it is an implementation choice which value in the 
+                it is an implementation choice which value in the
                 <spanx style="verb">one_of</spanx> array to use.
               </t>
             </list>
@@ -2152,7 +2203,11 @@
 
         <t>
           The Trust Marks are signed by a federation-accredited
-          authority.
+          authority. All Trust Mark Issuers MUST be represented in the
+          federation by an entity. The fact that a Trust Mark Issuer is
+          accepted by the federation is expressed in the
+          <spanx style="verb">trust_marks_issuers</spanx> claim of the
+          Trust Anchor.
         </t>
 
         <t>
@@ -2173,6 +2228,33 @@
           <spanx style="verb">trust-mark+jwt</spanx>. This is done to prevent
           cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
         </t>
+        <section title="Trust Mark Delegation" anchor="trust_mark_delegation">
+          <t>
+            There will be cases where the owner of a Trust Mark for some reason
+            does not want to be the Trust Mark Issuer. Take as an example vehicle
+            inspection. Vehicle inspection is a procedure mandated by national
+            or subnational governments in many countries, in which a vehicle is
+            inspected to ensure that it conforms to regulations governing
+            safety, emissions, or both. The bodies that mandates the inspection
+            does not perform them instead there may be commercial companies
+            performing this check and which then issues the Trust Mark.
+          </t>
+          <t>
+            The fact that a Trust Mark is issued by a Trust Mark Issuer that is
+            not the owner of the Trust Mark is in the Trust Mark expressed by adding a
+            signed JWT to the <spanx style="verb">delegation</spanx> claim.
+            The format of the signed JWT is described below.
+          </t>
+          <t>
+            If the Federation Operator knows of and has verified that Trust
+            Marks with a
+            certain Trust Mark Identifier may be issued by Trust Mark Issuers
+            that are not the owner of the Trust Mark ID then the information
+            about the owner and the Trust Mark ID MUST be added to the
+            <spanx style="verb">trust_mark_owner</spanx> claim in the Trust
+            Anchor Entity Configuration.
+          </t>
+        </section>
 
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
           <t>These are the Trust Mark Claims:</t>
@@ -2223,6 +2305,11 @@
                 OPTIONAL. String. URL that points to information connected to
                 the issuance of this Trust Mark.
               </t>
+              <t hangText="delegation">
+                <vspace/>
+                OPTIONAL. Signed JWT. A signed JWT containing information about
+	              a delegation of the right to issue Trust Marks with a special ID.
+              </t>
             </list>
           </t>
           <t>
@@ -2231,13 +2318,77 @@
             <xref target="OpenID.Core">OpenID Connect Core 1.0</xref> apply.
           </t>
         </section>
+        <section title="Trust Mark Delegation Claims" anchor="delegation_claim">
+          <t>
+            The delegation claims:
+          </t>
+          <t>
+            <list style="hanging">
+              <t hangText="iss">
+                <vspace/>
+                REQUIRED. String. The owner of the Trust Mark.
+              </t>
+              <t hangText="sub">
+                <vspace/>
+                REQUIRED. String. The Entity this delegation applies to.
+              </t>
+              <t hangText="id">
+                <vspace/>
+                REQUIRED. String. The identifier of the Trust Mark.
+              </t>
+              <t hangText="iat">
+                <vspace/>
+                REQUIRED. String. When this delegation was issued.
+                Expressed as Seconds Since the Epoch, per [RFC7519].
+              </t>
+              <t hangText="exp">
+                <vspace/>
+                OPTIONAL. String. When this delegation stops being valid.
+                Expressed as Seconds Since the Epoch, per [RFC7519].
+                If not present, it means that the delegation is valid forever
+                or until revoked.
+              </t>
+              <t hangText="ref">
+                <vspace/>
+                OPTIONAL. String. URL that points to information connected to
+                the Trust Mark.
+              </t>
+            </list>
+          </t>
+        </section>
         <section title="Validating a Trust Mark" anchor="trust_valid">
           <t>An Entity SHOULD NOT try to validate a Trust Mark until
             it knows which Trust Anchors it wants to use.
           </t>
-          <t>Validating a Trust Mark issuer follows the procedure set out in
+          <t>Validating a Trust Mark Issuer follows the procedure set out in
             <xref target="resolving_trust"/>. Validating the Trust Mark
-            itself is described in <xref target="status_endpoint"/>
+            consists of doing the following checks:
+            <list style="numbers">
+              <t>
+                Checking the signature of the signed JWT and verifying that
+                it has not passed its expiration time.
+              </t>
+              <t>
+                Using the Trust Mark issuer status endpoint to verify that the
+                Trust Mark is still active.
+                Described in <xref target="status_endpoint"/>
+              </t>
+              <t>
+                If the Trust Mark ID appears in the
+                <spanx style="verb">trust_mark_owners</spanx> claim
+                make certain that the Trust Mark contains
+                a <spanx style="verb">delegation</spanx>
+                claim.
+                The claim set that can be found by looking up the Trust Mark ID
+                in the <spanx style="verb">trust_mark_owners</spanx> claim can
+                be used in the following way.
+                The signature of the delegation claim value MUST
+                be possible to verify with a key that can be found in the
+                <spanx style="verb">jwks</spanx> part of the claim set.
+                The issuer of the delegation claim value MUST match the
+                <spanx style="verb">sub</spanx> claim in the claim set.
+              </t>
+            </list>
           </t>
           <t>
             Note that the Entity representing the accreditation authority
@@ -2246,6 +2397,17 @@
             of Trust Marks that SHOULD be trusted by other Entities.
             A Trust Anchor uses the <spanx style="verb">trust_marks_issuers</spanx> claim
             in its Entity Configuration to publish this information.
+          </t>
+          <t>
+            If a Trust Mark Issuer are issuing Trust Marks on behalf of a
+            Trust Mark owner then the Trust Anchor MUST publish the
+            connection between the Trust
+            Mark ID and the corresponding Trust Mark Issuer in the
+            <spanx style="verb">trust_marks_issuers</spanx> claim. This
+            signifies that the Trust Anchor has verified that the Trust
+            Mark owner is indeed the Trust Mark owner and that the
+            Trust Mark owner has delegated the right to issue Trust Marks
+            with a specific Trust Mark ID to a specific Trust Mark Issuer.
           </t>
           <t>
             Trust Marks that are not recognized within a federation SHOULD be ignored when
@@ -2777,7 +2939,7 @@ Host: openid.sunet.se
           <t>
             The response is a signed JWT, explicitly typed by setting the
             <spanx style="verb">typ</spanx> header parameter to
-            <spanx style="verb">resolve-response+jwt</spanx>. 
+            <spanx style="verb">resolve-response+jwt</spanx>.
             This is done to prevent
             cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
           </t>
@@ -2950,18 +3112,18 @@ Host: openid.sunet.se
 
       <section title="Subordinate Listings" anchor="entity_listing">
         <t>
-		  The listing endpoint is exposed by Federation Entities 
-		  acting as Trust Anchor, Intermediates or Trust Mark issuers. 
+		  The listing endpoint is exposed by Federation Entities
+		  acting as Trust Anchor, Intermediates or Trust Mark issuers.
 		</t>
 		<t>
 		  The endpoint lists the Subordinates, about which
-          the Trust Anchor or Intermediate issues Entity Statements. 
+          the Trust Anchor or Intermediate issues Entity Statements.
         </t>
         <t>
 		  As Trust Mark issuer,
-          the endpoint MAY list the Subordinates for which Trust Marks 
+          the endpoint MAY list the Subordinates for which Trust Marks
           have been issued and are still valid, if the issuer
-          exposing this endpoint supports Trust Mark filtering, as 
+          exposing this endpoint supports Trust Mark filtering, as
           defined below.
         </t>
         <t>
@@ -2991,32 +3153,32 @@ Host: openid.sunet.se
               </t>
               <t hangText="trust_marked">
 				<vspace/>
-                OPTIONAL. Boolean. 
-               
-                If the parameter 
-                <spanx style="verb">trust_marked</spanx> is present and 
-                set to <spanx style="verb">true</spanx>, 
-                the result contains only the Subordinates for which 
+                OPTIONAL. Boolean.
+
+                If the parameter
+                <spanx style="verb">trust_marked</spanx> is present and
+                set to <spanx style="verb">true</spanx>,
+                the result contains only the Subordinates for which
                 at least one Trust Mark have been issued and is still valid.
-                
-                If the responder does not support this feature it MUST 
-                use the HTTP status code 400 and set the content type to 
-                <spanx style="verb">application/json</spanx>, with 
-                the error code set to 
+
+                If the responder does not support this feature it MUST
+                use the HTTP status code 400 and set the content type to
+                <spanx style="verb">application/json</spanx>, with
+                the error code set to
                 <spanx style="verb">unsupported_parameter</spanx>.
 			  </t>
               <t hangText="trust_mark_id">
                 <vspace/>
                 OPTIONAL. If the responder has issued Trust Marks with the
                 <spanx style="verb">trust_mark_id</spanx>,
-                the list obtained in the response MUST be filtered with 
-                the Subordinates for which that Trust Mark identifier has been 
-                issued and is still valid. 
-                
-                If the responder does not support this feature it MUST 
-                use the HTTP status code 400 and set the content type to 
-                <spanx style="verb">application/json</spanx>, with 
-                the error code set to 
+                the list obtained in the response MUST be filtered with
+                the Subordinates for which that Trust Mark identifier has been
+                issued and is still valid.
+
+                If the responder does not support this feature it MUST
+                use the HTTP status code 400 and set the content type to
+                <spanx style="verb">application/json</spanx>, with
+                the error code set to
                 <spanx style="verb">unsupported_parameter</spanx>.
               </t>
             </list>
@@ -3171,9 +3333,9 @@ Content-Type: application/json
 
      <section title="Trust Marked Entities Listing" anchor="tm_listing">
         <t>
-		  The Trust Marked Entities listing endpoint is exposed by 
-          Trust Mark issuers 
-          and lists all the Entities for which Trust Marks 
+		  The Trust Marked Entities listing endpoint is exposed by
+          Trust Mark issuers
+          and lists all the Entities for which Trust Marks
           have been issued and are still valid.
         </t>
 
@@ -3190,8 +3352,8 @@ Content-Type: application/json
                 <vspace/>
                 REQUIRED. If the responder has issued Trust Marks with the
                 <spanx style="verb">trust_mark_id</spanx>,
-                the list obtained in the response MUST be filtered with 
-                the Entities for which that Trust Mark identifier has been 
+                the list obtained in the response MUST be filtered with
+                the Entities for which that Trust Mark identifier has been
                 issued and is still valid.
               </t>
             </list>
@@ -3289,7 +3451,7 @@ Host: trust-anchor.example.com
             A successful response MUST use the HTTP status code 200
             and the content type set to
             <spanx style="verb">application/jwk-set+jwt</spanx>.
-            The response is a signed JWT with the <xref target="RFC7517">JWK Set</xref> 
+            The response is a signed JWT with the <xref target="RFC7517">JWK Set</xref>
             as its payload. The JWT is explicitly typed by setting the
             <spanx style="verb">typ</spanx> header parameter to
             <spanx style="verb">jwk-set+jwt</spanx>. This is done to prevent
@@ -3317,7 +3479,7 @@ Host: trust-anchor.example.com
                 representing the public Federation Entity signing keys.
 
                 <t>
-                  Every JWK in the <spanx style="verb">keys</spanx> 
+                  Every JWK in the <spanx style="verb">keys</spanx>
                   claim includes the following claims:
                 </t>
 
@@ -3946,7 +4108,7 @@ Content-Type: application/json
               <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
               The JWT MUST be signed and MAY be encrypted.
               The following parameters apply to the JWT:
-            
+
               <list style="hanging">
                 <t hangText="aud">
                   <vspace/>
@@ -3989,9 +4151,9 @@ Content-Type: application/json
                   that compose the Trust Chain between the RP that makes
                   the request and the selected Trust Anchor,
                   sorted as shown in <xref target="trust_chain"/>.
-                  When the RP and the OP are part of the same federation 
-                  the RP MUST select the Trust Anchor that it has in common 
-                  with the OP, otherwise the RP is free to select the 
+                  When the RP and the OP are part of the same federation
+                  the RP MUST select the Trust Anchor that it has in common
+                  with the OP, otherwise the RP is free to select the
                   Trust Anchor it deems most significant.
                 </t>
               </list>
@@ -4000,25 +4162,25 @@ Content-Type: application/json
             <section title="Authorization Request with a Trust Chain" anchor="trust_chain_authz">
 
               <t>
-              When the 
-              <spanx style="verb">trust_chain</spanx> 
+              When the
+              <spanx style="verb">trust_chain</spanx>
               <xref target="RFC7515">JWS</xref> header parameter is
-              used in conjunction with the <spanx style="verb">trust_chain</spanx> 
-              request parameter, 
+              used in conjunction with the <spanx style="verb">trust_chain</spanx>
+              request parameter,
               both contents MUST be identical, otherwise the request MUST be rejected.
               </t>
-              
+
               <t>
-              When the <spanx style="verb">trust_chain</spanx> 
+              When the <spanx style="verb">trust_chain</spanx>
               <xref target="RFC7515">JWS</xref> header parameter or the
-              <spanx style="verb">trust_chain</spanx> 
+              <spanx style="verb">trust_chain</spanx>
               request parameter
               is used in the Authorization Request Object, the Relying Party
               informs the OP about the sequence of the statements
-              that proves the trust relationship between it 
+              that proves the trust relationship between it
               and the selected Trust Anchor.
               </t>
-              
+
               <t>
               Due to the large size of a Trust Chain, it could be necessary
               to use the HTTP POST method,
@@ -4043,7 +4205,7 @@ Content-Type: application/json
     "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ..."
   ]
 }
-.                  
+.
 {
   "aud": "https://op.example.org",
   "client_id": "https://rp.example.com",
@@ -4094,7 +4256,7 @@ https://server.example.com/authorize?
 ]]></artwork>
             </figure>
             </section>
-            
+
             <section title="Processing the Authentication Request" anchor="AuthzRequestProcessing">
               <t>
                 When the OP receives an incoming Authentication Request,
@@ -4110,7 +4272,7 @@ https://server.example.com/authorize?
                 using the <xref target="trust_chain_param">trust_chain</xref>
                 request parameter or the
                 <xref target="trust_chain_head_param">trust_chain</xref>
-                <xref target="RFC7515">JWS</xref> header parameter 
+                <xref target="RFC7515">JWS</xref> header parameter
                 in the Request Object.
 
                 If the OP doesn't have a valid registration for the RP or
@@ -4134,14 +4296,14 @@ https://server.example.com/authorize?
                 are retrieved from their URLs or whether they
                 are provided via the <spanx style="verb">trust_chain</spanx>
                 request parameter or the
-                <xref target="RFC7515">JWS</xref> header parameter 
+                <xref target="RFC7515">JWS</xref> header parameter
                 in the Request Object.
               </t>
               <t anchor="TrustChainParamAbsent">
                 If the RP doesn't include the
                 <xref target="trust_chain_param">trust_chain</xref>
                 request parameter or the
-                <xref target="RFC7515">JWS</xref> header parameter 
+                <xref target="RFC7515">JWS</xref> header parameter
                 in the Request Object,
                 or the OP doesn't support this feature, it then MUST
                 validate the possible Trust Chains, starting with the RP's Entity
@@ -4638,10 +4800,10 @@ HTTP/1.1 302 Found
           <t anchor="MetadataUpdateHint">
             It solves the problem of OPs using RP metadata that has become stale.
             This stale data may occur when the OP uses cached RP metadata from a Trust Chain
-            that hasn't reached its expiration time yet. 
-            The RP MAY notify the OP that a change has taken place by passing 
+            that hasn't reached its expiration time yet.
+            The RP MAY notify the OP that a change has taken place by passing
             in the request the <xref target="trust_chain_head_param">trust_chain</xref> header parameter
-            or the <spanx style="verb">trust_chain</spanx> 
+            or the <spanx style="verb">trust_chain</spanx>
             request parameter
             , thus letting the OP update its client
             registration and prevent potential temporary faults due to stale metadata.
@@ -5270,9 +5432,9 @@ HTTP/1.1 302 Found
             </list>
           </t>
         </section>
-      
+
       </section>
-      
+
       <section anchor="JwsHeaderRegistry" title="JWS Header Registry">
         <t>
           This specification registers the following JWS header name in the IANA "JSON Web Signature and
@@ -6653,7 +6815,12 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
-
+      <t>
+        -30
+        <list style="symbols">
+          <t>Added text on Trust Mark delegation.</t>
+        </list>
+      </t>
       <t>
         -29
         <list style="symbols">
@@ -7191,7 +7358,7 @@ Host: op.umu.se
         -11
         <list style="symbols">
           <t>
-            Added section on trust marks.
+            Added section on Trust Marks.
           </t>
           <t>
             Clarified private_key_jwt usage in the authentication request.
