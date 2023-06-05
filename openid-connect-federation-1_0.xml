@@ -417,6 +417,20 @@
               This claim MUST be absent from an
               Entity Configuration issued by a Trust Anchor with no superiors.
             </t>
+            <t hangText="htu">
+              <vspace/>
+              OPTIONAL. The HTTP target URI without query
+              and fragment parts, of the request related to 
+              the Entity Statement response, as defined in 
+              <xref target="IETF.DPoP" />. 
+              The purpose of having this parameter in an Entity Statement 
+              is to know the endpoint that generated the statement for a 
+              quick renewal of it, which does not require the download 
+              of the Entity Configuration of its issuer, unless 
+              the URL related to the endpoint had not changed.
+              Implementations that adopt this parameter allow for rapid 
+              updating of Trust Chains by means of this optimization.
+            </t>
             <t hangText="metadata">
               <vspace/>
               REQUIRED. JSON object that includes
@@ -617,6 +631,7 @@
   "exp": 1516298022,
   "crit": ["jti"],
   "jti": "7l2lncFdY6SlhNia",
+  "htu": "https://feide.no/federation_api/fetch",
   "policy_language_crit": ["regexp"],
   "metadata": {
     "openid_provider": {
@@ -2641,6 +2656,7 @@ Content-Type: application/entity-statement+jwt
   "sub": "https://openid.sunet.se"
   "exp": 1568397247,
   "iat": 1568310847,
+  "htu": "https://edugain.org/federation/federation_fetch_endpoint",
   "jwks": {
     "keys": [
       {
@@ -5351,6 +5367,41 @@ HTTP/1.1 302 Found
         </front>
       </reference>
 
+      <reference anchor="IETF.DPoP"
+                 target="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-dpop">
+        <front>
+          <title>OAuth 2.0 Demonstration of Proof-of-Possession at the Application Layer (DPoP)</title>
+
+          <author fullname="Daniel Fett" initials="D." surname="Fett">
+            <organization abbrev="yes.com">yes.com
+            </organization>
+          </author>
+
+          <author fullname="Brian Campbell" initials="B." surname="Campbell">
+            <organization abbrev="ping">ping identity
+            </organization>
+          </author>
+
+          <author fullname="John Bradley" initials="J." surname="Bradley">
+            <organization abbrev="Ping Identity">Ping Identity</organization>
+          </author>
+
+          <author fullname="Torsten Lodderstetd" initials="T." surname="Lodderstetd">
+            <organization abbrev="yes.com">yes.com</organization>
+          </author>
+
+          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
+            <organization abbrev="Microsoft">Microsoft</organization>
+          </author>
+
+          <author fullname="David Waite" initials="D." surname="Waite">
+            <organization abbrev="ping">ping identity</organization>
+          </author>
+
+          <date day="5" month="September" year="2020"/>
+        </front>
+      </reference>
+
     </references>
 
     <references title="Informative References">
@@ -5691,6 +5742,7 @@ Host: umu.se
   "exp": 1568397247,
   "iat": 1568310847,
   "iss": "https://umu.se",
+  "htu": "https://umu.se/oidc/fedapi",
   "jwks": {
     "keys": [
       {
@@ -5819,6 +5871,8 @@ Host: swamid.se
   "exp": 1568397247,
   "iat": 1568310847,
   "iss": "https://swamid.se",
+  "sub": "https://umu.se",
+  "htu": "https://swamid.se/fedapi",
   "jwks": {
     "keys": [
       {
@@ -5853,8 +5907,7 @@ Host: swamid.se
         ]
       }
     }
-  },
-  "sub": "https://umu.se"
+  }
 }
 ]]></artwork>
           </figure>
@@ -5941,6 +5994,8 @@ Host: geant.org
   "exp": 1568397247,
   "iat": 1568310847,
   "iss": "https://edugain.geant.org",
+  "sub": "https://swamid.se",
+  "htu": "https://edugain.geant.org/edugain/api",
   "jwks": {
     "keys": [
       {
@@ -5962,8 +6017,7 @@ Host: geant.org
         "add": "ops@edugain.geant.org"
       }
     }
-  },
-  "sub": "https://swamid.se"
+  }
 }
 ]]></artwork>
           </figure>
@@ -6539,6 +6593,15 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+
+      <t>
+        -30
+        <list style="symbols">
+          <t>
+            Fixed #1947: Added <spanx style="verb">htu</spanx> as OPTIONAL in Entity Statement JWS.
+          </t>
+        </list>
+      </t>
 
       <t>
         -29
