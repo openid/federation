@@ -419,17 +419,25 @@
             </t>
             <t hangText="htu">
               <vspace/>
-              OPTIONAL. String containing the fetch endpoint URL,
+              OPTIONAL. String containing the <xref target="fetch_endpoint">
+              fetch endpoint</xref> URL
               where the Entity Statement was issued, 
               without query and fragment parts, as defined in 
               <xref target="IETF.DPoP" />.
-              This parameter made known the endpoint that generated 
-              the statement, allowing a quick renewal of it unless
-              the URL contained in the `htu` parameter is available. If not, 
-              the Entity Configuration of the Entity Statement issuer 
-              MUST be downloaded to know if the 
+              
+              This parameter enables an optimized refresh of the Entity
+              Statement and hence the Trust Chain, by skipping the
+              <xref="federation_configuration">Entity Configuration</xref> 
+              request that is normally required to discover the
               <spanx style="verb">federation_fetch_endpoint</spanx> 
-              URL is changed. 
+              of the issuing authority.
+
+              If an Entity Statement cannot be retrieved at the URL stated by the 
+              <spanx style="verb">htu</spanx> parameter, which can occur if the endpoint URL 
+              has changed, the Entity Configuration of the issuing authority MUST be retrieved 
+              in order to find out the current 
+              <spanx style="verb">federation_fetch_endpoint</spanx> location.
+
               Implementations that adopt this parameter allow for the rapid 
               updating of Trust Chains by means of this optimization.
             </t>
