@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="31" month="May" year="2023"/>
+    <date day="13" month="June" year="2023"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -168,8 +168,7 @@
             <t hangText="Entity">
               <vspace/>
               Something that has a separate and distinct existence and that can
-              be identified in a context. All Entities in an OpenID Connect
-              federation MUST have a globally unique identifier.
+              be identified in a context.
             </t>
             <t hangText="Entity Identifier">
               <vspace/>
@@ -178,6 +177,11 @@
             <t hangText="Trust Anchor">
               <vspace/>
               An Entity that represents a trusted third party.
+            </t>
+            <t hangText="Federation Entity">
+              <vspace/>
+              An Entity for which it is possible to construct a trust chain
+              from the entity to a Trust Anchor.
             </t>
             <t hangText="Entity Statement">
               <vspace/>
@@ -576,8 +580,8 @@
               <vspace/>
               OPTIONAL.
               If a Federation Operator knows that a Trust Mark ID is owned
-              by an entity different from the Trust Mark Issuers then that
-              knowledge has to be expressed in this claim.
+              by an Entity different from the Trust Mark Issuer then that
+              knowledge MUST be expressed in this claim.
               This claim MUST be ignored if present in an Entity Configuration
               that describes an Entity that is not a Trust Anchor.
               The value is a JSON object with keys representing Trust Mark identifiers
@@ -809,7 +813,7 @@
             registry established by <xref target="JwsHeaderRegistry"/>.
           </t>
           <t>
-          The <xref target="trust_chain"/> header parameter is a
+          The <spanx style="verb">trust_chain</spanx> header parameter is a
           JSON array containing the sequence of the statements
           that proves the trust relationship between the issuer of the
           <xref target="RFC7515">JWS</xref>
@@ -2197,14 +2201,17 @@
       </section>
       <section title="Trust Marks" anchor="trust_marks">
         <t>
-          The Trust Marks used by this specification are
-          signed JWTs.
+          The Trust Marks used by this specification are signed JWTs.
         </t>
-
+        <t>A Trust Mark Issuer is a Federation Entity that issues Trust marks.</t>
+        <t>
+          A Trust Mark Owner is an Entity the owns the right to a Trust Mark
+          identifier.
+        </t>
         <t>
           The Trust Marks are signed by a federation-accredited
           authority. All Trust Mark Issuers MUST be represented in the
-          federation by an entity. The fact that a Trust Mark Issuer is
+          federation by an Entity. The fact that a Trust Mark Issuer is
           accepted by the federation is expressed in the
           <spanx style="verb">trust_marks_issuers</spanx> claim of the
           Trust Anchor.
@@ -2231,7 +2238,8 @@
         <section title="Trust Mark Delegation" anchor="trust_mark_delegation">
           <t>
             There will be cases where the owner of a Trust Mark for some reason
-            does not want to be the Trust Mark Issuer. Take as an example vehicle
+            may not match the Trust Mark Issuer due to administrative or
+            technical requirements. Take as an example vehicle
             inspection. Vehicle inspection is a procedure mandated by national
             or subnational governments in many countries, in which a vehicle is
             inspected to ensure that it conforms to regulations governing
@@ -2243,12 +2251,12 @@
             The fact that a Trust Mark is issued by a Trust Mark Issuer that is
             not the owner of the Trust Mark is in the Trust Mark expressed by adding a
             signed JWT to the <spanx style="verb">delegation</spanx> claim.
-            The format of the signed JWT is described below.
+            The format of the signed JWT is as described below.
           </t>
           <t>
             If the Federation Operator knows of and has verified that Trust
             Marks with a
-            certain Trust Mark Identifier may be issued by Trust Mark Issuers
+            certain Trust Mark identifier may be issued by Trust Mark Issuers
             that are not the owner of the Trust Mark ID then the information
             about the owner and the Trust Mark ID MUST be added to the
             <spanx style="verb">trust_mark_owner</spanx> claim in the Trust
@@ -2308,7 +2316,8 @@
               <t hangText="delegation">
                 <vspace/>
                 OPTIONAL. Signed JWT. A signed JWT containing information about
-	              a delegation of the right to issue Trust Marks with a special ID.
+	              a delegation of the right to issue Trust Marks, with a special ID,
+                from the owner of the Trust Mark to an issuer of the Trust Mark.
               </t>
             </list>
           </t>
@@ -2319,6 +2328,12 @@
           </t>
         </section>
         <section title="Trust Mark Delegation Claims" anchor="delegation_claim">
+          <t>
+            Trust Mark delegation JWTs MUST be explicitly typed, by setting the
+            <spanx style="verb">typ</spanx> header parameter to
+            trust-mark-delegation+jwt. This prevents
+            cross-JWT confusion (see [RFC8725], section 3.11).
+          </t>
           <t>
             The delegation claims:
           </t>
@@ -2369,11 +2384,6 @@
                 it has not passed its expiration time.
               </t>
               <t>
-                Using the Trust Mark issuer status endpoint to verify that the
-                Trust Mark is still active.
-                Described in <xref target="status_endpoint"/>
-              </t>
-              <t>
                 If the Trust Mark ID appears in the
                 <spanx style="verb">trust_mark_owners</spanx> claim
                 make certain that the Trust Mark contains
@@ -2382,11 +2392,22 @@
                 The claim set that can be found by looking up the Trust Mark ID
                 in the <spanx style="verb">trust_mark_owners</spanx> claim can
                 be used in the following way.
-                The signature of the delegation claim value MUST
-                be possible to verify with a key that can be found in the
-                <spanx style="verb">jwks</spanx> part of the claim set.
-                The issuer of the delegation claim value MUST match the
-                <spanx style="verb">sub</spanx> claim in the claim set.
+                <list style="symbols">
+                  <t>
+                    The signature of the delegation claim value MUST
+                    be possible to verify with a key that can be found in the
+                    <spanx style="verb">jwks</spanx> part of the claim set.
+                  </t>
+                  <t>
+                    The issuer of the delegation claim value MUST match the
+                    <spanx style="verb">sub</spanx> claim in the claim set.
+                  </t>
+                </list>
+              </t>
+              <t>
+                Using the Trust Mark issuer status endpoint to verify that the
+                Trust Mark is still active.
+                Described in <xref target="status_endpoint"/>
               </t>
             </list>
           </t>
