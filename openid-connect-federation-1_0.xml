@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Connect Federation">OpenID Connect Federation 1.0 -
-      draft 29
+      draft 30
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -37,10 +37,10 @@
     </author>
 
     <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
-      <organization abbrev="Microsoft">Microsoft</organization>
+      <organization abbrev="independent">independent</organization>
 
       <address>
-        <email>mbj@microsoft.com</email>
+        <email>michael_b_jones@hotmail.com</email>
 
         <uri>https://self-issued.info/</uri>
       </address>
@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="13" month="June" year="2023"/>
+    <date day="15" month="June" year="2023"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -180,8 +180,8 @@
             </t>
             <t hangText="Federation Entity">
               <vspace/>
-              An Entity for which it is possible to construct a trust chain
-              from the entity to a Trust Anchor.
+              An Entity for which it is possible to construct a Trust Chain
+              from the Entity to a Trust Anchor.
             </t>
             <t hangText="Entity Statement">
               <vspace/>
@@ -2210,7 +2210,7 @@
         </t>
         <t>
           The Trust Marks are signed by a federation-accredited
-          authority. All Trust Mark Issuers MUST be represented in the
+          authority. All Trust Mark issuers MUST be represented in the
           federation by an Entity. The fact that a Trust Mark Issuer is
           accepted by the federation is expressed in the
           <spanx style="verb">trust_marks_issuers</spanx> claim of the
@@ -2256,7 +2256,7 @@
           <t>
             If the Federation Operator knows of and has verified that Trust
             Marks with a
-            certain Trust Mark identifier may be issued by Trust Mark Issuers
+            certain Trust Mark identifier may be issued by Trust Mark issuers
             that are not the owner of the Trust Mark ID then the information
             about the owner and the Trust Mark ID MUST be added to the
             <spanx style="verb">trust_mark_owner</spanx> claim in the Trust
@@ -2899,9 +2899,10 @@ Content-Type: application/entity-statement+jwt
           with the subject's Entity Statement and ends with the specified
           Trust Anchor, verify the Trust Chain, and then apply all the
           policies present in the Trust Chain to the Entity Statements
-          metadata. The resolver is also expected to verify that the
-          present Trust Marks are active. If it finds Trust Marks that are
-          not active, then those should be left out of the response set.
+          metadata. The resolver MUST verify that all present 
+          Trust Marks with identifiers recognized within 
+          the Federation are active. 
+          The response set MUST include only verified Trust Marks.
         </t>
 
         <section title="Resolve Request">
@@ -6842,6 +6843,15 @@ Host: op.umu.se
           <t>Added text on Trust Mark delegation.</t>
         </list>
       </t>
+      <t>
+	-30
+	<list style="symbols">
+	  <t>
+	    Updated contributor affiliations.
+	  </t>
+	</list>
+      </t>
+
       <t>
         -29
         <list style="symbols">
