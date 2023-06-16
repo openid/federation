@@ -417,13 +417,12 @@
               This claim MUST be absent from an
               Entity Configuration issued by a Trust Anchor with no superiors.
             </t>
-            <t hangText="htu">
+            <t hangText="source_endpoint">
               <vspace/>
               OPTIONAL. String containing the <xref target="fetch_endpoint">
               fetch endpoint</xref> URL
               where the Entity Statement was issued, 
-              without query and fragment parts, as defined in 
-              <xref target="IETF.DPoP" />.
+              without query and fragment parts.
               
               This parameter enables an optimized refresh of the Entity
               Statement and hence the Trust Chain, by skipping the
@@ -433,7 +432,8 @@
               of the issuing authority.
 
               If an Entity Statement cannot be retrieved at the URL stated by the 
-              <spanx style="verb">htu</spanx> parameter, which can occur if the endpoint URL 
+              <spanx style="verb">source_endpoint</spanx> 
+              parameter, which can occur if the endpoint URL 
               has changed, the Entity Configuration of the issuing authority MUST be retrieved 
               in order to find out the current 
               <spanx style="verb">federation_fetch_endpoint</spanx> location.
@@ -5480,41 +5480,6 @@ HTTP/1.1 302 Found
         </front>
       </reference>
 
-      <reference anchor="IETF.DPoP"
-                 target="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-dpop">
-        <front>
-          <title>OAuth 2.0 Demonstration of Proof-of-Possession at the Application Layer (DPoP)</title>
-
-          <author fullname="Daniel Fett" initials="D." surname="Fett">
-            <organization abbrev="yes.com">yes.com
-            </organization>
-          </author>
-
-          <author fullname="Brian Campbell" initials="B." surname="Campbell">
-            <organization abbrev="ping">ping identity
-            </organization>
-          </author>
-
-          <author fullname="John Bradley" initials="J." surname="Bradley">
-            <organization abbrev="Ping Identity">Ping Identity</organization>
-          </author>
-
-          <author fullname="Torsten Lodderstetd" initials="T." surname="Lodderstetd">
-            <organization abbrev="yes.com">yes.com</organization>
-          </author>
-
-          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
-            <organization abbrev="Microsoft">Microsoft</organization>
-          </author>
-
-          <author fullname="David Waite" initials="D." surname="Waite">
-            <organization abbrev="ping">ping identity</organization>
-          </author>
-
-          <date day="5" month="September" year="2020"/>
-        </front>
-      </reference>
-
     </references>
 
     <references title="Informative References">
@@ -6720,7 +6685,7 @@ Host: op.umu.se
         -31
         <list style="symbols">
           <t>
-            Fixed #1947: Added <spanx style="verb">htu</spanx> as OPTIONAL in Entity Statement JWS.
+            Fixed #1947: Added <spanx style="verb">source_endpoint</spanx> as OPTIONAL in Entity Statement JWS.
           </t>
         </list>
       </t>
