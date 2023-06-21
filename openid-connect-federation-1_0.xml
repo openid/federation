@@ -417,6 +417,27 @@
               This claim MUST be absent from an
               Entity Configuration issued by a Trust Anchor with no superiors.
             </t>
+            <t hangText="source_endpoint">
+              <vspace/>
+              OPTIONAL. String containing the <xref target="fetch_endpoint">
+              fetch endpoint</xref> URL
+              where the Entity Statement was issued, 
+              without query and fragment parts.
+              
+              This parameter enables an optimized refresh of the Entity
+              Statement and hence the Trust Chain, by skipping the
+              <xref="federation_configuration">Entity Configuration</xref> 
+              request that is normally required to discover the
+              <spanx style="verb">federation_fetch_endpoint</spanx> 
+              of the issuing authority.
+
+              If an Entity Statement cannot be retrieved at the URL stated by the 
+              <spanx style="verb">source_endpoint</spanx> 
+              parameter, which can occur if the endpoint URL 
+              has changed, the Entity Configuration of the issuing authority MUST be retrieved 
+              in order to find out the current 
+              <spanx style="verb">federation_fetch_endpoint</spanx> location.
+            </t>
             <t hangText="metadata">
               <vspace/>
               REQUIRED. JSON object that includes
@@ -617,6 +638,7 @@
   "exp": 1516298022,
   "crit": ["jti"],
   "jti": "7l2lncFdY6SlhNia",
+  "source_endpoint": "https://feide.no/federation_api/fetch",
   "policy_language_crit": ["regexp"],
   "metadata": {
     "openid_provider": {
@@ -2665,6 +2687,7 @@ Content-Type: application/entity-statement+jwt
   "sub": "https://openid.sunet.se"
   "exp": 1568397247,
   "iat": 1568310847,
+  "source_endpoint": "https://edugain.org/federation/federation_fetch_endpoint",
   "jwks": {
     "keys": [
       {
@@ -5806,6 +5829,7 @@ Host: umu.se
   "exp": 1568397247,
   "iat": 1568310847,
   "iss": "https://umu.se",
+  "source_endpoint": "https://umu.se/oidc/fedapi",
   "jwks": {
     "keys": [
       {
@@ -5934,6 +5958,8 @@ Host: swamid.se
   "exp": 1568397247,
   "iat": 1568310847,
   "iss": "https://swamid.se",
+  "sub": "https://umu.se",
+  "source_endpoint": "https://swamid.se/fedapi",
   "jwks": {
     "keys": [
       {
@@ -5968,8 +5994,7 @@ Host: swamid.se
         ]
       }
     }
-  },
-  "sub": "https://umu.se"
+  }
 }
 ]]></artwork>
           </figure>
@@ -6056,6 +6081,8 @@ Host: geant.org
   "exp": 1568397247,
   "iat": 1568310847,
   "iss": "https://edugain.geant.org",
+  "sub": "https://swamid.se",
+  "source_endpoint": "https://edugain.geant.org/edugain/api",
   "jwks": {
     "keys": [
       {
@@ -6077,8 +6104,7 @@ Host: geant.org
         "add": "ops@edugain.geant.org"
       }
     }
-  },
-  "sub": "https://swamid.se"
+  }
 }
 ]]></artwork>
           </figure>
@@ -6656,12 +6682,15 @@ Host: op.umu.se
       <t>[[ To be removed from the final specification ]]</t>
 
       <t>
-	-30
-	<list style="symbols">
-	  <t>
-	    Updated contributor affiliations.
-	  </t>
-	</list>
+       -30
+       <list style="symbols">
+         <t>
+          Updated contributor affiliations.
+         </t>
+          <t>
+            Fixed #1947: Added <spanx style="verb">source_endpoint</spanx> as OPTIONAL in Entity Statement JWS.
+          </t>
+        </list>
       </t>
 
       <t>
