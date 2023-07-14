@@ -1517,12 +1517,13 @@
                 The specified value or values MUST be added to the metadata
                 parameter. If any of the specified values are already present
                 as values of the parameter, they MUST NOT be added. If the
-                parameter has no value, then the parameter MUST be initialized
+                parameter is not present, then the parameter MUST be initialized
                 with the specified value(s).
               </t>
               <t hangText="default">
                 <vspace/>
-                If the metadata parameter has no value, then it MUST be set to
+                If the metadata parameter 
+                is not present, then it MUST be set to
                 the specified default value(s).
               </t>
             </list>
@@ -1599,7 +1600,12 @@
           </t>
 
         <table>
-          <name>Map of the outputs produced by combining metadata policies with different input values.</name>
+          <name>
+              Map of the outputs produced by combining metadata policies with different input values.
+              The <spanx style="verb">subset_of</spanx> check is ignored 
+              when the metadata parameter has no value and 
+              <spanx style="verb">essential</spanx> is set to false, as shown in the last row.
+          </name>
           <thead>
             <tr>
               <td colspan="2">Policy</td>
@@ -6909,6 +6915,7 @@ Host: op.umu.se
       <t>
         The authors wish to acknowledge the contributions of the following
         individuals and organizations to this specification:
+        Pasquale Barbaro,
         Michele D'Amico,
         Andrii Deinega,
         Heather Flanagan,
