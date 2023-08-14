@@ -1503,7 +1503,7 @@
             </figure>
           </t>
         </section>
-        <section title="Operators">
+        <section title="Operators" anchor="policy_operators">
           <t>
             Value modifiers are:
             <list style="hanging">
@@ -1762,21 +1762,33 @@
             </list>
           </t>
         </section>
-        <section title="Combining Policies">
+        <section title="Combining Policies" anchor="combining_policies">
           <t>
-            If there is more than one metadata policy in a Trust Chain, then the
-            policies MUST be combined before they are applied to the metadata statement.
+            If there is more than one Entity Statement with a metadata policy in a
+            Trust Chain, then the policies MUST be combined before they are applied
+            to the metadata statement.
           </t>
           <t>
-            Using the notation we have defined in <xref target="trust_chain"/>, policies are
-            combined starting with ES[i] and then adding the policies from ES[j]
-            j=i-1,..,1 before applying the combined policy to the Entity's metadata.
+            Using the notation defined in <xref target="trust_chain"/>, policies are
+            combined by starting with ES[i] and then adding the policies from ES[j]
+            j=i-1,..,1. When for a given metadata parameter both the combined policy
+            at the current step and the Subordinate Entity specify a policy operator,
+            for example <spanx style="verb">subset_of</spanx>, the two operators are
+            <xref target="merging_policy_operators">merged</xref>. After each
+            combination step the policy for each parameter MUST adhere to the rules
+            in <xref target="policy_restr"/>. The final combined policy is then
+            <xref target="applying_policies">applied</xref> to the Entity's metadata.
           </t>
           <t>
-            After each combination, the policy for each parameter MUST
-            adhere to the rules defined in <xref target="policy_restr"/>.
+            If during the combination process an operator merge rule or a policy
+            restriction is violated or otherwise produces an error the process MUST
+            stop and the policy combination MUST be considered invalid.
           </t>
-          <section title="Merging Operators">
+          <section title="Merging Operators" anchor="merging_policy_operators">
+            <t>
+              The <xref target="policy_operators">policy operators</xref> for a
+              metadata parameter MUST be merged as follows:
+            </t>
             <t>
               <list style="hanging">
                 <t hangText="subset_of">
@@ -1805,32 +1817,33 @@
                 </t>
                 <t hangText="value">
                   <vspace/>
-                  Merging two <spanx style="verb">value</spanx> operators is
-                  NOT allowed unless the two operator values are equal.
+                  Merging two <spanx style="verb">value</spanx> operators
+                  requires the two operator values to be equal. If the values
+                  are not equal this MUST be treated as error.
                 </t>
                 <t hangText="default">
                   <vspace/>
-                  Merging two <spanx style="verb">default</spanx> operators is
-                  NOT allowed unless the two operator values are equal.
+                  Merging two <spanx style="verb">default</spanx> operators
+                  requires the two operator values to be equal. If the values
+                  are not equal this MUST be treated as error.
                 </t>
                 <t hangText="essential">
                   <vspace/>
                   If a superior has specified <spanx style="verb">essential=true</spanx>,
-                  then an Intermediate
-                  cannot change that. If a superior has specified
-                  <spanx style="verb">essential=false</spanx>, then an
-                  Intermediate is allowed to change that to
+                  then a Subordinate cannot change that.
+                  If a superior has specified <spanx style="verb">essential=false</spanx>,
+                  then a Subordinate is allowed to change that to
                   <spanx style="verb">essential=true</spanx>.
-                  If a superior has not specified
-                  <spanx style="verb">essential</spanx>, then an Intermediate
-                  can set <spanx style="verb">essential</spanx> to
+                  If a superior has not specified <spanx style="verb">essential</spanx>,
+                  then a Subordinate can set <spanx style="verb">essential</spanx> to
                   <spanx style="verb">true</spanx> or <spanx style="verb">false</spanx>.
+                  If those rules are not met this MUST be treated as error.
                 </t>
               </list>
             </t>
           </section>
         </section>
-        <section title="Applying Policies">
+        <section title="Applying Policies" anchor="applying_policies">
           <t>
             Once combining the Metadata policies has been accomplished, the next
             step is to apply the combined policy to the metadata.
