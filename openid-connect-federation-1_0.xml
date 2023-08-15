@@ -404,12 +404,6 @@
               It is RECOMMENDED that the Key ID be the JWK Thumbprint <xref target="RFC7638"/>
               using the SHA-256 hash function of the key.
             </t>
-            <t hangText="aud">
-              <vspace/>
-              OPTIONAL.
-              The Entity Statement MAY be specifically created for an Entity.
-              The Entity Identifier for that Entity MUST appear in this claim.
-            </t>
             <t hangText="authority_hints" anchor="authority_hints">
               <vspace/>
               OPTIONAL. An array of strings representing
@@ -588,15 +582,6 @@
               anyone can issue Trust Marks with that identifier.
               There is more about Trust Marks in <xref target="trust_marks"/>.
             </t>
-            <t hangText="trust_anchor_id">
-              <vspace/>
-              OPTIONAL.
-              An OP MUST use this claim to tell the RP which Trust Anchor it
-              chose to use when responding to an explicit client registration
-              (<xref target="explicit">Explicit Client Registration</xref>).
-              The value of <spanx style="verb">trust_anchor_id</spanx> is the
-              Entity Identifier of a Trust Anchor.
-            </t>
             <t hangText="trust_mark_owners">
               <vspace/>
               OPTIONAL.
@@ -622,6 +607,10 @@
               </list>
             </t>
           </list>
+        </t>
+        <t>
+          Applications and protocols utilizing Entity Statements MAY specify
+          additional claims.
         </t>
         <t>
           The Entity Statement is signed using the private key of the issuer
@@ -1830,7 +1819,7 @@
             </t>
           </section>
         </section>
-        <section title="Applying Policies">
+        <section title="Applying Policies" anchor="applying_policies">
           <t>
             Once combining the Metadata policies has been accomplished, the next
             step is to apply the combined policy to the metadata.
@@ -4545,33 +4534,43 @@ HTTP/1.1 302 Found
 
       <section title="Explicit Registration" anchor="explicit">
         <t>
-          This method involves performing an explicit registration step for a new client
-          before the RP interacts with an OP for the first time,
-          similar to the process specified by
-          <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>,
-          but where the client registration request contains the Entity Configuration
-          or an entire Trust Chain.
-	  <xref target="ExplicitRegExample"/> contains an example using explicit client registration.
+          With this method the RP establishes its client registration with the
+          OP by means of a dedicated registration request, similar to
+          <xref target="OpenID.Registration"/>, but instead of its metadata the
+          RP submits its Entity Configuration or an entire Trust Chain. When
+          the Explicit Registration step is completed the RP can proceed to
+          make regular OpenID authentication requests to the OP.
+        </t>
+
+        <t>
+          An OP that supports Explicit Registration MUST include the
+          <spanx style="verb">explicit</spanx> keyword in its
+          <spanx style="verb">client_registration_types_supported</spanx>
+          metadata parameter and set the
+          <spanx style="verb">federation_registration_endpoint</spanx> metadata
+          parameter to the URL where it receives requests.
+        </t>
+
+        <t>An example of an Explicit Registration is provided in
+          <xref target="ExplicitRegExample"/>.
         </t>
         <section anchor="Clireg" title="Client Registration">
           <section anchor="Cliregreq" title="Client Registration Request">
             <t>
-              An OP that supports OpenID Dynamic Client Registration as extended
-              by this specification, signals this by having the claim
-              <spanx style="verb">federation_registration_endpoint</spanx>
-              in the OP's metadata.
-            </t>
-            <t>
-              Given that the OP supports Explicit Registration, the RP
-              progresses as follows:
+              The RP prepares the request as follows:
             </t>
             <t>
               <list style="numbers">
+
                 <t>
                   Once it has a list of acceptable Trust Anchors to the OP,
                   it MUST choose the subset it wants to progress with. This
                   subset can be as small as one Trust Anchor, but it can also
                   contain more than one.
+                  The RP MUST perform a Trust Chain and metadata resolution for
+                  the OP, as specified in <xref target="resolving_trust"/>. If
+                  the resolution is not successful the RP MUST abort the
+                  request.
                 </t>
                 <t>
                   Using this subset of Trust Anchors, the RP will choose a set of
@@ -4579,6 +4578,10 @@ HTTP/1.1 302 Found
                   from the hints that are available to it. Each hint MUST,
                   when used as a starting point for Trust Chain collection,
                   lead to at least one of the Trust Anchors in the subset.
+                  If the RP has more than one Trust Anchor in common with the
+                  OP it MUST select a subset of Trust Anchors to proceed with.
+                  The subset may be as small as a single Trust Anchor, or
+                  include multiple ones.
                 </t>
                 <t>
                   The RP will now construct its Entity Configuration
@@ -4586,6 +4589,11 @@ HTTP/1.1 302 Found
                   metadata and where the
                   <spanx style="verb">authority_hints</spanx>
                   included are picked by the process described above.
+                  From its immediate superior authorities the RP MUST select
+                  one or more <spanx style="verb">authority_hints</spanx> so
+                  that every hint, when used as the starting point for a Trust
+                  Chain collection, leads to at least one of the Trust Anchors
+                  in the subset selected above.
                 </t>
                 <t>
                   The RP MAY include its Entity Configuration
@@ -4595,14 +4603,27 @@ HTTP/1.1 302 Found
                   statements that compose the Trust Chain
                   between the RP that makes the request and the
                   selected Trust Anchor.
+                  To construct its Entity Configuration the RP MUST include its
+                  metadata in the statement and use the
+                  <spanx style="verb">authority_hints</spanx> selected above.
+                  <vspace/>
+                  The RP SHOULD select its metadata parameters to comply with
+                  the resolved OP metadata and thus ensure a successful
+                  registration at the OP. Note that if the submitted RP
+                  metadata is not compliant with the metadata of the OP, the
+                  OP may choose to modify it in order to make it compliant
+                  rather than reject the request with an error response.
                 </t>
+
                 <t>
                   The Entity Configuration, or the entire Trust Chain,
                   is sent, using POST, to the
                   <spanx style="verb">federation_registration_endpoint</spanx>
                   defined in this document.
-		  There are no parameters in the POST;
-		  the Entity Configuration or Trust Chain is the entire POST body.
+                  There are no parameters in the POST;
+                  the Entity Configuration or Trust Chain is the entire POST body.
+                  The RP MUST sign its Entity Configuration with a current
+                  Federation Entity Key in its possession.
                 </t>
                 <t>
                   The content type of the Registration Request MUST be set to
@@ -4611,121 +4632,352 @@ HTTP/1.1 302 Found
                   requestor. Otherwise, if it contains the Trust Chain, the
                   content type of the Registration Request MUST be set to
                   <spanx style="verb">application/trust-chain+json</spanx>.
+                  The RP MAY include its Entity Configuration in a Trust Chain
+                  that leads to the RP. In this case the registration request
+                  will contain an array consisting of the sequence of
+                  statements that make up the Trust Chain between the RP and
+                  the Trust Anchor it selected.
                 </t>
               </list>
+            </t>
+            <t>
+              The following Entity Configuration claims are specified for use
+              in Explicit Registration requests. Their full description is in
+              <xref target="entity-statement"/>.
+            </t>
+            <t>
+              <list style="hanging">
+                <t hangText="iss">
+                  <vspace/>
+                  REQUIRED.
+                  It MUST be set to the Entity Identifier of the RP.
+                </t>
+                <t hangText="sub">
+                  <vspace/>
+                  REQUIRED.
+                  It MUST be set to the Entity Identifier of the RP.
+                </t>
+                <t hangText="iat">
+                  <vspace/>
+                  REQUIRED.
+                </t>
+                <t hangText="exp">
+                  <vspace/>
+                  REQUIRED.
+                </t>
+                <t hangText="jwks">
+                  <vspace/>
+                  REQUIRED.
+                </t>
+                <t hangText="aud">
+                  <vspace/>
+                  REQUIRED.
+                  It MUST be set to the Entity Identifier of the RP.
+                </t>
+                <t hangText="authority_hints">
+                  <vspace/>
+                  REQUIRED.
+                </t>
+                <t hangText="metadata">
+                  <vspace/>
+                  REQUIRED.
+                  It MUST contain the RP metadata under the
+                  <spanx style="verb">openid_relying_party</spanx> type
+                  identifier.
+                </t>
+                <t hangText="crit">
+                  <vspace/>
+                  OPTIONAL.
+                </t>
+                <t hangText="trust_marks">
+                  <vspace/>
+                  OPTIONAL.
+                </t>
+              </list>
+            </t>
+            <t>
+              The request MUST be an HTTP request to the
+              <spanx style="verb">federation_registration_endpoint</spanx> of
+              the OP, using the POST method and the https scheme.
+            </t>
+            <t>
+              When the RP submits an Entity Configuration the content type of
+              the request MUST be set to
+              <spanx style="verb">application/entity-statement+jwt</spanx>.
+              When the RP submits a Trust Chain the content type MUST be
+              <spanx style="verb">application/trust-chain+json</spanx>.
             </t>
           </section>
 
           <section anchor="cliregresp" title="Client Registration Response">
-            <section title="OP Constructing the Response">
+            <section title="Processing of the Request by the OP">
+              <t>
+                The OP processes the request as follows:
+              </t>
               <t>
                 <list style="numbers">
                   <t>
-                    After the OP receives the registration request, it
-                    checks if this contains an Entity Configuration or an
-                    entire Trust Chain.
+                    Upon receiving a registration request the OP MUST check if
+                    it contains an Entity Configuration or an entire Trust
+                    Chain.
                   </t>
                   <t>
                     If the request contains an Entity Configuration, the OP
-                    collects and
-                    evaluates the Trust Chains starting with the
-                    <spanx style="verb">authority_hints</spanx>
-                    in the Entity Configuration of the requestor.
-                    After it has verified at least one Trust Chain, it
-                    MUST verify that the signature on the received registration
-                    request is correct.
-                    If the OP finds more than one acceptable Trust Chain,
-                    it MUST choose one Trust Anchor from those chains as the one it will
-                    proceed with.
+                    MUST collect and evaluate the Trust Chains that start with
+                    the <spanx style="verb">authority_hints</spanx> in the
+                    Entity Configuration of the RP. After validating at least
+                    one Trust Chain, the OP MUST verify the signature of the
+                    received Entity Configuration. If the OP finds more than
+                    one acceptable Trust Chain, it MUST choose one Trust Anchor
+                    from those chains as the one to proceed with.
                   </t>
                   <t>
-                    If the request contains a Trust Chain,
-                    the OP MAY evaluate the statements in the Trust Chain
-                    to make its Federation Entity Discovery procedure more efficient,
-                    especially if the RP shows more than a single authority
-                    hint in its Entity Configuration.
-
+                    If the request contains a Trust Chain, the OP MAY evaluate
+                    the statements in the Trust Chain to save the network calls
+                    that are necessary to perform the Federation Entity
+                    Discovery, especially if the RP included more than one
+                    authority hint in its Entity Configuration. Otherwise the
+                    OP MUST extract the RP Entity Configuration from the Trust
+                    Chain and proceed according to step 2, as if only an Entity
+                    Configuration was received.
                   </t>
                   <t>
-                    At this point, if there already exists a client
-                    registration under the same Entity Identifier, then that
-                    registration MUST be regarded as invalid.
-                    Note
-                    that key material from the previous registration SHOULD be
-                    kept to enable verifying signatures or decrypting
-                    archived data.
+                    At this point, if the OP finds that it already has an
+                    existing client registration for the requesting RP, then
+                    that registration MUST be invalidated. The precise time of
+                    the invalidation is at the OP discretion, as the OP may
+                    want to ensure the completion of concurrent OpenID
+                    authentication requests initiated by the RP while the
+                    registration request is being processed.
+                    <vspace/>
+                    The OP MAY save client credentials and key material from
+                    the invalidated registration in order to verify past RP
+                    signatures and perform other cryptographic operations on
+                    past RP data.
                   </t>
                   <t>
-                    The OP will now construct an Entity Statement with metadata
-                    policies and assertions that when applied to the RP's
-                    metadata statement will result in metadata that the OP
-                    finds acceptable. Note that the Client ID the OP chooses
-                    does not have to be the Entity Identifier of the RP. The
-                    Entity Statement MUST include a
-                    <spanx style="verb">trust_anchor_id</spanx> claim and a
-                    single-valued <spanx style="verb">authority_hints</spanx>
-                    claim that correspond to the Trust Chain chosen in step 2.
+                    The OP will now use the received RP metadata to create a
+                    client registration compliant with its own OP metadata and
+                    other applicable policies.
+                    <vspace/>
+                    The OP MAY provision the RP with a
+                    <spanx style="verb">client_id</spanx> other than the RP's
+                    Entity Identifier.
+                    <vspace/>
+                    If the RP is provisioned with a
+                    <spanx style="verb">client_secret</spanx> it MUST NOT
+                    expire before the expiration of the registration Entity
+                    Statement that will be returned to the RP.
+                    <vspace/>
+                    The OP SHOULD NOT provision the RP with a
+                    <spanx style="verb">registration_access_token</spanx> and a
+                    <spanx style="verb">registration_client_uri</spanx>
+                    because the expected way for the RP to update its
+                    registration is to make a new Explicit Registration
+                    request. If the RP is provisioned with a
+                    <spanx style="verb">registration_access_token</spanx> for
+                    some purpose, for example to let it independently check its
+                    registered metadata, the token MUST NOT allow modification
+                    of the registration.
+                    <spanx/>
+                    The OP MAY modify the received RP metadata, for example by
+                    substituting an invalid or unsupported parameter, in order
+                    to make it compliant with its own OP metadata and other
+                    policies. If the OP does not accept the RP metadata or is
+                    unwilling to modify it in order to make it compliant, it
+                    MUST return a client registration error response, with an
+                    appropriate error, such as
+                    <spanx style="verb">invalid_client_metadata</spanx> or
+                    <spanx style="verb">invalid_redirect_uri</spanx>, as
+                    specified in section 3.3 of
+                    <xref target="OpenID.Registration"/>.
                   </t>
                   <t>
-                    The OP will sign the Entity Statement and return it as the
-                    registration response to the RP.
+                    The OP MUST assign an expiration time to the created
+                    registration. This time MUST NOT exceed the expiration time
+                    of the received Entity Configuration or of the Trust Chain
+                    that the OP selected to process the request.
                   </t>
                   <t>
-                    A successful response MUST have an HTTP status code 200 and
-                    a content type set to
-                    <spanx style="verb">application/entity-statement+jwt</spanx>.
+                    If the OP created a client registration for the RP it MUST
+                    then construct a success response in the form an Entity
+                    Statement.
+                    <vspace/>
+                    The OP MUST set the <spanx style="verb">trust_anchor_id</spanx>
+                    claim of the Entity Statement to the Trust Anchor it
+                    selected to process the request. The
+                    <spanx style="verb">authority_hints</spanx> claim MUST be
+                    set to the OP's immediate superior authority in the
+                    selected Trust Chain.
+                    <vspace/>
+                    The OP MUST set the <spanx style="verb">exp</spanx> claim
+                    to the expiration time of the created registration.
+                    <vspace/>
+                    The OP MUST express the client registration it created for
+                    the RP by means of the <spanx style="verb">metadata</spanx>
+                    claim, by placing the metadata parameters under the
+                    <spanx style="verb">openid_relying_party</spanx> type
+                    identifier. The parameters MUST include the
+                    <spanx style="verb">client_id</spanx> that was provisioned
+                    for the RP. If the RP was provisioned with credentials,
+                    for example a <spanx style="verb">client_secret</spanx>,
+                    these MUST be included as well.
+                    <vspace/>
+                    The OP SHOULD NOT omit metadata parameters that have a
+                    default value, for example
+                    <spanx style="verb">token_endpoint_auth_method</spanx>
+                    which has a default value of
+                    <spanx style="verb">client_secret_basic</spanx>, in order
+                    to simplify the processing of the response by the RP.
                   </t>
                   <t>
-                    If the response is negative, the response
-                    SHOULD be produced in accordance with what is defined in
-                    <xref target="error_response"/>.
+                    The OP MUST sign the registration Entity Statement with a
+                    current Federation Entity Key in its possession.
                   </t>
-
                 </list>
+              </t>
+              <t>
+                The following Entity Statement claims are specified for use in
+                Explicit Registration responses.
+              </t>
+              <t>
+                <list style="hanging">
+                  <t hangText="iss">
+                    <vspace/>
+                    REQUIRED.
+                    It MUST be set to the Entity Identifier of the OP. See
+                    <xref target="entity-statement"/> for the full
+                    specification.
+                  </t>
+                  <t hangText="sub">
+                    <vspace/>
+                    REQUIRED.
+                    It MUST be set to the Entity Identifier of the RP. See
+                    <xref target="entity-statement"/> for the full
+                    specification.
+                  </t>
+                  <t hangText="iat">
+                    <vspace/>
+                    REQUIRED.
+                    See <xref target="entity-statement"/> for the full
+                    specification.
+                  </t>
+                  <t hangText="exp">
+                    <vspace/>
+                    REQUIRED.
+                    See <xref target="entity-statement"/> for the full
+                    specification.
+                  </t>
+                  <t hangText="jwks">
+                    <vspace/>
+                    REQUIRED.
+                    It MUST be a verbatim copy of the <spanx style="verb">jwks</spanx>
+                    of the received RP Entity Configuration. See
+                    <xref target="entity-statement"/> for the full
+                    specification.
+                  </t>
+                  <t hangText="aud">
+                    <vspace/>
+                    REQUIRED.
+                    It MUST be set to the Entity Identifier of the RP. See
+                    <xref target="RFC7519"/> for the full specification. This
+                    claim is specific to Explicit Registration responses and is
+                    not a general Entity Statement claim.
+                  </t>
+                  <t hangText="trust_anchor_id">
+                    <vspace/>
+                    REQUIRED.
+                    It MUST be set to the Entity Identifier of the Trust Anchor
+                    that the OP selected to process the Explicit Registration
+                    request. This claim is specific to Explicit Registration
+                    responses and is not a general Entity Statement claim.
+                  </t>
+                  <t hangText="authority_hints">
+                    <vspace/>
+                    REQUIRED.
+                    It MUST be single-valued and reference the immediate
+                    superior authority of the OP in the Trust Chain that the OP
+                    selected to process the request. See
+                    <xref target="entity-statement"/> for the full
+                    specification.
+                  </t>
+                  <t hangText="metadata">
+                    <vspace/>
+                    REQUIRED.
+                    It MUST contain the registered RP metadata under the
+                    <spanx style="verb">openid_relying_party</spanx> type
+                    identifier. See <xref target="entity-statement"/> for the
+                    full specification.
+                  </t>
+                  <t hangText="crit">
+                    <vspace/>
+                    OPTIONAL.
+                    See <xref target="entity-statement"/> for the full
+                    specification.
+                  </t>
+                </list>
+              </t>
+              <t>
+                A successful response MUST have an HTTP status code 200 and a
+                content type set to
+                <spanx style="verb">application/entity-statement+jwt</spanx>.
+              </t>
+              <t>
+                For a client registration error the response SHOULD be produced
+                in accordance with
+                <xref target="error_response"/> and may use errors defined in
+                section 3.3 of <xref target="OpenID.Registration"/> and section
+                3.2.2 of <xref target="RFC7591"/>.
               </t>
             </section>
 
-            <section title="RP Parsing the Response">
+            <section title="Processing of the Response by the RP">
               <t>
                 <list style="numbers">
                   <t>
-                    If the response is positive,
-                    the RP verifies the correctness of the received Entity
-                    Statement, making sure that one of the
-                    <spanx style="verb">authority_hints</spanx>
-                    it added to the registration request will lead to the
-                    Trust Anchor the OP named using the claim
-                    <spanx style="verb">trust_anchor_id</spanx>.
+                    If the response indicates success the RP MUST verify that
+                    its content is a valid Entity Statement issued by the OP
+                    and signed with a current Federation Entity Key in its
+                    possession.
+                    <vspace/>
+                    The RP MUST ensure the signing Federation Entity key used
+                    by the OP is present in the
+                    <spanx style="verb">jwks</spanx> claim of the Entity
+                    Statement issued by the OP's immediate superior authority
+                    in a Trust Chain that the RP successfully resolved for the
+                    OP when it prepared the Explicit Registration request.
                   </t>
                   <t>
-                    The RP MUST NOT apply metadata policies and assertions
-                    from the Trust Chains that the OP provides because those
-                    are not valid for the RP's metadata.
-                    The RP MUST apply policies and assertions to the metadata
-                    using one of its own Trust Chains that ends in the Trust
-                    Anchor that the OP chose.
-                    Once it has applied those policies and assertions, it can
-                    then apply the policies and assertions returned from the OP.
-                    This application of policies and assertions
-                    is equivalent to adding the OP's metadata policies and
-                    assertions to the Trust Chain in between the RP's and its
-                    immediate superior's Entity Statements.
-                    When the RP has applied all the metadata policies and
-                    assertions to its metadata statement, it then stores
-                    the result and will use the agreed-upon metadata when
-                    talking to the OP.
+                    The RP MUST verify that the
+                    <spanx style="verb">trust_anchor_id</spanx> represents one
+                    of its own Trust Anchors.
                   </t>
                   <t>
-                    At this point, the RP also knows which Trust Chain it should
-                    use when evaluating the OP's metadata. It can therefore
-                    apply the metadata policies and assertions on the OP's
-                    metadata using the relevant Trust Chain and store the result
-                    as the OP's metadata.
+                    The RP MUST verify that at least one of the
+                    <spanx style="verb">authority_hints</spanx> it specified in
+                    the Explicit Registration request leads to the Trust Anchor
+                    that the OP set in the
+                    <spanx style="verb">trust_anchor_id</spanx> claim.
                   </t>
                   <t>
-                    If the RP does not accept the received Entity Statement for
-                    some reason, then it has the choice to restart the
-                    registration process or to give up.
+                    The RP MUST ensure that the metadata it was registered with
+                    at the OP complies with the Trust Chain
+                    <spanx style="verb">openid_relying_party</spanx> policies,
+                    which Trust Chain is resolved using the
+                    <spanx style="verb">trust_anchor_id</spanx> and
+                    <spanx style="verb">authority_hints</spanx> claims of the
+                    received Entity Statement. The RP SHOULD perform this check
+                    by applying the resolved policies to the metadata as
+                    specified in <xref target="applying_policies"/>, or utilize
+                    another equivalent method.
+                  </t>
+                  <t>
+                    If the received Entity Statement does not pass the above
+                    checks the RP MUST reject it. The RP MAY choose to retry
+                    the Explicit Registration request in order to work around a
+                    transient exception, for example due to a recent change of
+                    Entity metadata or metadata policy causing temporary
+                    misalignment of metadata.
                   </t>
                 </list>
               </t>
@@ -4733,85 +4985,48 @@ HTTP/1.1 302 Found
           </section>
         </section>
 
-        <section title="After Explicit Client Registration" anchor="AfterExplicitReg">
+        <section title="After an Explicit Client Registration" anchor="AfterExplicitReg">
           <t>
-            A client registration using the explicit method is not expected to
-            be valid forever. The Entity Statements exchanged all have
-            expiration times, which means that the registration will eventually
-            time out. An OP can also, for administrative reasons, decide that a
-            client registration is not valid anymore. An example of this could
-            be the OP leaving the federation used to register an RP.
+            An RP can utilize the <spanx style="verb">exp</spanx> claim of the
+            registration Entity Statement to devise a suitable strategy for
+            renewing its client registration. RP implementers should note that
+            if the OP expiration of the <spanx style="verb">client_id</spanx>
+            coincides with an OAuth flow that was just initiated by the RP this
+            may cause OpenID authentication requests, token requests or
+            UserInfo requests to suddenly fail. Renewing the RP registration
+            prior to its expiration can thus prevent such errors from
+            occurring and ensure the end-user experience is not disrupted.
           </t>
 
           <t>
-            The temporary nature of explicit registration means that an RP must
-            expect its registration to become invalidated at any time, causing
-            RP requests to the OP, such as authorization, token or UserInfo
-            requests, to fail. An RP MAY devise appropriate strategies to
-            re-register with the OP and restart the transaction when such a
-            condition occurs.
-          </t>
-
-          <section title="What the RP MUST Do">
-            <t>
-              At regular intervals, the RP MUST:
-            </t>
-            <t>
-              <list style="numbers">
-                <t>
-                  Starting with the OP's Entity Statement, resolve and verify
-                  the Trust Chains it chooses to use when constructing the
-                  registration request. If those Trust Chains do not exist
-                  anymore or do not verify, then the registration SHOULD be
-                  regarded as invalid, and a new registration process SHOULD be
-                  started.
-                </t>
-                <t>
-                  If the OP's Entity Statement was properly formed, the RP must
-                  now verify that the Entity Statement it received about itself
-                  from the OP is still valid.
-                  Again, if that is not the case, the registration
-                  SHOULD be regarded as invalid and a new registration process
-                  SHOULD be started.
-                </t>
-              </list>
-            </t>
-            <t>
-              What is regarded as reasonable intervals will depend on
-              federation policies and risk assessment by the maintainer of
-              the RP.
-            </t>
-          </section>
-
-          <section title="What the OP MUST Do">
-            <t>
-              At regular intervals, the OP MUST:
-            </t>
-            <t>
-              <list style="numbers">
-                <t>
-                  If the signature on the registration request has expired, it
-                  MUST mark the registration as invalid and demand that the
-                  RP MUST re-register. Else
-                </t>
-                <t>
-                  starting with the RP's client registration request, the OP
-                  MUST
-                  verify that there still is a valid Trust Chain terminating in
-                  the Trust Anchor the OP chose during the registration process.
-                </t>
-              </list>
-            </t>
-          </section>
-        </section>
-
-        <section title="Expiration Times">
-          <t>
-            An OP MUST NOT assign an expiration time
-            to an RP's registration that is later than the trust
-            chain's expiration time.
+            An OP MAY invalidate a client registration before the expiration
+            that is indicated in the registration Entity Statement for the RP.
+            An example reason could be the OP leaving the federation that was
+            used to register the RP.
           </t>
         </section>
+
+      </section>
+
+      <section title="Registration Validity and Trust Reevaluation" anchor="client_reg_trust_re_eval">
+        <t>
+          The validity of an Automatic or Explicit Registration at an OP MUST
+          NOT exceed the lifetime of the Trust Chain the OP used to create the
+          registration. An OP MAY choose to expire the registration at some
+          earlier time, or choose to perform additional periodic reevaluations
+          of the Trust Chain for the registered RP before the Trust Chain
+          reaches its expiration time.
+        </t>
+        <t>
+          Similarly, an RP that obtained an Automatic or Explicit Registration
+          MUST NOT use it past the expiration of the Trust Chain the RP used to
+          establish trust in the OP. For an RP using Automatic Registration the
+          trust in the OP MUST be successfully reevaluated before continuing to
+          make requests to the OP. For an RP using Explicit Registration the RP
+          MUST successfully renew its registration. An RP MAY choose to perform
+          additional periodic reevaluations of the Trust Chain for the OP
+          before the Trust Chain reaches its expiration time.
+        </t>
       </section>
 
       <section title="Differences between Automatic Registration and Explicit Registration" anchor="AutomaticVsExplicit">
@@ -4823,7 +5038,7 @@ HTTP/1.1 302 Found
               whereas with Explicit Registration, there is.
               (<xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>
               and <xref target="RFC7591">OAuth 2.0 Dynamic Client Registration</xref>)
-              also employ a prior registration step.)
+              also employ a prior registration step).
             </t>
             <t>
               With Automatic Registration, the Client ID value is the RP's Entity Identifier
@@ -6699,13 +6914,13 @@ Host: op.umu.se
         </section>
         <section title="Client Starts with Registration (Explicit Client Registration)" anchor="ExplicitRegExample">
           <t>
-            Here the LIGO Wiki RP sends a client registration request to the
+            Here the LIGO Wiki RP sends an Explicit Registration request to the
             <spanx style="verb">federation_registration_endpoint</spanx>
-            of the OP (op.umu.se).
-            What it sends is an Entity Configuration.
+            of the OP (op.umu.se). The request contains the RP's Entity
+            Configuration.
           </t>
           <t>
-            The JWT Claims Set of that Entity Configuration might look like this:
+            Example JWT Claims Set of the RP's Entity Configuration:
           </t>
             <figure>
               <artwork><![CDATA[
@@ -6748,59 +6963,59 @@ Host: op.umu.se
           ]]></artwork>
             </figure>
           <t>
-            Once the OP has the Entity Configuration, it proceeds with the same
-            sequence of steps as laid out in <xref target="op_discovery"/>.
+            The OP receives the RP's Entity Configuration and proceeds with the
+            sequence of steps laid out in <xref target="op_discovery"/>.
           </t>
           <t>
-            The OP will end up with the same RP metadata described in
-            <xref target="rp_metadata_eval"/>, but it now can
-            return a metadata policy that it wants to be applied to the RP's
-            metadata. This metadata policy will be combined with the
-            Trust Chain's combined metadata policy before being applied to the
-            RP's metadata.
+            The OP successfully resolves the same RP metadata described in
+            <xref target="rp_metadata_eval"/>. It then registers the RP in
+            compliance with its own OP metadata and returns the result in a
+            Entity Statement.
           </t>
           <t>
-            If we assume that the OP does not support refresh tokens,
-            it MAY want to add a metadata policy that says:
+            Assuming the OP does not support refresh tokens it will register
+            the RP for the <spanx style="verb">authorization_code</spanx> grant
+            type only. This is reflected in the metadata returned to the RP.
           </t>
-          <figure>
-            <artwork><![CDATA[
-"metadata_policy": {
-  "openid_relying_party": {
-    "grant_types": {
-      "subset_of": [
-        "authorization_code"
-      ]
-    }
-  }
-}
-]]></artwork>
-          </figure>
+          <t>The returned metadata also includes the
+            <spanx style="verb">client_id</spanx>, the
+            <spanx style="verb">client_secret</spanx> and other parameters that
+            the OP provisioned for the RP.
+          </t>
           <t>
-            Thus, the Entity Statement returned by the OP to the RP MAY look
-            like this:
+            Here is an example JWT Claims Set of the Entity Statement returned
+            by the OP to the RP:
           </t>
           <figure>
             <artwork><![CDATA[
 {
   "trust_anchor_id": "https://edugain.geant.org",
-  "metadata_policy": {
-    "openid_relying_party": {
-      "contacts": {
-        "add": [
-          "ops@incommon.org",
-          "ops@edugain.geant.org"
-        ]
-      }
-    }
-  },
   "metadata": {
     "openid_relying_party": {
       "client_id": "m3GyHw",
       "client_secret_expires_at": 1604049619,
       "client_secret":
-        "cb44eed577f3b5edf3e08362d47a0dc44630b3dc6ea99f7a79205"
-      "client_id_issued_at": 1601457619
+        "cb44eed577f3b5edf3e08362d47a0dc44630b3dc6ea99f7a79205",
+      "client_id_issued_at": 1601457619,
+      "application_type": "web",
+      "client_name": "LIGO Wiki",
+      "contacts": [
+        "ops@edugain.geant.org",
+        "ops@incommon.org",
+        "ops@ligo.org"
+      ],
+      "grant_types": [
+        "authorization_code"
+      ],
+      "id_token_signed_response_alg": "RS256",
+      "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
+      "redirect_uris": [
+        "https://wiki.ligo.org/openid/callback"
+      ],
+      "response_types": [
+        "code"
+      ],
+      "subject_type": "public"
     }
   },
   "authority_hints": [
@@ -6834,39 +7049,6 @@ Host: op.umu.se
 }
 ]]></artwork>
           </figure>
-          <t>
-            And the resulting metadata used by the RP could look like:
-          </t>
-          <figure>
-            <artwork><![CDATA[
-{
-  "application_type": "web",
-  "client_name": "LIGO Wiki",
-  "client_id": "m3GyHw",
-  "client_secret_expires_at": 1604049619,
-  "client_secret": "cb44eed577f3b5edf3e08362d47a0dc44630b3dc6ea99f7a79205"
-  "client_id_issued_at": 1601457619,
-  "contacts": [
-    "ops@edugain.geant.org",
-    "ops@incommon.org",
-    "ops@ligo.org"
-  ],
-  "grant_types": [
-    "authorization_code"
-  ],
-  "id_token_signed_response_alg": "RS256",
-  "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
-  "redirect_uris": [
-    "https://wiki.ligo.org/openid/callback"
-  ],
-  "response_types": [
-    "code"
-  ],
-  "subject_type": "public"
-}
-]]></artwork>
-          </figure>
-
         </section>
       </section>
     </section>
@@ -6943,6 +7125,55 @@ Host: op.umu.se
       <t>
 	-30
 	<list style="symbols">
+      <t>
+        Applications and protocols using Entity Statements MAY specify
+        additional claims.
+      </t>
+      <t>
+        Addressed #1655: The definition of the aud and trust_anchor_id is moved
+        to the Explicit Client Registration section.
+      </t>
+      <t>
+        Fixed #1957: Explicit Registration: Clarifies OP processing of Explicit
+        Registration requests with a trust chain.
+      </t>
+      <t>
+        Addressed #1655: Explicit Registration: Simplifies the expression of
+        the registered RP metadata - the metadata policy mechanism is no longer
+        used.
+      </t>
+      <t>
+        Addressed #1655: Explicit Registration: An RP MUST always verify the
+        metadata it was registered with. The standard Trust Chain resolution
+        and application of metadata_policy is the SHOULD method, but RPs are
+        free to utilize other methods yielding the same result, e.g. by calling
+        a helper web endpoint provided by the Trust Anchor.
+      </t>
+      <t>
+        Addressed #1655: Explicit Registration: Exact specification of the EC
+        claims used in requests and the ES claims used in responses; normative
+        language where necessary to remove ambiguities and guarantee interop.
+      </t>
+      <t>
+        Explicit Registration: Clarifies how an OP can express the metadata it
+        registered the RP with: primarily by metadata assertions, with optional
+        use of policy language / value modifiers to express where the OP
+        changed / added to metadata parameters.
+      </t>
+      <t>
+        Explicit Registration: The "exp" (expiration) of the response ES must
+        be set to the time when the OP is going to expire the client
+        registration. Intended to inform the RP when its registration is going
+        to expire so that it can re-register in advance and prevent stuck
+        end-users if the registration expires in the middle of an OAuth flow.
+      </t>
+      <t>
+        Explicit Registration: Replaces the hard requirement that OPs must
+        periodically ensure that a valid Trust Chain for the RP can be
+        established with non-normative text common to both Automatic and
+        Explicit Registration. The Trust Chain expiration MUST be the primary
+        method for OPs to control the validity of registrations.
+      </t>
 	  <t>
 	    Updated contributor affiliations.
 	  </t>
