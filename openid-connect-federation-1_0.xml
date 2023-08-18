@@ -4551,6 +4551,14 @@ HTTP/1.1 302 Found
           parameter to the URL where it receives Explicit Registration requests.
         </t>
 
+        <t>
+          Explicit Registration is suitable for implementation on top of the
+          <xref target="OpenID.Registration">OpenID Connect Dynamic Client
+          Registration 1.0</xref> endpoint of an OP deployment. In contrast to
+          Automatic Registration it enables an OP to provision a Client ID, a
+          client secret and metadata parameters.
+        </t>
+
         <t>An example of an Explicit Registration is provided in
           <xref target="ExplicitRegExample"/>.
         </t>
@@ -4717,13 +4725,14 @@ HTTP/1.1 302 Found
               <t>
                 <list style="numbers">
                   <t>
-                    Upon receiving a registration request the OP MUST check if
-                    it contains an Entity Configuration or an entire Trust
-                    Chain.
+                    Upon receiving a registration request the OP MUST inspect
+                    the content type to determine whether it contains an Entity
+                    Configuration or an entire Trust Chain.
                   </t>
                   <t>
-                    If the request contains an Entity Configuration, the OP
-                    MUST collect and evaluate the Trust Chains that start with
+                    If the request contains an Entity Configuration the OP
+                    MUST use it to complete the Federation Entity Discovery by
+                    collecting and evaluating the Trust Chains that start with
                     the <spanx style="verb">authority_hints</spanx> in the
                     Entity Configuration of the RP. After validating at least
                     one Trust Chain, the OP MUST verify the signature of the
@@ -4756,13 +4765,16 @@ HTTP/1.1 302 Found
                     past RP data.
                   </t>
                   <t>
-                    The OP will now use the received RP metadata to create a
-                    client registration compliant with its own OP metadata and
-                    other applicable policies.
+                    The OP will now use the RP metadata to create a client
+                    registration compliant with its own OP metadata and other
+                    applicable policies.
                     <vspace/>
                     The OP MAY provision the RP with a
                     <spanx style="verb">client_id</spanx> other than the RP's
-                    Entity Identifier.
+                    Entity Identifier. This enables Explicit Registration to be
+                    implemented on top of the
+                    <xref target="OpenID.Registration">OpenID Connect Dynamic
+                    Client Registration 1.0</xref> endpoint of an OP.
                     <vspace/>
                     If the RP is provisioned with a
                     <spanx style="verb">client_secret</spanx> it MUST NOT
@@ -4795,8 +4807,7 @@ HTTP/1.1 302 Found
                   <t>
                     The OP MUST assign an expiration time to the created
                     registration. This time MUST NOT exceed the expiration time
-                    of the received Entity Configuration or of the Trust Chain
-                    that the OP selected to process the request.
+                    of the Trust Chain that the OP selected to process the request.
                   </t>
                   <t>
                     If the OP created a client registration for the RP it MUST
@@ -4811,7 +4822,9 @@ HTTP/1.1 302 Found
                     selected Trust Chain.
                     <vspace/>
                     The OP MUST set the <spanx style="verb">exp</spanx> claim
-                    to the expiration time of the created registration.
+                    to the expiration time of the created registration. The OP
+                    MAY choose to invalidate the registration before that, as
+                    explained in <xref target="AfterExplicitReg"/>.
                     <vspace/>
                     The OP MUST express the client registration it created for
                     the RP by means of the <spanx style="verb">metadata</spanx>
@@ -4872,7 +4885,8 @@ HTTP/1.1 302 Found
                     <vspace/>
                     REQUIRED.
                     It MUST be a verbatim copy of the <spanx style="verb">jwks</spanx>
-                    of the received RP Entity Configuration. See
+                    of the received RP Entity Configuration. Not to be confused
+                    with the identically named RP metadata parameter. See
                     <xref target="entity-statement"/> for the full
                     specification.
                   </t>
@@ -4936,9 +4950,7 @@ HTTP/1.1 302 Found
                 <list style="numbers">
                   <t>
                     If the response indicates success the RP MUST verify that
-                    its content is a valid Entity Statement issued by the OP
-                    and signed with a current Federation Entity Key in its
-                    possession.
+                    its content is a valid Entity Statement and issued by the OP.
                     <vspace/>
                     The RP MUST ensure the signing Federation Entity key used
                     by the OP is present in the
