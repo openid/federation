@@ -4548,22 +4548,22 @@ HTTP/1.1 302 Found
           <spanx style="verb">client_registration_types_supported</spanx>
           metadata parameter and set the
           <spanx style="verb">federation_registration_endpoint</spanx> metadata
-          parameter to the URL where it receives Explicit Registration requests.
+          parameter to the URL at which it receives Explicit Registration requests.
         </t>
 
         <t>
           Explicit Registration is suitable for implementation on top of the
           <xref target="OpenID.Registration">OpenID Connect Dynamic Client
           Registration 1.0</xref> endpoint of an OP deployment. In contrast to
-          Automatic Registration it enables an OP to provision a Client ID, a
+          Automatic Registration, it enables an OP to provision a Client ID, a
           client secret and metadata parameters.
         </t>
 
         <t>An example of an Explicit Registration is provided in
           <xref target="ExplicitRegExample"/>.
         </t>
-        <section anchor="Clireg" title="Client Registration">
-          <section anchor="Cliregreq" title="Client Registration Request">
+        <section anchor="Clireg" title="Explicit Client Registration">
+          <section anchor="Cliregreq" title="Explicit Client Registration Request">
             <t>
               The RP prepares the request as follows:
             </t>
@@ -4717,7 +4717,7 @@ HTTP/1.1 302 Found
             </t>
           </section>
 
-          <section anchor="cliregresp" title="Client Registration Response">
+          <section anchor="cliregresp" title="Explicit Client Registration Response">
             <section title="Processing of the Request by the OP">
               <t>
                 The OP processes the request as follows:
@@ -4754,12 +4754,12 @@ HTTP/1.1 302 Found
                     At this point, if the OP finds that it already has an
                     existing client registration for the requesting RP, then
                     that registration MUST be invalidated. The precise time of
-                    the invalidation is at the OP discretion, as the OP may
+                    the invalidation is at the OP's discretion, as the OP may
                     want to ensure the completion of concurrent OpenID
                     authentication requests initiated by the RP while the
                     registration request is being processed.
                     <vspace/>
-                    The OP MAY save client credentials and key material from
+                    The OP MAY retain client credentials and key material from
                     the invalidated registration in order to verify past RP
                     signatures and perform other cryptographic operations on
                     past RP data.
@@ -4836,7 +4836,7 @@ HTTP/1.1 302 Found
                     for example a <spanx style="verb">client_secret</spanx>,
                     these MUST be included as well.
                     <vspace/>
-                    The OP SHOULD NOT omit metadata parameters that have a
+                    The OP SHOULD include metadata parameters that have a
                     default value, for example
                     <spanx style="verb">token_endpoint_auth_method</spanx>
                     which has a default value of
@@ -4909,9 +4909,9 @@ HTTP/1.1 302 Found
                   <t hangText="authority_hints">
                     <vspace/>
                     REQUIRED.
-                    It MUST be single-valued and reference the immediate
-                    superior authority of the OP in the Trust Chain that the OP
-                    selected to process the request. See
+                    It MUST be a single element array, whose value references
+                    the immediate superior authority of the OP in the Trust
+                    Chain that the OP selected to process the request. See
                     <xref target="entity-statement"/> for the full
                     specification.
                   </t>
@@ -5050,7 +5050,7 @@ HTTP/1.1 302 Found
               whereas with Explicit Registration, there is.
               (<xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>
               and <xref target="RFC7591">OAuth 2.0 Dynamic Client Registration</xref>)
-              also employ a prior registration step).
+              also employ a prior registration step.)
             </t>
             <t>
               With Automatic Registration, the Client ID value is the RP's Entity Identifier
@@ -6932,7 +6932,7 @@ Host: op.umu.se
             Configuration.
           </t>
           <t>
-            Example JWT Claims Set of the RP's Entity Configuration:
+            An example JWT Claims Set for the RP's Entity Configuration is:
           </t>
             <figure>
               <artwork><![CDATA[
@@ -7142,8 +7142,9 @@ Host: op.umu.se
         additional claims.
       </t>
       <t>
-        Addressed #1655: The definition of the aud and trust_anchor_id is moved
-        to the Explicit Client Registration section.
+        Addressed #1655: The definitions of <spanx style="verb">aud</spanx> and
+        <spanx style="verb">trust_anchor_id</spanx> are moved to the Explicit
+        Client Registration section.
       </t>
       <t>
         Fixed #1957: Explicit Registration: Clarifies OP processing of Explicit
@@ -7157,9 +7158,10 @@ Host: op.umu.se
       <t>
         Addressed #1655: Explicit Registration: An RP MUST always verify the
         metadata it was registered with. The standard Trust Chain resolution
-        and application of metadata_policy is the SHOULD method, but RPs are
-        free to utilize other methods yielding the same result, e.g. by calling
-        a helper web endpoint provided by the Trust Anchor.
+        and application of <spanx style="verb">metadata_policy</spanx> is the
+        SHOULD method, but RPs are free to utilize other methods yielding the
+        same result, e.g. by calling a helper web endpoint provided by the
+        Trust Anchor.
       </t>
       <t>
         Addressed #1655: Explicit Registration: Exact specification of the EC
@@ -7167,11 +7169,12 @@ Host: op.umu.se
         language where necessary to remove ambiguities and guarantee interop.
       </t>
       <t>
-        Explicit Registration: The "exp" (expiration) of the response ES must
-        be set to the time when the OP is going to expire the client
-        registration. Intended to inform the RP when its registration is going
-        to expire so that it can re-register in advance and prevent stuck
-        end-users if the registration expires in the middle of an OAuth flow.
+        Explicit Registration: The <spanx style="verb">exp</spanx> (expiration)
+        of the response ES must be set to the time when the OP is going to
+        expire the client registration. Intended to inform the RP when its
+        registration is going to expire so that it can re-register in advance
+        and prevent stuck end-users if the registration expires in the middle
+        of an OAuth flow.
       </t>
       <t>
         Explicit Registration: Replaces the hard requirement that OPs must
