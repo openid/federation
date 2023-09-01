@@ -364,16 +364,11 @@
               the statement. If the <spanx style="verb">iss</spanx> and
               the <spanx style="verb">sub</spanx> are identical, the
               issuer is making a statement about itself and this Entity Statement
-              is an Entity Configuration. 
-              The Entity Identifier contained in this claim 
-              MUST use the https scheme 
-              and MAY contain port and path.
+              is an Entity Configuration.
             </t>
             <t hangText="sub">
               <vspace/>
               REQUIRED. The Entity Identifier of the subject.
-              It MUST use the https scheme 
-              and MAY contain port and path.
             </t>
             <t hangText="iat">
               <vspace/>
@@ -424,7 +419,7 @@
               superiors, this is REQUIRED and MUST NOT be the empty list
               <spanx style="verb">[]</spanx>.
               The Entity Identifiers contained in this claim 
-              MUST use the https scheme and MAY contain port and path.
+              Endpoint. If the OP supports explicit client
               This claim MUST be absent from an
               Entity Configuration issued by a Trust Anchor with no superiors.
             </t>
@@ -1113,8 +1108,10 @@
               <vspace/>
               OPTIONAL.
               URL of the OP's federation-specific Dynamic Client Registration
-              Endpoint. This URL MUST use the https scheme and MAY contain port, 
-              path, and query parameter components.
+              Endpoint. This URL MUST use the <spanx style="verb">https</spanx> 
+              scheme and MAY contain port, 
+              path, and query parameter components; 
+              it MUST NOT contain a fragment component.
               If the OP supports explicit client
               registration as described in <xref target="explicit"/>,
               then this claim is REQUIRED.
@@ -1367,7 +1364,8 @@
               OPTIONAL.
               The fetch endpoint described in
               <xref target="fetch_endpoint"/>. 
-              This URL MUST use the https scheme and MAY contain port, 
+              This URL MUST use the <spanx style="verb">https</spanx> 
+              scheme and MAY contain port, 
               path, and query parameter components.
               Intermediate Entities and
               Trust Anchors MUST publish a
@@ -1379,7 +1377,8 @@
               OPTIONAL.
               The list endpoint described in
               <xref target="entity_listing"/>. 
-              This URL MUST use the https scheme and MAY contain port, 
+              This URL MUST use the <spanx style="verb">https</spanx> 
+              scheme and MAY contain port, 
               path, and query parameter components.
               Intermediate Entities and
               Trust Anchors MUST publish a
@@ -1391,7 +1390,8 @@
               OPTIONAL.
               The resolve endpoint described in
               <xref target="resolve"/>. 
-              This URL MUST use the https scheme and MAY contain port, 
+              This URL MUST use the <spanx style="verb">https</spanx> 
+              scheme and MAY contain port, 
               path, and query parameter components.
               Any federation Entity MAY publish a
               <spanx style="verb">federation_resolve_endpoint</spanx>.
@@ -1403,7 +1403,8 @@
               <xref target="status_endpoint"/>. Trust Mark issuers SHOULD
               publish a
               <spanx style="verb">federation_trust_mark_status_endpoint</spanx>.
-              This URL MUST use the https scheme and MAY contain port, 
+              This URL MUST use the <spanx style="verb">https</spanx> 
+              scheme and MAY contain port, 
               path, and query parameter components.
             </t>
             <t hangText="federation_trust_mark_list_endpoint">
@@ -1411,7 +1412,8 @@
               OPTIONAL.
               The endpoint described in
               <xref target="tm_listing"/>. 
-              This URL MUST use the https scheme and MAY contain port, 
+              This URL MUST use the <spanx style="verb">https</spanx> 
+              scheme and MAY contain port, 
               path, and query parameter components.
               Trust Mark issuers MAY publish a
               <spanx style="verb">federation_trust_mark_list_endpoint</spanx>.
@@ -2668,8 +2670,6 @@
         The scheme, host, and port
         are taken directly from the Entity Identifier combined with the following
         path: <spanx style="verb">/.well-known/openid-federation</spanx>.
-        The Entity Identifier MUST use the https scheme 
-        and MAY contain port and path.
       </t>
       <t>
         If the Entity Identifier contains a path, it is concatenated after
@@ -3485,8 +3485,6 @@ Content-Type: application/json
           <spanx style="verb">
             /.well-known/openid-federation-historical-jwks
           </spanx>.
-          The URL that contains this endoint MUST use the https scheme 
-          and MAY contain port and path.
           The purpose of this endpoint is to provide
           the list of keys previously used by the Federation Entity
           in order to provide non-repudiation of statements signed by
