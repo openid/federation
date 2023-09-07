@@ -1095,8 +1095,15 @@
               <vspace/>
               OPTIONAL.
               URL of the OP's federation-specific Dynamic Client Registration
-              Endpoint. If the OP supports explicit client
-              registration as described in <xref target="explicit"/>,
+              Endpoint. If the OP supports Explicit Client Registration Endpoint 
+              this URL MUST use the <spanx style="verb">https</spanx> 
+              scheme and MAY contain port, 
+              path, and query parameter components encoded in 
+              <spanx style="verb">application/x-www-form-urlencoded</spanx>
+              format; 
+              it MUST NOT contain a fragment component.
+              If the OP supports Explicit Client
+              Registration as described in <xref target="explicit"/>,
               then this claim is REQUIRED.
             </t>
             <t hangText="request_authentication_methods_supported">
@@ -1346,7 +1353,14 @@
               <vspace/>
               OPTIONAL.
               The fetch endpoint described in
-              <xref target="fetch_endpoint"/>. Intermediate Entities and
+              <xref target="fetch_endpoint"/>. 
+              This URL MUST use the <spanx style="verb">https</spanx> 
+              scheme and MAY contain port, 
+              path, and query parameter components encoded in 
+              <spanx style="verb">application/x-www-form-urlencoded</spanx>
+              format; 
+              it MUST NOT contain a fragment component.
+              Intermediate Entities and
               Trust Anchors MUST publish a
               <spanx style="verb">federation_fetch_endpoint</spanx>.
               Leaf Entities MUST NOT.
@@ -1355,7 +1369,14 @@
               <vspace/>
               OPTIONAL.
               The list endpoint described in
-              <xref target="entity_listing"/>. Intermediate Entities and
+              <xref target="entity_listing"/>. 
+              This URL MUST use the <spanx style="verb">https</spanx> 
+              scheme and MAY contain port, 
+              path, and query parameter components encoded in 
+              <spanx style="verb">application/x-www-form-urlencoded</spanx>
+              format; 
+              it MUST NOT contain a fragment component.
+              Intermediate Entities and
               Trust Anchors MUST publish a
               <spanx style="verb">federation_list_endpoint</spanx>.
               Leaf Entities MUST NOT.
@@ -1364,22 +1385,42 @@
               <vspace/>
               OPTIONAL.
               The resolve endpoint described in
-              <xref target="resolve"/>. Any federation Entity MAY publish a
+              <xref target="resolve"/>. 
+              This URL MUST use the <spanx style="verb">https</spanx> 
+              scheme and MAY contain port, 
+              path, and query parameter components encoded in 
+              <spanx style="verb">application/x-www-form-urlencoded</spanx>
+              format;
+              it MUST NOT contain a fragment component.
+              Any federation Entity MAY publish a
               <spanx style="verb">federation_resolve_endpoint</spanx>.
             </t>
             <t hangText="federation_trust_mark_status_endpoint">
               <vspace/>
               OPTIONAL.
               The Trust Mark status endpoint described in
-              <xref target="status_endpoint"/>. Trust mark issuers SHOULD
+              <xref target="status_endpoint"/>. Trust Mark issuers SHOULD
               publish a
               <spanx style="verb">federation_trust_mark_status_endpoint</spanx>.
+              This URL MUST use the <spanx style="verb">https</spanx> 
+              scheme and MAY contain port, 
+              path, and query parameter components encoded in 
+              <spanx style="verb">application/x-www-form-urlencoded</spanx>
+              format; 
+              it MUST NOT contain a fragment component.
             </t>
             <t hangText="federation_trust_mark_list_endpoint">
               <vspace/>
               OPTIONAL.
               The endpoint described in
-              <xref target="tm_listing"/>. Trust Mark issuers MAY publish a
+              <xref target="tm_listing"/>. 
+              This URL MUST use the <spanx style="verb">https</spanx> 
+              scheme and MAY contain port, 
+              path, and query parameter components encoded in 
+              <spanx style="verb">application/x-www-form-urlencoded</spanx>
+              format; 
+              it MUST NOT contain a fragment component.
+              Trust Mark issuers MAY publish a
               <spanx style="verb">federation_trust_mark_list_endpoint</spanx>.
             </t>
             <t hangText="organization_name">
@@ -2630,7 +2671,8 @@
         The configuration endpoint is found using the
         <xref target="RFC8615">Well-Known URIs</xref>
         specification, with the suffix
-        <spanx style="verb">openid-federation</spanx>. The scheme, host, and port
+        <spanx style="verb">openid-federation</spanx>. 
+        The scheme, host, and port
         are taken directly from the Entity Identifier combined with the following
         path: <spanx style="verb">/.well-known/openid-federation</spanx>.
       </t>
@@ -3448,7 +3490,6 @@ Content-Type: application/json
           <spanx style="verb">
             /.well-known/openid-federation-historical-jwks
           </spanx>.
-
           The purpose of this endpoint is to provide
           the list of keys previously used by the Federation Entity
           in order to provide non-repudiation of statements signed by
@@ -7210,6 +7251,9 @@ Host: op.umu.se
           <t>
 	    Added text on Trust Mark delegation.
 	  </t>
+         <t>
+            Fixed #2041: Added normative language mandating the https scheme and any optional port and path, for all the Entity Identifiers and the federation endpoints.
+        </t>
         </list>
       </t>
 
