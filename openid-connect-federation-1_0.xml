@@ -154,40 +154,33 @@
           </preamble>
           <artwork>
                   <![CDATA[
-
-      ┌────────────────┐                    ┌────────────────┐
-      │                │   ┌────────────────┤                │
-      │ TRUST ANCHOR A │   │                │ TRUST ANCHOR B │
-      │                │   │       ┌────────┤                │
-      └──┬──────────┬──┘   │       │        └────┬───────────┘
-         │          │      │       │             │
-         │          │      │       │             │
-         │          │      │       │             │
-       ┌─▼──┐       │      │       │             │
-       │ OP │       │      │       │             │
-       └────┘       │      │       │             │
-               ┌────▼──────▼──┐    │             │
-    ┌──────────┤ INTERMEDIATE │    │       ┌─────▼────────┐
-    │          └──┬────┬──────┘    │       │ INTERMEDIATE │
-    │             │    │           │       └──┬─────┬──┬──┘
-    │             │    │        ┌──▼─┐        │     │  │   ┌────┐
-    │             │    └────────► OP │        │     │  └───► RP │
-    │             │             └────┘        │     │      └────┘
-  ┌─▼──┐          │                           │     │
-  │ RP │        ┌─▼──┐                        │    ┌▼───┐
-  └────┘        │ RS │                        │    │ RP │
-                └────┘                        │    └────┘
-                                              │
-                                         ┌────▼─────────┐
-                                      ┌──┤ INTERMEDIATE ├─┐
-                                      │  └──────┬───────┘ │
-                                      │         │         │
-                                      │         │         │
-                                      │         │         │
-                                      │         │         │
-                                   ┌──▼─┐     ┌─▼──┐    ┌─▼──┐
-                                   │ OP │     │ RP │    │ AS │
-                                   └────┘     └────┘    └────┘
+.----------------.             .----------------.
+|  Trust Anchor  |             |  Trust Anchor  |
+'------.--.------'             '----.--.--.-----'
+       |  |                         |  |  |
+    .--'  '---. .-------------------'  |  |
+    |         | |                      |  |
+.---v.  .-----v-v------.   .-----------'  |
+| OP |  | Intermediate |   |              |
+'----'  '--.--.--.-----'   |    .---------v----.
+           |  |  |         |    | Intermediate |
+   .-------'  |  '------.  |    '---.--.--.----'
+   |          |         |  |        |  |  |
+.--v-.      .-v--.     .v--v.   .---'  |  '----.
+| RP |      | RS |     | OP |   |      |       |
+'----'      '----'     '----'   |   .--v-.   .-v--.
+                                |   | RP |   | RP |
+                                |   '----'   '----'
+                                |
+                        .-------v------.
+                        | Intermediate |
+                        '----.--.--.---'
+                             |  |  |
+                       .-----'  |  '----.
+                       |        |       |
+                    .--v-.   .--v-.   .-v--.
+                    | OP |   | RP |   | AS |
+                    '----'   '----'   '----'
 ]]>
         </artwork>
 
@@ -869,49 +862,49 @@
           Entities, their Entity Configuration and their Entity Statement.
           The Entity Statement are
           obtained from the <spanx style="verb">federation_fetch_endpoint</spanx>,
-          where its url is made available within the 
+          where its URL is made available within the 
           Entity Configuration issued by the Trust Anchor and 
           its Intermediates.
           </preamble>
           <artwork>
                   <![CDATA[
- ┌────────────────┐  ┌───────────────────────────┐         ┌───────────────────────────┐
- │ ROLE           │  │ .WELL-KNOWN/              │         │ TRUST CHAIN               │
- │                │  │ OPENID-FEDERATION         │         │                           │
- ├────────────────┤  ├───────────────────────────┤         ├───────────────────────────┤
- │                │  │                           │         │                           │
- │ ┌────────────┐ │  │ ┌───────────────────────┐ │ FETCH   │ ┌───────────────────────┐ │
- │ │            │ │  │ │ ENTITY CONFIGURATION  │ │ endpoint│ │ ENTITY STATEMENT      │ │
- │ │TRUST ANCHOR│ │  │ │                       ├─┼─────────┼─►                       │ │
- │ │            ├─┼──┼─► federation entity keys│ │         │ │ federation entity keys│ │
- │ └────────────┘ │  │ │ metadata              │ │         │ │ metadata policy       │ │
- │                │  │ │ trust mark issuers    │ │         │ │ metadata              │ │
- │                │  │ │ constraints           │ │         │ │                       │ │
- │                │  │ │                       │ │         │ └───────────┬───────────┘ │
- │                │  │ └───────────────────────┘ │         │             │sub and key  │
- │                │  │                           │         │             │ binding     │
- │ ┌────────────┐ │  │ ┌───────────────────────┐ │ FETCH   │ ┌───────────▼───────────┐ │
- │ │            │ │  │ │ ENTITY CONFIGURATION  │ │ endpoint│ │ ENTITY STATEMENT      │ │
- │ │INTERMEDIATE├─┼──┼─►                       ├─┼─────────┼─►                       │ │
- │ │            │ │  │ │ federation entity keys│ │         │ │ federation entity keys│ │
- │ └────────────┘ │  │ │ metadata              │ │         │ │ metadata policy       │ │
- │                │  │ │ trust marks           │ │         │ │ metadata              │ │
- │                │  │ │                       │ │         │ │                       │ │
- │                │  │ │                       │ │         │ └───────────┬───────────┘ │
- │                │  │ └───────────────────────┘ │         │             │sub and key  │
- │                │  │                           │         │             │ binding     │
- │ ┌────────────┐ │  │ ┌───────────────────────┐ │         │ ┌───────────▼───────────┐ │
- │ │            │ │  │ │ ENTITY CONFIGURATION  │ │         │ │ ENTITY CONFIGURATION  │ │
- │ │LEAF        ├─┼──┼─►                       |───────────┼─►                       │ │
- │ │            │ │  │ │ federation entity keys│ │         │ │ federation entity keys│ │
- │ └────────────┘ │  │ │ metadata              │ │         │ │ metadata              │ │
- │                │  │ │ trust marks           │ │         │ │ trust marks           │ │
- │                │  │ │                       │ │         │ │                       │ │
- │                │  │ │                       │ │         │ │                       │ │
- │                │  │ └───────────────────────┘ │         │ └───────────────────────┘ │
- │                │  │                           │         │                           │
- └────────────────┘  └───────────────────────────┘         └───────────────────────────┘
-
+.----------------.  .---------------------------.         .---------------------------.
+| ROLE           |  | .well-known/              |         | TRUST CHAIN               |
+|                |  | openid-federation         |         |                           |
++----------------+  +---------------------------+         +---------------------------+
+|                |  |                           |         |                           |
+| .------------. |  | .-----------------------. | FETCH   | .-----------------------. |
+| |            | |  | | ENTITY CONFIGURATION  | | endpoint| | ENTITY STATEMENT      | |
+| |TRUST ANCHOR| |  | |                       +------------->                       | |
+| |            +------> federation entity keys| |         | | federation entity keys| |
+| '------------' |  | | metadata              | |         | | metadata policy       | |
+|                |  | | trust mark issuers    | |         | | metadata              | |
+|                |  | | constraints           | |         | |                       | |
+|                |  | |                       | |         | '-----------+-----------' |
+|                |  | '-----------------------' |         |             |sub and      |
+|                |  |                           |         |             |cryptographic|
+|                |  |                           |         |             |binding      |
+| .------------. |  | .-----------------------. | FETCH   | .-----------v-----------. |
+| |            | |  | | ENTITY CONFIGURATION  | | endpoint| | ENTITY STATEMENT      | |
+| |INTERMEDIATE+------>                       +------------->                       | |
+| |            | |  | | federation entity keys| |         | | federation entity keys| |
+| '------------' |  | | metadata              | |         | | metadata policy       | |
+|                |  | | trust marks           | |         | | metadata              | |
+|                |  | |                       | |         | |                       | |
+|                |  | |                       | |         | '-----------+-----------' |
+|                |  | '-----------------------' |         |             |sub and      |
+|                |  |                           |         |             |cryptographic|
+|                |  |                           |         |             |binding      |
+| .------------. |  | .-----------------------. |         | .-----------v-----------. |
+| |            | |  | | ENTITY CONFIGURATION  | |         | | ENTITY CONFIGURATION  | |
+| |LEAF        +------>                       |------------->                       | |
+| |            | |  | | federation entity keys| |         | | federation entity keys| |
+| '------------' |  | | metadata              | |         | | metadata              | |
+|                |  | | trust marks           | |         | | trust marks           | |
+|                |  | |                       | |         | |                       | |
+|                |  | |                       | |         | |                       | |
+|                |  | '-----------------------' |         | '-----------------------' |
+'----------------'  '---------------------------'         '---------------------------'
 ]]>
         </artwork>
 
@@ -937,7 +930,7 @@
           </t>
           
           <preamble>
-          The following is a representation of a JWS header with
+          The following is a non normative example of a JWS header with
           the <spanx style="verb">trust_chain</spanx> parameter.
           </preamble>
           <artwork>
