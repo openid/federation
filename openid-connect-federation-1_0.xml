@@ -145,6 +145,46 @@
         An Entity MAY also belong to more than one federation.
       </t>
 
+          <preamble>
+            Below is an example of two federations rooted at two different 
+            Trust Anchors with some members in common.
+
+            Every Leaf Entity is able to establish mutual trust with any 
+            other Leaf Entity by means of having at least one 
+            common Trust Anchor between them.
+          </preamble>
+          <artwork>
+                  <![CDATA[
+.-----------------.            .-----------------.
+|  Trust Anchor A |            |  Trust Anchor B |
+'------.--.-------'            '----.--.--.------'
+       |  |                         |  |  |
+    .--'  '---. .-------------------'  |  |
+    |         | |                      |  |
+.---v.  .-----v-v------.   .-----------'  |
+| OP |  | Intermediate |   |              |
+'----'  '--.--.--.-----'   |    .---------v----.
+           |  |  |         |    | Intermediate |
+   .-------'  |  '------.  |    '---.--.--.----'
+   |          |         |  |        |  |  |
+.--v-.      .-v--.     .v--v.   .---'  |  '----.
+| RP |      | RS |     | OP |   |      |       |
+'----'      '----'     '----'   |   .--v-.   .-v--.
+                                |   | RP |   | RP |
+                                |   '----'   '----'
+                                |
+                        .-------v------.
+                        | Intermediate |
+                        '----.--.--.---'
+                             |  |  |
+                       .-----'  |  '----.
+                       |        |       |
+                    .--v-.   .--v-.   .-v--.
+                    | OP |   | RP |   | AS |
+                    '----'   '----'   '----'
+]]>
+        </artwork>
+
       <section title="Requirements Language">
         <t>
           The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -816,6 +856,60 @@
           document.
         </t>
 
+          <preamble>
+            The following is an example of a Trust Chain consisting of 
+            a Leaf's Entity Configuration and Entity Statements issued 
+            by an Intermediate Entity and a Trust Anchor. It shows 
+            the relation between the three Entities, their Entity 
+            Configurations and their Entity Statements. The Entity 
+            Statements are obtained from the 
+            <spanx style="verb">federation_fetch_endpoint</spanx> of 
+            the subject's superior. The URL of the 
+            <spanx style="verb">federation_fetch_endpoint</spanx> is 
+            discovered in the superior's Entity Configuration.
+          </preamble>
+          <artwork>
+                  <![CDATA[
+.----------------.  .---------------------------.         .---------------------------.
+| ROLE           |  | .well-known/              |         | TRUST CHAIN               |
+|                |  | openid-federation         |         |                           |
++----------------+  +---------------------------+         +---------------------------+
+|                |  |                           |         |                           |
+| .------------. |  | .-----------------------. | Fetch   | .-----------------------. |
+| |            | |  | | ENTITY CONFIGURATION  | | Endpoint| | ENTITY STATEMENT      | |
+| |Trust Anchor| |  | |                       +------------->                       | |
+| |            +------> Federation Entity Keys| |         | | Federation Entity Keys| |
+| '------------' |  | | Metadata              | |         | | Metadata Policy       | |
+|                |  | | Trust Mark issuers    | |         | | Metadata              | |
+|                |  | | Constraints           | |         | | Constraints           | |
+|                |  | |                       | |         | '-----------+-----------' |
+|                |  | '-----------------------' |         |             |sub and      |
+|                |  |                           |         |             |cryptographic|
+|                |  |                           |         |             |binding      |
+| .------------. |  | .-----------------------. | Fetch   | .-----------v-----------. |
+| |            | |  | | ENTITY CONFIGURATION  | | Endpoint| | ENTITY STATEMENT      | |
+| |Intermediate+------>                       +------------->                       | |
+| |            | |  | | Federation Entity Keys| |         | | Federation Entity Keys| |
+| '------------' |  | | Metadata              | |         | | Metadata Policy       | |
+|                |  | | Trust Marks           | |         | | Metadata              | |
+|                |  | |                       | |         | |                       | |
+|                |  | |                       | |         | '-----------+-----------' |
+|                |  | '-----------------------' |         |             |sub and      |
+|                |  |                           |         |             |cryptographic|
+|                |  |                           |         |             |binding      |
+| .------------. |  | .-----------------------. |         | .-----------v-----------. |
+| |            | |  | | ENTITY CONFIGURATION  | |         | | ENTITY CONFIGURATION  | |
+| |Leaf        +------>                       |------------->                       | |
+| |            | |  | | Federation Entity Keys| |         | | Federation Entity Keys| |
+| '------------' |  | | Metadata              | |         | | Metadata              | |
+|                |  | | Trust Marks           | |         | | Trust Marks           | |
+|                |  | |                       | |         | |                       | |
+|                |  | |                       | |         | |                       | |
+|                |  | '-----------------------' |         | '-----------------------' |
+'----------------'  '---------------------------'         '---------------------------'
+]]>
+        </artwork>
+
         <section title="Trust Chain Header Parameter" anchor="trust_chain_head_param">
           <t>
             This <xref target="RFC7515">JWS</xref>
@@ -836,6 +930,24 @@
           Trust Anchor it deems most significant.
           Use of this header parameter is OPTIONAL.
           </t>
+          
+          <preamble>
+          The following is a non-normative example of a JWS header with
+          the <spanx style="verb">trust_chain</spanx> parameter.
+          </preamble>
+          <artwork>
+                  <![CDATA[
+    {
+      "alg": "RS256"
+      "kid": "SUdtUndEWVY2cUFDeDV5NVlBWDhvOXJodVl2am1mNGNtR0pmd",
+      "trust_chain": [
+          "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNsQmphbTl5WDFwSU0zUm5kRTVZVjJRM00zTmpVa1JGVVRGQlZIYzVPVUUyYjFsTGRYY3dWa3A0UVEiLCJ0eXAiOiJhcHBsaWNhdGlvbi9lbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2OTQ3MzE4ODgsImlhdCI6MTY5NDQzMTg4OCwiaXNzIjoiaHR0cHM6Ly9jcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZyIsInN1YiI6Imh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmciLCJqd2tzIjp7ImtleXMiOlt7Imt0eSI6IlJTQSIsImtpZCI6ImNsQmphbTl5WDFwSU0zUm5kRTVZVjJRM00zTmpVa1JGVVRGQlZIYzVPVUUyYjFsTGRYY3dWa3A0UVEiLCJlIjoiQVFBQiIsIm4iOiI2ejdZVlhBS2F2NWFETUJrTlVBWS1ISXBDWVl0ZXZCRUsyZEVDNWlrUkhHWWJJT29wUngzeFZtMTZxWjRLM1h4Z3FQSlpGWXFuTS12U2xkeFY4c1QzdnVBYUJOMVBRc1VmbkJuekNPSHNnRVlCQmxSRHBhZGhiOHJvTjRic1daUkdVc04zUW9obEhWRDFpbjlzcGswazNIQ19zSEd1NFdsR1FGUTBDTlAtUGlKUVdVOWYtY1JkSk8tVk9qQm11STJkTFJjOTYwQTktaVpLaFFxNVBaUVB6dWw4WFJuc0EzbVNyU3RZemVGaGpDNzl1U283c3VvRTlBbTNkX3YyR2tZbkp6UVhOM3pzRk9MQkV0Ri1DeUJ5aW5xZGhReXM3N2Rjc0s0QmU4WHpHbTI3Z1pNdXY2Z0QxN2pRNWRHdmk5SWVaVUZ3cjgxMVlMdTNodFNDUmJkN1EifV19LCJtZXRhZGF0YSI6eyJvcGVuaWRfY3JlZGVudGlhbF9pc3N1ZXIiOnsiandrcyI6eyJrZXlzIjpbeyJrdHkiOiJSU0EiLCJraWQiOiJjbEJqYW05eVgxcElNM1JuZEU1WVYyUTNNM05qVWtSRlVURkJWSGM1T1VFMmIxbExkWGN3VmtwNFFRIiwiZSI6IkFRQUIiLCJuIjoiNno3WVZYQUthdjVhRE1Ca05VQVktSElwQ1lZdGV2QkVLMmRFQzVpa1JIR1liSU9vcFJ4M3hWbTE2cVo0SzNYeGdxUEpaRllxbk0tdlNsZHhWOHNUM3Z1QWFCTjFQUXNVZm5CbnpDT0hzZ0VZQkJsUkRwYWRoYjhyb040YnNXWlJHVXNOM1FvaGxIVkQxaW45c3BrMGszSENfc0hHdTRXbEdRRlEwQ05QLVBpSlFXVTlmLWNSZEpPLVZPakJtdUkyZExSYzk2MEE5LWlaS2hRcTVQWlFQenVsOFhSbnNBM21TclN0WXplRmhqQzc5dVNvN3N1b0U5QW0zZF92MkdrWW5KelFYTjN6c0ZPTEJFdEYtQ3lCeWlucWRoUXlzNzdkY3NLNEJlOFh6R20yN2daTXV2NmdEMTdqUTVkR3ZpOUllWlVGd3I4MTFZTHUzaHRTQ1JiZDdRIn1dfX0sImZlZGVyYXRpb25fZW50aXR5Ijp7Im9yZ2FuaXphdGlvbl9uYW1lIjoiT3BlbklEIENyZWRlbnRpYWwgSXNzdWVyIGV4YW1wbGUiLCJob21lcGFnZV91cmkiOiJodHRwczovL2NyZWRlbnRpYWxfaXNzdWVyLmV4YW1wbGUub3JnL2hvbWUiLCJwb2xpY3lfdXJpIjoiaHR0cHM6Ly9jcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZy9wb2xpY3kiLCJsb2dvX3VyaSI6Imh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmcvc3RhdGljL2xvZ28uc3ZnIiwiY29udGFjdHMiOlsidGVjaEBjcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZyJdfX0sImF1dGhvcml0eV9oaW50cyI6WyJodHRwczovL2ludGVybWVkaWF0ZS5laWRhcy5leGFtcGxlLm9yZyJdfQ.k2RMvOKb5IBY0TxNKvM541goqx91ORXuEHw84JhMTlX-zobVHaBcBIYM48HUhU23YRWbfs_D5pZzxwc2nPeuFCsdrvhTAx0n8QHUf4MQ7-sud7DoTtV9tX_P_wvDbVbLwRfKEumUu4S8NGIbcRofokmecE7XZokemnss0GOrK8iS7JMwRNL609iPzNrZsR7qUWJIh7XsP9ceRUFO4H1GWciutMFD2ANGKo43eAU1w_5Z11S_mrPOry8m_Kf7sinrv9XE_S0KNgaf1SazWj3wzAwV_VMugjOSEdEKT6Z2GucRB4WTERCcHzIKWO7ggiEifqRrnW3JbCogJB1K00Dt6A",
+          "eyJhbGciOiJSUzI1NiIsImtpZCI6IllUWTNOSFZsTUdoNk16QmFPVUpaZEdSSE1sQmxXRU5ZYTJwUFVWTjRPVmR2TW5aNlIySndlSFpTY3ciLCJ0eXAiOiJhcHBsaWNhdGlvbi9lbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2OTQ3MzE4ODgsImlhdCI6MTY5NDQzMTg4OCwiaXNzIjoiaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZWlkYXMuZXhhbXBsZS5vcmciLCJzdWIiOiJodHRwczovL2NyZWRlbnRpYWxfaXNzdWVyLmV4YW1wbGUub3JnIiwiandrcyI6eyJrZXlzIjpbeyJrdHkiOiJSU0EiLCJraWQiOiJjbEJqYW05eVgxcElNM1JuZEU1WVYyUTNNM05qVWtSRlVURkJWSGM1T1VFMmIxbExkWGN3VmtwNFFRIiwiZSI6IkFRQUIiLCJuIjoiNno3WVZYQUthdjVhRE1Ca05VQVktSElwQ1lZdGV2QkVLMmRFQzVpa1JIR1liSU9vcFJ4M3hWbTE2cVo0SzNYeGdxUEpaRllxbk0tdlNsZHhWOHNUM3Z1QWFCTjFQUXNVZm5CbnpDT0hzZ0VZQkJsUkRwYWRoYjhyb040YnNXWlJHVXNOM1FvaGxIVkQxaW45c3BrMGszSENfc0hHdTRXbEdRRlEwQ05QLVBpSlFXVTlmLWNSZEpPLVZPakJtdUkyZExSYzk2MEE5LWlaS2hRcTVQWlFQenVsOFhSbnNBM21TclN0WXplRmhqQzc5dVNvN3N1b0U5QW0zZF92MkdrWW5KelFYTjN6c0ZPTEJFdEYtQ3lCeWlucWRoUXlzNzdkY3NLNEJlOFh6R20yN2daTXV2NmdEMTdqUTVkR3ZpOUllWlVGd3I4MTFZTHUzaHRTQ1JiZDdRIn1dfX0.b4WTISWHHuZuNAoZmUxIgDxZi-GFI8Q2fTKHniyrEtr6tfbzz3AXwTjDDJR7AfDcqpHb6OSbUqIeNxWkK6X4XCZ_AgzMIB3mjRll1nqEeB0CdjEHhTYGRnDWKHt3rgGUT3GmAOvS2cvBhXbYN5PvOp4Kt6fF2JqVN_JX5h8dq3m1kif59BUJ7Ww8F7CPdRXUbjS_l8sscryQp9UZLfw7EASFoQ__tJgRp_WUUhgp2XFlDRRGacsgvCywjg7YFu6nY-3jet-IPCDNVpTK06Adtge6HPcIVlc02ZN8ZDXLwHe8gCqR4JxXcqP238Hfs7y--gnGmA03NtWlWaHrMslCWw",
+          "eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5uTlRUa0psWTNGb2VTMDRaVUpHVEVJeExXNHhWbHB6Y21abGNuYzVibFpOTXpkRlFsTnpXSFpKUlEiLCJ0eXAiOiJhcHBsaWNhdGlvbi9lbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2OTQ3MzE4ODgsImlhdCI6MTY5NDQzMTg4OCwiaXNzIjoiaHR0cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5vcmciLCJzdWIiOiJodHRwczovL2ludGVybWVkaWF0ZS5laWRhcy5leGFtcGxlLm9yZyIsImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwia2lkIjoiWVRZM05IVmxNR2g2TXpCYU9VSlpkR1JITWxCbFdFTllhMnBQVVZONE9WZHZNblo2UjJKd2VIWlNjdyIsImUiOiJBUUFCIiwibiI6ImprdlJRWW53ckNzVVhqZXJOWlpTTkdZWFE1eG5ZQVJQNHoyQllacU1rS2N5b1ZQUHZCd1U4cHVkR0NrUUV2bDlOR0NDZnNVLXFpN216aEprRmgtX3h4V3NsUktCR29TWHk2alh0Qm1ldjhQTDMtcXc5VTdSbmhUbmhxQkxhY0NGYWN4ck4xV2hpd1c0aUhqaGRiSnd3cEhxNEcxODZXWnpzUVh1U1hXUFN4S29tY3VETE1rY09WMTl5U0xZX2FQYW9mUkl2TGpKUFhTYTlBbXFrQzB6TF9TOEMzb3pjNWk5NG1GeGdwempuYl9OSUtyZjZJQ2ZwTUwzY0RvU3lqS0NJM3VQRWtFbGV3NUtieU9YRkNwelQxQ2xkamJTcXZMZlNTdnItbmdZNG9hWXFCSkpSSFBLaVQ3UFE3VGNYUVpxWFhyOTU3UV9oMDRsRWFCX19oUmlBdyJ9XX19.yzw2PrMCuIxR5jBinsVfxWlSO-1MeoVmBNF5goqqLVVEqHIQ3BxF3OwKZnQFCP4-XsPpdKfiKr583Xd-fJM9PfRcGrFxjSxKXKGmxDGIGBTiRY2vELXOH4_EEiR3O2ZrzWyx5j7_nrf6Kd0MhY-5QIqMabnnF-QV_l7Nh-NGq_YXvJC4P4wU8Wu2FEThbfZWsBD5joeEgEw_7i1BbXp-m9BvWiIB2uHX35LRFuNaDBjnkD1iYZvPYr-oW6ZFlzPmPkkPEQOtKvAquC20Ske7matT-MeTVsTG0SFTQtep4DIxJn5KVoe0ZiJwCCNaFPHiT1gZXV1MtvAwffTxgZx-sA"
+        ]
+    }
+]]>
+        </artwork>
         </section>
 
       </section>
@@ -3907,54 +4019,52 @@ Content-Type: application/json
           Resolving Trust Chain and Metadata: the perspective of an OP.
         </preamble>
         <artwork><![CDATA[
-+-----+                            +-----+                                    +-------------+
-| RP  |                            | OP  |                                    | TrustAnchor |
-+-----+                            +-----+                                    +-------------+
-   |                                  |                                              |
-   |     Entity Configuration Request |                                              |
-   |<---------------------------------|                                              |
-   |                                  |                                              |
-   | Entity Configuration Response    |                                              |
-   |--------------------------------->|                                              |
-   |                                  |                                              |
-   |                                  | Evaluates authority_hints                    |
-   |                                  |--------------------------                    |
-   |                                  |                         |                    |
-   |                                  |<-------------------------                    |
-   |                                  |                                              |
-   |                                  | Entity Configuration Request                 |
-   |                                  |--------------------------------------------->|
-   |                                  |                                              |
-   |                                  |                Entity Configuration Response |
-   |                                  |<---------------------------------------------|
-   |                                  |                                              |
-   |                                  | Obtains Fetch endpoint                       |
-   |                                  |-----------------------                       |
-   |                                  |                      |                       |
-   |                                  |<----------------------                       |
-   |                                  |                                              |
-   |                                  | Request Entity Statement about the RP        |
-   |                                  |--------------------------------------------->|
-   |                                  |                                              |
-   |                                  |                Entity Statement about the RP |
-   |                                  |<---------------------------------------------|
-   |                                  |                                              |
-   |                                  | Evaluates the Trust Chain                    |
-   |                                  |--------------------------                    |
-   |                                  |                         |                    |
-   |                                  |<-------------------------                    |
-   |                                  |                                              |
-   |                                  | Applies metadata policies                    |
-   |                                  |--------------------------                    |
-   |                                  |                         |                    |
-   |                                  |<-------------------------                    |
-   |                                  |                                              |
-   |                                  | Derivates the RP's final metadata            |
-   |                                  |----------------------------------            |
-   |                                  |                                 |            |
-   |                                  |<---------------------------------            |
-   |                                  |                                              |
-]]></artwork>
++-----+                          +-----+                             +--------------+
+| RP  |                          | OP  |                             | Trust Anchor |
++-----+                          +-----+                             +--------------+
+   |                                |                                       |
+   | Entity Configuration Request   |                                       |
+   |<-------------------------------|                                       |
+   |                                |                                       |
+   | Entity Configuration Response  |                                       |
+   |------------------------------->|                                       |
+   |                                |                                       |
+   |                                | Evaluates authority_hints             |
+   |                                |--------------------------             |
+   |                                |                         |             |
+   |                                |<-------------------------             |
+   |                                |                                       |
+   |                                | Entity Configuration Request          |
+   |                                |-------------------------------------->|
+   |                                |                                       |
+   |                                |        Entity Configuration Response  |
+   |                                |<--------------------------------------|
+   |                                |                                       |
+   |                                | Obtains Fetch endpoint                |
+   |                                |-----------------------                |
+   |                                |                      |                |
+   |                                |<----------------------                |
+   |                                |                                       |
+   |                                | Request Entity Statement about the RP |
+   |                                |-------------------------------------->|
+   |                                |                                       |
+   |                                |        Entity Statement about the RP  |
+   |                                |<--------------------------------------|
+   |                                |                                       |
+   |                                | Evaluates the Trust Chain             |
+   |                                |--------------------------             |
+   |                                |                         |             |
+   |                                |<-------------------------             |
+   |                                |                                       |
+   |                                | Applies Metadata Policies             |
+   |                                |--------------------------             |
+   |                                |                         |             |
+   |                                |<-------------------------             |
+   |                                |                                       |
+   |                                | Derivates the RP's final Metadata     |
+   |                                |----------------------------------     |
+   |                                |                                 |     |
+   |                                |<---------------------------------     |
       </figure>
 
       </section>
@@ -7276,6 +7386,9 @@ Host: op.umu.se
 	  <t>
 	    Cite draft-ietf-oauth-resource-metadata.
 	  </t>
+         <t>
+            Fixed #2002: Added sequence diagrams and representations of the general architecture and the Trust Chain.
+        </t>
         </list>
       </t>
 
@@ -7320,7 +7433,7 @@ Host: op.umu.se
             Added text about the usage of metadata besides metadata_policy.
           </t>
           <t>
-            Fixed #1745 #1746: Non normative example of Trust Mark status endpoint.
+            Fixed #1745 #1746: non-normative example of Trust Mark status endpoint.
           </t>
           <t>
             Fixed #1747: Client Registration Response content-type set to application/entity-statement+jwt.
