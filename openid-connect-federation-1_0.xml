@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="7" month="September" year="2023"/>
+    <date day="17" month="September" year="2023"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -144,17 +144,16 @@
         MAY be represented by more than one Entity in a federation.
         An Entity MAY also belong to more than one federation.
       </t>
+      <figure>
+	<preamble>
+	  Below is an example of two federations rooted at two different
+	  Trust Anchors with some members in common.
 
-          <preamble>
-            Below is an example of two federations rooted at two different 
-            Trust Anchors with some members in common.
-
-            Every Leaf Entity is able to establish mutual trust with any 
-            other Leaf Entity by means of having at least one 
-            common Trust Anchor between them.
-          </preamble>
-          <artwork>
-                  <![CDATA[
+	  Every Leaf Entity is able to establish mutual trust with any
+	  other Leaf Entity by means of having at least one
+	  common Trust Anchor between them.
+	</preamble>
+	<artwork><![CDATA[
 .-----------------.            .-----------------.
 |  Trust Anchor A |            |  Trust Anchor B |
 '------.--.-------'            '----.--.--.------'
@@ -184,6 +183,7 @@
                     '----'   '----'   '----'
 ]]>
         </artwork>
+      </figure>
 
       <section title="Requirements Language">
         <t>
@@ -687,7 +687,7 @@
       }
     }
 }
-              ]]></artwork>
+]]></artwork>
         </figure>
 
         <figure>
@@ -701,7 +701,7 @@
   "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf":
     ["https://swamid.se"]
 }
-              ]]></artwork>
+]]></artwork>
         </figure>
 
         <figure>
@@ -855,21 +855,20 @@
           Trust Chain in some secure out-of-band way not described in this
           document.
         </t>
-
+	<figure>
           <preamble>
-            The following is an example of a Trust Chain consisting of 
-            a Leaf's Entity Configuration and Entity Statements issued 
-            by an Intermediate Entity and a Trust Anchor. It shows 
-            the relation between the three Entities, their Entity 
-            Configurations and their Entity Statements. The Entity 
-            Statements are obtained from the 
-            <spanx style="verb">federation_fetch_endpoint</spanx> of 
-            the subject's superior. The URL of the 
-            <spanx style="verb">federation_fetch_endpoint</spanx> is 
+            The following is an example of a Trust Chain consisting of
+            a Leaf's Entity Configuration and Entity Statements issued
+            by an Intermediate Entity and a Trust Anchor. It shows
+            the relation between the three Entities, their Entity
+            Configurations and their Entity Statements. The Entity
+            Statements are obtained from the
+            <spanx style="verb">federation_fetch_endpoint</spanx> of
+            the subject's superior. The URL of the
+            <spanx style="verb">federation_fetch_endpoint</spanx> is
             discovered in the superior's Entity Configuration.
           </preamble>
-          <artwork>
-                  <![CDATA[
+          <artwork><![CDATA[
 .----------------.  .---------------------------.         .---------------------------.
 | ROLE           |  | .well-known/              |         | TRUST CHAIN               |
 |                |  | openid-federation         |         |                           |
@@ -908,7 +907,8 @@
 |                |  | '-----------------------' |         | '-----------------------' |
 '----------------'  '---------------------------'         '---------------------------'
 ]]>
-        </artwork>
+	  </artwork>
+	</figure>
 
         <section title="Trust Chain Header Parameter" anchor="trust_chain_head_param">
           <t>
@@ -930,13 +930,13 @@
           Trust Anchor it deems most significant.
           Use of this header parameter is OPTIONAL.
           </t>
-          
-          <preamble>
-          The following is a non-normative example of a JWS header with
-          the <spanx style="verb">trust_chain</spanx> parameter.
-          </preamble>
-          <artwork>
-                  <![CDATA[
+
+	  <figure>
+	    <preamble>
+	      The following is a non-normative example of a JWS header with
+	      the <spanx style="verb">trust_chain</spanx> parameter.
+	    </preamble>
+	    <artwork><![CDATA[
     {
       "alg": "RS256"
       "kid": "SUdtUndEWVY2cUFDeDV5NVlBWDhvOXJodVl2am1mNGNtR0pmd",
@@ -947,7 +947,8 @@
         ]
     }
 ]]>
-        </artwork>
+	    </artwork>
+	  </figure>
         </section>
 
       </section>
@@ -1032,8 +1033,7 @@
                   The following is a non-normative example of a signed JWKS
                   before serialization and adding a signature.
                 </preamble>
-                <artwork>
-                  <![CDATA[
+                <artwork><![CDATA[
     {
       "keys": [
         {
@@ -1068,8 +1068,7 @@
                   The following is a non-normative example of an RP's Entity Configuration:
                 </preamble>
 
-                <artwork>
-                  <![CDATA[
+                <artwork><![CDATA[
     {
       "iss": "https://openid.sunet.se",
       "sub": "https://openid.sunet.se",
@@ -1110,7 +1109,7 @@
         "https://edugain.org/federation"
       ]
     }
-    ]]>
+]]>
                 </artwork>
               </figure>
             </t>
@@ -1927,6 +1926,7 @@
             restriction is violated or otherwise an error is produced, the process
             MUST stop and the policy combination MUST be considered invalid.
           </t>
+
           <section title="Merging Operators" anchor="merging_policy_operators">
             <t>
               The policy operators (as defined in <xref target="policy_operators"/>)
@@ -1986,6 +1986,7 @@
             </t>
           </section>
         </section>
+
         <section title="Applying Policies" anchor="applying_policies">
           <t>
             Once combining the Metadata policies has been accomplished, the next
@@ -4061,11 +4062,12 @@ Content-Type: application/json
    |                                |                         |             |
    |                                |<-------------------------             |
    |                                |                                       |
-   |                                | Derivates the RP's final Metadata     |
+   |                                | Derives the RP's final Metadata       |
    |                                |----------------------------------     |
    |                                |                                 |     |
    |                                |<---------------------------------     |
-      </figure>
+]]></artwork>
+	</figure>
 
       </section>
 
@@ -4613,7 +4615,8 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
   FC2p9BIqItU3m9gmH0ojdBCUX5Up0iDsys6_npYomqitAcvaBRD
   PiuUBa5Iar9HVR-H7FMAr7aq7s-dH5gx2CHIfM3-qlc2-_Apsy0
   BrQl6VePR6j-3q6JCWvNw7l4_F2UpHeanHb31fLKQbK-1yoXDNz
-  DwA7B0ZqmuSmMFQ]]></artwork>
+  DwA7B0ZqmuSmMFQ
+]]></artwork>
             </figure>
             <section title="Processing the Authentication Request">
               <t>
@@ -6425,7 +6428,7 @@ HTTP/1.1 302 Found
             <artwork><![CDATA[
 GET /.well-known/openid-federation HTTP/1.1
 Host: umu.se
-            ]]></artwork>
+]]></artwork>
           </figure>
           <t>And the GET will return:</t>
           <figure>
@@ -6480,7 +6483,7 @@ Host: umu.se
 GET /oidc/fedapi?sub=https%3A%2F%2Fop.umu.se&
 iss=https%3A%2F%2Fumu.se HTTP/1.1
 Host: umu.se
-            ]]></artwork>
+]]></artwork>
           </figure>
           <t>and the result is this:</t>
           <figure>
@@ -6551,7 +6554,7 @@ Host: umu.se
             <artwork><![CDATA[
 GET /.well-known/openid-federation HTTP/1.1
 Host: swamid.se
-            ]]></artwork>
+]]></artwork>
           </figure>
           <t>And the GET will return:</t>
           <figure>
@@ -6608,7 +6611,7 @@ Host: swamid.se
 GET /fedapi?sub=https%3A%2F%2Fumu.se&
 iss=https%3A%2F%2Fswamid.se HTTP/1.1
 Host: swamid.se
-            ]]></artwork>
+]]></artwork>
           </figure>
           <t>and the result is this:</t>
 
@@ -6678,7 +6681,7 @@ Host: swamid.se
             <artwork><![CDATA[
 GET /.well-known/openid-federation HTTP/1.1
 Host: edugain.geant.org
-            ]]></artwork>
+]]></artwork>
           </figure>
           <t>And the GET will return:</t>
           <figure>
@@ -6704,7 +6707,6 @@ Host: edugain.geant.org
     }
   }
 }
-
 ]]></artwork>
           </figure>
           <t>
@@ -6732,7 +6734,7 @@ Host: edugain.geant.org
 GET /edugain/api?sub=https%3A%2F%2Fswamid.se&
 iss=https%3A%2F%2Fedugain.geant.org HTTP/1.1
 Host: geant.org
-            ]]></artwork>
+]]></artwork>
           </figure>
           <t>and the result is this:</t>
           <figure>
@@ -6998,7 +7000,7 @@ Host: op.umu.se
     }
   }
 }
-                ]]></artwork>
+]]></artwork>
                   </figure>
                 </t>
               </list>
@@ -7027,7 +7029,7 @@ Host: op.umu.se
     }
   }
 }
-                ]]></artwork>
+]]></artwork>
                   </figure>
                 </t>
               </list>
@@ -7147,7 +7149,7 @@ Host: op.umu.se
   },
   "authority_hints": ["https://incommon.org"]
 }
-          ]]></artwork>
+]]></artwork>
             </figure>
           <t>
             The OP receives the RP's Entity Configuration and proceeds with the
@@ -7433,7 +7435,7 @@ Host: op.umu.se
             Added text about the usage of metadata besides metadata_policy.
           </t>
           <t>
-            Fixed #1745 #1746: non-normative example of Trust Mark status endpoint.
+            Fixed #1745 #1746: Non-normative example of Trust Mark status endpoint.
           </t>
           <t>
             Fixed #1747: Client Registration Response content-type set to application/entity-statement+jwt.
