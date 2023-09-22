@@ -524,12 +524,12 @@
             </t>
             <t hangText="constraints">
               <vspace/>
-              OPTIONAL. JSON object that describes a set of Trust Chain
-              constraints. Constraints are applicable to an entity's subordinates.
-              If the claim appears in an entity's Entity Configuration it is valid for all
-              subordinates of that entity.
-              If it appears in an Entity Statement, that is not an Entity Configuration, then it is
-              valid for the subject of the Entity Statement and all that subject's subordinates.
+              OPTIONAL. JSON object that describes constraints that apply to the Trust Chain.
+              If the claim appears in an Entity's Entity Configuration it MUST be applied
+              to all Subordinates of that Entity.
+              If the claim appears in an Entity Statement that is not an Entity Configuration,
+              then it MUST be applied to the subject of the Entity Statement and all subject's
+              Subordinates.
               This claim SHOULD NOT appear in a leaf entity's Entity Configuration
               There is more about this in
               <xref target="chain_constraints"/>.
@@ -2290,15 +2290,17 @@
 ]]></artwork>
         </figure>
         <t>
-          If an entity has a <spanx style="verb">constraints</spanx> claim it its Entity
-          Configuration and then issues an Entity Statement regarding a subordinate. Then if
-          the same type of constraint specification appears in both the Entity Configuration
-          and the Entity statement the more restrictive of the two will take precedence.
+          When an entity has a <spanx style="verb">constraints</spanx> claim it its Entity
+          Configuration and issues an Entity Statement regarding a Subordinate,
+          then if the same type of constraint, for example a
+          <spanx style="verb">max_path_length</spanx>,
+          appears in both the Entity Configuration and the Entity statement,
+          the more restrictive of the two MUST take precedence.
         </t>
         <t>
           If a Subordinate Entity Statement contains a constraint specification
           that is more restrictive than the one in effect, then the more
-          restrictive constraint is in effect from here on.
+          restrictive constraint MUST take effect from here on.
         </t>
         <t>
           If a Subordinate Entity Statement contains a constraint specification
