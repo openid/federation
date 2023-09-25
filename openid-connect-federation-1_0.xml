@@ -956,15 +956,21 @@
 
     <section anchor="metadata" title="Metadata Type Identifiers">
       <t>
-      </t>
-      <t>
 	    This specification defines metadata type identifiers
         for OpenID Connect and OAuth 2.0 objects.
         The metadata type identifier uniquely identifies the Entity Type
         of the participant and the format of metadata for that Entity Type.
         It reuses existing OpenID Connect and OAuth 2.0 metadata standards
         that are applicable to each metadata type.
-        Each metadata document is a JSON object.
+        The metadata data structure following each metadata type identifier is a JSON object;
+	it MAY be the empty JSON object <spanx style="verb">{}</spanx>.
+      </t>
+      <t>
+	Top-level JSON object values in the metadata data structures MAY use
+	any JSON value other than <spanx style="verb">null</spanx>.
+	(<spanx style="verb">null</spanx> is reserved to prevent likely
+	implementation errors caused by confusing members with
+	<spanx style="verb">null</spanx> values with omitted members.)
       </t>
       <t>
         This specification also allows new metadata types to be defined to
@@ -7392,6 +7398,9 @@ Host: op.umu.se
          <t>
             Fixed #2002: Added sequence diagrams and representations of the general architecture and the Trust Chain.
         </t>
+	  <t>
+	    Fixed #2064: Prohibited the use of <spanx style="verb">null</spanx> as a metadata value.
+	  </t>
         </list>
       </t>
 
