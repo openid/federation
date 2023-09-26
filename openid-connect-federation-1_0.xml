@@ -478,19 +478,22 @@
             </t>
             <t hangText="metadata">
               <vspace/>
-              REQUIRED. JSON object that includes
+              OPTIONAL. JSON object that includes
               protocol-specific metadata claims that represent the
               Entity's Type and metadata.
-
               Each key of the JSON object represents a metadata type
               identifier, and each value MUST be a JSON object representing
-              the metadata according to the metadata schema of that metadata
-              type. Such a JSON object may be empty.
+	      the metadata according to the metadata schema of that metadata type.
+	      These JSON objects may be the empty JSON object <spanx style="verb">{}</spanx>.
               An Entity Statement MAY contain multiple
               metadata statements, but only one for each metadata type.
-              If the Entity Statement is an Entity Configuration,
-              then the Entity Statement SHOULD contain a
-              <spanx style="verb">metadata</spanx> claim.
+	      When any Entity Types apply to an Entity,
+	      the Entity Statement MUST contain a <spanx style="verb">metadata</spanx> claim
+	      with entries for each of those Entity Types,
+	      even if the values for those entries are the empty JSON object.
+	      In almost all cases, this means that the <spanx style="verb">metadata</spanx> claim is REQUIRED,
+	      because each Entity will play some role in its federations.
+	      <vspace blankLines="1" />
               In some cases, a superior may want to be explicit about what metadata
               should be used for a Subordinate. In that case
               <spanx style="verb">metadata</spanx> can be used. If
@@ -7392,6 +7395,9 @@ Host: op.umu.se
          <t>
             Fixed #2002: Added sequence diagrams and representations of the general architecture and the Trust Chain.
         </t>
+	  <t>
+	    Fixed #2062: Require metadata statments for all Entity Types that apply to an Entity.
+	  </t>
         </list>
       </t>
 
