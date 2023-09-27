@@ -482,21 +482,18 @@
             </t>
             <t hangText="metadata">
               <vspace/>
-              OPTIONAL. JSON object that includes
-              protocol-specific metadata claims that represent the
-              Entity's Type and metadata.
+              OPTIONAL. JSON object with protocol-specific claims that represent the
+              Entity's Types within its federations and metadata for those Entity Types.
 	      Each member of the JSON object is an Entity Type Identifier,
 	      and each value MUST be a JSON object representing
-	      the metadata according to the metadata schema of that Entity Type.
-	      These JSON objects may be the empty JSON object <spanx style="verb">{}</spanx>.
-	      An Entity Statement MAY contain multiple
-	      sets of metadata statements, but only one set for each Entity Type.
-	      When any Entity Types apply to an Entity,
-	      the Entity Statement MUST contain a <spanx style="verb">metadata</spanx> claim
+	      metadata according to the metadata schema of that Entity Type.
+	      When an Entity participates in a federation or federations
+	      with one or more Entity Types,
+	      its Entity Configuration MUST contain a <spanx style="verb">metadata</spanx> claim
 	      with entries for each of the corresponding Entity Type Identifiers,
-	      even if the values for those entries are the empty JSON object.
-	      In almost all cases, this means that the <spanx style="verb">metadata</spanx> claim is REQUIRED,
-	      because each Entity will play some role in its federations.
+	      even if the values for those entries are
+	      the empty JSON object <spanx style="verb">{}</spanx>.
+	      (The value might contain no entries when superiors supply any needed metadata).
 	      <vspace blankLines="1" />
 
               In some cases, a superior may want to be explicit about what metadata
@@ -508,7 +505,7 @@
               <spanx style="verb">metadata_policy</spanx> claim in an
               Entity Statement, then for each Entity Type Identifier, claims that appear in
               <spanx style="verb">metadata</spanx> MUST NOT appear in
-              <spanx style="verb">metadata_policy</spanx>
+              <spanx style="verb">metadata_policy</spanx>.
             </t>
             <t hangText="metadata_policy">
               <vspace/>
