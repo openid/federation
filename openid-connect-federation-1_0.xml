@@ -267,6 +267,10 @@
                 which can be a Leaf Entity but also an Entity that acts as
                 Intermediate for other Entities.
             </t>
+            <t hangText="Superior Entity">
+              <vspace/>
+                An Entity with an Entity or Entities that are Subordinate to it.
+            </t>
             <t hangText="Federation Entity Discovery">
               <vspace/>
               A process that starts with an Entity Identifier and collects
@@ -308,9 +312,9 @@
 
       <t>
         The Entity Configuration of a Leaf Entity contains one or more
-        references to its superiors, found in the
+        references to its Superiors, found in the
         <xref target="authority_hints">authority_hints</xref> parameter.
-        These references can be used to download the Entity Configuration of each superior.
+        These references can be used to download the Entity Configuration of each Superior.
         One or more Entity Configurations can occur during the Federation Entity Discovery
         until the Trust Anchor is reached.
       </t>
@@ -318,7 +322,7 @@
         The Trust Anchor and its Intermediates issue Entity Statements
         about their Subordinates. The sequence of Entity Configurations
         and Entity Statements that validate the relationship between
-        a superior and a Subordinate, along a path towards the Trust Anchor,
+        a Superior and a Subordinate, along a path towards the Trust Anchor,
         forms the proof that a Leaf Entity is part of
         the Federation configured by the Trust Anchor.
       </t>
@@ -450,10 +454,10 @@
               the Entity Identifiers of Intermediate Entities or Trust Anchors
               that MAY issue an Entity Statement about the issuer Entity.
               For all Entities except for Trust Anchors that do not have any
-              superiors, this is REQUIRED and MUST NOT be the empty list
+              Superiors, this is REQUIRED and MUST NOT be the empty list
               <spanx style="verb">[]</spanx>.
               This claim MUST be absent from an
-              Entity Configuration issued by a Trust Anchor with no superiors.
+              Entity Configuration issued by a Trust Anchor with no Superiors.
             </t>
             <t hangText="source_endpoint">
               <vspace/>
@@ -491,7 +495,7 @@
               If the Entity Statement is an Entity Configuration,
               then the Entity Statement SHOULD contain a
               <spanx style="verb">metadata</spanx> claim.
-              In some cases, a superior may want to be explicit about what metadata
+              In some cases, a Superior may want to be explicit about what metadata
               should be used for a Subordinate. In that case
               <spanx style="verb">metadata</spanx> can be used. If
               <spanx style="verb">metadata</spanx> is used it is only valid for the
@@ -864,9 +868,9 @@
             Configurations and their Entity Statements. The Entity
             Statements are obtained from the
             <spanx style="verb">federation_fetch_endpoint</spanx> of
-            the subject's superior. The URL of the
+            the subject's Superior. The URL of the
             <spanx style="verb">federation_fetch_endpoint</spanx> is
-            discovered in the superior's Entity Configuration.
+            discovered in the Superior's Entity Configuration.
           </preamble>
           <artwork><![CDATA[
 .----------------.  .---------------------------.         .---------------------------.
@@ -1973,12 +1977,12 @@
                 </t>
                 <t hangText="essential">
                   <vspace/>
-                  If a superior has specified <spanx style="verb">essential=true</spanx>,
+                  If a Superior has specified <spanx style="verb">essential=true</spanx>,
                   then a Subordinate cannot change that.
-                  If a superior has specified <spanx style="verb">essential=false</spanx>,
+                  If a Superior has specified <spanx style="verb">essential=false</spanx>,
                   then a Subordinate is allowed to change that to
                   <spanx style="verb">essential=true</spanx>.
-                  If a superior has not specified <spanx style="verb">essential</spanx>,
+                  If a Superior has not specified <spanx style="verb">essential</spanx>,
                   then a Subordinate can set <spanx style="verb">essential</spanx> to
                   <spanx style="verb">true</spanx> or <spanx style="verb">false</spanx>.
                   If those rules are not met this MUST be treated as error.
@@ -4137,7 +4141,7 @@ Content-Type: application/json
           Note that the second bullet point means that, at each step in the
           Trust Chain resolution, it MUST be verified that the signing JWK is
           also present in the <spanx style="verb">jwks</spanx>
-          statement claim issued by the superior.
+          statement claim issued by the Superior.
         </t>
       </section>
       <section title="Choosing One of the Valid Trust Chains">
@@ -4776,7 +4780,7 @@ HTTP/1.1 302 Found
                   metadata and where the
                   <spanx style="verb">authority_hints</spanx>
                   included are picked by the process described above.
-                  From its immediate superior authorities the RP MUST select
+                  From its immediate Superior authorities the RP MUST select
                   one or more <spanx style="verb">authority_hints</spanx> so
                   that every hint, when used as the starting point for a Trust
                   Chain collection, leads to at least one of the Trust Anchors
@@ -4997,7 +5001,7 @@ HTTP/1.1 302 Found
                     claim of the Entity Statement to the Trust Anchor it
                     selected to process the request. The
                     <spanx style="verb">authority_hints</spanx> claim MUST be
-                    set to the OP's immediate superior authority in the
+                    set to the OP's immediate Superior authority in the
                     selected Trust Chain.
                     <vspace/>
                     The OP MUST set the <spanx style="verb">exp</spanx> claim
@@ -5089,7 +5093,7 @@ HTTP/1.1 302 Found
                     <vspace/>
                     REQUIRED.
                     It MUST be a single element array, whose value references
-                    the immediate superior authority of the OP in the Trust
+                    the immediate Superior authority of the OP in the Trust
                     Chain that the OP selected to process the request. See
                     <xref target="entity-statement"/> for the full
                     specification.
@@ -5134,7 +5138,7 @@ HTTP/1.1 302 Found
                     The RP MUST ensure the signing Federation Entity key used
                     by the OP is present in the
                     <spanx style="verb">jwks</spanx> claim of the Entity
-                    Statement issued by the OP's immediate superior authority
+                    Statement issued by the OP's immediate Superior authority
                     in a Trust Chain that the RP successfully resolved for the
                     OP when it prepared the Explicit Registration request.
                   </t>
@@ -6307,7 +6311,7 @@ HTTP/1.1 302 Found
           <xref target="federation_configuration"/>.
           What follows after that is this sequence of steps:
           <list style="numbers">
-            <t>Pick out the immediate superior Entities using the authority
+            <t>Pick out the immediate Superior Entities using the authority
               hints
             </t>
             <t>
@@ -6316,7 +6320,7 @@ HTTP/1.1 302 Found
               <xref target="federation_configuration"/>
             </t>
             <t>
-              Using the fetch endpoint of the superiors to
+              Using the fetch endpoint of the Superiors to
               ask for information about the Subordinate Entity
               <xref target="fetch_statement"/>.
             </t>
@@ -6330,7 +6334,7 @@ HTTP/1.1 302 Found
         </t>
         <t>
           When building the Trust Chain, the Entity Statements issued
-          by a superior about its Subordinate are used together with the
+          by a Superior about its Subordinate are used together with the
           Entity Configuration issued by the Leaf.
         </t>
         <t>
@@ -6808,7 +6812,7 @@ Host: geant.org
           </t>
           <t>Combining the metadata policies from the tree Entity Statements we
             have by
-            a superior about its Subordinate and applying the combined policy
+            a Superior about its Subordinate and applying the combined policy
             to the
             metadata statement that the Leaf Entity presented, we get:
           </t>
