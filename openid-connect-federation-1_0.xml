@@ -123,16 +123,15 @@
     <section anchor="Introduction" title="Introduction">
       <t>
         This specification describes how two Entities that would like to
-        interact can resolve trust between them, by means of a third trusted party
-        called Trust Anchor.
+        interact can establish trust between them by means of a trusted third party
+        called a Trust Anchor.
         A Trust Anchor is an Entity whose main purpose is to issue statements
         about Entities.
         An identity federation can be realized using this specification using
         one or more levels of authorities.
         Examples of authorities are federation operators, organizations,
         departments within organizations, and individual sites.
-        This specification does not mandate
-        a specific way or restrict how a federation may be built. Instead, the
+	This
         specification provides the basic technical trust infrastructure building
         blocks needed to create a dynamic and distributed trust network, such as a
         federation.
@@ -238,7 +237,7 @@
             </t>
             <t hangText="Entity Type">
               <vspace/>
-              The type of an Entity expresses its roles and functions
+              A role and function that an Entity plays
               within a federation. An Entity MUST be of at
               least one type and MAY be of many types.
               For example, an Entity can be both an OpenID Provider
@@ -258,8 +257,9 @@
             </t>
             <t hangText="Leaf Entity">
               <vspace/>
-              An Entity defined by a protocol,
-              e.g., OpenID Connect Relying Party or Provider.
+	      An Entity with no Subordinate Entities.
+	      Leaf entities typically play a protocol role,
+	      such as an OpenID Connect Relying Party or OpenID Provider.
             </t>
             <t hangText="Subordinate Entity">
               <vspace/>
@@ -287,7 +287,7 @@
               as determined by an accreditation authority.
             </t>
             <t hangText="Federation Entity Keys">
-              Keys used for all the cryptogaphic signatures required by
+              Keys used for the cryptogaphic signatures required by
               the trust mechanisms defined in this document.
               Every participant in a Federation publishes its
               Federation Entity Keys in its Entity Configuration.
@@ -311,7 +311,7 @@
         references to its superiors, found in the
         <xref target="authority_hints">authority_hints</xref> parameter.
         These references can be used to download the Entity Configuration of each superior.
-        One or more Entity Configurations can occur during the Federation Entity Discovery
+        One or more Entity Configurations are traversed during the Federation Entity Discovery
         until the Trust Anchor is reached.
       </t>
       <t>
@@ -319,36 +319,32 @@
         about their Subordinates. The sequence of Entity Configurations
         and Entity Statements that validate the relationship between
         a superior and a Subordinate, along a path towards the Trust Anchor,
-        forms the proof that a Leaf Entity is part of
+        forms the proof that a Leaf Entity is a member of
         the Federation configured by the Trust Anchor.
       </t>
       <t>
-        The chain that links the statements to one another is verifiable with
+        The chain that links the statements to one another is verified with
         the signature of each statement, as described in <xref target="trust_chain"/>.
       </t>
       <t>
         With a verified Trust Chain, the federation policy is finally applied
-        and the metadata describing a Leaf Entity within the Federation is then
-        derived.
-        How this is done is described in <xref target="federation_policy"/>.
+        and the metadata describing a Leaf Entity within the Federation is derived,
+        as described in <xref target="federation_policy"/>.
       </t>
       <t>
         This specification deals with trust operations;
         it doesn't cover or touch protocol operations
-        outside those of metadata derivation and exchange.
-        In OpenID Connect terms, these are protocol
-        operations other than
+        other than metadata derivation and exchange.
+        In OpenID Connect terms, these are the protocol operations specified in
         <xref target="OpenID.Discovery">OpenID Connect Discovery 1.0</xref>
         and
-        <xref target="OpenID.Registration">OpenID Connect Dynamic Client
-          Registration 1.0
-        </xref>.
+        <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>.
       </t>
       <t>
         OpenID Connect is used in all of the examples in this
         specification, however this doesn't mean that this specification can only be used
         together with OpenID Connect. On the contrary, it can also be
-        used to build federations based on any other protocols.
+        used to build federations using any other protocols.
       </t>
 
       <section title="Cryptographic Trust Mechanism" anchor="CryptographicTrustMechanism">
