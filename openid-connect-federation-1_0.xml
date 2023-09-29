@@ -123,16 +123,15 @@
     <section anchor="Introduction" title="Introduction">
       <t>
         This specification describes how two Entities that would like to
-        interact can resolve trust between them, by means of a third trusted party
-        called Trust Anchor.
+        interact can establish trust between them by means of a trusted third party
+        called a Trust Anchor.
         A Trust Anchor is an Entity whose main purpose is to issue statements
         about Entities.
         An identity federation can be realized using this specification using
         one or more levels of authorities.
         Examples of authorities are federation operators, organizations,
         departments within organizations, and individual sites.
-        This specification does not mandate
-        a specific way or restrict how a federation may be built. Instead, the
+	This
         specification provides the basic technical trust infrastructure building
         blocks needed to create a dynamic and distributed trust network, such as a
         federation.
@@ -238,7 +237,7 @@
             </t>
             <t hangText="Entity Type">
               <vspace/>
-              The type of an Entity expresses its roles and functions
+              A role and function that an Entity plays
               within a federation. An Entity MUST be of at
               least one type and MAY be of many types.
               For example, an Entity can be both an OpenID Provider
@@ -262,14 +261,19 @@
             </t>
             <t hangText="Leaf Entity">
               <vspace/>
-              An Entity defined by a protocol,
-              e.g., OpenID Connect Relying Party or Provider.
+	      An Entity with no Subordinate Entities.
+	      Leaf Entities typically play a protocol role,
+	      such as an OpenID Connect Relying Party or OpenID Provider.
             </t>
             <t hangText="Subordinate Entity">
               <vspace/>
                 An Entity accredited by a Trust Anchor or an Intermediate Entity,
                 which can be a Leaf Entity but also an Entity that acts as
                 Intermediate for other Entities.
+            </t>
+            <t hangText="Superior Entity">
+              <vspace/>
+                An Entity with one or more Entities that are Subordinate to it.
             </t>
             <t hangText="Federation Entity Discovery">
               <vspace/>
@@ -291,7 +295,7 @@
               as determined by an accreditation authority.
             </t>
             <t hangText="Federation Entity Keys">
-              Keys used for all the cryptogaphic signatures required by
+              Keys used for the cryptogaphic signatures required by
               the trust mechanisms defined in this document.
               Every participant in a Federation publishes its
               Federation Entity Keys in its Entity Configuration.
@@ -312,47 +316,43 @@
 
       <t>
         The Entity Configuration of a Leaf Entity contains one or more
-        references to its superiors, found in the
+        references to its Superiors, found in the
         <xref target="authority_hints">authority_hints</xref> parameter.
-        These references can be used to download the Entity Configuration of each superior.
-        One or more Entity Configurations can occur during the Federation Entity Discovery
+        These references can be used to download the Entity Configuration of each Superior.
+        One or more Entity Configurations are traversed during the Federation Entity Discovery
         until the Trust Anchor is reached.
       </t>
       <t>
         The Trust Anchor and its Intermediates issue Entity Statements
         about their Subordinates. The sequence of Entity Configurations
         and Entity Statements that validate the relationship between
-        a superior and a Subordinate, along a path towards the Trust Anchor,
-        forms the proof that a Leaf Entity is part of
+        a Superior and a Subordinate, along a path towards the Trust Anchor,
+        forms the proof that a Leaf Entity is a member of
         the Federation configured by the Trust Anchor.
       </t>
       <t>
-        The chain that links the statements to one another is verifiable with
+        The chain that links the statements to one another is verified with
         the signature of each statement, as described in <xref target="trust_chain"/>.
       </t>
       <t>
         With a verified Trust Chain, the federation policy is finally applied
-        and the metadata describing a Leaf Entity within the Federation is then
-        derived.
-        How this is done is described in <xref target="federation_policy"/>.
+        and the metadata describing a Leaf Entity within the Federation is derived,
+        as described in <xref target="federation_policy"/>.
       </t>
       <t>
         This specification deals with trust operations;
         it doesn't cover or touch protocol operations
-        outside those of metadata derivation and exchange.
-        In OpenID Connect terms, these are protocol
-        operations other than
+        other than metadata derivation and exchange.
+        In OpenID Connect terms, these are the protocol operations specified in
         <xref target="OpenID.Discovery">OpenID Connect Discovery 1.0</xref>
         and
-        <xref target="OpenID.Registration">OpenID Connect Dynamic Client
-          Registration 1.0
-        </xref>.
+        <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>.
       </t>
       <t>
         OpenID Connect is used in all of the examples in this
         specification, however this doesn't mean that this specification can only be used
         together with OpenID Connect. On the contrary, it can also be
-        used to build federations based on any other protocols.
+        used to build federations using any other protocols.
       </t>
 
       <section title="Cryptographic Trust Mechanism" anchor="CryptographicTrustMechanism">
@@ -454,10 +454,10 @@
               the Entity Identifiers of Intermediate Entities or Trust Anchors
               that MAY issue an Entity Statement about the issuer Entity.
               For all Entities except for Trust Anchors that do not have any
-              superiors, this is REQUIRED and MUST NOT be the empty list
+              Superiors, this is REQUIRED and MUST NOT be the empty list
               <spanx style="verb">[]</spanx>.
               This claim MUST be absent from an
-              Entity Configuration issued by a Trust Anchor with no superiors.
+              Entity Configuration issued by a Trust Anchor with no Superiors.
             </t>
             <t hangText="source_endpoint">
               <vspace/>
@@ -493,10 +493,10 @@
 	      with entries for each of the corresponding Entity Type Identifiers,
 	      even if the values for those entries are
 	      the empty JSON object <spanx style="verb">{}</spanx>.
-	      (The value might contain no entries when superiors supply any needed metadata).
+	      (The value might contain no entries when Superiors supply any needed metadata).
 	      <vspace blankLines="1" />
 
-              In some cases, a superior may want to be explicit about what metadata
+	      In some cases, a Superior may want to be explicit about what metadata
               should be used for a Subordinate. In that case
               <spanx style="verb">metadata</spanx> can be used. If
               <spanx style="verb">metadata</spanx> is used it is only valid for the
@@ -869,9 +869,9 @@
             Configurations and their Entity Statements. The Entity
             Statements are obtained from the
             <spanx style="verb">federation_fetch_endpoint</spanx> of
-            the subject's superior. The URL of the
+            the subject's Superior. The URL of the
             <spanx style="verb">federation_fetch_endpoint</spanx> is
-            discovered in the superior's Entity Configuration.
+            discovered in the Superior's Entity Configuration.
           </preamble>
           <artwork><![CDATA[
 .----------------.  .---------------------------.         .---------------------------.
@@ -1613,7 +1613,7 @@
           Entities of a specific type. Entity Type Identifiers specified in
           this document can be found in <xref target="entity_types"/>.
         </t>
-        <section title="metadata_policy">
+        <section title='Using the "metadata_policy" Claim'>
           <t>
             A <spanx style="verb">metadata_policy</spanx> for a specific Entity
             type has the following structure:
@@ -1991,12 +1991,12 @@
                 </t>
                 <t hangText="essential">
                   <vspace/>
-                  If a superior has specified <spanx style="verb">essential=true</spanx>,
+                  If a Superior has specified <spanx style="verb">essential=true</spanx>,
                   then a Subordinate cannot change that.
-                  If a superior has specified <spanx style="verb">essential=false</spanx>,
+                  If a Superior has specified <spanx style="verb">essential=false</spanx>,
                   then a Subordinate is allowed to change that to
                   <spanx style="verb">essential=true</spanx>.
-                  If a superior has not specified <spanx style="verb">essential</spanx>,
+                  If a Superior has not specified <spanx style="verb">essential</spanx>,
                   then a Subordinate can set <spanx style="verb">essential</spanx> to
                   <spanx style="verb">true</spanx> or <spanx style="verb">false</spanx>.
                   If those rules are not met this MUST be treated as error.
@@ -3319,10 +3319,10 @@ Host: openid.sunet.se
           </figure>
         </section>
 
-        <section title="Considerations">
+        <section title="Trust Considerations">
           <t>
             The basic assumption of this specification is that an Entity
-            should have direct trust in no one except the Trust Anchor
+            should have direct trust in noone except the Trust Anchor
             and its own capabilities.
 
             However, Entities may establish a kind of
@@ -3629,7 +3629,7 @@ Content-Type: application/json
         </section>
       </section>
 
-      <section title="Federation Historical Keys endpoint">
+      <section title="Federation Historical Keys Endpoint">
         <t>
           Each Federation Entity MAY publish its previously used
           federation public keys at the endpoint
@@ -3816,7 +3816,7 @@ Content-Type: application/jwk-set+jwt
 
         </section>
 
-        <section  title="Rationale for the Federation Historical Keys endpoint">
+        <section  title="Rationale for the Federation Historical Keys Endpoint">
           <!--
             introduce the problem
           -->
@@ -4155,7 +4155,7 @@ Content-Type: application/json
           Note that the second bullet point means that, at each step in the
           Trust Chain resolution, it MUST be verified that the signing JWK is
           also present in the <spanx style="verb">jwks</spanx>
-          statement claim issued by the superior.
+          statement claim issued by the Superior.
         </t>
       </section>
       <section title="Choosing One of the Valid Trust Chains">
@@ -4274,7 +4274,7 @@ Content-Type: application/json
       </section>
     </section>
 
-    <section title="OpenID Connect Communication" anchor="client_registration">
+    <section title="OpenID Connect Client Registration" anchor="client_registration">
       <t>
         This section describes how the trust framework in this specification
         is used to establish trust between an RP and an OP
@@ -4795,7 +4795,7 @@ HTTP/1.1 302 Found
                   metadata and where the
                   <spanx style="verb">authority_hints</spanx>
                   included are picked by the process described above.
-                  From its immediate superior authorities the RP MUST select
+                  From its immediate Superior authorities the RP MUST select
                   one or more <spanx style="verb">authority_hints</spanx> so
                   that every hint, when used as the starting point for a Trust
                   Chain collection, leads to at least one of the Trust Anchors
@@ -5016,7 +5016,7 @@ HTTP/1.1 302 Found
                     claim of the Entity Statement to the Trust Anchor it
                     selected to process the request. The
                     <spanx style="verb">authority_hints</spanx> claim MUST be
-                    set to the OP's immediate superior authority in the
+                    set to the OP's immediate Superior authority in the
                     selected Trust Chain.
                     <vspace/>
                     The OP MUST set the <spanx style="verb">exp</spanx> claim
@@ -5109,7 +5109,7 @@ HTTP/1.1 302 Found
                     <vspace/>
                     REQUIRED.
                     It MUST be a single element array, whose value references
-                    the immediate superior authority of the OP in the Trust
+                    the immediate Superior authority of the OP in the Trust
                     Chain that the OP selected to process the request. See
                     <xref target="entity-statement"/> for the full
                     specification.
@@ -5155,7 +5155,7 @@ HTTP/1.1 302 Found
                     The RP MUST ensure the signing Federation Entity key used
                     by the OP is present in the
                     <spanx style="verb">jwks</spanx> claim of the Entity
-                    Statement issued by the OP's immediate superior authority
+                    Statement issued by the OP's immediate Superior authority
                     in a Trust Chain that the RP successfully resolved for the
                     OP when it prepared the Explicit Registration request.
                   </t>
@@ -6328,7 +6328,7 @@ HTTP/1.1 302 Found
           <xref target="federation_configuration"/>.
           What follows after that is this sequence of steps:
           <list style="numbers">
-            <t>Pick out the immediate superior Entities using the authority
+            <t>Pick out the immediate Superior Entities using the authority
               hints
             </t>
             <t>
@@ -6337,7 +6337,7 @@ HTTP/1.1 302 Found
               <xref target="federation_configuration"/>
             </t>
             <t>
-              Using the fetch endpoint of the superiors to
+              Using the fetch endpoint of the Superiors to
               ask for information about the Subordinate Entity
               <xref target="fetch_statement"/>.
             </t>
@@ -6351,14 +6351,14 @@ HTTP/1.1 302 Found
         </t>
         <t>
           When building the Trust Chain, the Entity Statements issued
-          by a superior about its Subordinate are used together with the
+          by a Superior about its Subordinate are used together with the
           Entity Configuration issued by the Leaf.
         </t>
         <t>
           The Entity Configuration concerning Intermediates is not
           part of the Trust Chain.
         </t>
-        <section title="Configuration Information for op.umu.se">
+        <section title="Configuration Information for https://op.umu.se">
           <t>The LIGO WIKI RP fetches the Entity Configuration from the
             OP (op.umu.se)
             using the process defined in <xref
@@ -6440,7 +6440,7 @@ HTTP/1.1 302 Found
             This Entity Configuration is the first link in the Trust Chain.
           </t>
         </section>
-        <section title="Configuration Information for 'https://umu.se'">
+        <section title="Configuration Information for https://umu.se">
           <t>The LIGO RP fetches the Entity Configuration from
             "https://umu.se" using the process defined in
             <xref target="federation_configuration"/>.
@@ -6492,7 +6492,7 @@ Host: umu.se
           </t>
         </section>
         <section
-                title="Entity Statement Published by 'https://umu.se' about 'https://op.umu.se'">
+                title="Entity Statement Published by https://umu.se about https://op.umu.se">
           <t>
             The RP uses the fetch endpoint provided by https://umu.se
             as defined in <xref target="fetch_statement"/>
@@ -6566,7 +6566,7 @@ Host: umu.se
             same next step ("https://swamid.se").
           </t>
         </section>
-        <section title="Configuration Information for 'https://swamid.se'">
+        <section title="Configuration Information for https://swamid.se">
           <t>The LIGO Wiki RP fetches the Entity Configuration from
             "https://swamid.se" using the process defined in
             <xref target="federation_configuration"/>.
@@ -6619,7 +6619,7 @@ Host: swamid.se
           </t>
         </section>
         <section
-                title="Entity Statement Published by 'https://swamid.se' about 'https://umu.se'">
+                title="Entity Statement Published by https://swamid.se about https://umu.se">
           <t>
             The LIGO Wiki RP uses the fetch endpoint provided by
             "https://swamid.se" as defined in
@@ -6693,7 +6693,7 @@ Host: swamid.se
           </t>
         </section>
         <section
-                title="Configuration Information for 'https://edugain.geant.org'">
+                title="Configuration Information for https://edugain.geant.org">
           <t>RP fetches the Entity Configuration from
             "https://edugain.geant.org" using the process defined in
             <xref target="federation_configuration"/>.
@@ -6742,7 +6742,7 @@ Host: edugain.geant.org
           </t>
         </section>
         <section
-                title="Entity Statement Published by 'https://edugain.geant.org' about 'https://swamid.se'">
+                title="Entity Statement Published by https://edugain.geant.org about https://swamid.se">
           <t>
             The LIGO Wiki RP uses the fetch endpoint of
             https://edugain.geant.org as
@@ -6823,13 +6823,13 @@ Host: geant.org
             <xref target="trust_chain_validation"/>.
           </t>
         </section>
-        <section title="Verified Metadata for op.umu.se">
+        <section title="Verified Metadata for https://op.umu.se">
           <t>Having verified the chain, the LIGO Wiki RP can proceed with the
             next step.
           </t>
           <t>Combining the metadata policies from the tree Entity Statements we
             have by
-            a superior about its Subordinate and applying the combined policy
+            a Superior about its Subordinate and applying the combined policy
             to the
             metadata statement that the Leaf Entity presented, we get:
           </t>
@@ -6914,7 +6914,7 @@ Host: geant.org
             </t>
           </list>
         </t>
-        <section title="RP Sends Authentication Request (Automatic Registration)" anchor="AutomaticRegExample">
+        <section title="RP Sends Authentication Request (Automatic Client Registration)" anchor="AutomaticRegExample">
           <t>
             The LIGO Wiki RP does not do any registration but goes directly to
             sending an Authentication Request.
@@ -7123,7 +7123,7 @@ Host: op.umu.se
             </t>
           </section>
         </section>
-        <section title="Client Starts with Registration (Explicit Client Registration)" anchor="ExplicitRegExample">
+        <section title="RP Starts with Client Registration (Explicit Client Registration)" anchor="ExplicitRegExample">
           <t>
             Here the LIGO Wiki RP sends an Explicit Registration request to the
             <spanx style="verb">federation_registration_endpoint</spanx>
