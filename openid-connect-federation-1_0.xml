@@ -1221,37 +1221,39 @@
             <t hangText="request_authentication_methods_supported">
               <vspace/>
               OPTIONAL.
-              A JSON Object defining the client authentications supported for each endpoint.
-              The endpoint names are defined in the IANA
-              "OAuth Authorization Server Metadata" registry
-              <xref target="IANA.OAuth.Parameters"/>.
-              Other endpoints and authentication methods are possible if made
-              recognizable according
-              to established standards and not in conflict with the operating
-              principles of this specification.
-              In OpenID Connect Core, no client authentication is performed at the authentication
-              endpoint. Instead, the request itself is authenticated.
-              The OP maps
-              information in the request (like the redirect_uri) to information it has gained
-              on the client through static or dynamic registration.
-              If the mapping is successful, the request can be processed.
-              If the RP uses Automatic Registration, as defined in <xref target="automatic"/>,
-              the OP has no prior knowledge
-              of the RP. Therefore, the OP must start by gathering
-              information about the RP using the process outlined in
-              <xref target="federation_configuration"/>. Once it has the RP's
-              metadata, the OP can verify the request in the same way
-              as if it had known the RP's metadata beforehand.
-              To make the request verification more secure, we demand the use of
-              a client authentication or verification method that proves that
-              the RP is in possession of a key that appears in the RP's metadata.
-              <vspace/>
-              Client authentication methods that MAY be used include:
+	      An OP MUST be able to verify that a request comes from an RP
+	      that is a member of a federation that the OP is a member of.
+	      This is done via request authentication methods.
+	      These methods achieve this by proving that
+	      the RP is in possession of a key that appears in its metadata.
+	      This parameter declares the request authentication methods that the OP supports.
+	      <vspace blankLine="1"/>
+
+	      The <spanx style="verb">request_authentication_methods_supported</spanx>
+	      value is a JSON object where the member names are names of endpoints
+	      where the request authentication occurs.
+	      This MAY be either at
+	      the OP's Authorization Endpoint or
+	      the OP's Pushed Authorization Request (PAR) endpoint.
+	      Supported endpoints identifiers are
+	      <spanx style="verb">authorization_endpoint</spanx> and
+	      <spanx style="verb">pushed_authorization_request_endpoint</spanx>.
+	      The values of the JSON object members for the endpoint names are
+	      JSON arrays containing the names of the request authentication methods
+	      used at those endpoints.
+	      <vspace blankLine="1"/>
+
+	      Some OAuth 2.0 client authentication methods can be used at the
+	      <spanx style="verb">pushed_authorization_request_endpoint</spanx>
+	      to achieve request authentication.
+	      They are the subset of those listed in the
+	      IANA "OAuth Token Endpoint Authentication Methods" registry <xref target="IANA.OAuth.Parameters"/>
+	      that perform client authentication by proving possession of a private key.
+              These client authentication methods are:
               <list style="hanging">
                 <t hangText="private_key_jwt">
                   <vspace/>
-                  <spanx style="verb">private_key_jwt</spanx>.
-                  This authentication process is described in Section 9 of
+                  This client authentication process is described in Section 9 of
                   <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
                   Note that if <spanx style="verb">private_key_jwt</spanx> is
                   used, the audience of the signed JWT MUST be either the URL of
@@ -1269,45 +1271,25 @@
                   <xref target="RFC8705"/>.
                 </t>
               </list>
-              <vspace/>
-              A client verification method, on the other hand,
-              is something like:
+              <vspace blankLine="1"/>
+
+              A request authentication method that is not a client authentication method is:
               <list style="hanging">
                 <t hangText="request_object">
                   <vspace/>
-                  A Request Object, as described in
+                  Use of a Request Object, as described in
                   <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
-                  There is more about this in
+		  The request authentication is performed by verifying that
+		  the request object is signed with a key that the RP controls.
+		  Use of Request Objects by Automatic Registration is described at
                   <xref target="automatic"/>.
-                  Here the verification is based on the fact that the request
-                  object is signed with a key the RP controls.
                 </t>
               </list>
-              <vspace/>
-              The claim value of this parameter is a JSON object with members representing
-              authentication request methods and as values lists of client
-              authentication/verification methods that can be used together with the
-              authentication request method.
-              <vspace/>
-              Examples of authentication request methods are
-              <list style="symbols">
-                <t>
-                  Authentication Request (AR), as described in Section 3 of
-                  <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>, and
-                </t>
-                <t>
-                  Pushed Authorization Request (PAR), as described in <xref target="RFC9126"/>.
-                </t>
-              </list>
-              <vspace/>
-              If AR is used, then a client verification method like
-              <spanx style="verb">request_object</spanx> can be used.
-              If PAR is used, then client authentication methods like
-              <spanx style="verb">private_key_jwt</spanx>,
-              <spanx style="verb">tls_client_auth</spanx> and
-              <spanx style="verb">self_signed_tls_client_auth</spanx>
-              can be used.
-            </t>
+	      The <spanx style="verb">request_object</spanx> method MAY be used at either endpoint.
+              <vspace blankLine="1"/>
+
+	      Other request authentication methods MAY be defined and used.
+	    </t>
 
             <t hangText="request_authentication_signing_alg_values_supported">
               <vspace/>
@@ -7392,6 +7374,9 @@ Host: op.umu.se
          <t>
             Fixed #2002: Added sequence diagrams and representations of the general architecture and the Trust Chain.
         </t>
+	  <t>
+	    Rewrote <spanx style="verb">request_authentication_methods_supported</spanx> description.
+	  </t>
         </list>
       </t>
 
