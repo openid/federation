@@ -524,8 +524,13 @@
             </t>
             <t hangText="constraints">
               <vspace/>
-              OPTIONAL. JSON object that describes a set of Trust Chain
-              constraints. There is more about this in
+              OPTIONAL. JSON object that describes constraints that apply to the Trust Chain.
+              If the claim appears in an Entity's Entity Configuration it MUST be applied
+              to all Subordinates of that Entity.
+              If the claim appears in an Entity Statement that is not an Entity Configuration,
+              then it MUST be applied to the subject of the Entity Statement and all subject's
+              Subordinates.
+              There is more about this in
               <xref target="chain_constraints"/>.
             </t>
             <t hangText="crit">
@@ -2285,9 +2290,17 @@
 ]]></artwork>
         </figure>
         <t>
+          When an Entity has a <spanx style="verb">constraints</spanx> claim in its Entity
+          Configuration and issues an Entity Statement regarding a Subordinate,
+          then if the same type of constraint, for example a
+          <spanx style="verb">max_path_length</spanx>,
+          appears in both the Entity Configuration and the Entity statement,
+          the more restrictive of the two MUST take precedence.
+        </t>
+        <t>
           If a Subordinate Entity Statement contains a constraint specification
           that is more restrictive than the one in effect, then the more
-          restrictive constraint is in effect from here on.
+          restrictive constraint MUST take effect from here on.
         </t>
         <t>
           If a Subordinate Entity Statement contains a constraint specification
