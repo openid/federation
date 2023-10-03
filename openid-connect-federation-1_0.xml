@@ -974,10 +974,18 @@
 	As described in <xref target="components"/>,
 	Entity metadata is located in the <spanx style="verb">metadata</spanx>
 	member of an Entity Statement, whose value is a JSON object.
-	The member names of this metadata object are Entity Type Identifiers,
-	as specified in <xref target="entity_types"/>,
-	with the metadata for each Entity Type being a JSON object
-	using applicable existing metadata representations.
+	The member names of this object are Entity Type Identifiers,
+	as specified in <xref target="entity_types"/>.
+	The metadata data structure following each Entity Type Identifier is a JSON object;
+	it MAY be the empty JSON object <spanx style="verb">{}</spanx>,
+	which may be the case when Superiors supply any needed metadata values.
+      </t>
+      <t>
+	Top-level JSON object members in the metadata data structures MAY use
+	any JSON value other than <spanx style="verb">null</spanx>;
+	the use of <spanx style="verb">null</spanx> is prohibited to prevent likely
+	implementation errors caused by confusing members having
+	<spanx style="verb">null</spanx> values with omitted members.
       </t>
 
       <section title="OpenID Connect and OAuth 2.0 Metadata Extensions" anchor="common_metadata">
@@ -1727,8 +1735,8 @@
                 a potential value modifier and thus it is not a pure value check.
                 If the
                 intersection is empty the outcome depends on the
-                <spanx style="verb">essential</spanx> parameter
-                : when the value is defined as essential,
+                <spanx style="verb">essential</spanx> parameter:
+		when the value is defined as essential,
                 the parameter MUST be rejected with a policy error,
                 else the parameter MUST be removed
                 (implying a <spanx style="verb">null</spanx> value).
@@ -7427,6 +7435,9 @@ Host: op.umu.se
             Fixed #2002: Added sequence diagrams and representations of the general architecture and the Trust Chain.
         </t>
 	  <t>
+	    Fixed #2061: Clarified that the <spanx style="verb">constraints</spanx> claim may only appear in statements issued by authorities.
+	  </t>
+	  <t>
 	    Fixed #2062: Require metadata statements for all Entity Type Identifiers that apply to an Entity.
 	  </t>
 	  <t>
@@ -7436,6 +7447,9 @@ Host: op.umu.se
 	  <t>
 	    Added section headings to the Metadata section to more cleanly separate
 	    Entity Type Identifiers from Metadata Extensions.
+	  </t>
+	  <t>
+	    Fixed #2064: Prohibited the use of <spanx style="verb">null</spanx> as a metadata value.
 	  </t>
         </list>
       </t>
