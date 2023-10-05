@@ -23,7 +23,7 @@
   <?rfc private="Draft" ?>
 
   <front>
-    <title abbrev="OpenID Connect Federation">OpenID Connect Federation 1.0 -
+    <title abbrev="OpenID Federation">OpenID Federation 1.0 -
       draft 30
     </title>
 
@@ -114,7 +114,8 @@
       <t>
         This specification defines basic components used to build
         multilateral federations and describes how to apply them when
-        the underlying authentication protocol used is OpenID Connect.
+        the underlying authentication protocol used is OpenID Connect or
+        the underlying authorization protocol is OAuth 2.0.
       </t>
     </abstract>
   </front>
@@ -395,7 +396,7 @@
           Entity Statement JWTs MUST be explicitly typed, by setting the
           <spanx style="verb">typ</spanx> header parameter to
           <spanx style="verb">entity-statement+jwt</spanx>. This
-          prevents cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
+          prevents cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
         </t>
         <t>
           An Entity Statement is composed of the following claims:
@@ -433,18 +434,18 @@
             <t hangText="jwks">
               <vspace/>
               REQUIRED. A <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
-              representing the public part of the subject Federation
+              representing the public part of the subject's Federation
               Entity signing keys. The corresponding private key is
-              used by Entities to sign Entity Configurations about themselves,
-              and Intermediate Entities to sign Entity Statements about their Subordinates.
-              The keys that can be found here are intended to verify the signature of the
-              issued Entity Statements and Trust Marks and SHOULD NOT be used in other protocols. Keys
-              to be used in other protocols, such as OpenID Connect, are conveyed
-              in the <spanx style="verb">metadata</spanx> elements of the respective Entity Statement.
+              used by the Entity to sign the Entity Configuration about itself,
+              and by Trust Anchors and Intermediate Entities to sign Entity Statements about their Subordinates.
+              The public keys are used to verify the signatures of the
+              issued Entity Statements and Trust Marks and SHOULD NOT be used in other protocols.
+	      (Keys to be used in other protocols, such as OpenID Connect, are conveyed
+              in the <spanx style="verb">metadata</spanx> elements of the respective Entity Statements.)
               This claim is only OPTIONAL for the Entity Statement returned
               from an OP when the client is doing Explicit Registration.
               In all other cases it is REQUIRED.
-              Every JWK in the JWK Set MUST have a Key ID (<spanx style="verb">kid</spanx>).
+              Every JWK in the JWK Set MUST have a unique <spanx style="verb">kid</spanx> (Key ID) value.
               It is RECOMMENDED that the Key ID be the JWK Thumbprint <xref target="RFC7638"/>
               using the SHA-256 hash function of the key.
             </t>
@@ -452,9 +453,9 @@
               <vspace/>
               OPTIONAL. An array of strings representing
               the Entity Identifiers of Intermediate Entities or Trust Anchors
-              that MAY issue an Entity Statement about the issuer Entity.
+              that MAY issue an Entity Statement about the Entity.
               For all Entities except for Trust Anchors that do not have any
-              Superiors, this is REQUIRED and MUST NOT be the empty list
+              Superiors, this is REQUIRED and MUST NOT be the empty array
               <spanx style="verb">[]</spanx>.
               This claim MUST be absent from an
               Entity Configuration issued by a Trust Anchor with no Superiors.
@@ -464,7 +465,7 @@
               OPTIONAL. String containing the <xref target="fetch_endpoint">
               fetch endpoint</xref> URL
               where the Entity Statement was issued,
-              without query and fragment parts.
+              which does not contain query or fragment parts.
 
               This parameter enables an optimized refresh of the Entity
               Statement and hence the Trust Chain, by skipping the
@@ -473,12 +474,12 @@
               <spanx style="verb">federation_fetch_endpoint</spanx>
               of the issuing authority.
 
-              If an Entity Statement cannot be retrieved at the URL stated by the
-              <spanx style="verb">source_endpoint</spanx>
-              parameter, which can occur if the endpoint URL
-              has changed, the Entity Configuration of the issuing authority MUST be retrieved
-              in order to find out the current
-              <spanx style="verb">federation_fetch_endpoint</spanx> location.
+              If an Entity Statement cannot be retrieved from the
+	      <spanx style="verb">source_endpoint</spanx>,
+	      which can occur if the endpoint URL has changed,
+	      the current <spanx style="verb">federation_fetch_endpoint</spanx>
+	      location can be determined by retrieving
+	      the Entity Configuration of the issuing authority.
             </t>
             <t hangText="metadata">
               <vspace/>
@@ -509,10 +510,9 @@
             </t>
             <t hangText="metadata_policy">
               <vspace/>
-              OPTIONAL. JSON object that describes a metadata policy.
-              A <spanx style="verb">metadata_policy</spanx> applies to the Entity described in this
-              Entity Statement as well as to all Entities that appear beneath the
-              Entity described in this Entity Statement.
+              OPTIONAL. JSON object that defines a metadata policy.
+              The metadata policy applies to the Entity that is the subject of this
+              Entity Statement as well as to all Entities that are Subordinate to it.
               Applying to Subordinate Entities distinguishes
               <spanx style="verb">metadata_policy</spanx> from
               <spanx style="verb">metadata</spanx>, which only applies to the
@@ -522,21 +522,20 @@
 	      the metadata policy according to the metadata schema of that Entity Type.
 	      An Entity Statement MAY contain multiple
 	      sets of metadata policy statements, but only one for each Entity Type.
-              Only non Leaf Entities MAY contain a
+              Only non-Leaf Entities MAY contain a
               <spanx style="verb">metadata_policy</spanx>
               claim. Entity Configurations MUST NOT contain a
               <spanx style="verb">metadata_policy</spanx> claim.
             </t>
             <t hangText="constraints">
               <vspace/>
-              OPTIONAL. JSON object that describes constraints that apply to the Trust Chain.
+              OPTIONAL. JSON object that describes constraints that apply to the Trust Chain,
+	      as described in <xref target="chain_constraints"/>.
               If the claim appears in an Entity's Entity Configuration it MUST be applied
               to all Subordinates of that Entity.
               If the claim appears in an Entity Statement that is not an Entity Configuration,
-              then it MUST be applied to the subject of the Entity Statement and all subject's
+              then it MUST be applied to the subject of the Entity Statement and all the subject's
               Subordinates.
-              There is more about this in
-              <xref target="chain_constraints"/>.
             </t>
             <t hangText="crit">
               <vspace/>
@@ -560,7 +559,7 @@
               names that do not occur as Entity Statement claim names in the
               Entity Statement
               in the <spanx style="verb">crit</spanx> list.
-              Producers MUST NOT use the empty list
+              Producers MUST NOT use the empty array
               <spanx style="verb">[]</spanx>
               as the <spanx style="verb">crit</spanx> value.
             </t>
@@ -589,13 +588,13 @@
               names that do not occur in policy language statements in the
               Entity Statement
               in the <spanx style="verb">policy_language_crit</spanx> list.
-              Producers MUST NOT use the empty list
+              Producers MUST NOT use the empty array
               <spanx style="verb">[]</spanx>
               as the <spanx style="verb">policy_language_crit</spanx> value.
             </t>
             <t hangText="trust_marks">
               <vspace/>
-              OPTIONAL. A JSON array of objects, each representing
+              OPTIONAL. A JSON array of JSON objects, each representing
               a Trust Mark.
 
               Each JSON object MUST contain the following two claims
@@ -615,8 +614,7 @@
                   A signed JSON Web Token that represents a Trust Mark.
                 </t>
               </list>
-              There is more about Trust Marks in
-              <xref target="trust_marks"/>.
+              Trust Marks are described in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_marks_issuers">
               <vspace/>
@@ -630,7 +628,7 @@
 
               If the value list bound to a Trust Mark identifier is empty,
               anyone can issue Trust Marks with that identifier.
-              There is more about Trust Marks in <xref target="trust_marks"/>.
+              Trust Marks are described in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_mark_owners">
               <vspace/>
@@ -640,21 +638,22 @@
               knowledge MUST be expressed in this claim.
               This claim MUST be ignored if present in an Entity Configuration
               that describes an Entity that is not a Trust Anchor.
-              The value is a JSON object with keys representing Trust Mark identifiers
-              and the object values being a set of claims. The claims are:
+              The value is a JSON object with member names representing Trust Mark identifiers
+              and the values being JSON objects that contain claims. These claims are:
               <list style="hanging">
                 <t hangText="sub">
                   <vspace/>
                   REQUIRED
-                  An identifier of the Trust Mark owner.
+                  Identifier of the Trust Mark owner.
                 </t>
                 <t hangText="jwks">
                   <vspace/>
                   REQUIRED
-                  A <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
-                  representing the public part of the owners signing keys.
+                  <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
+                  representing the public part of the owner's signing keys.
                 </t>
               </list>
+	      Other claims MAY be defined and included.
             </t>
           </list>
         </t>
@@ -676,7 +675,7 @@
         <figure>
           <preamble>
             The following is a non-normative example of
-            a <spanx style="verb">trust_marks_owners</spanx> claim:
+            a <spanx style="verb">trust_marks_owners</spanx> claim value:
           </preamble>
           <artwork><![CDATA[
 {
@@ -782,7 +781,7 @@
         <t>
           Entities whose statements build a Trust Chain are categorized as:
           <list style="hanging">
-            <t hangText="Trust anchor">
+            <t hangText="Trust Anchor">
               <vspace/>
               An Entity that represents a trusted third party.
             </t>
@@ -921,13 +920,7 @@
 	</figure>
 
         <section title="Trust Chain Header Parameter" anchor="trust_chain_head_param">
-          <t>
-            This <xref target="RFC7515">JWS</xref>
-            header parameter is registered in the IANA
-            "JSON Web Signature and Encryption Header Parameters"
-            registry established by <xref target="JwsHeaderRegistry"/>.
-          </t>
-          <t>
+         <t>
           The <spanx style="verb">trust_chain</spanx> header parameter is a
           JSON array containing the sequence of the statements
           that proves the trust relationship between the issuer of the
@@ -936,8 +929,8 @@
           The Trust Chain contains the public key used to verify the
           <xref target="RFC7515">JWS</xref>.
           The issuer of the JWS SHOULD select the Trust Anchor that it has in common
-          with the audience of the JWS, otherwise the issuer is free to select the
-          Trust Anchor it deems most significant.
+          with the audience of the JWS.
+	  Otherwise, the issuer is free to select a Trust Anchor.
           Use of this header parameter is OPTIONAL.
           </t>
 
@@ -951,10 +944,12 @@
       "alg": "RS256"
       "kid": "SUdtUndEWVY2cUFDeDV5NVlBWDhvOXJodVl2am1mNGNtR0pmd",
       "trust_chain": [
-          "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNsQmphbTl5WDFwSU0zUm5kRTVZVjJRM00zTmpVa1JGVVRGQlZIYzVPVUUyYjFsTGRYY3dWa3A0UVEiLCJ0eXAiOiJhcHBsaWNhdGlvbi9lbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2OTQ3MzE4ODgsImlhdCI6MTY5NDQzMTg4OCwiaXNzIjoiaHR0cHM6Ly9jcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZyIsInN1YiI6Imh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmciLCJqd2tzIjp7ImtleXMiOlt7Imt0eSI6IlJTQSIsImtpZCI6ImNsQmphbTl5WDFwSU0zUm5kRTVZVjJRM00zTmpVa1JGVVRGQlZIYzVPVUUyYjFsTGRYY3dWa3A0UVEiLCJlIjoiQVFBQiIsIm4iOiI2ejdZVlhBS2F2NWFETUJrTlVBWS1ISXBDWVl0ZXZCRUsyZEVDNWlrUkhHWWJJT29wUngzeFZtMTZxWjRLM1h4Z3FQSlpGWXFuTS12U2xkeFY4c1QzdnVBYUJOMVBRc1VmbkJuekNPSHNnRVlCQmxSRHBhZGhiOHJvTjRic1daUkdVc04zUW9obEhWRDFpbjlzcGswazNIQ19zSEd1NFdsR1FGUTBDTlAtUGlKUVdVOWYtY1JkSk8tVk9qQm11STJkTFJjOTYwQTktaVpLaFFxNVBaUVB6dWw4WFJuc0EzbVNyU3RZemVGaGpDNzl1U283c3VvRTlBbTNkX3YyR2tZbkp6UVhOM3pzRk9MQkV0Ri1DeUJ5aW5xZGhReXM3N2Rjc0s0QmU4WHpHbTI3Z1pNdXY2Z0QxN2pRNWRHdmk5SWVaVUZ3cjgxMVlMdTNodFNDUmJkN1EifV19LCJtZXRhZGF0YSI6eyJvcGVuaWRfY3JlZGVudGlhbF9pc3N1ZXIiOnsiandrcyI6eyJrZXlzIjpbeyJrdHkiOiJSU0EiLCJraWQiOiJjbEJqYW05eVgxcElNM1JuZEU1WVYyUTNNM05qVWtSRlVURkJWSGM1T1VFMmIxbExkWGN3VmtwNFFRIiwiZSI6IkFRQUIiLCJuIjoiNno3WVZYQUthdjVhRE1Ca05VQVktSElwQ1lZdGV2QkVLMmRFQzVpa1JIR1liSU9vcFJ4M3hWbTE2cVo0SzNYeGdxUEpaRllxbk0tdlNsZHhWOHNUM3Z1QWFCTjFQUXNVZm5CbnpDT0hzZ0VZQkJsUkRwYWRoYjhyb040YnNXWlJHVXNOM1FvaGxIVkQxaW45c3BrMGszSENfc0hHdTRXbEdRRlEwQ05QLVBpSlFXVTlmLWNSZEpPLVZPakJtdUkyZExSYzk2MEE5LWlaS2hRcTVQWlFQenVsOFhSbnNBM21TclN0WXplRmhqQzc5dVNvN3N1b0U5QW0zZF92MkdrWW5KelFYTjN6c0ZPTEJFdEYtQ3lCeWlucWRoUXlzNzdkY3NLNEJlOFh6R20yN2daTXV2NmdEMTdqUTVkR3ZpOUllWlVGd3I4MTFZTHUzaHRTQ1JiZDdRIn1dfX0sImZlZGVyYXRpb25fZW50aXR5Ijp7Im9yZ2FuaXphdGlvbl9uYW1lIjoiT3BlbklEIENyZWRlbnRpYWwgSXNzdWVyIGV4YW1wbGUiLCJob21lcGFnZV91cmkiOiJodHRwczovL2NyZWRlbnRpYWxfaXNzdWVyLmV4YW1wbGUub3JnL2hvbWUiLCJwb2xpY3lfdXJpIjoiaHR0cHM6Ly9jcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZy9wb2xpY3kiLCJsb2dvX3VyaSI6Imh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmcvc3RhdGljL2xvZ28uc3ZnIiwiY29udGFjdHMiOlsidGVjaEBjcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZyJdfX0sImF1dGhvcml0eV9oaW50cyI6WyJodHRwczovL2ludGVybWVkaWF0ZS5laWRhcy5leGFtcGxlLm9yZyJdfQ.k2RMvOKb5IBY0TxNKvM541goqx91ORXuEHw84JhMTlX-zobVHaBcBIYM48HUhU23YRWbfs_D5pZzxwc2nPeuFCsdrvhTAx0n8QHUf4MQ7-sud7DoTtV9tX_P_wvDbVbLwRfKEumUu4S8NGIbcRofokmecE7XZokemnss0GOrK8iS7JMwRNL609iPzNrZsR7qUWJIh7XsP9ceRUFO4H1GWciutMFD2ANGKo43eAU1w_5Z11S_mrPOry8m_Kf7sinrv9XE_S0KNgaf1SazWj3wzAwV_VMugjOSEdEKT6Z2GucRB4WTERCcHzIKWO7ggiEifqRrnW3JbCogJB1K00Dt6A",
-          "eyJhbGciOiJSUzI1NiIsImtpZCI6IllUWTNOSFZsTUdoNk16QmFPVUpaZEdSSE1sQmxXRU5ZYTJwUFVWTjRPVmR2TW5aNlIySndlSFpTY3ciLCJ0eXAiOiJhcHBsaWNhdGlvbi9lbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2OTQ3MzE4ODgsImlhdCI6MTY5NDQzMTg4OCwiaXNzIjoiaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZWlkYXMuZXhhbXBsZS5vcmciLCJzdWIiOiJodHRwczovL2NyZWRlbnRpYWxfaXNzdWVyLmV4YW1wbGUub3JnIiwiandrcyI6eyJrZXlzIjpbeyJrdHkiOiJSU0EiLCJraWQiOiJjbEJqYW05eVgxcElNM1JuZEU1WVYyUTNNM05qVWtSRlVURkJWSGM1T1VFMmIxbExkWGN3VmtwNFFRIiwiZSI6IkFRQUIiLCJuIjoiNno3WVZYQUthdjVhRE1Ca05VQVktSElwQ1lZdGV2QkVLMmRFQzVpa1JIR1liSU9vcFJ4M3hWbTE2cVo0SzNYeGdxUEpaRllxbk0tdlNsZHhWOHNUM3Z1QWFCTjFQUXNVZm5CbnpDT0hzZ0VZQkJsUkRwYWRoYjhyb040YnNXWlJHVXNOM1FvaGxIVkQxaW45c3BrMGszSENfc0hHdTRXbEdRRlEwQ05QLVBpSlFXVTlmLWNSZEpPLVZPakJtdUkyZExSYzk2MEE5LWlaS2hRcTVQWlFQenVsOFhSbnNBM21TclN0WXplRmhqQzc5dVNvN3N1b0U5QW0zZF92MkdrWW5KelFYTjN6c0ZPTEJFdEYtQ3lCeWlucWRoUXlzNzdkY3NLNEJlOFh6R20yN2daTXV2NmdEMTdqUTVkR3ZpOUllWlVGd3I4MTFZTHUzaHRTQ1JiZDdRIn1dfX0.b4WTISWHHuZuNAoZmUxIgDxZi-GFI8Q2fTKHniyrEtr6tfbzz3AXwTjDDJR7AfDcqpHb6OSbUqIeNxWkK6X4XCZ_AgzMIB3mjRll1nqEeB0CdjEHhTYGRnDWKHt3rgGUT3GmAOvS2cvBhXbYN5PvOp4Kt6fF2JqVN_JX5h8dq3m1kif59BUJ7Ww8F7CPdRXUbjS_l8sscryQp9UZLfw7EASFoQ__tJgRp_WUUhgp2XFlDRRGacsgvCywjg7YFu6nY-3jet-IPCDNVpTK06Adtge6HPcIVlc02ZN8ZDXLwHe8gCqR4JxXcqP238Hfs7y--gnGmA03NtWlWaHrMslCWw",
-          "eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5uTlRUa0psWTNGb2VTMDRaVUpHVEVJeExXNHhWbHB6Y21abGNuYzVibFpOTXpkRlFsTnpXSFpKUlEiLCJ0eXAiOiJhcHBsaWNhdGlvbi9lbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2OTQ3MzE4ODgsImlhdCI6MTY5NDQzMTg4OCwiaXNzIjoiaHR0cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5vcmciLCJzdWIiOiJodHRwczovL2ludGVybWVkaWF0ZS5laWRhcy5leGFtcGxlLm9yZyIsImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwia2lkIjoiWVRZM05IVmxNR2g2TXpCYU9VSlpkR1JITWxCbFdFTllhMnBQVVZONE9WZHZNblo2UjJKd2VIWlNjdyIsImUiOiJBUUFCIiwibiI6ImprdlJRWW53ckNzVVhqZXJOWlpTTkdZWFE1eG5ZQVJQNHoyQllacU1rS2N5b1ZQUHZCd1U4cHVkR0NrUUV2bDlOR0NDZnNVLXFpN216aEprRmgtX3h4V3NsUktCR29TWHk2alh0Qm1ldjhQTDMtcXc5VTdSbmhUbmhxQkxhY0NGYWN4ck4xV2hpd1c0aUhqaGRiSnd3cEhxNEcxODZXWnpzUVh1U1hXUFN4S29tY3VETE1rY09WMTl5U0xZX2FQYW9mUkl2TGpKUFhTYTlBbXFrQzB6TF9TOEMzb3pjNWk5NG1GeGdwempuYl9OSUtyZjZJQ2ZwTUwzY0RvU3lqS0NJM3VQRWtFbGV3NUtieU9YRkNwelQxQ2xkamJTcXZMZlNTdnItbmdZNG9hWXFCSkpSSFBLaVQ3UFE3VGNYUVpxWFhyOTU3UV9oMDRsRWFCX19oUmlBdyJ9XX19.yzw2PrMCuIxR5jBinsVfxWlSO-1MeoVmBNF5goqqLVVEqHIQ3BxF3OwKZnQFCP4-XsPpdKfiKr583Xd-fJM9PfRcGrFxjSxKXKGmxDGIGBTiRY2vELXOH4_EEiR3O2ZrzWyx5j7_nrf6Kd0MhY-5QIqMabnnF-QV_l7Nh-NGq_YXvJC4P4wU8Wu2FEThbfZWsBD5joeEgEw_7i1BbXp-m9BvWiIB2uHX35LRFuNaDBjnkD1iYZvPYr-oW6ZFlzPmPkkPEQOtKvAquC20Ske7matT-MeTVsTG0SFTQtep4DIxJn5KVoe0ZiJwCCNaFPHiT1gZXV1MtvAwffTxgZx-sA"
-        ]
+          "eyJhbGciOiJSUzI1NiIsImtpZCI6ImMzWnlUR1ZTY0RNeFowd3dka1pQVVZZMFMyRkVRMnBYVjE4dFVFd3ROVlZIV21WVVEwTmlTM2xVU1EiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2OTY1ODMzMzQsImlhdCI6MTY5NjI4MzMzNCwiaXNzIjoiaHR0cHM6Ly9jcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZyIsInN1YiI6Imh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmciLCJqd2tzIjp7ImtleXMiOlt7Imt0eSI6IlJTQSIsImtpZCI6ImMzWnlUR1ZTY0RNeFowd3dka1pQVVZZMFMyRkVRMnBYVjE4dFVFd3ROVlZIV21WVVEwTmlTM2xVU1EiLCJlIjoiQVFBQiIsIm4iOiIwNmZfWUd0ejhyY29WQWZSUnlNbldYbmNteVRFc3lmUHh6OVlXdlRjT0c1WGtIQ244c1ZCa3hjVENleDFvdWtxZVlVLU0xcUE3ZXE4RmNMRDJHUEVxVHNITDBRNVNMLXVYSUlYd2hSSmx3bWpRNWh1dEdnV3ptMUVOc0g0SENyV3EwNmJGLTRpUFFpUVUxRm1kVXdxVTI5clVqTnlmeUlLTmd1cFJPZ2p1Y3ozcWYtWE1ZdU5SRnFFcld0b3N0dHE1bm4zdFlSNWh5UWpVWnVwNHZPUnFhUUROMUxiVEk5d2cxRzlxRjlxQUxDcGk0WlNmclJyWEphZDUtamwtS1VOdFM1cG5hbGlHRFF2a3AxTnJCaXBJT19haTFvR21BMTlHd1E4VGpNVkNFc3ZXUXpKcTVrd0N1eHVKZTlBODE1RzRuU2I1WFp1RXZ6anhNU1M4b3hpLVEifV19LCJtZXRhZGF0YSI6eyJvcGVuaWRfY3JlZGVudGlhbF9pc3N1ZXIiOnsiandrcyI6eyJrZXlzIjpbeyJrdHkiOiJSU0EiLCJraWQiOiJSMlJ6UlhBMFJWQnlkekZPVkcxZmRXUlRNVFozWVRSbU5uRTFWM0ZmTUUxb01VWkxla2xpWTFOWU9BIiwiZSI6IkFRQUIiLCJuIjoiNUhfWGg3eGdEV1R4UVZiSnFtT0d1cm9rRThrcjJlMUtnTVdjWU9BNzRPXzFQWGQydWdqeUlxOXQxbVZQU3V3eC10eVNrMlBLcGpwLS1XckhuM0E0VUtKa3VSMTF6aG1kTEJzVThUT0JCdTVNWjhhdER1amZSd0lMWGRLc0VYa2x2YUI2UExUNHpkWm9kZ0NzMDVLeTJlNXNiNXo2X0NpRHFnVVZuV1BtSkxNa2dwQnRaLWtNZF9sYjlTb29abGxmVUdsVGtzYXVKMl9nVlEtVnBGVU1YWWpvSmpOeDk3ZXVrYVluUkVvQ0MzVGFfLThiY1Jvc2x4MnhySWJ1X1VHVnFpcGVOM05QLW1lZmY5VlRaV1lNM2dtb2x3dXBuTUNYWGlpa2NSNVVTTFZnMGVfZ3o2T2ZvUlZHS0FXSXBSUkxUejJhaXF1a1ZIWmRaWDl0Tm16MG13In1dfX0sImZlZGVyYXRpb25fZW50aXR5Ijp7Im9yZ2FuaXphdGlvbl9uYW1lIjoiT3BlbklEIENyZWRlbnRpYWwgSXNzdWVyIGV4YW1wbGUiLCJob21lcGFnZV91cmkiOiJodHRwczovL2NyZWRlbnRpYWxfaXNzdWVyLmV4YW1wbGUub3JnL2hvbWUiLCJwb2xpY3lfdXJpIjoiaHR0cHM6Ly9jcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZy9wb2xpY3kiLCJsb2dvX3VyaSI6Imh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmcvc3RhdGljL2xvZ28uc3ZnIiwiY29udGFjdHMiOlsidGVjaEBjcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZyJdfX0sImF1dGhvcml0eV9oaW50cyI6WyJodHRwczovL2ludGVybWVkaWF0ZS5laWRhcy5leGFtcGxlLm9yZyJdfQ.WM0dOdLOhC9UTRi_y6lwwu6PmUWv1wc5f8MhKP2qz6b1haa-eyf4Y60iZ2SDeFeg105wHwPSKN8AfRoNyqubOGZMAFmP-sYBeqZatNsGNWjFEHzI9dJwx1oBab5_TDoULarpKSdvuub4NBOBTKFUSDffBG6jzlaK5JiQzMR30-jqSt9qPPWrJepyLQvyFxmvn94OiNQQwJ0oYB1MecJ7r8gmQMCAH4LixD6amKQoCuN0UeN7iEHTs3z_8ZUDihQ7BHf0dtwDCmG_G7xvaNkLPkG6cP2e2-l5kcYbNaUaK0IsX2yB0BkoQOOHlT-_M2TC2Zzg6Nmmw8WpTeraMrSkIQ",
+          "eyJhbGciOiJSUzI1NiIsImtpZCI6IlpsSndObTQ1VDJsVWNYbEhUR2cxWldobGJsZGpVV2xsY21RdFNVbFFXWHBIUzFKRVEwOHlUV1Z2TkEiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2OTY1ODMzMzQsImlhdCI6MTY5NjI4MzMzNCwiaXNzIjoiaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZWlkYXMuZXhhbXBsZS5vcmciLCJzdWIiOiJodHRwczovL2NyZWRlbnRpYWxfaXNzdWVyLmV4YW1wbGUub3JnIiwiandrcyI6eyJrZXlzIjpbeyJrdHkiOiJSU0EiLCJraWQiOiJjM1p5VEdWU2NETXhaMHd3ZGtaUFVWWTBTMkZFUTJwWFYxOHRVRXd0TlZWSFdtVlVRME5pUzNsVVNRIiwiZSI6IkFRQUIiLCJuIjoiMDZmX1lHdHo4cmNvVkFmUlJ5TW5XWG5jbXlURXN5ZlB4ejlZV3ZUY09HNVhrSENuOHNWQmt4Y1RDZXgxb3VrcWVZVS1NMXFBN2VxOEZjTEQyR1BFcVRzSEwwUTVTTC11WElJWHdoUkpsd21qUTVodXRHZ1d6bTFFTnNINEhDcldxMDZiRi00aVBRaVFVMUZtZFV3cVUyOXJVak55ZnlJS05ndXBST2dqdWN6M3FmLVhNWXVOUkZxRXJXdG9zdHRxNW5uM3RZUjVoeVFqVVp1cDR2T1JxYVFETjFMYlRJOXdnMUc5cUY5cUFMQ3BpNFpTZnJSclhKYWQ1LWpsLUtVTnRTNXBuYWxpR0RRdmtwMU5yQmlwSU9fYWkxb0dtQTE5R3dROFRqTVZDRXN2V1F6SnE1a3dDdXh1SmU5QTgxNUc0blNiNVhadUV2emp4TVNTOG94aS1RIn1dfX0.GxUAOCfVHTyBvJzq9BIV76fX-bRqIVcL-Y36B8NLO17lE0rkfDQQGUh-Vh1JmF_MF3Q4QhXjW-agXoKST3q9x5nDoYHTleQ-10Lw9qiU9I6K8mn1JMNXahzNaX_MLOA7R3_O0-HhxtARIEKpiGQTjup_f5PyqBLrwcERxhnbg0YrpgsvVQHC1SUgXiMtKxMZDWLUtk7q8YaNNhJ4nuEV2M1ZWcEVFloWYKWBJbJvmZ9jqsop6svMDOqusih3sNGWKZ9XmPqtUeGR8o1vsKsOk0WKVnEMH9ESGu54pUJahX05jd4UmTPOzfRJ61k9-_te6xNZUwJqtU9wJ--IrHz7ig",
+          "eyJhbGciOiJSUzI1NiIsImtpZCI6IlpXRlRRbWhmVFdaSVRuRlRZM0ZTV2pKdU5HMWZWV05hZWxkNmNtUjFRa0pEYlhaWlRYQm1hM1JWUVEiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2OTY1ODMzMzQsImlhdCI6MTY5NjI4MzMzNCwiaXNzIjoiaHR0cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5vcmciLCJzdWIiOiJodHRwczovL2ludGVybWVkaWF0ZS5laWRhcy5leGFtcGxlLm9yZyIsImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwia2lkIjoiWmxKd05tNDVUMmxVY1hsSFRHZzFaV2hsYmxkalVXbGxjbVF0U1VsUVdYcEhTMUpFUTA4eVRXVnZOQSIsImUiOiJBUUFCIiwibiI6ImtSQUlzLVRBblF6T29lc195RW9oaDNUeGlaWFlPRC1xekI2T25JalZCaVI0WFNGbkw4djhRQ0IxamJiSlZTQ1hBZmdObTlBZjdVRDNBX0E2T1pQOUtacldSUk00NEp0TVAzZmxVSU5CQ2xzNFBrdVd2RklmWEtaaWVUNGhBMzNYdUlTSndqT2NlNnRrbUZTUl9wQmI3S0JHbnB4d3dnRlJjeUM2RU1VQWtWUGdQRl9mbXM3NEEyTF83TGVaNzh2X053VUhsY2VxVHB1OUx6VTRuTTd1RTZQY0JPSmJweXI2SFFuUTR1VHN6WThsWHVmT3pHZ2IzVXNDNmRnQWVVVERIZlFROE4xYXV2bkJUNmR0SHNHNWMxS2NCT2QzLVp6ZTZ5WVE5c2JLUlUtWVoydDZKdUJIbS1xLTVOamxiRWVwNDAwbFgxSXlKdG9Tc3F0d3lCX1djdyJ9XX19.CvBvN0aG-r13UG4uITH72tC5CbAG0rT4qYQ5wwHOtGE021etZFQd40RFnQT5e-Gy_Y8Wiin-Zmc1hWW2rVyZ1RRInjYGUt26QI6ujR-5w9Y_LHVp-6RzYEF0lg9otpAyszQE4hf5qBZYAj8t39FvCYWTYVci6mtpovJQ380ha8I4QL__fZtEgDLQ-7VKS58nN1DOVdcIICMMfxpDR81bkY5i5Qxcy7AaZTN6xxE2SlCO-pKKub0jBUtnug20-BL2YgcPhLFOYWfj2cuyapOA9Omwu6CPhmZHgsL1P2oK_f4jA9JxNDYcV0losDbD86r8Wg3anM2lVM5BTHkiUr2grg",
+          "eyJhbGciOiJSUzI1NiIsImtpZCI6IlpXRlRRbWhmVFdaSVRuRlRZM0ZTV2pKdU5HMWZWV05hZWxkNmNtUjFRa0pEYlhaWlRYQm1hM1JWUVEiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2OTY1ODMzMzQsImlhdCI6MTY5NjI4MzMzNCwiaXNzIjoiaHR0cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5vcmciLCJzdWIiOiJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZyIsImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwia2lkIjoiWldGVFFtaGZUV1pJVG5GVFkzRlNXakp1TkcxZlZXTmFlbGQ2Y21SMVFrSkRiWFpaVFhCbWEzUlZRUSIsImUiOiJBUUFCIiwibiI6InhPQnN0YnJUUE9SQ3JnTXowQ254Skk4cjd4TkwwYjZITExKY05NSkNQbGl0SmUzNUZUdGw1bVdMVXFoeFdiRXFYYnpVLW80VHd1ZHA5NHFrckI3Zks5cEk0bDBldEoxMFZTbTQ0dXNiakxoMTUwVXFlSnlmQmdyMzRWbWhINWo3ZFMzS3V5bjNvOEdER2ZjNDVjcmdsR3lNOUgzbFp6SGl6SXdncDVzSUhCeGFPRWQ1eXlOdXhBLXFFQU4zaFIxQi1LQ2JYaWVDRVRrcWNMWU1zX2psRHVsTVE0MzI5TEgwNkhaclhINElfUHVnWXd0WldUN0VqZUR6c3Y2Ny14TFFhOEg3cnV1N3JVME1FREl0TkVpS3ljdVk5b0pLWWtrX2hBQzFMNkt2VkNmeXpVOGVvem9KQzM4eGhXUklNTXJZd2hiSmFaa3dUdDZCRDByalNNRUp6USJ9XX0sIm1ldGFkYXRhIjp7ImZlZGVyYXRpb25fZW50aXR5Ijp7ImZlZGVyYXRpb25fZmV0Y2hfZW5kcG9pbnQiOiJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZy9mZXRjaCIsImZlZGVyYXRpb25fcmVzb2x2ZV9lbmRwb2ludCI6Imh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnL3Jlc29sdmUiLCJmZWRlcmF0aW9uX2xpc3RfZW5kcG9pbnQiOiJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZy9saXN0Iiwib3JnYW5pemF0aW9uX25hbWUiOiJUQSBleGFtcGxlIiwiaG9tZXBhZ2VfdXJpIjoiaHR0cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5vcmcvaG9tZSIsInBvbGljeV91cmkiOiJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZy9wb2xpY3kiLCJsb2dvX3VyaSI6Imh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnL3N0YXRpYy9sb2dvLnN2ZyIsImNvbnRhY3RzIjpbInRlY2hAdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnIl19fSwiY29uc3RyYWludHMiOnsibWF4X3BhdGhfbGVuZ3RoIjoxfX0.ZenICRAm4zrd65A3tsSN77VLjheJAK09s8sBXQVo2l3r7RrN8pXFKqulZebxfSALF4am58Ry8GeK2N1ZK7B1GlfskAnnIINfi-IpjqquvPW_MXrSo0bLoXnnmruHJ1D0KbONbwdZaOZg4oJRo2PBU009pojheUwcRcNDujCRiQimsvEYlL4YLwpPHjEmt46WviPESnZCgez_oEdoXkNjN3PsOta9de_abjkASYdGgAlBTIbUjAutmErbubjKptxpvycibBLuJ58nkiQZ_KesLRPnDY9hbPf0ZMbtCB_gx8yLlQ9-8nE5_fuxICz1uKR4536txsQFmrCvireBchaZ1A"
+    ]
+
     }
 ]]>
 	    </artwork>
@@ -1250,37 +1245,39 @@
             <t hangText="request_authentication_methods_supported">
               <vspace/>
               OPTIONAL.
-              A JSON Object defining the client authentications supported for each endpoint.
-              The endpoint names are defined in the IANA
-              "OAuth Authorization Server Metadata" registry
-              <xref target="IANA.OAuth.Parameters"/>.
-              Other endpoints and authentication methods are possible if made
-              recognizable according
-              to established standards and not in conflict with the operating
-              principles of this specification.
-              In OpenID Connect Core, no client authentication is performed at the authentication
-              endpoint. Instead, the request itself is authenticated.
-              The OP maps
-              information in the request (like the redirect_uri) to information it has gained
-              on the client through static or dynamic registration.
-              If the mapping is successful, the request can be processed.
-              If the RP uses Automatic Registration, as defined in <xref target="automatic"/>,
-              the OP has no prior knowledge
-              of the RP. Therefore, the OP must start by gathering
-              information about the RP using the process outlined in
-              <xref target="federation_configuration"/>. Once it has the RP's
-              metadata, the OP can verify the request in the same way
-              as if it had known the RP's metadata beforehand.
-              To make the request verification more secure, we demand the use of
-              a client authentication or verification method that proves that
-              the RP is in possession of a key that appears in the RP's metadata.
-              <vspace/>
-              Client authentication methods that MAY be used include:
+	      An OP MUST be able to verify that a request comes from an RP
+	      that is a member of a federation that the OP is a member of.
+	      This is done via request authentication methods.
+	      These methods achieve this by proving that
+	      the RP is in possession of a key that appears in its metadata.
+	      This parameter declares the request authentication methods that the OP supports.
+	      <vspace blankLine="1"/>
+
+	      The <spanx style="verb">request_authentication_methods_supported</spanx>
+	      value is a JSON object where the member names are names of endpoints
+	      where the request authentication occurs.
+	      This MAY be either at
+	      the OP's Authorization Endpoint or
+	      the OP's Pushed Authorization Request (PAR) endpoint.
+	      Supported endpoint identifiers are
+	      <spanx style="verb">authorization_endpoint</spanx> and
+	      <spanx style="verb">pushed_authorization_request_endpoint</spanx>.
+	      The values of the JSON object members for the endpoint names are
+	      JSON arrays containing the names of the request authentication methods
+	      used at those endpoints.
+	      <vspace blankLine="1"/>
+
+	      Some OAuth 2.0 client authentication methods can be used at the
+	      <spanx style="verb">pushed_authorization_request_endpoint</spanx>
+	      to achieve request authentication.
+	      They are the subset of those listed in the
+	      IANA "OAuth Token Endpoint Authentication Methods" registry <xref target="IANA.OAuth.Parameters"/>
+	      that perform client authentication by proving possession of a private key.
+              These client authentication methods are:
               <list style="hanging">
                 <t hangText="private_key_jwt">
                   <vspace/>
-                  <spanx style="verb">private_key_jwt</spanx>.
-                  This authentication process is described in Section 9 of
+                  This client authentication method is described in Section 9 of
                   <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
                   Note that if <spanx style="verb">private_key_jwt</spanx> is
                   used, the audience of the signed JWT MUST be either the URL of
@@ -1298,45 +1295,25 @@
                   <xref target="RFC8705"/>.
                 </t>
               </list>
-              <vspace/>
-              A client verification method, on the other hand,
-              is something like:
+              <vspace blankLine="1"/>
+
+              A request authentication method that is not a client authentication method is:
               <list style="hanging">
                 <t hangText="request_object">
                   <vspace/>
-                  A Request Object, as described in
+                  Use of a Request Object, as described in
                   <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
-                  There is more about this in
+		  The request authentication is performed by verifying that
+		  the request object is signed with a key that the RP controls.
+		  Use of Request Objects by Automatic Registration is described at
                   <xref target="automatic"/>.
-                  Here the verification is based on the fact that the request
-                  object is signed with a key the RP controls.
                 </t>
               </list>
-              <vspace/>
-              The claim value of this parameter is a JSON object with members representing
-              authentication request methods and as values lists of client
-              authentication/verification methods that can be used together with the
-              authentication request method.
-              <vspace/>
-              Examples of authentication request methods are
-              <list style="symbols">
-                <t>
-                  Authentication Request (AR), as described in Section 3 of
-                  <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>, and
-                </t>
-                <t>
-                  Pushed Authorization Request (PAR), as described in <xref target="RFC9126"/>.
-                </t>
-              </list>
-              <vspace/>
-              If AR is used, then a client verification method like
-              <spanx style="verb">request_object</spanx> can be used.
-              If PAR is used, then client authentication methods like
-              <spanx style="verb">private_key_jwt</spanx>,
-              <spanx style="verb">tls_client_auth</spanx> and
-              <spanx style="verb">self_signed_tls_client_auth</spanx>
-              can be used.
-            </t>
+	      The <spanx style="verb">request_object</spanx> method MAY be used at either endpoint.
+              <vspace blankLine="1"/>
+
+	      Other request authentication methods MAY be defined and used.
+	    </t>
 
             <t hangText="request_authentication_signing_alg_values_supported">
               <vspace/>
@@ -3002,7 +2979,7 @@ Content-Type: application/entity-statement+jwt
           To fetch an Entity Statement, an Entity needs to know the
           identifier of the Entity to ask (the issuer), the fetch
           endpoint of that Entity, and the identifier of the
-          Entity, that is, the subject of the statement.
+          Entity, that is, the subject of the Entity Statement.
         </t>
 
         <section title="Fetch Entity Statements Request"
@@ -4519,7 +4496,7 @@ https://server.example.com/authorize?
             <section title="Processing the Authentication Request" anchor="AuthzRequestProcessing">
               <t>
                 When the OP receives an incoming Authentication Request,
-                the OP supports OpenID Connect Federation, the incoming
+                the OP supports OpenID Federation, the incoming
                 Client ID
                 is a valid URL, and the OP does not have the Client ID
                 registered as a known
@@ -4743,7 +4720,7 @@ HTTP/1.1 302 Found
         <section title="Possible Other Uses of Automatic Registration" anchor="AutomaticRegistrationOtherUses">
           <t>
             Note that we anticipate that Automatic Registration could be employed
-            for use cases beyond OpenID Connect Federation.
+            for use cases beyond OpenID Federation.
             If used with pure OAuth 2.0, for instance,
             Automatic Registration would occur during Authorization Requests.
             If for a particular such use case, the client does not need to be securely identified,
@@ -5382,7 +5359,7 @@ HTTP/1.1 302 Found
 
     <section anchor="IANA" title="IANA Considerations">
 
-      <section anchor="MetadataRegistry" title="OAuth Authorization Server Metadata Registry">
+      <section anchor="MetadataRegistry" title="OAuth Authorization Server Metadata Registration">
         <t>
           This specification registers the following metadata entries in the
           IANA "OAuth Authorization Server Metadata" registry <xref target="IANA.OAuth.Parameters"/>
@@ -5596,7 +5573,7 @@ HTTP/1.1 302 Found
             <list style="symbols">
               <t>Name: missing_trust_anchor</t>
               <t>Usage Location: Authorization Request</t>
-              <t>Protocol Extension: OpenID Connect Federation</t>
+              <t>Protocol Extension: OpenID Federation</t>
               <t>
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
@@ -5607,7 +5584,7 @@ HTTP/1.1 302 Found
             <list style="symbols">
               <t>Name: validation_failed</t>
               <t>Usage Location: Authorization Request</t>
-              <t>Protocol Extension: OpenID Connect Federation</t>
+              <t>Protocol Extension: OpenID Federation</t>
               <t>
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
@@ -5975,7 +5952,7 @@ HTTP/1.1 302 Found
         </section>
       </section>
 
-      <section anchor="ParameterRegistry" title="OAuth Parameter Registry">
+      <section anchor="ParameterRegistry" title="OAuth Parameters Registration">
         <t>
           This specification registers the following parameter name in the IANA "OAuth
           Parameters" registry <xref target="IANA.OAuth.Parameters"/> established
@@ -6005,7 +5982,7 @@ HTTP/1.1 302 Found
 
       </section>
 
-      <section anchor="JwsHeaderRegistry" title="JWS Header Parameter Registration">
+      <section anchor="JwsHeaderRegistry" title="JSON Web Signature and Encryption Header Parameters Registration">
         <t>
 	  This specification registers the following JWS header parameter in
 	  the IANA "JSON Web Signature and Encryption Header Parameters" registry <xref target="IANA.JOSE"/>
@@ -6021,7 +5998,7 @@ HTTP/1.1 302 Found
                 <spanx style="verb">trust_chain</spanx>
               </t>
               <t>
-                Header Parameter Description: OpenID Connect Federation Trust Chain
+                Header Parameter Description: OpenID Federation Trust Chain
               </t>
               <t>
                 Header Parameter Usage Location: JWS
@@ -6186,7 +6163,7 @@ HTTP/1.1 302 Found
           to HTTP Reverse Proxy.
           Allowing unsigned error messages therefore opens up an attack
           vector for someone who wants to run a Denial of Service attack.
-          This is not specific to OpenID Connect Federation but equally valid for
+          This is not specific to OpenID Federation but equally valid for
           other protocols when HTTPS to HTTP reverse proxies are used.
         </t>
       </section>
@@ -7570,9 +7547,15 @@ Host: op.umu.se
 	    Fixed #2064: Prohibited the use of <spanx style="verb">null</spanx> as a metadata value.
 	  </t>
 	  <t>
+	    Rewrote <spanx style="verb">request_authentication_methods_supported</spanx> description.
+	  </t>
+	  <t>
 	    Registered <spanx style="verb">keys</spanx> JWT claim and
 	    <spanx style="verb">iat</spanx>, <spanx style="verb">exp</spanx>, and
 	    <spanx style="verb">revoked</spanx> JWK parameters.
+	  </t>
+	  <t>
+            Fixed #1727: Changed specification name from "OpenID Connect Federation" to "OpenID Federation".
 	  </t>
         </list>
       </t>
