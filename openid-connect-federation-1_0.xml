@@ -395,7 +395,7 @@
           Entity Statement JWTs MUST be explicitly typed, by setting the
           <spanx style="verb">typ</spanx> header parameter to
           <spanx style="verb">entity-statement+jwt</spanx>. This
-          prevents cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
+          prevents cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
         </t>
         <t>
           An Entity Statement is composed of the following claims:
@@ -433,18 +433,18 @@
             <t hangText="jwks">
               <vspace/>
               REQUIRED. A <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
-              representing the public part of the subject Federation
+              representing the public part of the subject's Federation
               Entity signing keys. The corresponding private key is
-              used by Entities to sign Entity Configurations about themselves,
-              and Intermediate Entities to sign Entity Statements about their Subordinates.
-              The keys that can be found here are intended to verify the signature of the
-              issued Entity Statements and Trust Marks and SHOULD NOT be used in other protocols. Keys
-              to be used in other protocols, such as OpenID Connect, are conveyed
-              in the <spanx style="verb">metadata</spanx> elements of the respective Entity Statement.
+              used by the Entity to sign the Entity Configuration about itself,
+              and by Trust Anchors and Intermediate Entities to sign Entity Statements about their Subordinates.
+              The public keys are used to verify the signatures of the
+              issued Entity Statements and Trust Marks and SHOULD NOT be used in other protocols.
+	      (Keys to be used in other protocols, such as OpenID Connect, are conveyed
+              in the <spanx style="verb">metadata</spanx> elements of the respective Entity Statements.)
               This claim is only OPTIONAL for the Entity Statement returned
               from an OP when the client is doing Explicit Registration.
               In all other cases it is REQUIRED.
-              Every JWK in the JWK Set MUST have a Key ID (<spanx style="verb">kid</spanx>).
+              Every JWK in the JWK Set MUST have a unique <spanx style="verb">kid</spanx> (Key ID) value.
               It is RECOMMENDED that the Key ID be the JWK Thumbprint <xref target="RFC7638"/>
               using the SHA-256 hash function of the key.
             </t>
@@ -452,9 +452,9 @@
               <vspace/>
               OPTIONAL. An array of strings representing
               the Entity Identifiers of Intermediate Entities or Trust Anchors
-              that MAY issue an Entity Statement about the issuer Entity.
+              that MAY issue an Entity Statement about the Entity.
               For all Entities except for Trust Anchors that do not have any
-              Superiors, this is REQUIRED and MUST NOT be the empty list
+              Superiors, this is REQUIRED and MUST NOT be the empty array
               <spanx style="verb">[]</spanx>.
               This claim MUST be absent from an
               Entity Configuration issued by a Trust Anchor with no Superiors.
@@ -464,7 +464,7 @@
               OPTIONAL. String containing the <xref target="fetch_endpoint">
               fetch endpoint</xref> URL
               where the Entity Statement was issued,
-              without query and fragment parts.
+              which does not contain query or fragment parts.
 
               This parameter enables an optimized refresh of the Entity
               Statement and hence the Trust Chain, by skipping the
@@ -473,12 +473,12 @@
               <spanx style="verb">federation_fetch_endpoint</spanx>
               of the issuing authority.
 
-              If an Entity Statement cannot be retrieved at the URL stated by the
-              <spanx style="verb">source_endpoint</spanx>
-              parameter, which can occur if the endpoint URL
-              has changed, the Entity Configuration of the issuing authority MUST be retrieved
-              in order to find out the current
-              <spanx style="verb">federation_fetch_endpoint</spanx> location.
+              If an Entity Statement cannot be retrieved from the
+	      <spanx style="verb">source_endpoint</spanx>,
+	      which can occur if the endpoint URL has changed,
+	      the current <spanx style="verb">federation_fetch_endpoint</spanx>
+	      location can be determined by retrieving
+	      the Entity Configuration of the issuing authority.
             </t>
             <t hangText="metadata">
               <vspace/>
@@ -509,10 +509,9 @@
             </t>
             <t hangText="metadata_policy">
               <vspace/>
-              OPTIONAL. JSON object that describes a metadata policy.
-              A <spanx style="verb">metadata_policy</spanx> applies to the Entity described in this
-              Entity Statement as well as to all Entities that appear beneath the
-              Entity described in this Entity Statement.
+              OPTIONAL. JSON object that defines a metadata policy.
+              The metadata policy applies to the Entity that is the subject of this
+              Entity Statement as well as to all Entities that are Subordinate to it.
               Applying to Subordinate Entities distinguishes
               <spanx style="verb">metadata_policy</spanx> from
               <spanx style="verb">metadata</spanx>, which only applies to the
@@ -522,21 +521,20 @@
 	      the metadata policy according to the metadata schema of that Entity Type.
 	      An Entity Statement MAY contain multiple
 	      sets of metadata policy statements, but only one for each Entity Type.
-              Only non Leaf Entities MAY contain a
+              Only non-Leaf Entities MAY contain a
               <spanx style="verb">metadata_policy</spanx>
               claim. Entity Configurations MUST NOT contain a
               <spanx style="verb">metadata_policy</spanx> claim.
             </t>
             <t hangText="constraints">
               <vspace/>
-              OPTIONAL. JSON object that describes constraints that apply to the Trust Chain.
+              OPTIONAL. JSON object that describes constraints that apply to the Trust Chain,
+	      as described in <xref target="chain_constraints"/>.
               If the claim appears in an Entity's Entity Configuration it MUST be applied
               to all Subordinates of that Entity.
               If the claim appears in an Entity Statement that is not an Entity Configuration,
-              then it MUST be applied to the subject of the Entity Statement and all subject's
+              then it MUST be applied to the subject of the Entity Statement and all the subject's
               Subordinates.
-              There is more about this in
-              <xref target="chain_constraints"/>.
             </t>
             <t hangText="crit">
               <vspace/>
@@ -560,7 +558,7 @@
               names that do not occur as Entity Statement claim names in the
               Entity Statement
               in the <spanx style="verb">crit</spanx> list.
-              Producers MUST NOT use the empty list
+              Producers MUST NOT use the empty array
               <spanx style="verb">[]</spanx>
               as the <spanx style="verb">crit</spanx> value.
             </t>
@@ -589,13 +587,13 @@
               names that do not occur in policy language statements in the
               Entity Statement
               in the <spanx style="verb">policy_language_crit</spanx> list.
-              Producers MUST NOT use the empty list
+              Producers MUST NOT use the empty array
               <spanx style="verb">[]</spanx>
               as the <spanx style="verb">policy_language_crit</spanx> value.
             </t>
             <t hangText="trust_marks">
               <vspace/>
-              OPTIONAL. A JSON array of objects, each representing
+              OPTIONAL. A JSON array of JSON objects, each representing
               a Trust Mark.
 
               Each JSON object MUST contain the following two claims
@@ -615,8 +613,7 @@
                   A signed JSON Web Token that represents a Trust Mark.
                 </t>
               </list>
-              There is more about Trust Marks in
-              <xref target="trust_marks"/>.
+              Trust Marks are described in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_marks_issuers">
               <vspace/>
@@ -630,7 +627,7 @@
 
               If the value list bound to a Trust Mark identifier is empty,
               anyone can issue Trust Marks with that identifier.
-              There is more about Trust Marks in <xref target="trust_marks"/>.
+              Trust Marks are described in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_mark_owners">
               <vspace/>
@@ -640,21 +637,22 @@
               knowledge MUST be expressed in this claim.
               This claim MUST be ignored if present in an Entity Configuration
               that describes an Entity that is not a Trust Anchor.
-              The value is a JSON object with keys representing Trust Mark identifiers
-              and the object values being a set of claims. The claims are:
+              The value is a JSON object with member names representing Trust Mark identifiers
+              and the values being JSON objects that contain claims. These claims are:
               <list style="hanging">
                 <t hangText="sub">
                   <vspace/>
                   REQUIRED
-                  An identifier of the Trust Mark owner.
+                  Identifier of the Trust Mark owner.
                 </t>
                 <t hangText="jwks">
                   <vspace/>
                   REQUIRED
-                  A <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
-                  representing the public part of the owners signing keys.
+                  <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
+                  representing the public part of the owner's signing keys.
                 </t>
               </list>
+	      Other claims MAY be defined and included.
             </t>
           </list>
         </t>
@@ -676,7 +674,7 @@
         <figure>
           <preamble>
             The following is a non-normative example of
-            a <spanx style="verb">trust_marks_owners</spanx> claim:
+            a <spanx style="verb">trust_marks_owners</spanx> claim value:
           </preamble>
           <artwork><![CDATA[
 {
@@ -782,7 +780,7 @@
         <t>
           Entities whose statements build a Trust Chain are categorized as:
           <list style="hanging">
-            <t hangText="Trust anchor">
+            <t hangText="Trust Anchor">
               <vspace/>
               An Entity that represents a trusted third party.
             </t>
@@ -921,13 +919,7 @@
 	</figure>
 
         <section title="Trust Chain Header Parameter" anchor="trust_chain_head_param">
-          <t>
-            This <xref target="RFC7515">JWS</xref>
-            header parameter is registered in the IANA
-            "JSON Web Signature and Encryption Header Parameters"
-            registry established by <xref target="JwsHeaderRegistry"/>.
-          </t>
-          <t>
+         <t>
           The <spanx style="verb">trust_chain</spanx> header parameter is a
           JSON array containing the sequence of the statements
           that proves the trust relationship between the issuer of the
@@ -936,8 +928,8 @@
           The Trust Chain contains the public key used to verify the
           <xref target="RFC7515">JWS</xref>.
           The issuer of the JWS SHOULD select the Trust Anchor that it has in common
-          with the audience of the JWS, otherwise the issuer is free to select the
-          Trust Anchor it deems most significant.
+          with the audience of the JWS.
+	  Otherwise, the issuer is free to select a Trust Anchor.
           Use of this header parameter is OPTIONAL.
           </t>
 
@@ -3004,7 +2996,7 @@ Content-Type: application/entity-statement+jwt
           To fetch an Entity Statement, an Entity needs to know the
           identifier of the Entity to ask (the issuer), the fetch
           endpoint of that Entity, and the identifier of the
-          Entity, that is, the subject of the statement.
+          Entity, that is, the subject of the Entity Statement.
         </t>
 
         <section title="Fetch Entity Statements Request"
@@ -5382,7 +5374,7 @@ HTTP/1.1 302 Found
 
     <section anchor="IANA" title="IANA Considerations">
 
-      <section anchor="MetadataRegistry" title="OAuth Authorization Server Metadata Registry">
+      <section anchor="MetadataRegistry" title="OAuth Authorization Server Metadata Registration">
         <t>
           This specification registers the following metadata entries in the
           IANA "OAuth Authorization Server Metadata" registry <xref target="IANA.OAuth.Parameters"/>
@@ -5975,7 +5967,7 @@ HTTP/1.1 302 Found
         </section>
       </section>
 
-      <section anchor="ParameterRegistry" title="OAuth Parameter Registry">
+      <section anchor="ParameterRegistry" title="OAuth Parameters Registration">
         <t>
           This specification registers the following parameter name in the IANA "OAuth
           Parameters" registry <xref target="IANA.OAuth.Parameters"/> established
@@ -6005,9 +5997,9 @@ HTTP/1.1 302 Found
 
       </section>
 
-      <section anchor="JwsHeaderRegistry" title="JWS Header Registry">
+      <section anchor="JwsHeaderRegistry" title="JSON Web Signature and Encryption Header Parameters Registration">
         <t>
-          This specification registers the following JWS header name in the IANA "JSON Web Signature and
+          This specification registers the following JWS header parameter in the IANA "JSON Web Signature and
           Encryption Header Parameters" registry <xref target="IANA.JOSE"/> established
           by <xref target="RFC7515"/>.
         </t>
