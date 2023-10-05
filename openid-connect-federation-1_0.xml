@@ -244,6 +244,10 @@
               For example, an Entity can be both an OpenID Provider
               and Relying Party at the same time.
             </t>
+            <t hangText="Entity Type Identifier">
+              <vspace/>
+              String identifier for an Entity Type.
+            </t>
             <t hangText="Federation Operator">
               An organization that is authoritative for a federation.
               A federation operator administers the Trust Anchor(s) for Entities in its federation.
@@ -479,29 +483,30 @@
             </t>
             <t hangText="metadata">
               <vspace/>
-              REQUIRED. JSON object that includes
-              protocol-specific metadata claims that represent the
-              Entity's Type and metadata.
+              OPTIONAL. JSON object with protocol-specific claims that represent the
+              Entity's Types within its federations and metadata for those Entity Types.
+	      Each member name of the JSON object is an Entity Type Identifier,
+	      and each value MUST be a JSON object representing
+	      metadata according to the metadata schema of that Entity Type.
+	      When an Entity participates in a federation or federations
+	      with one or more Entity Types,
+	      its Entity Configuration MUST contain a <spanx style="verb">metadata</spanx> claim
+	      with entries for each of the corresponding Entity Type Identifiers,
+	      even if the values for those entries are
+	      the empty JSON object <spanx style="verb">{}</spanx>.
+	      (The value might contain no entries when Superiors supply any needed metadata).
+	      <vspace blankLines="1" />
 
-              Each key of the JSON object represents a metadata type
-              identifier, and each value MUST be a JSON object representing
-              the metadata according to the metadata schema of that metadata
-              type. Such a JSON object may be empty.
-              An Entity Statement MAY contain multiple
-              metadata statements, but only one for each metadata type.
-              If the Entity Statement is an Entity Configuration,
-              then the Entity Statement SHOULD contain a
-              <spanx style="verb">metadata</spanx> claim.
-              In some cases, a Superior may want to be explicit about what metadata
+	      In some cases, a Superior may want to be explicit about what metadata
               should be used for a Subordinate. In that case
               <spanx style="verb">metadata</spanx> can be used. If
               <spanx style="verb">metadata</spanx> is used it is only valid for the
               subject of the Entity Statement and has no impact on its Subordinates.
               If a <spanx style="verb">metadata</spanx> claim appears beside a
               <spanx style="verb">metadata_policy</spanx> claim in an
-              Entity Statement, then for each Entity Type, claims that appear in
+              Entity Statement, then for each Entity Type Identifier, claims that appear in
               <spanx style="verb">metadata</spanx> MUST NOT appear in
-              <spanx style="verb">metadata_policy</spanx>
+              <spanx style="verb">metadata_policy</spanx>.
             </t>
             <t hangText="metadata_policy">
               <vspace/>
@@ -513,11 +518,11 @@
               <spanx style="verb">metadata_policy</spanx> from
               <spanx style="verb">metadata</spanx>, which only applies to the
               subject itself.
-              Each key of the JSON object represents a metadata type
-              identifier, and each value MUST be a JSON object representing
-              the metadata policy according to the metadata schema of that
-              metadata type. An Entity Statement MAY contain multiple
-              metadata policy statements, but only one for each metadata type.
+	      Each member name of the JSON object is an Entity Type Identifier,
+	      and each value MUST be a JSON object representing
+	      the metadata policy according to the metadata schema of that Entity Type.
+	      An Entity Statement MAY contain multiple
+	      sets of metadata policy statements, but only one for each Entity Type.
               Only non Leaf Entities MAY contain a
               <spanx style="verb">metadata_policy</spanx>
               claim. Entity Configurations MUST NOT contain a
@@ -525,8 +530,13 @@
             </t>
             <t hangText="constraints">
               <vspace/>
-              OPTIONAL. JSON object that describes a set of Trust Chain
-              constraints. There is more about this in
+              OPTIONAL. JSON object that describes constraints that apply to the Trust Chain.
+              If the claim appears in an Entity's Entity Configuration it MUST be applied
+              to all Subordinates of that Entity.
+              If the claim appears in an Entity Statement that is not an Entity Configuration,
+              then it MUST be applied to the subject of the Entity Statement and all subject's
+              Subordinates.
+              There is more about this in
               <xref target="chain_constraints"/>.
             </t>
             <t hangText="crit">
@@ -637,7 +647,7 @@
                 <t hangText="sub">
                   <vspace/>
                   REQUIRED
-                  An identifier of the Trust Mark owner
+                  An identifier of the Trust Mark owner.
                 </t>
                 <t hangText="jwks">
                   <vspace/>
@@ -955,28 +965,35 @@
       </section>
     </section>
 
-    <section anchor="metadata" title="Metadata Type Identifiers">
+    <section anchor="metadata" title="Metadata">
       <t>
+	This section defines how to represent and use metadata about Entities.
+	It reuses existing OpenID Connect and OAuth 2.0 metadata standards
+	that are applicable to each Entity Type.
       </t>
       <t>
-	    This specification defines metadata type identifiers
-        for OpenID Connect and OAuth 2.0 objects.
-        The metadata type identifier uniquely identifies the Entity Type
-        of the participant and the format of metadata for that Entity Type.
-        It reuses existing OpenID Connect and OAuth 2.0 metadata standards
-        that are applicable to each metadata type.
-        Each metadata document is a JSON object.
+	As described in <xref target="components"/>,
+	Entity metadata is located in the <spanx style="verb">metadata</spanx>
+	member of an Entity Statement, whose value is a JSON object.
+	The member names of this object are Entity Type Identifiers,
+	as specified in <xref target="entity_types"/>.
+	The metadata data structure following each Entity Type Identifier is a JSON object;
+	it MAY be the empty JSON object <spanx style="verb">{}</spanx>,
+	which may be the case when Superiors supply any needed metadata values.
       </t>
       <t>
-        This specification also allows new metadata types to be defined to
-        support use cases outside OpenID Connect and OAuth 2.0 federations.
+	Top-level JSON object members in the metadata data structures MAY use
+	any JSON value other than <spanx style="verb">null</spanx>;
+	the use of <spanx style="verb">null</spanx> is prohibited to prevent likely
+	implementation errors caused by confusing members having
+	<spanx style="verb">null</spanx> values with omitted members.
       </t>
 
       <section title="OpenID Connect and OAuth 2.0 Metadata Extensions" anchor="common_metadata">
         <t>
-        For the OpenID Connect and OAuth 2.0 metadata types below,
+        For the OpenID Connect and OAuth 2.0 Entity Types below,
         the following additional metadata properties are defined,
-        which MAY be used with all those metadata types:
+        which MAY be used with all those Entity Types:
         </t>
         <t>
           <list style="hanging">
@@ -1151,9 +1168,21 @@
 	</section>
       </section>
 
+      <section anchor="entity_types" title="Entity Type Identifiers">
+	<t>
+	  This specification defines Entity Type Identifiers
+	  for OpenID Connect and OAuth 2.0 objects.
+	  The Entity Type Identifier uniquely identifies the Entity Type
+	  of the participant and the format of metadata for that Entity Type.
+	</t>
+	<t>
+	  This specification also allows new Entity Type Identifiers to be defined to
+	  support use cases outside OpenID Connect and OAuth 2.0 federations.
+	</t>
+
       <section title="OpenID Connect Relying Party" anchor="RP_metadata">
         <t>
-          The metadata type identifier is
+          The Entity Type Identifier is
           <spanx style="verb">openid_relying_party</spanx>.
         </t>
         <t>
@@ -1181,7 +1210,7 @@
 
       <section title="OpenID Provider" anchor="OP_metadata">
         <t>
-          The metadata type identifier is
+          The Entity Type Identifier is
           <spanx style="verb">openid_provider</spanx>.
         </t>
         <t>
@@ -1410,7 +1439,7 @@
       </section>
       <section title="OAuth Authorization Server">
         <t>
-          The metadata type identifier is
+          The Entity Type Identifier is
           <spanx style="verb">oauth_authorization_server</spanx>.
         </t>
         <t>
@@ -1425,7 +1454,7 @@
 
       <section title="OAuth Client">
         <t>
-          The metadata type identifier is
+          The Entity Type Identifier is
           <spanx style="verb">oauth_client</spanx>.
         </t>
         <t>
@@ -1440,7 +1469,7 @@
 
       <section title="OAuth Protected Resource">
         <t>
-          The metadata type identifier is
+          The Entity Type Identifier is
           <spanx style="verb">oauth_resource</spanx>.
 	  The parameters defined in <xref target="common_metadata"/> are applicable.
 	  In addition, while it is not presently a standard,
@@ -1451,13 +1480,13 @@
 
       <section title="Federation Entity">
         <t>
-          The metadata type identifier is
+          The Entity Type Identifier is
           <spanx style="verb">federation_entity</spanx>.
         </t>
         <t>
-          All Entities in a federation MAY expose this metadata type.
+          All Entities in a federation MAY expose this Entity Type.
           The Entities that expose federation API endpoints
-          MUST expose this metadata type.
+          MUST expose this Entity Type.
         </t>
         <t>
           The following properties are allowed:
@@ -1588,13 +1617,15 @@
         </figure>
       </section>
 
+      </section>
+
     </section>
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
         <t>
           An Entity MAY publish metadata policies pertaining to Subordinate
-          Entities of a specific type. Entity Type identifiers specified in
-          this document can be found in <xref target="metadata"/>.
+          Entities of a specific type. Entity Type Identifiers specified in
+          this document can be found in <xref target="entity_types"/>.
         </t>
         <section title='Using the "metadata_policy" Claim'>
           <t>
@@ -1705,8 +1736,8 @@
                 a potential value modifier and thus it is not a pure value check.
                 If the
                 intersection is empty the outcome depends on the
-                <spanx style="verb">essential</spanx> parameter
-                : when the value is defined as essential,
+                <spanx style="verb">essential</spanx> parameter:
+		when the value is defined as essential,
                 the parameter MUST be rejected with a policy error,
                 else the parameter MUST be removed
                 (implying a <spanx style="verb">null</spanx> value).
@@ -1752,7 +1783,7 @@
           <thead>
             <tr>
               <td colspan="2">Policy</td>
-              <td colspan="2">Metadata parameter</td>
+              <td colspan="2">Metadata Parameter</td>
             </tr>
             <tr>
               <td colspan="">essential</td>
@@ -1991,7 +2022,7 @@
 
         <section title="Applying Policies" anchor="applying_policies">
           <t>
-            Once combining the Metadata policies has been accomplished, the next
+            Once combining the metadata policies has been accomplished, the next
             step is to apply the combined policy to the metadata.
           </t>
           <t>
@@ -2261,8 +2292,8 @@
             <t hangText="allowed_leaf_entity_types">
               <vspace/>
               OPTIONAL. An array of strings. Each string is an Entity Type.
-              Entity Type identifiers specified in this document
-              can be found in <xref target="metadata"/>.
+              Entity Type Identifiers specified in this document
+              can be found in <xref target="entity_types"/>.
               This constraint restricts what types of Leaf Entities MAY
               appear beneath the Entity described in this Entity Statement.
             </t>
@@ -2286,9 +2317,17 @@
 ]]></artwork>
         </figure>
         <t>
+          When an Entity has a <spanx style="verb">constraints</spanx> claim in its Entity
+          Configuration and issues an Entity Statement regarding a Subordinate,
+          then if the same type of constraint, for example a
+          <spanx style="verb">max_path_length</spanx>,
+          appears in both the Entity Configuration and the Entity statement,
+          the more restrictive of the two MUST take precedence.
+        </t>
+        <t>
           If a Subordinate Entity Statement contains a constraint specification
           that is more restrictive than the one in effect, then the more
-          restrictive constraint is in effect from here on.
+          restrictive constraint MUST take effect from here on.
         </t>
         <t>
           If a Subordinate Entity Statement contains a constraint specification
@@ -3087,7 +3126,7 @@ Content-Type: application/entity-statement+jwt
           Entity Configuration, collect a Trust Chain that starts
           with the subject's Entity Statement and ends with the specified
           Trust Anchor, verify the Trust Chain, and then apply all the
-          policies present in the Trust Chain to the Entity Statements
+          policies present in the Trust Chain to the Entity Statement's
           metadata. The resolver MUST verify that all present
           Trust Marks with identifiers recognized within
           the Federation are active.
@@ -3116,10 +3155,10 @@ Content-Type: application/entity-statement+jwt
               </t>
               <t hangText="type">
                 <vspace/>
-                OPTIONAL. A specific metadata type to resolve.
-                In this document, we use the metadata types listed in
-                <xref target="metadata"/>.
-                If no value is given, then all metadata types are expected to
+                OPTIONAL. A specific Entity Type to resolve.
+                Its value is an Entity Type Identifier, as specified in
+                <xref target="entity_types"/>.
+                If this parameter is not present, then all Entity Types are expected to
                 be returned.
               </t>
             </list>
@@ -4302,7 +4341,7 @@ Content-Type: application/json
             </t>
             <t>
               The OP MUST publish that it supports a request authentication
-              method using the metadata claim
+              method using the <spanx style="verb">metadata</spanx> claim
               <spanx style="verb">request_authentication_methods_supported</spanx>.
             </t>
           </list>
@@ -4628,8 +4667,9 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
               </t>
               <t>
                 Once the OP has the RP's metadata, it can verify the client
-                using the keys published underneath the
-                <spanx style="verb">metadata/openid_relying_party</spanx> element.
+		using the keys published under the
+		<spanx style="verb">openid_relying_party</spanx>
+		Entity Type Identifier.
                 This is where it diverges depending on which client
                 authentication method was used.
                 <list style="hanging">
@@ -4870,8 +4910,8 @@ HTTP/1.1 302 Found
                   <vspace/>
                   REQUIRED.
                   It MUST contain the RP metadata under the
-                  <spanx style="verb">openid_relying_party</spanx> type
-                  identifier.
+		  <spanx style="verb">openid_relying_party</spanx>
+		  Entity Type Identifier.
                 </t>
                 <t hangText="crit">
                   <vspace/>
@@ -5009,8 +5049,9 @@ HTTP/1.1 302 Found
                     The OP MUST express the client registration it created for
                     the RP by means of the <spanx style="verb">metadata</spanx>
                     claim, by placing the metadata parameters under the
-                    <spanx style="verb">openid_relying_party</spanx> type
-                    identifier. The parameters MUST include the
+		    <spanx style="verb">openid_relying_party</spanx>
+		    Entity Type Identifier.
+		    The parameters MUST include the
                     <spanx style="verb">client_id</spanx> that was provisioned
                     for the RP. If the RP was provisioned with credentials,
                     for example a <spanx style="verb">client_secret</spanx>,
@@ -5099,8 +5140,9 @@ HTTP/1.1 302 Found
                     <vspace/>
                     REQUIRED.
                     It MUST contain the registered RP metadata under the
-                    <spanx style="verb">openid_relying_party</spanx> type
-                    identifier. See <xref target="entity-statement"/> for the
+                    <spanx style="verb">openid_relying_party</spanx>
+		    Entity Type Identifier.
+		    See <xref target="entity-statement"/> for the
                     full specification.
                   </t>
                   <t hangText="crit">
@@ -5341,7 +5383,7 @@ HTTP/1.1 302 Found
 
       <section anchor="MetadataRegistry" title="OAuth Authorization Server Metadata Registry">
         <t>
-          This specification registers the following metadata names in the
+          This specification registers the following metadata entries in the
           IANA "OAuth Authorization Server Metadata" registry <xref target="IANA.OAuth.Parameters"/>
           established by <xref target="RFC8414"/>.
         </t>
@@ -5476,7 +5518,7 @@ HTTP/1.1 302 Found
 
       <section anchor="DynRegRegistrations" title="OAuth Dynamic Client Registration Metadata Registration">
         <t>
-          This specification registers the following client metadata definition
+          This specification registers the following client metadata entries
           in the IANA "OAuth Dynamic Client Registration Metadata" registry
           <xref target="IANA.OAuth.Parameters"/>
           established by <xref target="RFC7591"/>.
@@ -7396,6 +7438,23 @@ Host: op.umu.se
          <t>
             Fixed #1727: Specification name changed from "OpenID Connect Federation" to "OpenID Federation".
         </t>
+	  <t>
+	    Fixed #2061: Clarified that the <spanx style="verb">constraints</spanx> claim may only appear in statements issued by authorities.
+	  </t>
+	  <t>
+	    Fixed #2062: Require metadata statements for all Entity Type Identifiers that apply to an Entity.
+	  </t>
+	  <t>
+	    Replaced duplicative term "metadata type" with "Entity Type" and
+	    defined the term "Entity Type Identifier".
+	  </t>
+	  <t>
+	    Added section headings to the Metadata section to more cleanly separate
+	    Entity Type Identifiers from Metadata Extensions.
+	  </t>
+	  <t>
+	    Fixed #2064: Prohibited the use of <spanx style="verb">null</spanx> as a metadata value.
+	  </t>
         </list>
       </t>
 
