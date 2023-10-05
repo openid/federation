@@ -1010,7 +1010,7 @@
               <list style="hanging">
                 <t hangText="keys">
                   <vspace/>
-                  REQUIRED. List of JWK values.
+                  REQUIRED. Array of JWK values.
                 </t>
                 <t hangText="iss">
                   <vspace/>
@@ -3671,7 +3671,7 @@ Host: trust-anchor.example.com
           </figure>
         </section>
 
-        <section title="Federation Historical Keys Response">
+        <section anchor="HistKeysResp" title="Federation Historical Keys Response">
           <t>
             A successful response MUST use the HTTP status code 200
             and the content type set to
@@ -3763,6 +3763,8 @@ Host: trust-anchor.example.com
                         </t>
 
                       </list>
+		      Other members of the <spanx style="verb">revoked</spanx>
+		      object MAY be defined and used.
                       </t>
 
                     </t>
@@ -5982,9 +5984,9 @@ HTTP/1.1 302 Found
 
       <section anchor="JwsHeaderRegistry" title="JSON Web Signature and Encryption Header Parameters Registration">
         <t>
-          This specification registers the following JWS header parameter in the IANA "JSON Web Signature and
-          Encryption Header Parameters" registry <xref target="IANA.JOSE"/> established
-          by <xref target="RFC7515"/>.
+	  This specification registers the following JWS header parameter in
+	  the IANA "JSON Web Signature and Encryption Header Parameters" registry <xref target="IANA.JOSE"/>
+	  established by <xref target="RFC7515"/>.
         </t>
 
         <section anchor="HeaderContents" title="Registry Contents">
@@ -6011,6 +6013,112 @@ HTTP/1.1 302 Found
           </t>
         </section>
 
+      </section>
+
+      <section anchor="ClaimsRegistry" title="JSON Web Token Claims Registration">
+	<t>
+	  This specification registers the following claim in
+	  the IANA "JSON Web Token Claims" registry <xref target="IANA.JWT.Claims"/>
+	  established by <xref target="RFC7519"/>.
+	</t>
+
+	<section anchor="ClaimsContents" title="Registry Contents">
+	  <t> <?rfc subcompact="yes"?>
+	  <list style="symbols">
+	    <t>
+	      Claim Name: <spanx style="verb">keys</spanx>
+	    </t>
+	    <t>
+	      Claim Description: Array of JWK values, as defined in RFC 7517
+	    </t>
+	    <t>
+	      Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	    </t>
+	    <t>
+	      Specification Document(s): Section <xref target="common_metadata"/> of [[ this specification ]]
+	    </t>
+	  </list>
+	  </t>
+	</section>
+	<?rfc subcompact="no"?>
+      </section>
+
+      <section title="JSON Web Key Parameters Registration" anchor="JWKParamReg">
+	<t>
+	  This specification registers the following parameters in
+	  the IANA "JSON Web Key Parameters" registry <xref target="IANA.JOSE"/>
+	  established by <xref target="RFC7517"/>.
+	</t>
+
+	<section title="Registry Contents" anchor="JWKContents">
+	  <t> <?rfc subcompact="yes"?>
+	  <list style='symbols'>
+	    <t>
+	      Parameter Name: <spanx style="verb">iat</spanx>
+	    </t>
+	    <t>
+	      Parameter Description: Issued At, as defined in RFC 7519
+	    </t>
+	    <t>
+	      Used with "kty" Value(s): *
+	    </t>
+	    <t>
+	      Parameter Information Class: Public
+	    </t>
+	    <t>
+	      Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	    </t>
+	    <t>
+	      Specification Document(s): <xref target="HistKeysResp" /> of [[ this specification ]]
+	    </t>
+	  </list>
+	  </t>
+	  <t>
+	    <list style='symbols'>
+	      <t>
+		Parameter Name: <spanx style="verb">exp</spanx>
+	      </t>
+	      <t>
+		Parameter Description: Expiration Time, as defined in RFC 7519
+	      </t>
+	      <t>
+		Used with "kty" Value(s): *
+	      </t>
+	      <t>
+		Parameter Information Class: Public
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="HistKeysResp" /> of [[ this specification ]]
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style='symbols'>
+	      <t>
+		Parameter Name: <spanx style="verb">revoked</spanx>
+	      </t>
+	      <t>
+		Parameter Description: Revoked Key Properties
+	      </t>
+	      <t>
+		Used with "kty" Value(s): *
+	      </t>
+	      <t>
+		Parameter Information Class: Public
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="HistKeysResp" /> of [[ this specification ]]
+	      </t>
+	    </list>
+	  </t>
+	</section>
+	<?rfc subcompact="no"?>
       </section>
 
     </section>
@@ -6205,11 +6313,21 @@ HTTP/1.1 302 Found
 
       <reference anchor="IANA.JOSE" target="https://www.iana.org/assignments/jose/">
         <front>
-          <title>JSON Web Signature and Encryption Header Parameters</title>
+          <title>JSON Object Signing and Encryption (JOSE)</title>
           <author>
             <organization>IANA</organization>
           </author>
           <date/>
+        </front>
+      </reference>
+
+      <reference anchor="IANA.JWT.Claims" target="http://www.iana.org/assignments/jwt">
+        <front>
+          <title>JSON Web Token Claims</title>
+          <author>
+            <organization>IANA</organization>
+          </author>
+	  <date/>
         </front>
       </reference>
 
@@ -7411,9 +7529,6 @@ Host: op.umu.se
          <t>
             Fixed #2002: Added sequence diagrams and representations of the general architecture and the Trust Chain.
         </t>
-         <t>
-            Fixed #1727: Specification name changed from "OpenID Connect Federation" to "OpenID Federation".
-        </t>
 	  <t>
 	    Fixed #2061: Clarified that the <spanx style="verb">constraints</spanx> claim may only appear in statements issued by authorities.
 	  </t>
@@ -7433,6 +7548,14 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Rewrote <spanx style="verb">request_authentication_methods_supported</spanx> description.
+	  </t>
+	  <t>
+	    Registered <spanx style="verb">keys</spanx> JWT claim and
+	    <spanx style="verb">iat</spanx>, <spanx style="verb">exp</spanx>, and
+	    <spanx style="verb">revoked</spanx> JWK parameters.
+	  </t>
+	  <t>
+            Fixed #1727: Changed specification name from "OpenID Connect Federation" to "OpenID Federation".
 	  </t>
         </list>
       </t>
