@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Federation">OpenID Federation 1.0 -
-      draft 30
+      draft 31
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="5" month="October" year="2023"/>
+    <date day="21" month="October" year="2023"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -145,11 +145,6 @@
         An Entity MAY also belong to more than one federation.
       </t>
       <figure>
-          <name>
-            A portrait of multiple coexisting federations with 
-            two different
-            Trust Anchors with some members in common.
-          </name>
 	<preamble>
 	  Below is an example of two federations rooted at two different
 	  Trust Anchors with some members in common.
@@ -158,6 +153,9 @@
 	  other Leaf Entity by means of having at least one
 	  common Trust Anchor between them.
 	</preamble>
+	<name>
+	  Two Coexisting Federations with Some Members in Common
+	</name>
 	<artwork><![CDATA[
 .-----------------.            .-----------------.
 |  Trust Anchor A |            |  Trust Anchor B |
@@ -677,13 +675,13 @@
         </t>
 
         <figure>
-          <name>
-            Example content of the trust_mark_owners claim.
-          </name>
           <preamble>
             The following is a non-normative example of
             a <spanx style="verb">trust_marks_owners</spanx> claim value:
           </preamble>
+          <name>
+            Example <spanx style="verb">trust_marks_owners</spanx> Claim Value
+          </name>
           <artwork><![CDATA[
 {
   "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf":
@@ -707,13 +705,13 @@
         </figure>
 
         <figure>
-          <name>
-            Example content of the trust_marks_issuers claim.
-          </name>
           <preamble>
             The following is a non-normative example of
             a <spanx style="verb">trust_marks_issuers</spanx> claim value:
           </preamble>
+          <name>
+            Example <spanx style="verb">trust_marks_issuers</spanx> Claim Value
+          </name>
           <artwork><![CDATA[
 {
   "https://openid.net/certification/op": [],
@@ -724,10 +722,6 @@
         </figure>
 
         <figure>
-          <name>
-            Example content of an Entity Statement payload without
-            serialization and signature.
-          </name>
           <preamble>
             The following is a non-normative example of an Entity Statement
             before adding a signature. The example contains
@@ -736,6 +730,9 @@
             <spanx style="verb">regexp</spanx>
             (Regular expression).
           </preamble>
+          <name>
+            Example Entity Statement JWT Claims Set
+          </name>
 
           <artwork><![CDATA[
 {
@@ -879,11 +876,6 @@
           document.
         </t>
 	<figure>
-          <name>
-            Representation of the relationships between the Federation Entities 
-            and the statements issued which composition 
-            forms the Trust Chain.
-          </name>
           <preamble>
             The following is an example of a Trust Chain consisting of
             a Leaf's Entity Configuration and Entity Statements issued
@@ -896,6 +888,9 @@
             <spanx style="verb">federation_fetch_endpoint</spanx> is
             discovered in the Superior's Entity Configuration.
           </preamble>
+          <name>
+            Relationships between Federation Entities and Statements Issued in a Trust Chain
+          </name>
           <artwork><![CDATA[
 .----------------.  .---------------------------.         .---------------------------.
 | ROLE           |  | .well-known/              |         | TRUST CHAIN               |
@@ -954,13 +949,13 @@
           </t>
 
 	  <figure>
-          <name>
-            Example of a JWS Header with the trust_chain parameter.
-          </name>
 	    <preamble>
 	      The following is a non-normative example of a JWS header with
 	      the <spanx style="verb">trust_chain</spanx> parameter.
 	    </preamble>
+	    <name>
+	      Example JWS Header with a <spanx style="verb">trust_chain</spanx> Parameter
+	    </name>
 	    <artwork><![CDATA[
     {
       "alg": "RS256"
@@ -1063,13 +1058,13 @@
               to be omitted.
 
               <figure>
-          <name>
-            Example of a signed JWKS before serialization and adding a signature.
-          </name>
                 <preamble>
                   The following is a non-normative example of a signed JWKS
                   before serialization and adding a signature.
                 </preamble>
+		<name>
+		  Example Signed JWKS JWT Claims Set
+		</name>
                 <artwork><![CDATA[
     {
       "keys": [
@@ -1102,13 +1097,12 @@
               </figure>
 
               <figure>
-          <name>
-            Example of a Relying Party's Entity Configuration.
-          </name>
                 <preamble>
                   The following is a non-normative example of an RP's Entity Configuration:
                 </preamble>
-
+		<name>
+		  Example Relying Party Entity Configuration
+		</name>
                 <artwork><![CDATA[
     {
       "iss": "https://openid.sunet.se",
@@ -1362,12 +1356,12 @@
           </list>
         </t>
 
-        <t>
-          The following is a non-normative example of an OP's Entity Configuration:
-        </t>
         <figure>
+	  <preamble>
+	    The following is a non-normative example of an OP's Entity Configuration:
+	  </preamble>
           <name>
-            Example of an OpenID Provider's Entity Configuration.
+            Example OpenID Provider Entity Configuration
           </name>
           <artwork><![CDATA[
 {
@@ -1607,10 +1601,12 @@
             </t>
           </list>
         </t>
-        <t>Example</t>
         <figure>
+	  <preamble>
+	    The following is a non-normative example of the <spanx style="verb">federation_entity</spanx> Entity Type:
+	  </preamble>
           <name>
-            Example of the federation_entity metadata type.
+            Example of <spanx style="verb">federation_entity</spanx> Entity Type
           </name>
           <artwork><![CDATA[
 "federation_entity": {
@@ -1653,17 +1649,17 @@
             </list>
           </t>
           <t>
-            It SHOULD be noted that claim names without language tags are different
-            from the same claim but with language tags.
+            Note that claim names without language tags are different
+            from the same claim with language tags.
           </t>
           <t>
             <figure>
-                          <name>
-            Example of a policy entry.
-          </name>
               <preamble>
-                An example of a policy entry:
+                The following is a non-normative example of a policy entry:
               </preamble>
+	      <name>
+		Example Policy Entry
+	      </name>
               <artwork><![CDATA[
 "id_token_signed_response_alg": {
   "default": "ES256",
@@ -1674,12 +1670,12 @@
           </t>
           <t>
             <figure>
-                          <name>
-            Example of metadata_policy entry.
-          </name>
               <preamble>
                 Which fits into a metadata policy like this:
               </preamble>
+	      <name>
+		Example <spanx style="verb">metadata_policy</spanx> Entry
+	      </name>
               <artwork><![CDATA[
 "metadata_policy" : {
   "openid_relying_party": {
@@ -1790,12 +1786,15 @@
           </t>
 
         <table>
-          <name>
-              Map of the outputs produced by combining metadata policies with different input values.
+          <preamble>
+              The following table is a map of the outputs produced by combining metadata policies with different input values.
               The <spanx style="verb">subset_of</spanx> check is ignored
               when the metadata parameter has no value and
-              <spanx style="verb">essential</spanx> is set to false, as shown in the last row.
-          </name>
+              <spanx style="verb">essential</spanx> is set to <spanx style="verb">false</spanx>, as shown in the last row.
+          </preamble>
+	  <name>
+	    Examples of Outputs with Combinations of <spanx style="verb">essential</spanx>, <spanx style="verb">subset_of</spanx> and Inputs
+	  </name>
           <thead>
             <tr>
               <td colspan="2">Policy</td>
@@ -2089,11 +2088,11 @@
         <section title="Policy Combination Example">
           <figure>
             <preamble>
-              A federation's policy for OAuth 2.0 clients:
+              We start with a federation's policy for OAuth 2.0 clients:
             </preamble>
-                      <name>
-            Example of a federation's policy for OAuth 2.0 clients.
-          </name>
+	    <name>
+	      Example Federation's Policy for OAuth 2.0 Clients
+	    </name>
             <artwork><![CDATA[
 {
   "grant_types": {
@@ -2117,12 +2116,12 @@
 ]]></artwork>
           </figure>
           <figure>
-                      <name>
-            Example of a organization's policy for OAuth 2.0 clients.
-          </name>
             <preamble>
-              An organization's policy for OAuth 2.0 clients:
+              Next, we have an organization's policy for OAuth 2.0 clients:
             </preamble>
+	    <name>
+	      Example Organization's Policy for OAuth 2.0 Clients
+	    </name>
             <artwork><![CDATA[
 {
   "grant_types": {
@@ -2143,12 +2142,12 @@
 ]]></artwork>
           </figure>
           <figure>
-                      <name>
-            Example of the combined policies listed in the previous two examples.
-          </name>
             <preamble>
-              The combined metadata policy then becomes:
+              The resulting combined metadata policy is:
             </preamble>
+	    <name>
+	      Combined Policies from the Previous Two Examples
+	    </name>
             <artwork><![CDATA[
 {
   "grant_types": {
@@ -2195,18 +2194,18 @@
             and not understood, then the metadata MUST be rejected.
           </t>
         </section>
-        <section title="Policy Example">
+        <section title="Example of Applying Policies">
           <t>
             The following is a non-normative example of a set of policies being
             applied to an RP's metadata.
           </t>
           <figure>
-                      <name>
-            Example of policies to be applied to an RP's metadata.
-          </name>
             <preamble>
-              The RP's metadata:
+              The RP's metadata from its Entity Configuration is:
             </preamble>
+	    <name>
+	      RP's Metadata from its Entity Configuration
+	    </name>
             <artwork><![CDATA[
 {
   "contacts": [
@@ -2222,12 +2221,12 @@
 ]]></artwork>
           </figure>
           <figure>
-                      <name>
-            Example of a federation's policy for RPs.
-          </name>
             <preamble>
-              The federation's policy for RPs:
+              The federation's policy for RPs is:
             </preamble>
+	    <name>
+	      Federation's Policy for RPs
+	    </name>
             <artwork><![CDATA[
 {
   "id_token_signed_response_alg": {
@@ -2247,12 +2246,12 @@
 ]]></artwork>
           </figure>
           <figure>
-                      <name>
-            Example of a organization's policy for RPs.
-          </name>
             <preamble>
-              The organization's policy for RPs:
+              The organization's policy for RPs is:
             </preamble>
+	    <name>
+	      Organization's Policy for RPs
+	    </name>
             <artwork><![CDATA[
 {
   "metadata_policy": {
@@ -2278,14 +2277,14 @@
 }
 ]]></artwork>
           </figure>
-          <t>
-            After applying the policies above,
-            the metadata for the Entity in question would become:
-          </t>
           <figure>
-                      <name>
-            Example of the metadata after the application of the policies.
-          </name>
+	    <preamble>
+	      After applying the policies above,
+	      the metadata for the Entity in question would become:
+	    </preamble>
+	    <name>
+	      RP's Metadata After Application of Policies
+	    </name>
             <artwork><![CDATA[
 {
   "contacts": [
@@ -2308,7 +2307,7 @@
         </section>
       </section>
       <section title="Applying Constraints" anchor="chain_constraints">
-        <t>A constraint specification can contain the following claims:</t>
+        <t>A set of constraints can contain the following claims:</t>
         <t>
           <list style="hanging">
             <t hangText="max_path_length">
@@ -2336,10 +2335,12 @@
             </t>
           </list>
         </t>
-        <t>The following is a non-normative example of such a specification:</t>
         <figure>
-                      <name>
-            Example of federation constraints.
+	  <preamble>
+	    The following is a non-normative example of a set of constraints:
+	  </preamble>
+	  <name>
+            Example Set of Constraints
           </name>
           <artwork><![CDATA[
 {
@@ -2712,11 +2713,11 @@
         <section title="Trust Mark Examples" anchor="trust_example">
           <figure>
             <preamble>
-              A non-normative example of a Trust Mark claim inside an Entity Configuration is:
+              A non-normative example of a <spanx style="verb">trust_marks</spanx> claim inside an Entity Configuration is:
             </preamble>
-                      <name>
-            Example of the Trust Marks provided with an Entity Configuration.
-          </name>
+	    <name>
+	      Trust Marks Provided with an Entity Configuration
+	    </name>
             <artwork><![CDATA[
 {
   "iss": "https://rp.example.it/spid/",
@@ -2727,20 +2728,20 @@
     {
      "id": "https://www.spid.gov.it/certification/rp/",
      "trust_mark":
-        "eyJraWQiOiJmdWtDdUtTS3hwWWJjN09lZUk3Ynlya3N5a0E1bDhPb2RFSXVyOH"
-        "JoNFlBIiwidHlwIjoidHJ1c3QtbWFyaytqd3QiLCJhbGciOiJSUzI1NiJ9.eyJ"
-        "pc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vc"
-        "nAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJpZCI6Imh0dHB"
-        "zOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJsb2dvX3Vya"
-        "SI6Imh0dHBzOi8vd3d3LmFnaWQuZ292Lml0L3RoZW1lcy9jdXN0b20vYWdpZC9"
-        "sb2dvLnN2ZyIsInJlZiI6Imh0dHBzOi8vZG9jcy5pdGFsaWEuaXQvZG9jcy9zc"
-        "GlkLWNpZS1vaWRjLWRvY3MvaXQvdmVyc2lvbmUtY29ycmVudGUvIn0.AGf5Y4M"
-        "oJt22rznH4i7Wqpb2EF2LzE6BFEkTzY1dCBMCK-8P_vj4Boz7335pUF45XXr2j"
-        "x5_waDRgDoS5vOO-wfc0NWb4Zb_T1RCwcryrzV0z3jJICePMPM_1hZnBZjTNQd"
-        "4EsFNvKmUo_teR2yzAZjguR2Rid30O5PO8kJtGaXDmz-rWaHbmfLhlNGJnqcp9"
-        "Lo1bhkU_4Cjpn2bdX7RN0JyfHVY5IJXwdxUMENxZd-VtA5QYiw7kPExT53XcJO"
-        "89ebe_ik4D0dl-vINwYhrIz2RPnqgA1OdbK7jg0vm8Tb3aemRLG7oLntHwqLO-"
-        "gGYr6evM2_SgqwA0lQ9mB9yhw"
+       "eyJraWQiOiJmdWtDdUtTS3hwWWJjN09lZUk3Ynlya3N5a0E1bDhPb2RFSXVyOH
+        JoNFlBIiwidHlwIjoidHJ1c3QtbWFyaytqd3QiLCJhbGciOiJSUzI1NiJ9.eyJ
+        pc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vc
+        nAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJpZCI6Imh0dHB
+        zOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJsb2dvX3Vya
+        SI6Imh0dHBzOi8vd3d3LmFnaWQuZ292Lml0L3RoZW1lcy9jdXN0b20vYWdpZC9
+        sb2dvLnN2ZyIsInJlZiI6Imh0dHBzOi8vZG9jcy5pdGFsaWEuaXQvZG9jcy9zc
+        GlkLWNpZS1vaWRjLWRvY3MvaXQvdmVyc2lvbmUtY29ycmVudGUvIn0.AGf5Y4M
+        oJt22rznH4i7Wqpb2EF2LzE6BFEkTzY1dCBMCK-8P_vj4Boz7335pUF45XXr2j
+        x5_waDRgDoS5vOO-wfc0NWb4Zb_T1RCwcryrzV0z3jJICePMPM_1hZnBZjTNQd
+        4EsFNvKmUo_teR2yzAZjguR2Rid30O5PO8kJtGaXDmz-rWaHbmfLhlNGJnqcp9
+        Lo1bhkU_4Cjpn2bdX7RN0JyfHVY5IJXwdxUMENxZd-VtA5QYiw7kPExT53XcJO
+        89ebe_ik4D0dl-vINwYhrIz2RPnqgA1OdbK7jg0vm8Tb3aemRLG7oLntHwqLO-
+        gGYr6evM2_SgqwA0lQ9mB9yhw"
     }
   ],
   "metadata": {
@@ -2761,14 +2762,13 @@
 
           <figure>
             <preamble>
-              An example of a decoded Trust Mark issued to an RP,
-              attesting the conformance to a national
+              An example of a decoded Trust Mark payload issued to an RP,
+              attesting to conformance to a national
               public service profile:
             </preamble>
-                      <name>
-            Example of the decoded Trust Mark payload
-            without serailization and signature.
-          </name>
+	    <name>
+	      Trust Mark for a National Profile
+	    </name>
             <artwork><![CDATA[
 {
   "id":"https://federation.id/openid_relying_party/public/",
@@ -2787,14 +2787,13 @@
 
           <figure>
             <preamble>
-              An example of a decoded Trust Mark issued to an RP,
-              attesting its conformance to the rules for
+              An example of a decoded Trust Mark payload issued to an RP,
+              attesting to its conformance to the rules for
               data management of underage users:
             </preamble>
-                      <name>
-            Example of the decoded Trust Mark payload related to an RP
-            without serialization and signature.
-          </name>
+	    <name>
+	      Trust Mark Issued to an RP
+	    </name>
             <artwork><![CDATA[
 {
   "id":"https://federation.id/openid_relying_party/private/under-age",
@@ -2810,12 +2809,13 @@
           </figure>
 
           <figure>
-            <name>
-              An example of a Trust Mark attesting a stipulation of an
-              agreement between between two organization's Entities.</name>
             <preamble>
-              An example of a Trust Mark attesting a stipulation of an
-              agreement between between two organization's Entities:</preamble>
+              An example of a decoded Trust Mark payload attesting a stipulation of an
+              agreement between between two organization's Entities:
+	    </preamble>
+	    <name>
+	      Trust Mark Attesting to an Agreement Between Entities
+	    </name>
             <artwork><![CDATA[
 {
   "id": "https://deleghedigitali.gov.it/openid_relying_party/sgd/",
@@ -2835,14 +2835,13 @@
 ]]></artwork>
           </figure>
           <figure>
-            <name>
-              An example of a Trust Mark asserting
-              conformance to a security profile.
-            </name>
             <preamble>
-              An example of a Trust Mark asserting
+              An example of a decoded Trust Mark payload asserting
               conformance to a security profile:
             </preamble>
+            <name>
+              Trust Mark Asserting Conformance to a Security Profile
+            </name>
             <artwork><![CDATA[
 {
   "iss": "https://secusign.org",
@@ -2856,8 +2855,10 @@
           </figure>
 
           <figure>
-            <name>An example of a decoded self-signed Trust Mark.</name>
             <preamble>An example of a decoded self-signed Trust Mark:</preamble>
+            <name>
+	      Self-Signed Trust Mark
+	    </name>
             <artwork><![CDATA[
 {
   "iss": "https://example.com/op",
@@ -2872,10 +2873,12 @@
           </figure>
 
           <figure>
-            <name>An example of a third-party accreditation authority.
-            </name>
-            <preamble>An example of a third-party accreditation authority:
+            <preamble>
+	      An example of a third-party accreditation authority for Trust Marks:
             </preamble>
+            <name>
+	      Third-Party Accreditation Authority for Trust Marks
+            </name>
             <artwork><![CDATA[
 {
   "iss": "https://swamid.se",
@@ -2937,17 +2940,18 @@
         <t>
           An Entity Configuration document MUST be queried using an
           HTTP GET request at the previously specified path.
-          The requesting party would make the following request to the Entity
-          <spanx style="verb">https://openid.sunet.se</spanx>
-          to obtain its configuration information:
         </t>
         <t>
           <figure>
-            <name>Example of an HTTP Request with method GET to fetch 
-            an Entity Configuration.
+	    <preamble>
+	      In this example, the requesting party would make the following request to the Entity
+	      <spanx style="verb">https://openid.sunet.se</spanx>
+	      to obtain its configuration information:
+	    </preamble>
+            <name>
+	      Request for Entity Configuration
             </name>
             <artwork><![CDATA[
-
   GET /.well-known/openid-federation HTTP/1.1
   Host: openid.sunet.se
 ]]></artwork>
@@ -2970,14 +2974,14 @@
           SHOULD be produced in accordance with what is defined in
           <xref target="error_response"/>.
         </t>
-        <t>The following is a non-normative example response from an
-          Intermediate Entity, before serialization and adding a signature:
-        </t>
         <t>
           <figure>
-            <name>Example of the HTTP Response containing the Entity Configuration
-            with a decoded payload in JSON format, without serialization and
-            signature.
+	    <preamble>
+	      The following is a non-normative example response from an
+	      Intermediate Entity, before serialization and adding a signature:
+	    </preamble>
+            <name>
+	      JWT Claims Set from an Entity Configuration Response
             </name>
             <artwork><![CDATA[
 200 OK
@@ -3103,11 +3107,11 @@ Content-Type: application/entity-statement+jwt
           </t>
           <figure>
             <preamble>
-              The following is a non-normative example of an API
-              request for an Entity Statement:
+              The following is a non-normative example of an API request for
+	      an Entity Statement related to https://openid.sunet.se:
             </preamble>
-            <name>Example of the HTTP Request for an Entity Statement
-            related to https://openid.sunet.se.
+            <name>
+	      API Request for an Entity Statement
             </name>
             <artwork><![CDATA[
 GET /federation_fetch_endpoint?
@@ -3130,11 +3134,11 @@ Host: edugain.org
           </t>
           <figure>
             <preamble>
-              The following is a non-normative example of a response, before
+              The following is a non-normative example of a fetch response, before
               serialization and adding a signature:
             </preamble>
-            <name>Example of the HTTP Response with an Entity Statement
-             before serialization and signature.
+            <name>
+	      JWT Claims Set for a Fetch Response
             </name>
             <artwork><![CDATA[
 200 OK
@@ -3238,7 +3242,7 @@ Content-Type: application/entity-statement+jwt
               The following is a non-normative example of a resolve request:
             </preamble>
             <name>
-              Example of a resolve request.
+              Example Resolve Request
             </name>
             <artwork><![CDATA[
 GET /resolve?
@@ -3281,19 +3285,18 @@ Host: openid.sunet.se
           <t>
             The resolve response MAY also contain in its
             <xref target="RFC7515">JSON Web Signature (JWS)</xref>
-            header the parameter <spanx style="verb">trust_chain</spanx>, 
+            header the parameter <spanx style="verb">trust_chain</spanx>,
             as defined in <xref target="trust_chain_head_param"/>.
-            When this is true, the Trust Anchor in the Trust Chain 
-            MUST match to the Trust Anchor provided in the 
-            related request, with the parameter 
-            <spanx style="verb">anchor</spanx>.
-            The issuer that provides its Trust Chain within the resolve 
-            response, makes it evident that it is part of the same 
-            federation of the subject within the response. Thus, 
+            When this is present, the Trust Anchor in the Trust Chain
+            MUST match to the Trust Anchor provided in the
+            related request in the <spanx style="verb">anchor</spanx> parameter.
+            The issuer that provides its Trust Chain within the resolve
+            response makes it evident that it is part of the same
+            federation of the subject of the response. Thus,
             when the Trust Chain of both the issuer and the subject
-            are available, and the Federation Historical Keys endpoint is 
-            provided by the Trust Anchor, the resolve response became a long-lived
-            attestation; it can be always verified, even 
+            are available and the Federation Historical Keys endpoint is
+            provided by the Trust Anchor, the resolve response becomes a long-lived
+            attestation; it can be always verified, even
             when the Federation Keys may change in the future.
           </t>
 
@@ -3367,8 +3370,7 @@ Host: openid.sunet.se
               serialization and adding a signature:
             </preamble>
             <name>
-              Example of a resolve response, before
-              serialization and adding a signature.
+              JWT Claims Set for a Resolve Response
             </name>
             <artwork><![CDATA[
 {
@@ -3535,7 +3537,7 @@ Host: openid.sunet.se
               request for a list of Subordinates:
             </preamble>
             <name>
-              Example of a Subordinate listing request.
+              Subordinate Listing Request
             </name>
             <artwork><![CDATA[
 GET /list HTTP/1.1
@@ -3563,7 +3565,7 @@ Host: openid.sunet.se
               the Subordinate Entities:
             </preamble>
             <name>
-              Example of a Subordinate listing response.
+              Subordinate Listing Response
             </name>
             <artwork><![CDATA[
 200 OK
@@ -3626,13 +3628,13 @@ Content-Type: application/json
           </t>
           <t>
             <figure>
-            <name>
-              Example of a Trust Mark status request.
-            </name>
               <preamble>
                 The following is a non-normative example of a request using
                 <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>:
               </preamble>
+	      <name>
+		Trust Mark Status Request
+	      </name>
               <artwork><![CDATA[
 POST /federation_trust_mark_status_endpoint HTTP/1.1
 Host: op.example.org
@@ -3673,9 +3675,9 @@ sub=https%3A%2F%2Fopenid.sunet.se%2FRP
               <preamble>
                 The following is a non-normative example of a response:
               </preamble>
-            <name>
-              Example of a Subordinate listing response.
-            </name>
+	      <name>
+		Trust Mark Status Response
+	      </name>
               <artwork><![CDATA[
 200 OK
 Content-Type: application/json
@@ -3722,7 +3724,7 @@ Content-Type: application/json
               request for a list of Trust Marked Entities:
             </preamble>
             <name>
-              Example of a trust marked listing request.
+              Trust Marked Entities Listing Request
             </name>
             <artwork><![CDATA[
 GET /trust_marked_list?trust_mark_id=https%3A%2F%2Ffederation.example.org%2Fopenid_relying_party%2Fprivate%2Funder-age HTTP/1.1
@@ -3750,7 +3752,7 @@ Host: trust-mark-issuer.example.org
               the Trust Marked Entities:
             </preamble>
             <name>
-              Example of a trust marked listing response.
+              Trust Marked Entities Listing Response
             </name>
             <artwork><![CDATA[
 200 OK
@@ -3800,10 +3802,10 @@ Content-Type: application/json
           <figure>
             <preamble>
               The following is a non-normative example of a
-              request:
+              historical keys request:
             </preamble>
             <name>
-              Example of a Federation Historical Keys request.
+              Federation Historical Keys Request
             </name>
             <artwork><![CDATA[
 GET /.well-known/openid-federation-historical-jwks HTTP/1.1
@@ -3918,10 +3920,11 @@ Host: trust-anchor.example.com
 
           <figure>
             <preamble>
-              The following is a non-normative example of a response, before serialization and adding a signature:
+              The following is a non-normative example of a historical keys response,
+	      before serialization and adding a signature:
             </preamble>
-                <name>
-              Example of a Federation Historical Keys response, before serialization and adding a signature.
+	    <name>
+              JWT Claims Set from a Federation Historical Keys Response
             </name>
             <artwork><![CDATA[
 HTTP/1.1 200 OK
@@ -4111,7 +4114,7 @@ Content-Type: application/jwk-set+jwt
             The following is a non-normative example of an error response:
           </preamble>
           <name>
-            Example of an error response.
+            Example Error Response
           </name>
           <artwork><![CDATA[
 400 Bad request
@@ -4183,12 +4186,13 @@ Content-Type: application/json
 
       <figure>
         <preamble>
-          Resolving Trust Chain and Metadata: the perspective of an OP.
+	  The following sequence diagram represents the interactions between the RP,
+	  the OP, and the Trust Anchor during a trust evaluation made by the OP
+	  for the RP:
         </preamble>
-          <name>
-            Sequence diagram representing the interactions between RP, OP and the
-            Trust Anchor during a trust evaluation made by OP for the RP.
-          </name>
+	<name>
+          Resolving Trust Chain and Metadata from the Perspective of an OP
+	</name>
         <artwork><![CDATA[
 +-----+                          +-----+                             +--------------+
 | RP  |                          | OP  |                             | Trust Anchor |
@@ -4582,9 +4586,9 @@ Content-Type: application/json
                 The following is a non-normative example of the Claims in a
                 Request Object before base64url encoding and signing:
               </preamble>
-          <name>
-            Example of Request Object before base64url encoding and signing.
-          </name>
+	      <name>
+		JWT Claims Set for a Request Object
+	      </name>
               <artwork><![CDATA[
 {
   "alg": "RS256",
@@ -4612,14 +4616,14 @@ Content-Type: application/json
 ]]></artwork>
             </figure>
             <figure>
-          <name>
-            Example of Request Object before base64url encoding and signing.
-          </name>
               <preamble>
                 The following is a non-normative example of an Authentication
-                Request using the request parameter (with line wraps within
-                values for display purposes only):
+                Request using the <spanx style="verb">request</spanx> parameter
+		(with line wraps within values for display purposes only):
               </preamble>
+	      <name>
+		Authentication Request Using Request Object
+	      </name>
               <artwork><![CDATA[
 Host: server.example.com
 GET /authorize?
@@ -4756,22 +4760,22 @@ GET /authorize?
                   based on public key infrastructure (PKI).
                 </t>
                 <t>
-                  A Request Object as described in the Sections 
-                  <xref target="UsingAuthzRequestObject">Using a Request Object</xref>
-                  and <xref target="trust_chain_authz">
-                    Authorization Request with a Trust Chain
-                  </xref>.
+                  A Request Object as described in
+                  <xref target="UsingAuthzRequestObject"/>
+                  and <xref target="trust_chain_authz"/>.
                 </t>
               </list>
               Note that if mTLS is used, TLS client authentication MUST be
               configured, and, in the case of self-signed certificates, the server must
               omit the certificate chain validation.
             </t>
-            <t>Using the example above, a request could look like this:</t>
             <figure>
-          <name>
-            Example of a Pushed Authorization Request.
-          </name>
+            <preamble>
+	      Using the example above, a Pushed Authorization Request could look like this:
+	    </preamble>
+	    <name>
+	      Pushed Authorization Request
+	    </name>
               <artwork><![CDATA[
 POST /par HTTP/1.1
 Host: op.example.org
@@ -4870,10 +4874,10 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
           </t>
           <figure>
             <preamble>
-              The following is a non-normative example error response:
+              The following is a non-normative example authentication error response:
             </preamble>
           <name>
-            Example of the error response.
+            Authentication Error Response
           </name>
             <artwork><![CDATA[
 HTTP/1.1 302 Found
@@ -6511,11 +6515,11 @@ HTTP/1.1 302 Found
 
       <figure>
         <preamble>
-          The participants within the eduGAIN federation.
+	  The following depicts a federation under the eduGAIN Trust Anchor:
         </preamble>
-          <name>
-             Portrait of a federation under the Trust Anchor eduGAIN.
-          </name>
+	<name>
+          Participants Within the eduGAIN Federation
+	</name>
         <artwork><![CDATA[
                        eduGAIN
                           |
@@ -6645,6 +6649,7 @@ HTTP/1.1 302 Found
           The Entity Configuration concerning Intermediates is not
           part of the Trust Chain.
         </t>
+
         <section title="Configuration Information for https://op.umu.se">
           <t>The LIGO WIKI RP fetches the Entity Configuration from the
             OP (op.umu.se)
@@ -6652,9 +6657,9 @@ HTTP/1.1 302 Found
                     target="federation_configuration"/>.
           </t>
           <figure>
-            <preamble>The result is this Entity Configuration.</preamble>
+            <preamble>The result is this Entity Configuration:</preamble>
           <name>
-             Entity Configuration issued by https://op.umu.se.
+             Entity Configuration Issued by https://op.umu.se
           </name>
             <artwork><![CDATA[
 {
@@ -6735,22 +6740,25 @@ HTTP/1.1 302 Found
             "https://umu.se" using the process defined in
             <xref target="federation_configuration"/>.
           </t>
-          <t>The request will look like this:</t>
           <figure>
-          <name>
-             Entity Configuration issued by https://umu.se.
-          </name>
+	    <preamble>
+	      The request will look like this:
+	    </preamble>
+	    <name>
+	      Entity Configuration Issued by https://umu.se
+	    </name>
             <artwork><![CDATA[
 GET /.well-known/openid-federation HTTP/1.1
 Host: umu.se
 ]]></artwork>
           </figure>
-          <t>And the GET will return:</t>
           <figure>
-          <name>
-             Example of the Entity Configuration payload
-             without serialization and signature.
-          </name>
+	    <preamble>
+	      And the GET will return:
+	    </preamble>
+	    <name>
+	      Entity Configuration JWT Claims Set
+	    </name>
             <artwork><![CDATA[
 {
   "authority_hints": [
@@ -6796,22 +6804,26 @@ Host: umu.se
             to fetch information about
             "https://op.umu.se".
           </t>
-          <t>The request will look like this:</t>
           <figure>
-          <name>
-             Entity Statement issued by https://umu.se for https://op.umu.se.
-          </name>
+	    <preamble>
+	      The request will look like this:
+	    </preamble>
+	    <name>
+	      Request Entity Statement from https://umu.se for https://op.umu.se
+	    </name>
             <artwork><![CDATA[
 GET /oidc/fedapi?sub=https%3A%2F%2Fop.umu.se&
 iss=https%3A%2F%2Fumu.se HTTP/1.1
 Host: umu.se
 ]]></artwork>
           </figure>
-          <t>and the result is this:</t>
           <figure>
-          <name>
-             Entity Statement payload without serialization and signature.
-          </name>
+	    <preamble>
+	      And the result is this:
+	    </preamble>
+	    <name>
+	      Entity Statement Issued by https://umu.se for https://op.umu.se
+	    </name>
             <artwork><![CDATA[
 {
   "exp": 1568397247,
@@ -6874,22 +6886,25 @@ Host: umu.se
             "https://swamid.se" using the process defined in
             <xref target="federation_configuration"/>.
           </t>
-          <t>The request will look like this:</t>
           <figure>
-          <name>
-             Entity Configuration issued by https://swamid.se.
-          </name>
+	    <preamble>
+	      The request will look like this:
+	    </preamble>
+	    <name>
+	      Request Entity Configuration from https://swamid.se
+	    </name>
             <artwork><![CDATA[
 GET /.well-known/openid-federation HTTP/1.1
 Host: swamid.se
 ]]></artwork>
           </figure>
-          <t>And the GET will return:</t>
           <figure>
-          <name>
-             Entity Configuration payload without 
-             serialization and signature.
-          </name>
+	    <preamble>
+	      And the GET will return:
+	    </preamble>
+	    <name>
+	      Entity Configuration Issued by https://swamid.se
+	    </name>
             <artwork><![CDATA[
 {
   "authority_hints": [
@@ -6937,24 +6952,27 @@ Host: swamid.se
             to fetch information about
             "https://umu.se".
           </t>
-          <t>The request will look like this:</t>
           <figure>
-          <name>
-             HTTP Request to https://swamid.se for requesting the 
-             Entity Statement related to https://umu.se.
-          </name>
+	    <preamble>
+	      The request will look like this:
+	    </preamble>
+	    <name>
+	      Request to https://swamid.se for Entity Statement for https://umu.se
+	    </name>
             <artwork><![CDATA[
 GET /fedapi?sub=https%3A%2F%2Fumu.se&
 iss=https%3A%2F%2Fswamid.se HTTP/1.1
 Host: swamid.se
 ]]></artwork>
           </figure>
-          <t>and the result is this:</t>
 
           <figure>
-          <name>
-             Entity Statement decoded payload without serialization and signature.
-          </name>
+	    <preamble>
+	      And the result is this:
+	    </preamble>
+	    <name>
+	      Entity Statement Issued by https://swamid.se for https://umu.se
+	    </name>
             <artwork><![CDATA[
 {
   "exp": 1568397247,
@@ -7015,22 +7033,25 @@ Host: swamid.se
             "https://edugain.geant.org" using the process defined in
             <xref target="federation_configuration"/>.
           </t>
-          <t>The request will look like this:</t>
           <figure>
-          <name>
-             Entity Configuration requested to https://edugain.geant.org.
-          </name>
+	    <preamble>
+	      The request will look like this:
+	    </preamble>
+	    <name>
+	      Entity Configuration Requested from https://edugain.geant.org
+	    </name>
             <artwork><![CDATA[
 GET /.well-known/openid-federation HTTP/1.1
 Host: edugain.geant.org
 ]]></artwork>
           </figure>
-          <t>And the GET will return:</t>
           <figure>
-          <name>
-             Entity Configuration issued by https://edugain.geant.org
-             without serialization and signature.
-          </name>
+	    <preamble>
+	      And the GET will return:
+	    </preamble>
+	    <name>
+	      Entity Configuration issued by https://edugain.geant.org
+	    </name>
             <artwork><![CDATA[
 {
   "exp": 1568397247,
@@ -7074,11 +7095,12 @@ Host: edugain.geant.org
             to fetch information about
             "https://swamid.se".
           </t>
-          <t>The request will look like this:</t>
           <figure>
+          <preamble>
+	    The request will look like this:
+	  </preamble>
           <name>
-             HTTP Request to https://edugain.geant.org for requesting the 
-             Entity Statement related to https://swamid.se.
+             Request to https://edugain.geant.org for Entity Statement for https://swamid.se
           </name>
             <artwork><![CDATA[
 GET /edugain/api?sub=https%3A%2F%2Fswamid.se&
@@ -7086,11 +7108,13 @@ iss=https%3A%2F%2Fedugain.geant.org HTTP/1.1
 Host: geant.org
 ]]></artwork>
           </figure>
-          <t>and the result is this:</t>
           <figure>
-          <name>
-             Entity Statement payload without serialization and signature.
-          </name>
+	    <preamble>
+	      And the result is this:
+	    </preamble>
+	    <name>
+	      Entity Statement Issued by https://edugain.geant.org for https://swamid.se
+	    </name>
             <artwork><![CDATA[
 {
   "exp": 1568397247,
@@ -7158,17 +7182,17 @@ Host: geant.org
           <t>Having verified the chain, the LIGO Wiki RP can proceed with the
             next step.
           </t>
-          <t>Combining the metadata policies from the tree Entity Statements we
-            have by
-            a Superior about its Subordinate and applying the combined policy
-            to the
-            metadata statement that the Leaf Entity presented, we get:
-          </t>
           <figure>
-          <name>
-             Example of the final metadata derived from the Trust Chain 
-             with applied metadata policies.
-          </name>
+	    <preamble>
+	      Combining the metadata policies from the tree Entity Statements we
+	      have by
+	      a Superior about its Subordinate and applying the combined policy
+	      to the
+	      metadata statement that the Leaf Entity presented, we get:
+	    </preamble>
+	    <name>
+	      Final Metadata Derived from Trust Chain by Applying Metadata Policies
+	    </name>
             <artwork><![CDATA[
 {
   "authorization_endpoint":
@@ -7254,13 +7278,13 @@ Host: geant.org
             The LIGO Wiki RP does not do any registration but goes directly to
             sending an Authentication Request.
           </t>
-          <t>
-            Here is an example of such an Authentication Request:
-          </t>
           <figure>
-          <name>
-             Example of the authorization request.
-          </name>
+	    <preamble>
+	      Here is an example of such an Authentication Request:
+	    </preamble>
+	    <name>
+	      Authentication Request Using Automatic Client Registration
+	    </name>
             <artwork><![CDATA[
 GET /openid/authorization?
   request=eyJhbGciOiJSUzI1NiIsImtpZCI6ImRVTjJhMDF3Umtoa1NXc
@@ -7347,9 +7371,9 @@ Host: op.umu.se
               <list style="hanging">
                 <t hangText="edugain.geant.org">
                   <figure>
-          <name>
-             Example of the metadata policies related to multiple metadata types.
-          </name>
+		    <name>
+		      Metadata Policies Related to Multiple Metadata Types
+		    </name>
                     <artwork><![CDATA[
 "metadata_policy": {
   "openid_provider": {
@@ -7372,9 +7396,9 @@ Host: op.umu.se
               <list style="hanging">
                 <t hangText="incommon.org">
                   <figure>
-          <name>
-             Example of the metadata policy related to the RP.
-          </name>
+		    <name>
+		      Metadata Policy Related to the RP
+		    </name>
                     <artwork><![CDATA[
 "metadata_policy": {
   "openid_relying_party": {
@@ -7400,15 +7424,13 @@ Host: op.umu.se
                 </t>
               </list>
             </t>
-            <t>
-              Combining these and apply them to the metadata for
-              wiki.ligo.org:
-            </t>
             <figure>
-          <name>
-             Example of the metadata where metadata 
-             policy still have to be applied.
-          </name>
+	      <preamble>
+		Next, combine these and apply them to the metadata for wiki.ligo.org:
+	      </preamble>
+	      <name>
+		Combined Metadata with Metadata Policy yet to be applied
+	      </name>
               <artwork><![CDATA[
 "metadata": {
   "application_type": "web",
@@ -7432,14 +7454,13 @@ Host: op.umu.se
 }
 ]]></artwork>
             </figure>
-            <t>
-              The final result is:
-            </t>
             <figure>
-          <name>
-             Example of the final metadata after the metadata 
-             policy have been applied.
-          </name>
+	      <preamble>
+		The final result is:
+	      </preamble>
+	      <name>
+		Final Metadata After Metadata Policy has been Applied
+	      </name>
               <artwork><![CDATA[
 {
   "application_type": "web",
@@ -7482,14 +7503,14 @@ Host: op.umu.se
             of the OP (op.umu.se). The request contains the RP's Entity
             Configuration.
           </t>
-          <t>
-            An example JWT Claims Set for the RP's Entity Configuration is:
-          </t>
-            <figure>
-          <name>
-             Example of the JWT Claims Set for the RP's Entity Configuration.
-          </name>
-              <artwork><![CDATA[
+	  <figure>
+	    <preamble>
+	      An example JWT Claims Set for the RP's Entity Configuration is:
+	    </preamble>
+	    <name>
+	      JWT Claims Set for the RP's Entity Configuration
+	    </name>
+	    <artwork><![CDATA[
 {
   "iss": "https://wiki.ligo.org",
   "sub": "https://wiki.ligo.org",
@@ -7527,7 +7548,7 @@ Host: op.umu.se
   "authority_hints": ["https://incommon.org"]
 }
 ]]></artwork>
-            </figure>
+	  </figure>
           <t>
             The OP receives the RP's Entity Configuration and proceeds with the
             sequence of steps laid out in <xref target="op_discovery"/>.
@@ -7548,15 +7569,14 @@ Host: op.umu.se
             <spanx style="verb">client_secret</spanx> and other parameters that
             the OP provisioned for the RP.
           </t>
-          <t>
-            Here is an example JWT Claims Set of the Entity Statement returned
-            by the OP to the RP:
-          </t>
           <figure>
-              <name>
-                Example of the Entity Statement returned by the OP to the RP 
-                after a successful explicit client registration.
-              </name>
+	    <preamble>
+	      Here is an example JWT Claims Set of the Entity Statement returned
+	      by the OP to the RP after successful explicit client registration:
+	    </preamble>
+	    <name>
+	      JWT Claims Set of Entity Statement Returned by OP to RP after Explicit Client Registration
+	    </name>
             <artwork><![CDATA[
 {
   "trust_anchor_id": "https://edugain.geant.org",
