@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="21" month="October" year="2023"/>
+    <date day="25" month="October" year="2023"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -1000,190 +1000,6 @@
 	<spanx style="verb">null</spanx> values with omitted members.
       </t>
 
-      <section title="OpenID Connect and OAuth 2.0 Metadata Extensions" anchor="common_metadata">
-        <t>
-        For the OpenID Connect and OAuth 2.0 Entity Types below,
-        the following additional metadata properties are defined,
-        which MAY be used with all those Entity Types:
-        </t>
-        <t>
-          <list style="hanging">
-            <t hangText="organization_name">
-              <vspace/>
-              OPTIONAL. A human-readable
-              name representing the organization owning the Entity.
-              If the owner is a physical person,
-              this MAY be, for example, the person's name. Note
-              that this information will be publicly available.
-            </t>
-            <t hangText="signed_jwks_uri">
-              <vspace/>
-              OPTIONAL. A URI pointing to a signed JWT having the Entity's
-              JWK Set as its payload. The JWT MUST be signed using a Federation
-              Entity Key.
-              A signed JWT can contain the following claims, all except
-              <spanx style="verb">keys</spanx> defined in
-              <xref target="RFC7519"/>:
-              <list style="hanging">
-                <t hangText="keys">
-                  <vspace/>
-                  REQUIRED. Array of JWK values.
-                </t>
-                <t hangText="iss">
-                  <vspace/>
-                  REQUIRED. The "iss" (issuer) claim identifies the principal
-                  that issued the JWT.
-                </t>
-                <t hangText="sub">
-                  <vspace/>
-                  REQUIRED. This claim identifies the owner of the keys.
-                  It SHOULD be the same as the issuer.
-                </t>
-                <t hangText="iat">
-                  <vspace/>
-                  OPTIONAL. This claim identifies the time at which the JWT was
-                  issued.
-                </t>
-                <t hangText="exp">
-                  <vspace/>
-                  OPTIONAL. This claim identifies the time at which the JWT is
-                  no longer valid.
-                </t>
-              </list>
-              More claims are defined in <xref target="RFC7519"/>; of
-              these, <spanx style="verb">aud</spanx> SHOULD NOT be used since
-              the issuer cannot know who the audience is.
-              <spanx style="verb">nbf</spanx> and <spanx style="verb">jti</spanx>
-              are deemed to not be very useful in this context and are
-              to be omitted.
-
-              <figure>
-                <preamble>
-                  The following is a non-normative example of a signed JWKS
-                  before serialization and adding a signature.
-                </preamble>
-		<name>
-		  Example Signed JWKS JWT Claims Set
-		</name>
-                <artwork><![CDATA[
-    {
-      "keys": [
-        {
-          "kty": "RSA",
-          "kid": "SUdtUndEWVY2cUFDeDV5NVlBWDhvOXJodVl2am1mNGNtR0pmd",
-          "n": "y_Zc8rByfeRIC9fFZrDZ2MGH2ZnxLrc0ZNNwkNet5rwCPYeRF3Sv
-                5nihZA9NHkDTEX97dN8hG6ACfeSo6JB2P7heJtmzM8oOBZbmQ90n
-                EA_JCHszkejHaOtDDfxPH6bQLrMlItF4JSUKua301uLB7C8nzTxm
-                tF3eAhGCKn8LotEseccxsmzApKRNWhfKDLpKPe9i9PZQhhJaurwD
-                kMwbWTAeZbqCScU1o09piuK1JDf2PaDFevioHncZcQO74Obe4nN3
-                oNPNAxrMClkZ9s9GMEd5vMqOD4huXlRpHwm9V3oJ3LRutOTxqQLV
-                yPucu7eHA7her4FOFAiUk-5SieXL9Q",
-          "e": "AQAB"
-        },
-        {
-          "kty": "EC",
-          "kid": "MFYycG1raTI4SkZvVDBIMF9CNGw3VEZYUmxQLVN2T21nSWlkd3",
-          "crv": "P-256",
-          "x": "qAOdPQROkHfZY1daGofOmSNQWpYK8c9G2m2Rbkpbd4c",
-          "y": "G_7fF-T8n2vONKM15Mzj4KR_shvHBxKGjMosF6FdoPY"
-        }
-      ],
-      "iss": "https://example.org/op",
-      "sub": "https://example.org/op",
-      "iat": 1618410883
-    }
-]]>
-                </artwork>
-              </figure>
-
-              <figure>
-                <preamble>
-                  The following is a non-normative example of an RP's Entity Configuration:
-                </preamble>
-		<name>
-		  Example Relying Party Entity Configuration
-		</name>
-                <artwork><![CDATA[
-    {
-      "iss": "https://openid.sunet.se",
-      "sub": "https://openid.sunet.se",
-      "iat": 1516239022,
-      "exp": 1516298022,
-      "metadata": {
-        "openid_relying_party": {
-          "application_type": "web",
-          "redirect_uris": [
-            "https://openid.sunet.se/rp/callback"
-          ],
-          "organization_name": "SUNET",
-          "logo_uri": "https://www.sunet.se/sunet/images/32x32.png",
-          "grant_types": [
-            "authorization_code",
-            "implicit"
-          ],
-          "signed_jwks_uri":"https://openid.sunet.se/rp/signed_jwks.jose",
-          "jwks_uri": "https://openid.sunet.se/rp/jwks.json"
-        }
-      },
-      "jwks": {
-        "keys": [
-          {
-            "alg": "RS256",
-            "e": "AQAB",
-            "key_ops": [
-              "verify"
-            ],
-            "kid": "key1",
-            "kty": "RSA",
-            "n": "pnXBOusEANuug6ewezb9J_...",
-            "use": "sig"
-          }
-        ]
-      },
-      "authority_hints": [
-        "https://edugain.org/federation"
-      ]
-    }
-]]>
-                </artwork>
-              </figure>
-            </t>
-
-            <t hangText="jwks">
-              <vspace/>
-              OPTIONAL. JSON Web Key Set document, passed by value, as
-              defined in <xref target="RFC7517"/>.
-              This parameter is intended
-              to be used by participants that, for some reason,
-              cannot use the <spanx style="verb">signed_jwks_uri</spanx>
-              parameter.
-              One significant downside of <spanx style="verb">jwks</spanx>
-              is that it does not enable key rotation
-              (which <spanx style="verb">signed_jwks_uri</spanx> and
-              <spanx style="verb">jwks_uri</spanx> do).
-            </t>
-
-          </list>
-        </t>
-
-	<section title="Usage of jwks, jwks_uri, and signed_jwks_uri" anchor="jwks_usage">
-	  <t>
-	    It is RECOMMENDED that an Entity Configuration
-	    use only one of
-	    <spanx style="verb">jwks</spanx>,
-	    <spanx style="verb">jwks_uri</spanx>, and
-	    <spanx style="verb">signed_jwks_uri</spanx> in its OpenID Connect or OAuth 2.0 metadata.
-	    However, there may be circumstances in which is it desirable to use multiple
-	    JWK Set representations, such as when an Entity is in multiple federations and the
-	    federations have different policies about the JWK Set representation to be used.
-	    When multiple JWK Set representations are used, the keys present in each
-	    representation SHOULD be the same.  Even if they are not completely the
-	    same at a given instant in time (which may be the case during key rollover operations),
-	    implementations MUST make them consistent in a timely manner.
-	  </t>
-	</section>
-      </section>
-
       <section anchor="entity_types" title="Entity Type Identifiers">
 	<t>
 	  This specification defines Entity Type Identifiers
@@ -1192,7 +1008,7 @@
 	  of the participant and the format of metadata for that Entity Type.
 	</t>
 	<t>
-	  This specification also allows new Entity Type Identifiers to be defined to
+	  Additional Entity Type Identifiers MAY be defined to
 	  support use cases outside OpenID Connect and OAuth 2.0 federations.
 	</t>
 
@@ -1625,6 +1441,189 @@
 
       </section>
 
+      <section title="OpenID Connect and OAuth 2.0 Metadata Extensions" anchor="common_metadata">
+        <t>
+        The following additional metadata properties are defined,
+        which MAY be used with all the Entity Types above:
+        </t>
+        <t>
+          <list style="hanging">
+            <t hangText="organization_name">
+              <vspace/>
+              OPTIONAL. A human-readable
+              name representing the organization owning the Entity.
+              If the owner is a physical person,
+              this MAY be, for example, the person's name. Note
+              that this information will be publicly available.
+            </t>
+            <t hangText="signed_jwks_uri">
+              <vspace/>
+              OPTIONAL. A URI pointing to a signed JWT having the Entity's
+              JWK Set as its payload. The JWT MUST be signed using a Federation
+              Entity Key.
+              A signed JWT can contain the following claims, all except
+              <spanx style="verb">keys</spanx> defined in
+              <xref target="RFC7519"/>:
+              <list style="hanging">
+                <t hangText="keys">
+                  <vspace/>
+                  REQUIRED. Array of JWK values.
+                </t>
+                <t hangText="iss">
+                  <vspace/>
+                  REQUIRED. The "iss" (issuer) claim identifies the principal
+                  that issued the JWT.
+                </t>
+                <t hangText="sub">
+                  <vspace/>
+                  REQUIRED. This claim identifies the owner of the keys.
+                  It SHOULD be the same as the issuer.
+                </t>
+                <t hangText="iat">
+                  <vspace/>
+                  OPTIONAL. This claim identifies the time at which the JWT was
+                  issued.
+                </t>
+                <t hangText="exp">
+                  <vspace/>
+                  OPTIONAL. This claim identifies the time at which the JWT is
+                  no longer valid.
+                </t>
+              </list>
+              More claims are defined in <xref target="RFC7519"/>; of
+              these, <spanx style="verb">aud</spanx> SHOULD NOT be used since
+              the issuer cannot know who the audience is.
+              <spanx style="verb">nbf</spanx> and <spanx style="verb">jti</spanx>
+              are deemed to not be very useful in this context and are
+              to be omitted.
+
+              <figure>
+                <preamble>
+                  The following is a non-normative example of a signed JWKS
+                  before serialization and adding a signature.
+                </preamble>
+		<name>
+		  Example Signed JWKS JWT Claims Set
+		</name>
+                <artwork><![CDATA[
+    {
+      "keys": [
+        {
+          "kty": "RSA",
+          "kid": "SUdtUndEWVY2cUFDeDV5NVlBWDhvOXJodVl2am1mNGNtR0pmd",
+          "n": "y_Zc8rByfeRIC9fFZrDZ2MGH2ZnxLrc0ZNNwkNet5rwCPYeRF3Sv
+                5nihZA9NHkDTEX97dN8hG6ACfeSo6JB2P7heJtmzM8oOBZbmQ90n
+                EA_JCHszkejHaOtDDfxPH6bQLrMlItF4JSUKua301uLB7C8nzTxm
+                tF3eAhGCKn8LotEseccxsmzApKRNWhfKDLpKPe9i9PZQhhJaurwD
+                kMwbWTAeZbqCScU1o09piuK1JDf2PaDFevioHncZcQO74Obe4nN3
+                oNPNAxrMClkZ9s9GMEd5vMqOD4huXlRpHwm9V3oJ3LRutOTxqQLV
+                yPucu7eHA7her4FOFAiUk-5SieXL9Q",
+          "e": "AQAB"
+        },
+        {
+          "kty": "EC",
+          "kid": "MFYycG1raTI4SkZvVDBIMF9CNGw3VEZYUmxQLVN2T21nSWlkd3",
+          "crv": "P-256",
+          "x": "qAOdPQROkHfZY1daGofOmSNQWpYK8c9G2m2Rbkpbd4c",
+          "y": "G_7fF-T8n2vONKM15Mzj4KR_shvHBxKGjMosF6FdoPY"
+        }
+      ],
+      "iss": "https://example.org/op",
+      "sub": "https://example.org/op",
+      "iat": 1618410883
+    }
+]]>
+                </artwork>
+              </figure>
+
+              <figure>
+                <preamble>
+                  The following is a non-normative example of an RP's Entity Configuration:
+                </preamble>
+		<name>
+		  Example Relying Party Entity Configuration
+		</name>
+                <artwork><![CDATA[
+    {
+      "iss": "https://openid.sunet.se",
+      "sub": "https://openid.sunet.se",
+      "iat": 1516239022,
+      "exp": 1516298022,
+      "metadata": {
+        "openid_relying_party": {
+          "application_type": "web",
+          "redirect_uris": [
+            "https://openid.sunet.se/rp/callback"
+          ],
+          "organization_name": "SUNET",
+          "logo_uri": "https://www.sunet.se/sunet/images/32x32.png",
+          "grant_types": [
+            "authorization_code",
+            "implicit"
+          ],
+          "signed_jwks_uri":"https://openid.sunet.se/rp/signed_jwks.jose",
+          "jwks_uri": "https://openid.sunet.se/rp/jwks.json"
+        }
+      },
+      "jwks": {
+        "keys": [
+          {
+            "alg": "RS256",
+            "e": "AQAB",
+            "key_ops": [
+              "verify"
+            ],
+            "kid": "key1",
+            "kty": "RSA",
+            "n": "pnXBOusEANuug6ewezb9J_...",
+            "use": "sig"
+          }
+        ]
+      },
+      "authority_hints": [
+        "https://edugain.org/federation"
+      ]
+    }
+]]>
+                </artwork>
+              </figure>
+            </t>
+
+            <t hangText="jwks">
+              <vspace/>
+              OPTIONAL. JSON Web Key Set document, passed by value, as
+              defined in <xref target="RFC7517"/>.
+              This parameter is intended
+              to be used by participants that, for some reason,
+              cannot use the <spanx style="verb">signed_jwks_uri</spanx>
+              parameter.
+              One significant downside of <spanx style="verb">jwks</spanx>
+              is that it does not enable key rotation
+              (which <spanx style="verb">signed_jwks_uri</spanx> and
+              <spanx style="verb">jwks_uri</spanx> do).
+            </t>
+
+          </list>
+        </t>
+
+	<section title="Usage of jwks, jwks_uri, and signed_jwks_uri" anchor="jwks_usage">
+	  <t>
+	    It is RECOMMENDED that an Entity Configuration
+	    use only one of
+	    <spanx style="verb">jwks</spanx>,
+	    <spanx style="verb">jwks_uri</spanx>, and
+	    <spanx style="verb">signed_jwks_uri</spanx> in its OpenID Connect or OAuth 2.0 metadata.
+	    However, there may be circumstances in which is it desirable to use multiple
+	    JWK Set representations, such as when an Entity is in multiple federations and the
+	    federations have different policies about the JWK Set representation to be used.
+	    When multiple JWK Set representations are used, the keys present in each
+	    representation SHOULD be the same.  Even if they are not completely the
+	    same at a given instant in time (which may be the case during key rollover operations),
+	    implementations MUST make them consistent in a timely manner.
+	  </t>
+	</section>
+      </section>
+
     </section>
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
@@ -1793,7 +1792,7 @@
               <spanx style="verb">essential</spanx> is set to <spanx style="verb">false</spanx>, as shown in the last row.
           </preamble>
 	  <name>
-	    Examples of Outputs with Combinations of <spanx style="verb">essential</spanx>, <spanx style="verb">subset_of</spanx> Inputs
+	    Examples of Outputs with Combinations of <spanx style="verb">essential</spanx> and <spanx style="verb">subset_of</spanx> Inputs
 	  </name>
           <thead>
             <tr>
@@ -7718,6 +7717,18 @@ Host: op.umu.se
           <t>
             Fixed #2068: Clarifications that authority_hints must only appear in Leaf and Intermediate Entity Configurations.
           </t>
+	  <t>
+	    Fixed #2062: Verified that metadata examples are consistent with the specification.
+	  </t>
+	  <t>
+	    Fixed #1724: Numbered figures by adding captions to them.
+	  </t>
+	  <t>
+	    Fixed #2033: Described the advantage of having the Trust Anchor host the resolve endpoint.
+	  </t>
+	  <t>
+	    Fixed #1659: Described use of the <spanx style="verb">trust_chain</spanx> header parameter in resolve responses.
+	  </t>
         </list>
       </t>
 
