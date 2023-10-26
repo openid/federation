@@ -1264,7 +1264,7 @@
           <xref target="RFC8414">RFC 8414</xref>
           and <xref target="common_metadata"/> are applicable,
 	  as well as additional parameters registered in the
-	  IANA "OAuth Dynamic Client Registration Metadata" registry
+	  IANA "OAuth Authorization Server Metadata" registry
 	  <xref target="IANA.OAuth.Parameters"/>.
         </t>
       </section>
@@ -1289,8 +1289,8 @@
           The Entity Type Identifier is
           <spanx style="verb">oauth_resource</spanx>.
 	  The parameters defined in <xref target="common_metadata"/> are applicable.
-	  In addition, while it is not presently a standard,
-	  some deployments are using the protected resource metadata parameters
+	  In addition, while it is not yet a standard,
+	  deployments MAY use the protected resource metadata parameters
 	  defined in <xref target="I-D.ietf-oauth-resource-metadata"/>.
         </t>
       </section>
@@ -1301,12 +1301,12 @@
           <spanx style="verb">federation_entity</spanx>.
         </t>
         <t>
-          All Entities in a federation MAY expose this Entity Type.
-          The Entities that expose federation API endpoints
-          MUST expose this Entity Type.
+          All Entities in a federation MAY use this Entity Type.
+          The Entities that provide federation API endpoints
+          MUST use this Entity Type.
         </t>
         <t>
-          The following properties are allowed:
+          The following Federation Entity properties are defined:
           <list style="hanging">
             <t hangText="federation_fetch_endpoint">
               <vspace/>
@@ -1382,41 +1382,13 @@
               Trust Mark issuers MAY publish a
               <spanx style="verb">federation_trust_mark_list_endpoint</spanx>.
             </t>
-            <t hangText="organization_name">
-              <vspace/>
-              OPTIONAL. A human-readable
-              name representing the organization owning the Entity.
-              If the owner is a physical person
-              this MAY be, for example, the person's name. Note
-              that this information will be publicly available.
-              It is RECOMMENDED that each federation Entity
-              expose this claim.
-            </t>
-            <t hangText="contacts">
-              <vspace/>
-              OPTIONAL. JSON array with one or more
-              strings representing contact persons at the Entity.
-              These MAY contain names, e-mail addresses, descriptions, phone
-              numbers, etc.
-            </t>
-            <t hangText="logo_uri">
-              <vspace/>
-              OPTIONAL. String. A URL that points to the logo of this Entity.
-              The file containing the logo SHOULD be published
-              in a format that can be viewed via the web.
-            </t>
-            <t hangText="policy_uri">
-              <vspace/>
-              OPTIONAL. URL to the documentation of
-              conditions and policies relevant to this Entity.
-            </t>
-            <t hangText="homepage_uri">
-              <vspace/>
-              OPTIONAL. URL to a generic home page
-              representing this Entity.
-            </t>
           </list>
         </t>
+	<t>
+	  It is RECOMMENDED that each Federation Entity contain
+	  an <spanx style="verb">organization_name</spanx> claim,
+	  as defined in <xref target="common_metadata"/>.
+	</t>
         <figure>
 	  <preamble>
 	    The following is a non-normative example of the <spanx style="verb">federation_entity</spanx> Entity Type:
@@ -1456,6 +1428,29 @@
               this MAY be, for example, the person's name. Note
               that this information will be publicly available.
             </t>
+            <t hangText="contacts">
+              <vspace/>
+              OPTIONAL. JSON array with one or more
+              strings representing contact persons at the Entity.
+              These MAY contain names, e-mail addresses, descriptions, phone
+              numbers, etc.
+            </t>
+            <t hangText="logo_uri">
+              <vspace/>
+              OPTIONAL. String. A URL that points to the logo of this Entity.
+              The file containing the logo SHOULD be published
+              in a format that can be viewed via the web.
+            </t>
+            <t hangText="policy_uri">
+              <vspace/>
+              OPTIONAL. URL to the documentation of
+              conditions and policies relevant to this Entity.
+            </t>
+            <t hangText="homepage_uri">
+              <vspace/>
+              OPTIONAL. URL to a generic home page
+              representing this Entity.
+            </t>
             <t hangText="signed_jwks_uri">
               <vspace/>
               OPTIONAL. A URI pointing to a signed JWT having the Entity's
@@ -1494,8 +1489,7 @@
               these, <spanx style="verb">aud</spanx> SHOULD NOT be used since
               the issuer cannot know who the audience is.
               <spanx style="verb">nbf</spanx> and <spanx style="verb">jti</spanx>
-              are deemed to not be very useful in this context and are
-              to be omitted.
+              are not particularly useful in this context and SHOULD be omitted.
 
               <figure>
                 <preamble>
@@ -1634,8 +1628,8 @@
         </t>
         <section title='Using the "metadata_policy" Claim'>
           <t>
-            A <spanx style="verb">metadata_policy</spanx> for a specific Entity
-            type has the following structure:
+            A <spanx style="verb">metadata_policy</spanx> for a specific Entity Type
+	    has the following structure:
             <list style="symbols">
               <t>It consists of one or more policy entries.</t>
               <t>Each policy entry applies to one metadata parameter, such as
@@ -1654,23 +1648,7 @@
           <t>
             <figure>
               <preamble>
-                The following is a non-normative example of a policy entry:
-              </preamble>
-	      <name>
-		Example Policy Entry
-	      </name>
-              <artwork><![CDATA[
-"id_token_signed_response_alg": {
-  "default": "ES256",
-  "one_of" : ["ES256", "ES384", "ES512"]
-}
-]]></artwork>
-            </figure>
-          </t>
-          <t>
-            <figure>
-              <preamble>
-                Which fits into a metadata policy like this:
+                The following is a non-normative example of a metadata policy entry:
               </preamble>
 	      <name>
 		Example <spanx style="verb">metadata_policy</spanx> Entry
@@ -6442,7 +6420,7 @@ HTTP/1.1 302 Found
         </front>
       </reference>
 
-      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-00.xml" />
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-01.xml" />
 
     </references>
 
