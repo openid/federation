@@ -1628,28 +1628,29 @@
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
         <t>
-          An Entity MAY publish metadata policies pertaining to Subordinate
-          Entities of a specific type. Entity Type Identifiers defined in
+          An Entity MAY publish Entity Type specific policies that apply to the
+          metadata of its Subordinates. Entity Type Identifiers defined in
           this specification can be found in <xref target="entity_types"/>.
         </t>
         <section title='Using the "metadata_policy" Claim'>
           <t>
-            A <spanx style="verb">metadata_policy</spanx> for a specific Entity
-            type has the following structure:
+            A <spanx style="verb">metadata_policy</spanx> for an Entity Type
+            has the following structure:
             <list style="symbols">
               <t>It consists of one or more policy entries.</t>
-              <t>Each policy entry applies to one metadata parameter, such as
+              <t>A policy entry applies to a single metadata parameter, for example
                 <spanx style="verb">id_token_signed_response_alg</spanx>.
               </t>
-              <t>Each policy entry consists of one or more operators, which can be
-                value modifiers or value checks.
+              <t>A policy entry consists of one or more operators, to check or
+                modify the metadata parameter.
               </t>
-              <t>An operator can only appear once in a policy entry.</t>
+              <t>An operator may appear only once in a policy entry.</t>
             </list>
           </t>
           <t>
-            Note that claim names without language tags are different
-            from the same claim with language tags.
+            Note that metadata policies MUST regard any metadata parameter with
+            a language tag in its name, as described in <xref target="ClaimsLanguagesAndScripts"/>,
+            as distinct from the same metadata parameter without a language tag.
           </t>
           <t>
             <figure>
@@ -1670,10 +1671,11 @@
           <t>
             <figure>
               <preamble>
-                Which fits into a metadata policy like this:
+                Which fits into a metadata policy claim of an Entity Statement
+                like this:
               </preamble>
 	      <name>
-		Example <spanx style="verb">metadata_policy</spanx> Entry
+		Example <spanx style="verb">metadata_policy</spanx> Claim
 	      </name>
               <artwork><![CDATA[
 "metadata_policy" : {
@@ -1690,81 +1692,82 @@
         </section>
         <section title="Operators" anchor="policy_operators">
           <t>
-            Value modifiers are:
+            This specification defines the following metadata policy operators.
+          </t>
+          <t>
+            Value modifiers:
             <list style="hanging">
               <t hangText="value">
                 <vspace/>
-                Disregarding what value the parameter has, if any, the
-                metadata parameter MUST be set to the specified value.
+                The metadata parameter MUST be assigned the specified operator
+                value.
               </t>
               <t hangText="add">
                 <vspace/>
-                The specified value or values MUST be added to the metadata
-                parameter. If any of the specified values are already present
-                as values of the parameter, they MUST NOT be added. If the
-                parameter is not present, then the parameter MUST be initialized
-                with the specified value(s).
+                The specified operator value or values MUST be added to the
+                metadata parameter. If any of the specified operator values are
+                already present in the metadata parameter, they MUST NOT be
+                added. If the metadata parameter is absent, the parameter MUST
+                be initialized with the specified operator value(s).
               </t>
               <t hangText="default">
                 <vspace/>
-                If the metadata parameter
-                is not present, then it MUST be set to
-                the specified default value(s).
+                If the metadata parameter is absent, it MUST be set to the
+                specified operator value(s).
               </t>
             </list>
           </t>
           <t>
-            Value checks are:
+            Value checks:
             <list style="hanging">
               <t hangText="essential">
                 <vspace/>
-                If <spanx style="verb">true</spanx>, then the parameter MUST have a value.
-                If <spanx style="verb">false</spanx>, the parameter is
-                voluntary and is not required to have a value.
-                If essential is missing as an operator, it is treated as if set to
-                <spanx style="verb">false</spanx>.
+                If <spanx style="verb">true</spanx> the metadata parameter MUST
+                be present.
+                If <spanx style="verb">false</spanx> the metadata parameter is
+                voluntary and may be absent.
+                If the <spanx style="verb">essential</spanx> operator is not
+                present in a policy entry this must be treated as if it's
+                present and set to <spanx style="verb">false</spanx>.
               </t>
               <t hangText="one_of">
                 <vspace/>
-                If the metadata parameter has no value and is voluntary
-                (<spanx style="verb">essential</spanx> policy is missing or set to
-                <spanx style="verb">false</spanx>), then
-                the <spanx style="verb">one_of</spanx> check MUST be ignored.
-                Otherwise the value of the metadata parameter MUST be
-                one of those listed in the directive.
+                If the metadata parameter is present its value MUST be one of
+                those listed in the operator.
               </t>
               <t hangText="subset_of">
                 <vspace/>
-                If the metadata parameter has no value and is voluntary
-                (<spanx style="verb">essential</spanx> policy is missing or set to
-                <spanx style="verb">false</spanx>), then
-                the <spanx style="verb">subset_of</spanx> check MUST be ignored.
-                Otherwise, this operator MUST compute the intersection of the
-                values in the directive and the values of the parameter.
-                If the resulting intersection is non-empty the parameter
-                MUST be set to the values in the intersection.
+                If the metadata parameter is present this operator MUST compute
+                the intersection of the values of the operator and the metadata
+                parameter.
+                If the resulting intersection is non-empty the parameter MUST
+                be set to the values in the intersection.
+                If the intersection is empty the result is determined by the
+                <spanx style="verb">essential</spanx> operator: for an essential
+                metadata parameter the result MUST be an error, for a voluntary
+                the metadata parameter MUST be removed from the metadata.
                 Note that this behavior makes <spanx style="verb">subset_of</spanx>
-                a potential value modifier and thus it is not a pure value check.
-                If the
-                intersection is empty the outcome depends on the
-                <spanx style="verb">essential</spanx> parameter:
-		when the value is defined as essential,
-                the parameter MUST be rejected with a policy error,
-                else the parameter MUST be removed
-                (implying a <spanx style="verb">null</spanx> value).
-
+                a potential value modifier in addition to it being a value check.
               </t>
               <t hangText="superset_of">
                 <vspace/>
-                If the metadata parameter has no value and is voluntary
-                (<spanx style="verb">essential</spanx> policy is missing or set to
-                <spanx style="verb">false</spanx>), then
-                the <spanx style="verb">superset_of</spanx> check MUST be ignored.
-                Otherwise the values of the metadata parameter MUST contain those
-                specified in the directive. By mathematically defining
+                If the metadata parameter is present its values MUST contain
+                those specified in the operator. By mathematically defining
                 supersets, equality is included.
               </t>
             </list>
+          </t>
+
+          <t>
+            Applications and protocols utilizing metadata policies MAY specify
+            additional policy operators.
+          </t>
+
+          <t>
+            All policy operators MUST consider it an error if a metadata
+            parameter that is being operated on has a <spanx style="verb">null</spanx>
+            value. Policy operators MUST NOT output metadata parameters with a
+            <spanx style="verb">null</spanx> value.
           </t>
 
           <t>
@@ -1774,25 +1777,32 @@
             list values.
           </t>
           <t>
-            Note that when a parameter is defined as a space-separated
-            list of strings like for <spanx style="verb">scope</spanx> in
-            <xref target="RFC7591"/> <spanx style="verb">subset_of</spanx>,
+            Note that when a metadata parameter is defined as a space-separated
+            list of strings, like <spanx style="verb">scope</spanx> in
+            <xref target="RFC7591"/>, the <spanx style="verb">subset_of</spanx>,
             <spanx style="verb">superset_of</spanx> and
-            <spanx style="verb">default</spanx> are still expressed as lists of strings.
-            This language from <xref target="RFC6749"/> also applies to such space-separated lists of strings:
-            "If the value contains multiple space-delimited strings, their order does not matter,
-            and each string adds an additional access range to the requested scope."
+            <spanx style="verb">default</spanx> operator values are still
+            expressed as lists of strings.
+            This language from <xref target="RFC6749"/> also applies to
+            metadata parameters which values can be expressed as a
+            space-separated lists of strings: "If the value contains multiple
+            space-delimited strings, their order does not matter, and each
+            string adds an additional access range to the requested scope."
           </t>
 
         <table>
           <preamble>
-              The following table is a map of the outputs produced by combining metadata policies with different input values.
-              The <spanx style="verb">subset_of</spanx> check is ignored
-              when the metadata parameter has no value and
-              <spanx style="verb">essential</spanx> is set to <spanx style="verb">false</spanx>, as shown in the last row.
+              The following table is a map of the outputs produced by the
+              combination of the <spanx style="verb">essential</spanx> and
+              <spanx style="verb">subset_of</spanx> policy operators with
+              different input metadata parameter values.
+              Note, the <spanx style="verb">subset_of</spanx> check is ignored
+              when the metadata parameter is absent and designated as voluntary,
+              as shown in the last row.
           </preamble>
 	  <name>
-	    Examples of Outputs with Combinations of <spanx style="verb">essential</spanx> and <spanx style="verb">subset_of</spanx> Inputs
+	    Examples of Outputs with Combinations of <spanx style="verb">essential</spanx>
+        and <spanx style="verb">subset_of</spanx> Inputs
 	  </name>
           <thead>
             <tr>
@@ -1839,14 +1849,14 @@
             <tr>
               <td>true</td>
               <td>[a,b,c]</td>
-              <td>null or no parameter</td>
+              <td>no parameter</td>
               <td>error</td>
             </tr>
 
             <tr>
               <td>false</td>
               <td>[a,b,c]</td>
-              <td>null or no parameter</td>
+              <td>no parameter</td>
               <td>no parameter</td>
             </tr>
           </tbody>
@@ -2036,52 +2046,44 @@
 
         <section title="Applying Policies" anchor="applying_policies">
           <t>
-            Once combining the metadata policies has been accomplished, the next
-            step is to apply the combined policy to the metadata.
+            The policies that apply to the Entity's metadata are those that
+            result from the combining of the policies from the individual
+            Entity Statements that make up the Trust Chain, as specified in
+            <xref target="combining_policies"/>.
           </t>
           <t>
-            Doing that, one follows these steps for each parameter in the
-            policy.
+            For every Entity Type metadata parameter for which a policy entry
+            is present, the policy operators MUST be applied in accordance to
+            their definition in <xref target="policy_operators"/> and in a
+            sequence as follows:
           </t>
           <t>
             <list style="numbers">
-              <t>
-                If there is a <spanx style="verb">value</spanx> operator in the
-                policy, its value MUST be applied to the parameter and
-                further action stopped.
+              <t hangText="value">
+                If this policy operator is present further policy operators on
+                the metadata parameter MUST NOT be applied.
               </t>
-              <t>
-                Add whatever value is specified in an <spanx style="verb">add</spanx>
-                operator.
+              <t hangText="add">
               </t>
-              <t>
-                If the parameter still has no value, apply the
-                <spanx style="verb">default</spanx> if there is one.
+              <t hangText="default">
               </t>
-              <t>
-                Do the essential check.
-                If <spanx style="verb">essential</spanx> is
-                <spanx style="verb">true</spanx> the parameter
-                MUST have a value, else the operator MUST fail.
-                If the parameter is voluntary and has no value
-                any other value checks MUST be skipped.
+              <t hangText="essential">
+                If the metadata parameter is absent and designated as voluntary
+                any subsequent policy operators that represent a value check
+                MUST be skipped.
               </t>
-              <t>
-                Do the other checks. Verify that the value is
-                <spanx style="verb">one_of</spanx> or that the
-                values are <spanx style="verb">subset_of</spanx>/<spanx
-                      style="verb">superset_of</spanx>. If the parameter values
-                do not fall within the allowed boundaries,
-                applying the operator MUST fail.
+              <t hangText="one_of">
               </t>
-              <t>
-                If more than one value is specified in
-                <spanx style="verb">one_of</spanx> and the Leaf Entity
-                does not specify a metadata parameter value,
-                it is an implementation choice which value in the
-                <spanx style="verb">one_of</spanx> array to use.
+              <t hangText="subset_of">
+              </t>
+              <t hangText="superset_of">
               </t>
             </list>
+          </t>
+          <t>
+            Applications and protocols that specify additional policy operators
+            MUST define their position relative to the above sequence of
+            operator application.
           </t>
         </section>
         <section title="Policy Combination Example">
