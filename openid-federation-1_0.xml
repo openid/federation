@@ -3476,6 +3476,51 @@ Host: openid.sunet.se
           MAY be a very large list.
         </t>
 
+        <t>
+        
+                  <figure>
+	    <preamble>
+	      The following example shows the list of the 
+          members belonging to the same federation and distributed 
+          over the Trust Anchor and its Intermediates:
+	    </preamble>
+            <name>
+	      Distributed list of the federation members
+            </name>
+            <artwork><![CDATA[
+                       +----------------------+
+                       |    TRUST ANCHOR      |
+                       +----------------------+
+       +---------------+ Subordinate  listing +--------------+
+       |               +----------+-----------+              |
+       |                          |                          |
+       |                          |                          |
+       |                          |                          |
+       |                          |                          |
+       |                          |                          |
++------v-------+       +----------v-----------+       +------v-------+
+|     Leaf     |       |     INTERMEDIATE     |       |     Leaf     |
++--------------+       +----------------------+       +--------------+
+                  +----+ Subordinate  listing |
+                  |    +------------+---------+
+                  |                 |
+                  |                 |
+                  |                 |
+       +----------v-----------+     |
+       |     INTERMEDIATE     |     |
+       +----------------------+     |
+       | Subordinate  listing |     |
+       +-+---------+----------+     |
+         |         |                |
+         |         |                |
+ +-------v--+     +v--------+    +--v------+
+ |  Leaf    |     |  Leaf   |    |  Leaf   |
+ +----------+     +---------+    +---------+
+]]></artwork>
+          </figure>
+        
+        </t>
+
         <section title="Subordinate Listing Request">
           <t>
             The request MUST be an HTTP request using the GET method and
