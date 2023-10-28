@@ -2076,23 +2076,22 @@
 	      Example Federation's Policy for OAuth 2.0 Clients
 	    </name>
             <artwork><![CDATA[
-{
-  "grant_types": {
-
-    "subset_of": ["authorization_code", "implicit", "refresh_token"],
-
-    "superset_of": ["authorization_code"],
-
-    "default": ["authorization_code", "refresh_token"]
-  },
-  "token_endpoint_auth_method": {
-    "one_of": [
-      "client_secret_post",
-      "client_secret_basic"
-    ]
-  },
-  "contacts": {
-    "add": "helpdesk@federation.example.org"
+"metadata_policy": {
+  "oauth_client": {
+    "grant_types": {
+      "subset_of": ["authorization_code", "implicit", "refresh_token"],
+      "superset_of": ["authorization_code"],
+      "default": ["authorization_code", "refresh_token"]
+    },
+    "token_endpoint_auth_method": {
+      "one_of": [
+        "client_secret_post",
+        "client_secret_basic"
+      ]
+    },
+    "contacts": {
+      "add": "helpdesk@federation.example.org"
+    }
   }
 }
 ]]></artwork>
@@ -2105,20 +2104,22 @@
 	      Example Organization's Policy for OAuth 2.0 Clients
 	    </name>
             <artwork><![CDATA[
-{
-  "grant_types": {
-    "subset_of": ["authorization_code", "refresh_token", "implicit"],
-    "default": ["authorization_code", "refresh_token"]
-  },
-  "token_endpoint_auth_method": {
-    "one_of": [
-      "client_secret_post",
-      "client_secret_basic"
-    ],
-    "default": "client_secret_basic"
-  },
-  "contacts": {
-    "add": "helpdesk@org.example.org"
+"metadata_policy": {
+  "oauth_client": {
+    "grant_types": {
+      "subset_of": ["authorization_code", "refresh_token", "implicit"],
+      "default": ["authorization_code", "refresh_token"]
+    },
+    "token_endpoint_auth_method": {
+      "one_of": [
+        "client_secret_post",
+        "client_secret_basic"
+      ],
+      "default": "client_secret_basic"
+    },
+    "contacts": {
+      "add": "helpdesk@org.example.org"
+    }
   }
 }
 ]]></artwork>
@@ -2131,24 +2132,26 @@
 	      Combined Policies from the Previous Two Examples
 	    </name>
             <artwork><![CDATA[
-{
-  "grant_types": {
-    "subset_of": ["authorization_code", "refresh_token"],
-    "superset_of": ["authorization_code"],
-    "default": ["authorization_code", "refresh_token"]
-  },
-  "token_endpoint_auth_method": {
-    "one_of": [
-      "client_secret_post",
-      "client_secret_basic"
-    ],
-    "default": "client_secret_basic"
-  },
-  "contacts": {
-    "add": [
-      "helpdesk@federation.example.org",
-      "helpdesk@org.example.org"
-    ]
+"metadata_policy": {
+  "oauth_client": {
+    "grant_types": {
+      "subset_of": ["authorization_code", "refresh_token"],
+      "superset_of": ["authorization_code"],
+      "default": ["authorization_code", "refresh_token"]
+    },
+    "token_endpoint_auth_method": {
+      "one_of": [
+	"client_secret_post",
+	"client_secret_basic"
+      ],
+      "default": "client_secret_basic"
+    },
+    "contacts": {
+      "add": [
+	"helpdesk@federation.example.org",
+	"helpdesk@org.example.org"
+      ]
+    }
   }
 }
 ]]></artwork>
