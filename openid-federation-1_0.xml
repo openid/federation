@@ -1036,6 +1036,57 @@
             </t>
           </list>
         </t>
+	<figure>
+	  <preamble>
+	    The following is a non-normative example of an RP's Entity Configuration:
+	  </preamble>
+	  <name>
+	    Example Relying Party Entity Configuration
+	  </name>
+	  <artwork><![CDATA[
+    {
+      "iss": "https://openid.sunet.se",
+      "sub": "https://openid.sunet.se",
+      "iat": 1516239022,
+      "exp": 1516298022,
+      "metadata": {
+        "openid_relying_party": {
+          "application_type": "web",
+          "redirect_uris": [
+            "https://openid.sunet.se/rp/callback"
+          ],
+          "organization_name": "SUNET",
+          "logo_uri": "https://www.sunet.se/sunet/images/32x32.png",
+          "grant_types": [
+            "authorization_code",
+            "implicit"
+          ],
+          "signed_jwks_uri":"https://openid.sunet.se/rp/signed_jwks.jose",
+          "jwks_uri": "https://openid.sunet.se/rp/jwks.json"
+        }
+      },
+      "jwks": {
+        "keys": [
+          {
+            "alg": "RS256",
+            "e": "AQAB",
+            "key_ops": [
+              "verify"
+            ],
+            "kid": "key1",
+            "kty": "RSA",
+            "n": "pnXBOusEANuug6ewezb9J_...",
+            "use": "sig"
+          }
+        ]
+      },
+      "authority_hints": [
+        "https://edugain.org/federation"
+      ]
+    }
+]]>
+	  </artwork>
+	</figure>
       </section>
 
       <section title="OpenID Provider" anchor="OP_metadata">
@@ -1385,7 +1436,7 @@
 	<t>
 	  It is RECOMMENDED that each Federation Entity contain
 	  an <spanx style="verb">organization_name</spanx> claim,
-	  as defined in <xref target="common_metadata"/>.
+	  as defined in <xref target="informational_metadata"/>.
 	</t>
         <figure>
 	  <preamble>
@@ -1411,17 +1462,164 @@
 
       </section>
 
-      <section title="OpenID Connect and OAuth 2.0 Metadata Extensions" anchor="common_metadata">
+      <section title="Metadata Extensions for OpenID Connect and OAuth 2.0" anchor="common_metadata">
         <t>
-        The following additional metadata properties are defined,
-        which MAY be used with all the Entity Types above:
+        This section defines additional metadata properties
+        that MAY be used with all the Entity Types above.
         </t>
-        <t>
+
+	<section anchor="jwks_metadata" title="Metadata Extensions for JWK Sets">
+	  <t>
+	    The following metadata properties define ways of obtaining
+	    JWK Sets for an Entity Type of the Entity.
+	  </t>
+	  <t>
+	    <list style="hanging">
+	      <t hangText="signed_jwks_uri">
+		<vspace/>
+		OPTIONAL. URL referencing a signed JWT having the Entity's
+		JWK Set document for that Entity Type as its payload.
+		The JWT MUST be signed using a Federation Entity Key.
+		This URL MUST use the <spanx style="verb">https</spanx> scheme.
+		When both signing and encryption keys are made available,
+		a <spanx style="verb">use</spanx> (public key use) parameter
+		value is REQUIRED for all keys in the referenced JWK Set
+		to indicate each key's intended usage.
+	      </t>
+	      <t>
+		The following claims are specified for use in the payload,
+		all of which except <spanx style="verb">keys</spanx>
+		are defined in <xref target="RFC7519"/>:
+		<list style="hanging">
+		  <t hangText="keys">
+		    <vspace/>
+		    REQUIRED. Array of JWK values.
+		  </t>
+		  <t hangText="iss">
+		    <vspace/>
+		    REQUIRED. The "iss" (issuer) claim identifies the principal
+		    that issued the JWT.
+		  </t>
+		  <t hangText="sub">
+		    <vspace/>
+		    REQUIRED. This claim identifies the owner of the keys.
+		    It SHOULD be the same as the issuer.
+		  </t>
+		  <t hangText="iat">
+		    <vspace/>
+		    OPTIONAL. This claim identifies the time at which the JWT was
+		    issued.
+		  </t>
+		  <t hangText="exp">
+		    <vspace/>
+		    OPTIONAL. This claim identifies the time at which the JWT is
+		    no longer valid.
+		  </t>
+		</list>
+		More claims are defined in <xref target="RFC7519"/>; of
+		these, <spanx style="verb">aud</spanx> SHOULD NOT be used since
+		the issuer cannot know who the audience is.
+		<spanx style="verb">nbf</spanx> and <spanx style="verb">jti</spanx>
+		are not particularly useful in this context and SHOULD be omitted.
+
+		<figure>
+		  <preamble>
+		    The following is a non-normative example of a signed JWK Set
+		    before serialization and adding a signature.
+		  </preamble>
+		  <name>
+		    Example Signed JWK Set JWT Claims Set
+		  </name>
+		  <artwork><![CDATA[
+    {
+      "keys": [
+        {
+          "kty": "RSA",
+          "kid": "SUdtUndEWVY2cUFDeDV5NVlBWDhvOXJodVl2am1mNGNtR0pmd",
+          "n": "y_Zc8rByfeRIC9fFZrDZ2MGH2ZnxLrc0ZNNwkNet5rwCPYeRF3Sv
+                5nihZA9NHkDTEX97dN8hG6ACfeSo6JB2P7heJtmzM8oOBZbmQ90n
+                EA_JCHszkejHaOtDDfxPH6bQLrMlItF4JSUKua301uLB7C8nzTxm
+                tF3eAhGCKn8LotEseccxsmzApKRNWhfKDLpKPe9i9PZQhhJaurwD
+                kMwbWTAeZbqCScU1o09piuK1JDf2PaDFevioHncZcQO74Obe4nN3
+                oNPNAxrMClkZ9s9GMEd5vMqOD4huXlRpHwm9V3oJ3LRutOTxqQLV
+                yPucu7eHA7her4FOFAiUk-5SieXL9Q",
+          "e": "AQAB"
+        },
+        {
+          "kty": "EC",
+          "kid": "MFYycG1raTI4SkZvVDBIMF9CNGw3VEZYUmxQLVN2T21nSWlkd3",
+          "crv": "P-256",
+          "x": "qAOdPQROkHfZY1daGofOmSNQWpYK8c9G2m2Rbkpbd4c",
+          "y": "G_7fF-T8n2vONKM15Mzj4KR_shvHBxKGjMosF6FdoPY"
+        }
+      ],
+      "iss": "https://example.org/op",
+      "sub": "https://example.org/op",
+      "iat": 1618410883
+    }
+]]>
+		  </artwork>
+		</figure>
+	      </t>
+
+	      <t hangText="jwks_uri">
+		<vspace/>
+		OPTIONAL.
+		URL referencing a JWK Set document
+		containing the Entity's keys for that Entity Type.
+		This URL MUST use the <spanx style="verb">https</spanx> scheme.
+		When both signing and encryption keys are made available,
+		a <spanx style="verb">use</spanx> (public key use) parameter
+		value is REQUIRED for all keys in the referenced JWK Set
+		to indicate each key's intended usage.
+	      </t>
+
+	      <t hangText="jwks">
+		<vspace/>
+		OPTIONAL.
+		JSON Web Key Set document, passed by value,
+		containing the Entity's keys for that Entity Type.
+		This parameter is intended
+		to be used by participants that, for some reason,
+		cannot use the <spanx style="verb">signed_jwks_uri</spanx>
+		parameter.
+		One significant downside of <spanx style="verb">jwks</spanx>
+		is that it does not enable key rotation
+		(which <spanx style="verb">signed_jwks_uri</spanx> and
+		<spanx style="verb">jwks_uri</spanx> do).
+	      </t>
+
+	    </list>
+	  </t>
+
+	  <section title="Usage of jwks, jwks_uri, and signed_jwks_uri" anchor="jwks_usage">
+	    <t>
+	      It is RECOMMENDED that an Entity Configuration
+	      use only one of
+	      <spanx style="verb">jwks</spanx>,
+	      <spanx style="verb">jwks_uri</spanx>, and
+	      <spanx style="verb">signed_jwks_uri</spanx> in its OpenID Connect or OAuth 2.0 metadata.
+	      However, there may be circumstances in which is it desirable to use multiple
+	      JWK Set representations, such as when an Entity is in multiple federations and the
+	      federations have different policies about the JWK Set representation to be used.
+	      When multiple JWK Set representations are used, the keys present in each
+	      representation SHOULD be the same.  Even if they are not completely the
+	      same at a given instant in time (which may be the case during key rollover operations),
+	      implementations MUST make them consistent in a timely manner.
+	    </t>
+	  </section>
+	</section>
+
+	<section anchor="informational_metadata" title="Informational Metadata Extensions">
+	  <t>
+	    The following metadata properties define ways of obtaining
+	    information about the Entity for an Entity Type.
+	  </t>
           <list style="hanging">
             <t hangText="organization_name">
               <vspace/>
               OPTIONAL. A human-readable
-              name representing the organization owning the Entity.
+              name representing the organization owning this Entity.
               If the owner is a physical person,
               this MAY be, for example, the person's name. Note
               that this information will be publicly available.
@@ -1441,177 +1639,20 @@
             </t>
             <t hangText="policy_uri">
               <vspace/>
-              OPTIONAL. URL to the documentation of
+              OPTIONAL. URL of the documentation of
               conditions and policies relevant to this Entity.
             </t>
             <t hangText="homepage_uri">
               <vspace/>
-              OPTIONAL. URL to a generic home page
-              representing this Entity.
+              OPTIONAL. URL of a Web page for the organization owning this Entity.
             </t>
-            <t hangText="signed_jwks_uri">
-              <vspace/>
-              OPTIONAL. A URI pointing to a signed JWT having the Entity's
-              JWK Set as its payload. The JWT MUST be signed using a Federation
-              Entity Key.
-              A signed JWT can contain the following claims, all except
-              <spanx style="verb">keys</spanx> defined in
-              <xref target="RFC7519"/>:
-              <list style="hanging">
-                <t hangText="keys">
-                  <vspace/>
-                  REQUIRED. Array of JWK values.
-                </t>
-                <t hangText="iss">
-                  <vspace/>
-                  REQUIRED. The "iss" (issuer) claim identifies the principal
-                  that issued the JWT.
-                </t>
-                <t hangText="sub">
-                  <vspace/>
-                  REQUIRED. This claim identifies the owner of the keys.
-                  It SHOULD be the same as the issuer.
-                </t>
-                <t hangText="iat">
-                  <vspace/>
-                  OPTIONAL. This claim identifies the time at which the JWT was
-                  issued.
-                </t>
-                <t hangText="exp">
-                  <vspace/>
-                  OPTIONAL. This claim identifies the time at which the JWT is
-                  no longer valid.
-                </t>
-              </list>
-              More claims are defined in <xref target="RFC7519"/>; of
-              these, <spanx style="verb">aud</spanx> SHOULD NOT be used since
-              the issuer cannot know who the audience is.
-              <spanx style="verb">nbf</spanx> and <spanx style="verb">jti</spanx>
-              are not particularly useful in this context and SHOULD be omitted.
-
-              <figure>
-                <preamble>
-                  The following is a non-normative example of a signed JWKS
-                  before serialization and adding a signature.
-                </preamble>
-		<name>
-		  Example Signed JWKS JWT Claims Set
-		</name>
-                <artwork><![CDATA[
-{
-  "keys": [
-    {
-      "kty": "RSA",
-      "kid": "SUdtUndEWVY2cUFDeDV5NVlBWDhvOXJodVl2am1mNGNtR0pmd",
-      "n": "y_Zc8rByfeRIC9fFZrDZ2MGH2ZnxLrc0ZNNwkNet5rwCPYeRF3Sv
-            5nihZA9NHkDTEX97dN8hG6ACfeSo6JB2P7heJtmzM8oOBZbmQ90n
-            EA_JCHszkejHaOtDDfxPH6bQLrMlItF4JSUKua301uLB7C8nzTxm
-            tF3eAhGCKn8LotEseccxsmzApKRNWhfKDLpKPe9i9PZQhhJaurwD
-            kMwbWTAeZbqCScU1o09piuK1JDf2PaDFevioHncZcQO74Obe4nN3
-            oNPNAxrMClkZ9s9GMEd5vMqOD4huXlRpHwm9V3oJ3LRutOTxqQLV
-            yPucu7eHA7her4FOFAiUk-5SieXL9Q",
-      "e": "AQAB"
-    },
-    {
-      "kty": "EC",
-      "kid": "MFYycG1raTI4SkZvVDBIMF9CNGw3VEZYUmxQLVN2T21nSWlkd3",
-      "crv": "P-256",
-      "x": "qAOdPQROkHfZY1daGofOmSNQWpYK8c9G2m2Rbkpbd4c",
-      "y": "G_7fF-T8n2vONKM15Mzj4KR_shvHBxKGjMosF6FdoPY"
-    }
-  ],
-  "iss": "https://example.org/op",
-  "sub": "https://example.org/op",
-  "iat": 1618410883
-}
-]]>
-                </artwork>
-              </figure>
-
-              <figure>
-                <preamble>
-                  The following is a non-normative example of an RP's Entity Configuration:
-                </preamble>
-		<name>
-		  Example Relying Party Entity Configuration
-		</name>
-                <artwork><![CDATA[
-{
-  "iss": "https://openid.sunet.se",
-  "sub": "https://openid.sunet.se",
-  "iat": 1516239022,
-  "exp": 1516298022,
-  "metadata": {
-    "openid_relying_party": {
-      "application_type": "web",
-      "redirect_uris": [
-        "https://openid.sunet.se/rp/callback"
-      ],
-      "organization_name": "SUNET",
-      "logo_uri": "https://www.sunet.se/sunet/images/32x32.png",
-      "grant_types": [
-        "authorization_code",
-        "implicit"
-      ],
-      "signed_jwks_uri":"https://openid.sunet.se/rp/signed_jwks.jose",
-      "jwks_uri": "https://openid.sunet.se/rp/jwks.json"
-    }
-  },
-  "jwks": {
-    "keys": [
-      {
-        "alg": "RS256",
-        "e": "AQAB",
-        "key_ops": [
-          "verify"
-        ],
-        "kid": "key1",
-        "kty": "RSA",
-        "n": "pnXBOusEANuug6ewezb9J_...",
-        "use": "sig"
-      }
-    ]
-  },
-  "authority_hints": [
-    "https://edugain.org/federation"
-  ]
-}
-]]>
-                </artwork>
-              </figure>
-            </t>
-
-            <t hangText="jwks">
-              <vspace/>
-              OPTIONAL. JSON Web Key Set document, passed by value, as
-              defined in <xref target="RFC7517"/>.
-              This parameter is intended
-              to be used by participants that, for some reason,
-              cannot use the <spanx style="verb">signed_jwks_uri</spanx>
-              parameter.
-              One significant downside of <spanx style="verb">jwks</spanx>
-              is that it does not enable key rotation
-              (which <spanx style="verb">signed_jwks_uri</spanx> and
-              <spanx style="verb">jwks_uri</spanx> do).
-            </t>
-
-          </list>
-        </t>
-
-	<section title="Usage of jwks, jwks_uri, and signed_jwks_uri" anchor="jwks_usage">
+	  </list>
 	  <t>
-	    It is RECOMMENDED that an Entity Configuration
-	    use only one of
-	    <spanx style="verb">jwks</spanx>,
-	    <spanx style="verb">jwks_uri</spanx>, and
-	    <spanx style="verb">signed_jwks_uri</spanx> in its OpenID Connect or OAuth 2.0 metadata.
-	    However, there may be circumstances in which is it desirable to use multiple
-	    JWK Set representations, such as when an Entity is in multiple federations and the
-	    federations have different policies about the JWK Set representation to be used.
-	    When multiple JWK Set representations are used, the keys present in each
-	    representation SHOULD be the same.  Even if they are not completely the
-	    same at a given instant in time (which may be the case during key rollover operations),
-	    implementations MUST make them consistent in a timely manner.
+	    It is RECOMMENDED that, when present, these metadata properties occur in
+	    an Entity's <spanx style="verb">federation_entity</spanx> metadata section.
+	    They MAY also be present in the Entity's metadata for other Entity Types,
+	    particularly when the values for those Entity Types differ from
+	    those for the <spanx style="verb">federation_entity</spanx> metadata.
 	  </t>
 	</section>
       </section>
@@ -5527,23 +5568,6 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): Section <xref target="OP_metadata"/> of this specification
-              </t>
-            </list>
-          </t>
-          <t>
-            <list style='symbols'>
-              <t>
-                Metadata Name: <spanx style="verb">organization_name</spanx>
-              </t>
-              <t>
-                Metadata Description:
-                Human-readable name representing the organization owning the OP
-              </t>
-              <t>
-                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-              </t>
-              <t>
                 Specification Document(s): <xref target="OP_metadata"/> of this specification
               </t>
             </list>
@@ -5608,13 +5632,13 @@ HTTP/1.1 302 Found
               </t>
               <t>
                 Metadata Description:
-                URI pointing to a signed JWT having the Entity's JWK Set as its payload
+                URL referencing a signed JWT having this authorization server's JWK Set document as its payload
               </t>
               <t>
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="OP_metadata"/> of this specification
+                Specification Document(s): <xref target="jwks_metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -5631,7 +5655,75 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="OP_metadata"/> of this specification
+                Specification Document(s): <xref target="jwks_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+          <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">organization_name</spanx>
+              </t>
+              <t>
+                Metadata Description:
+                Human-readable name representing the organization owning this authorization server
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="informational_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+          <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">contacts</spanx>
+              </t>
+              <t>
+                Metadata Description:
+                Array of strings representing ways to contact people responsible for this authorization server, typically email addresses
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="informational_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+          <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">logo_uri</spanx>
+              </t>
+              <t>
+                Metadata Description:
+		URL that references a logo for the organization owning this authorization server
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="informational_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+          <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">homepage_uri</spanx>
+              </t>
+              <t>
+                Metadata Description:
+		URL of a Web page for the organization owning this authorization server
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="informational_metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -5662,24 +5754,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): Section <xref target="RP_metadata"/> of this specification
-              </t>
-            </list>
-          </t>
-          <t>
-            <list style="symbols">
-              <t>
-                Client Metadata Name: <spanx style="verb">organization_name</spanx>
-              </t>
-              <t>
-                Client Metadata Description:
-                Human-readable name representing the organization owning the RP
-              </t>
-              <t>
-                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-              </t>
-              <t>
-                Specification Document(s): Section <xref target="RP_metadata"/> of this specification
+                Specification Document(s): <xref target="RP_metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -5690,13 +5765,47 @@ HTTP/1.1 302 Found
               </t>
               <t>
                 Client Metadata Description:
-                URI pointing to a signed JWT having the Entity's JWK Set as its payload
+                URL referencing a signed JWT having the client's JWK Set document as its payload
               </t>
               <t>
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): Section <xref target="RP_metadata"/> of this specification
+                Specification Document(s): <xref target="jwks_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>
+                Client Metadata Name: <spanx style="verb">organization_name</spanx>
+              </t>
+              <t>
+                Client Metadata Description:
+                Human-readable name representing the organization owning this client
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="informational_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+          <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">homepage_uri</spanx>
+              </t>
+              <t>
+                Metadata Description:
+		URL of a Web page for the organization owning this client
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="informational_metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6120,7 +6229,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): Section <xref target="AuthzRequestProcessing"/> of this specification
+                Specification Document(s): <xref target="AuthzRequestProcessing"/> of this specification
               </t>
             </list>
           </t>
@@ -6153,7 +6262,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): Section <xref target="trust_chain"/> of this specification
+                Specification Document(s): <xref target="trust_chain"/> of this specification
               </t>
             </list>
           </t>
@@ -6181,7 +6290,7 @@ HTTP/1.1 302 Found
 	      Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	    </t>
 	    <t>
-	      Specification Document(s): Section <xref target="common_metadata"/> of this specification
+	      Specification Document(s): <xref target="jwks_metadata"/> of this specification
 	    </t>
 	  </list>
 	  </t>
@@ -6541,7 +6650,7 @@ HTTP/1.1 302 Found
         Hence the differences in depth in the federations.
       </t>
       <t>
-        Let us assume a researcher from Umea University would like to
+        Let us assume a researcher from Umeå University would like to
         login to
         the LIGO Wiki. At the Wiki, the researcher will use some kind of
         discovery service to find the home identity provider (op.umu.se)
@@ -6844,7 +6953,7 @@ Host: umu.se
         ]
       },
       "organization_name": {
-        "value": "University of Ume\u00e5"
+        "value": "University of Umeå"
       },
       "subject_types_supported": {
         "value": [
@@ -7216,7 +7325,7 @@ Host: geant.org
   "signed_jwks_uri": "https://op.umu.se/openid/jwks.jose",
   "logo_uri":
     "https://www.umu.se/img/umu-logo-left-neg-SE.svg",
-  "organization_name": "University of Ume\u00e5",
+  "organization_name": "University of Umeå",
   "op_policy_uri":
     "https://www.umu.se/en/website/legal-information/",
   "request_parameter_supported": true,
