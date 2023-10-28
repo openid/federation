@@ -1652,23 +1652,8 @@
           <t>
             <figure>
               <preamble>
-                The following is a non-normative example of a policy entry:
-              </preamble>
-	      <name>
-		Example Policy Entry
-	      </name>
-              <artwork><![CDATA[
-"id_token_signed_response_alg": {
-  "default": "ES256",
-  "one_of" : ["ES256", "ES384", "ES512"]
-}
-]]></artwork>
-            </figure>
-          </t>
-          <t>
-            <figure>
-              <preamble>
-                Which fits into a metadata policy like this:
+                The following is a non-normative example of a policy entry
+		providing metadata policy for an OpenID Connect RP:
               </preamble>
 	      <name>
 		Example <spanx style="verb">metadata_policy</spanx> Entry
@@ -2204,16 +2189,18 @@
 	      RP's Metadata from its Entity Configuration
 	    </name>
             <artwork><![CDATA[
-{
-  "contacts": [
-    "rp_admins@cs.example.com"
-  ],
-  "redirect_uris": [
-    "https://cs.example.com/rp1"
-  ],
-  "response_types": [
-    "code"
-  ]
+"metadata": {
+  "openid_relying_party": {
+    "contacts": [
+      "rp_admins@cs.example.com"
+    ],
+    "redirect_uris": [
+      "https://cs.example.com/rp1"
+    ],
+    "response_types": [
+      "code"
+    ]
+  }
 }
 ]]></artwork>
           </figure>
@@ -2225,19 +2212,21 @@
 	      Federation's Policy for RPs
 	    </name>
             <artwork><![CDATA[
-{
-  "id_token_signed_response_alg": {
-    "one_of": [
-      "ES256",
-      "ES384"
-    ],
-    "default": "ES256",
-  },
-  "response_types": {
-    "subset_of": [
-      "code",
-      "code id_token"
-    ]
+"metadata_policy": {
+  "openid_relying_party": {
+    "id_token_signed_response_alg": {
+      "one_of": [
+        "ES256",
+        "ES384"
+      ],
+      "default": "ES256",
+    },
+    "response_types": {
+      "subset_of": [
+        "code",
+        "code id_token"
+      ]
+    }
   }
 }
 ]]></artwork>
@@ -2283,21 +2272,23 @@
 	      RP's Metadata After Application of Policies
 	    </name>
             <artwork><![CDATA[
-{
-  "contacts": [
-    "rp_admins@cs.example.com",
-    "helpdesk@example.com"
-  ],
-  "logo_uri": "https://example.com/logo_small.svg",
-  "policy_uri": "https://example.com/policy.html",
-  "tos_uri": "https://example.com/tos.html",
-  "id_token_signed_response_alg": "ES256",
-  "response_types": [
-    "code"
-  ],
-  "redirect_uris": [
-    "https://cs.example.com/rp1"
-  ]
+"metadata": {
+  "openid_relying_party": {
+    "contacts": [
+      "rp_admins@cs.example.com",
+      "helpdesk@example.com"
+    ],
+    "logo_uri": "https://example.com/logo_small.svg",
+    "policy_uri": "https://example.com/policy.html",
+    "tos_uri": "https://example.com/tos.html",
+    "id_token_signed_response_alg": "ES256",
+    "response_types": [
+      "code"
+    ],
+    "redirect_uris": [
+      "https://cs.example.com/rp1"
+    ]
+  }
 }
 ]]></artwork>
           </figure>
