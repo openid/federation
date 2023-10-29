@@ -196,7 +196,7 @@
           BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/>.
         </t>
       </section>
-      <section title="Terminology">
+      <section anchor="Terminology" title="Terminology">
         <t>
           This specification uses the terms
           "Claim Name", "Claim Value", "JSON Web Token (JWT)",
@@ -625,23 +625,23 @@
               Trust Mark identifiers and issuers are trusted by the federation.
               This claim MUST be ignored if present in an Entity Configuration that
               describes an Entity that is not a Trust Anchor.
-              It is a JSON object with keys representing Trust Mark identifiers and values
-              being an array of trusted Entities representing the accreditation authority.
-
-              If the value list bound to a Trust Mark identifier is empty,
-              anyone can issue Trust Marks with that identifier.
+              It is a JSON object with members that are Trust Mark identifiers and
+              each corresponding value being an array of Entities
+	      that are trusted to represent the accreditation authority
+	      for Trust Marks with that identifier.
+              If the value list following a Trust Mark identifier is empty,
+              anyone MAY issue Trust Marks with that identifier.
               Trust Marks are described in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_mark_owners">
               <vspace/>
               OPTIONAL.
               If a Federation Operator knows that a Trust Mark ID is owned
-              by an Entity different from the Trust Mark Issuer then that
+              by an Entity different from the Trust Mark Issuer, then that
               knowledge MUST be expressed in this claim.
               This claim MUST be ignored if present in an Entity Configuration
               that describes an Entity that is not a Trust Anchor.
-              The value is a JSON object with member names representing Trust Mark identifiers
-              and the values being JSON objects that contain claims. These claims are:
+              Its value is a JSON object with these members:
               <list style="hanging">
                 <t hangText="sub">
                   <vspace/>
@@ -652,15 +652,16 @@
                   <vspace/>
                   REQUIRED
                   <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
-                  representing the public part of the owner's signing keys.
+                  containing the owner's public keys used for signing.
                 </t>
               </list>
+	      Other members MAY also be defined and used.
 	    </t>
           </list>
         </t>
         <t>
           Applications and protocols utilizing Entity Statements MAY specify
-          additional claims.
+          and use additional claims.
         </t>
         <t>
           The Entity Statement is signed using the private key of the issuer
@@ -1632,8 +1633,8 @@
         </t>
         <section title='Using the "metadata_policy" Claim'>
           <t>
-            A <spanx style="verb">metadata_policy</spanx> for a specific Entity
-            type has the following structure:
+            The <spanx style="verb">metadata_policy</spanx> value for
+	    an Entity Type has the following structure:
             <list style="symbols">
               <t>It consists of one or more policy entries.</t>
               <t>Each policy entry applies to one metadata parameter, such as
@@ -2303,7 +2304,14 @@
           </figure>
         </section>
       </section>
-      <section title="Applying Constraints" anchor="chain_constraints">
+      <section title="Constraints" anchor="chain_constraints">
+	<t>
+	  Constraints define criteria applied to Trust Chains,
+	  as described in the <spanx style="verb">constraints</spanx>
+	  claim definition in <xref target="entity-statement"/>.
+	  Constraints are applied to all Entity Statements
+	  that are subordinates of the one containing them.
+	</t>
         <t>A set of constraints can contain the following claims:</t>
         <t>
           <list style="hanging">
@@ -2389,7 +2397,7 @@
             MUST have a value greater than or equal to zero.
           </t>
           <t>
-            Not adding a max_path_length constraint just means that there are
+            Not including a <spanx style="verb">max_path_length</spanx> constraint means that there are
             no additional constraints apart from those already in effect.
           </t>
           <t>
@@ -2398,7 +2406,7 @@
               <t>Entity Configuration of the Leaf Entity (LE)</t>
               <t>Entity Statement by Intermediate 1 (I1) about LE</t>
               <t>Entity Statement by Intermediate 2 (I2) about I1</t>
-              <t>Entity Statement by Trust Anchor (TA) about I2</t>
+              <t>Entity Statement by the Trust Anchor (TA) about I2</t>
             </list>
           </t>
           <t>
@@ -2406,7 +2414,7 @@
             <list style="symbols">
               <t>
                 The TA specifies a <spanx style="verb">max_path_length</spanx> that
-                is equal to or bigger than 2.
+                is greater than or equal to 2.
               </t>
               <t>
                 TA specifies a <spanx style="verb">max_path_length</spanx> of 2,
@@ -2457,23 +2465,29 @@
                  anchor="leaf_entity_type_constraints">
           <t>
             The <spanx style="verb">allowed_leaf_entity_types</spanx> constraint
-            specifies what Entity Types are possible for Leaf Entities beneath an
+            specifies what Entity Types are acceptable for Leaf Entities beneath an
             Entity. If there is no <spanx style="verb">allowed_leaf_entity_types</spanx>
-            defined it means that any type is allowed.
+            constraint, it means that any Entity Type is allowed.
           </t>
         </section>
       </section>
       <section title="Trust Marks" anchor="trust_marks">
-        <t>
-          The Trust Marks used by this specification are signed JWTs.
+	<t>
+	  Per the definition in <xref target="Terminology"/>,
+	  Trust Marks are statements of conformance to sets of criteria
+	  determined by an accreditation authority.
+	  Trust Marks used by this specification are signed JWTs.
+	  Entity Statements MAY include Trust Marks,
+	  as described in the <spanx style="verb">trust_marks</spanx>
+	  claim definition in <xref target="entity-statement"/>.
         </t>
-        <t>A Trust Mark Issuer is a Federation Entity that issues Trust marks.</t>
         <t>
+	  A Trust Mark Issuer is a Federation Entity that issues Trust Marks.
           A Trust Mark Owner is an Entity the owns the right to a Trust Mark
           identifier.
         </t>
         <t>
-          The Trust Marks are signed by a federation-accredited
+          Trust Marks are signed by a federation-accredited
           authority. All Trust Mark issuers MUST be represented in the
           federation by an Entity. The fact that a Trust Mark Issuer is
           accepted by the federation is expressed in the
@@ -2490,14 +2504,14 @@
 
         <t>
           Note that a federation MAY allow an Entity to self-sign
-          some Trust Marks.
+          Trust Marks.
         </t>
 
         <t>
           Trust Mark JWTs MUST be explicitly typed by setting the
           <spanx style="verb">typ</spanx> header parameter to
           <spanx style="verb">trust-mark+jwt</spanx>. This is done to prevent
-          cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
+          cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
         </t>
         <section title="Trust Mark Delegation" anchor="trust_mark_delegation">
           <t>
@@ -2507,70 +2521,72 @@
             inspection. Vehicle inspection is a procedure mandated by national
             or subnational governments in many countries, in which a vehicle is
             inspected to ensure that it conforms to regulations governing
-            safety, emissions, or both. The bodies that mandates the inspection
-            does not perform them instead there may be commercial companies
-            performing this check and which then issues the Trust Mark.
+            safety, emissions, or both. The body that mandates the inspections
+            does not perform them; instead, there may be commercial companies
+            performing the inspections, after which they issue the Trust Mark.
           </t>
           <t>
             The fact that a Trust Mark is issued by a Trust Mark Issuer that is
-            not the owner of the Trust Mark is in the Trust Mark expressed by adding a
-            signed JWT to the <spanx style="verb">delegation</spanx> claim.
-            The format of the signed JWT is as described below.
+            not the owner of the Trust Mark is expressed by including
+	    a <spanx style="verb">delegation</spanx> claim in the Trust Mark,
+	    whose value is a signed JWT.
+            The format of the delegation JWT is described below.
           </t>
           <t>
-            If the Federation Operator knows of and has verified that Trust
-            Marks with a
-            certain Trust Mark identifier may be issued by Trust Mark Issuers
-            that are not the owner of the Trust Mark ID then the information
-            about the owner and the Trust Mark ID MUST be added to the
-            <spanx style="verb">trust_mark_owners</spanx> claim in the Trust
-            Anchor Entity Configuration.
+            If the Federation Operator knows that Trust Marks with a
+            certain Trust Mark identifier may legitimately be issued by Trust Mark Issuers
+            that are not the owner of the Trust Mark ID, then information
+            about the owner and the Trust Mark ID MUST be included in the
+            <spanx style="verb">trust_mark_owners</spanx> claim in
+	    the Trust Anchor's Entity Configuration.
           </t>
         </section>
 
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
-          <t>These are the Trust Mark Claims:</t>
+          <t>
+	    These claims are used in Trust Marks:
+	  </t>
           <t>
             <list style="hanging">
               <t hangText="iss">
                 <vspace/>
-                REQUIRED. String. The issuer of the Trust Mark.
+                REQUIRED. String. Issuer of the Trust Mark.
               </t>
               <t hangText="sub">
                 <vspace/>
-                REQUIRED. String. The Entity this Trust Mark applies to.
+                REQUIRED. String. Entity this Trust Mark applies to.
               </t>
               <t hangText="id">
                 <vspace/>
-                REQUIRED. String. An identifier of the Trust Mark.
-                The Trust Mark <spanx style="verb">id</spanx>
+                REQUIRED. String. Identifier of the Trust Mark.
+                The Trust Mark identifier
                 MUST be collision-resistant
                 across multiple federations.
                 It is RECOMMENDED that the
-                <spanx style="verb">id</spanx>
+                identifier
                 value is built
-                using the unique URL that uniquely identifies the federation,
-                or the trust framework,
+                using a URL that uniquely identifies the federation
+                or the trust framework
                 within which it was issued. This is required to prevent
                 Trust Marks issued in different federations
                 from having colliding identifiers.
               </t>
               <t hangText="iat">
                 <vspace/>
-                REQUIRED. Number. When this Trust Mark was issued.
-                Expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
+                REQUIRED. Number. Time when this Trust Mark was issued.
+                This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
               </t>
               <t hangText="logo_uri">
                 <vspace/>
-                OPTIONAL. String. A URL that points to a mark/logo that the
+                OPTIONAL. String. URL that points to a mark/logo that the
                 subject is allowed to display to a user of the Entity.
               </t>
               <t hangText="exp">
                 <vspace/>
-                OPTIONAL. Number. When this Trust Mark is not valid anymore.
-                Expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
+                OPTIONAL. Number. Time when this Trust Mark is no longer valid.
+                This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
                 If not present, it means that
-                the Trust Mark is valid forever.
+                the Trust Mark does not expire.
               </t>
               <t hangText="ref">
                 <vspace/>
@@ -2579,15 +2595,16 @@
               </t>
               <t hangText="delegation">
                 <vspace/>
-                OPTIONAL. Signed JWT. A signed JWT containing information about
-	              a delegation of the right to issue Trust Marks, with a special ID,
-                from the owner of the Trust Mark to an issuer of the Trust Mark.
+                OPTIONAL. A signed JWT containing information about
+		a delegation of the right to issue Trust Marks with a particular ID
+                created by the owner of the Trust Mark
+		that identifies the delegated issuer of the Trust Mark.
               </t>
             </list>
           </t>
           <t>
-            Other claims MAY be used in conjunction with the claims outlined above.
-            The recommendations for claim naming described in Section 5.1.2 of
+            Other claims MAY be defined and used in conjunction with the claims above.
+            The recommendations for claim naming in Section 5.1.2 of
             <xref target="OpenID.Core">OpenID Connect Core 1.0</xref> apply.
           </t>
         </section>
@@ -2596,7 +2613,7 @@
             Trust Mark delegation JWTs MUST be explicitly typed, by setting the
             <spanx style="verb">typ</spanx> header parameter to
             trust-mark-delegation+jwt. This prevents
-            cross-JWT confusion (see [RFC8725], section 3.11).
+            cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
           </t>
           <t>
             The delegation claims:
@@ -2617,15 +2634,15 @@
               </t>
               <t hangText="iat">
                 <vspace/>
-                REQUIRED. String. When this delegation was issued.
-                Expressed as Seconds Since the Epoch, per [RFC7519].
+                REQUIRED. String. Time when this delegation was issued.
+                This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
               </t>
               <t hangText="exp">
                 <vspace/>
-                OPTIONAL. String. When this delegation stops being valid.
-                Expressed as Seconds Since the Epoch, per [RFC7519].
-                If not present, it means that the delegation is valid forever
-                or until revoked.
+                OPTIONAL. String. Time when this delegation stops being valid.
+                This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
+                If not present, it means that the delegation does not expire
+                and is valid until revoked.
               </t>
               <t hangText="ref">
                 <vspace/>
@@ -2636,42 +2653,42 @@
           </t>
         </section>
         <section title="Validating a Trust Mark" anchor="trust_valid">
-          <t>An Entity SHOULD NOT try to validate a Trust Mark until
-            it knows which Trust Anchors it wants to use.
-          </t>
-          <t>Validating a Trust Mark Issuer follows the procedure set out in
-            <xref target="resolving_trust"/>. Validating the Trust Mark
-            consists of doing the following checks:
+          <t>
+	    An Entity SHOULD NOT try to validate a Trust Mark until
+	    it knows which Trust Anchor it is using.
+	    To validate a Trust Mark Issuer, follow the procedure
+	    defined in <xref target="resolving_trust"/>.
+	    To validate a Trust Mark:
             <list style="numbers">
               <t>
-                Checking the signature of the signed JWT and verifying that
-                it has not passed its expiration time.
+                Check the signature of the signed JWT and verify that
+                it has not expired.
               </t>
               <t>
                 If the Trust Mark ID appears in the
-                <spanx style="verb">trust_mark_owners</spanx> claim
-                make certain that the Trust Mark contains
+                <spanx style="verb">trust_mark_owners</spanx> claim,
+                verify that the Trust Mark contains
                 a <spanx style="verb">delegation</spanx>
                 claim.
-                The claim set that can be found by looking up the Trust Mark ID
-                in the <spanx style="verb">trust_mark_owners</spanx> claim can
-                be used in the following way.
+                The set of claims for the the Trust Mark ID
+                in the <spanx style="verb">trust_mark_owners</spanx> value
+                are used in the following way:
                 <list style="symbols">
                   <t>
-                    The signature of the delegation claim value MUST
-                    be possible to verify with a key that can be found in the
-                    <spanx style="verb">jwks</spanx> part of the claim set.
+                    The signature of the <spanx style="verb">delegation</spanx> JWT
+                    MUST verify with a key from <spanx style="verb">jwks</spanx> claim.
                   </t>
                   <t>
-                    The issuer of the delegation claim value MUST match the
-                    <spanx style="verb">sub</spanx> claim in the claim set.
+                    The issuer of the <spanx style="verb">delegation</spanx> JWT
+		    MUST match the <spanx style="verb">sub</spanx> value
+		    in this set of claims.
                   </t>
                 </list>
               </t>
               <t>
                 Using the Trust Mark issuer status endpoint to verify that the
-                Trust Mark is still active.
-                Described in <xref target="status_endpoint"/>
+                Trust Mark is still active
+                is described in <xref target="status_endpoint"/>.
               </t>
             </list>
           </t>
@@ -2685,18 +2702,18 @@
           </t>
           <t>
             If a Trust Mark Issuer is issuing Trust Marks on behalf of a
-            Trust Mark owner then the Trust Anchor MUST publish the
-            connection between the Trust
-            Mark ID and the corresponding Trust Mark Issuer in the
+            Trust Mark owner, then the Trust Anchor MUST publish the
+            connection between the Trust Mark ID
+	    and the corresponding Trust Mark Issuer in the
             <spanx style="verb">trust_marks_issuers</spanx> claim. This
-            signifies that the Trust Anchor has verified that the Trust
-            Mark owner is indeed the Trust Mark owner and that the
+            signifies that the Trust Anchor has validated
+            the Trust Mark owner and that the
             Trust Mark owner has delegated the right to issue Trust Marks
-            with a specific Trust Mark ID to a specific Trust Mark Issuer.
+            with a designated Trust Mark ID to a specified Trust Mark Issuer.
           </t>
           <t>
             Trust Marks that are not recognized within a federation SHOULD be ignored when
-            evaluating the trust in the Entity that presented them. Such Trust Marks can
+            evaluating trust in the Entity that presented them. Such Trust Marks can
             appear for various reasons, such as the Entity Configuration including Trust
             Marks associated with another federation, or Trust Marks intended for specific
             purposes or Entity audiences.
@@ -2710,10 +2727,11 @@
         <section title="Trust Mark Examples" anchor="trust_example">
           <figure>
             <preamble>
-              A non-normative example of a <spanx style="verb">trust_marks</spanx> claim inside an Entity Configuration is:
+              A non-normative example of a <spanx style="verb">trust_marks</spanx>
+	      claim in an Entity Configuration is:
             </preamble>
 	    <name>
-	      Trust Marks Provided with an Entity Configuration
+	      Trust Mark in an Entity Configuration
 	    </name>
             <artwork><![CDATA[
 {
@@ -2723,7 +2741,7 @@
   "exp": 1516298022,
   "trust_marks": [
     {
-     "id": "https://www.spid.gov.it/certification/rp/",
+     "id": "https://www.spid.gov.it/certification/rp",
      "trust_mark":
        "eyJraWQiOiJmdWtDdUtTS3hwWWJjN09lZUk3Ynlya3N5a0E1bDhPb2RFSXVyOH
         JoNFlBIiwidHlwIjoidHJ1c3QtbWFyaytqd3QiLCJhbGciOiJSUzI1NiJ9.eyJ
@@ -2748,12 +2766,10 @@
       "client_name": "https://rp.example.it/spid/",
       "contacts": [
         "ops@rp.example.it"
-      ],
-
-       ... follows other claims ...
-
-   ... follows other claims ...
-
+      ]
+    }
+  }
+}
 ]]></artwork>
           </figure>
 
@@ -3314,14 +3330,14 @@ Host: openid.sunet.se
               </t>
               <t hangText="iat">
                 <vspace/>
-                REQUIRED. Number. When this resolution was issued.
-                Expressed as Seconds Since the Epoch, as defined in
+                REQUIRED. Number. Time when this resolution was issued.
+                This is expressed as Seconds Since the Epoch, as defined in
                 <xref target="RFC7519"/>.
               </t>
               <t hangText="exp">
                 <vspace/>
-                REQUIRED. Number. When this resolution is not valid anymore.
-                Expressed as Seconds Since the Epoch, as defined in <xref target="RFC7519"/>.
+                REQUIRED. Number. Time when this resolution is no longer valid.
+                This is expressed as Seconds Since the Epoch, as defined in <xref target="RFC7519"/>.
                 It MUST correspond to the <spanx style="verb">exp</spanx> value of
                 the Trust Chain from which the resolve response was derived.
               </t>
@@ -3603,7 +3619,7 @@ Content-Type: application/json
               </t>
               <t hangText="iat">
                 <vspace/>
-                OPTIONAL. When the Trust Mark was issued. If
+                OPTIONAL. Time when the Trust Mark was issued. If
                 <spanx style="verb">iat</spanx> is not specified and the
                 Trust Mark Issuer has issued several Trust Marks with the
                 <spanx style="verb">id</spanx> specified in the request to the
@@ -3833,7 +3849,7 @@ Host: trust-anchor.example.com
               </t>
               <t hangText="iat">
                 <vspace/>
-                REQUIRED. Number. When the signed JWT was issued,
+                REQUIRED. Number. Time when the signed JWT was issued,
                 using the time format defined for the
                 <spanx style="verb">iat</spanx> claim in
                 <xref target="RFC7519"/>.
@@ -3979,7 +3995,7 @@ Content-Type: application/jwk-set+jwt
             publishes the list of public keys used in the past by a Federation Entity.
             The given public keys are needed by all the Entities
             to verify the Trust Chains evaluated in the past with the
-            Federation Entity Keys not published anymore in the Federation Entity's
+            Federation Entity Keys no longer published in the Federation Entity's
             Entity Configuration.
           </t>
 
@@ -4443,7 +4459,7 @@ Content-Type: application/json
       <t>
         Independent of whether the RP uses Automatic or Explicit Registration,
         the way that the RP learns about the OP is the same.
-        It will use the procedure that is
+        It uses the procedure
         described in <xref target="resolving_trust"/>.
       </t>
 
@@ -7753,6 +7769,9 @@ Host: op.umu.se
           <t>
             Fixed #2034: Other use cases of Federation Automatic Registration, FAPI included.
           </t>
+	  <t>
+	    Tightened descriptions of constraints and Trust Marks.
+	  </t>
         </list>
       </t>
 
