@@ -797,7 +797,8 @@
             </t>
             <t hangText="Leaf">
               <vspace/>
-              In an OpenID Connect identity federation, an RP or an OP.
+              In an OpenID Connect identity federation, an RP or an OP,
+	      or in an OAuth 2.0 federation, a client, authorization server, or protected resource.
             </t>
             <t hangText="Intermediate">
               <vspace/>
@@ -813,16 +814,22 @@
           Trust Anchor about the top-most Intermediate
           (if there are Intermediates) or the Leaf Entity
           (if there are no Intermediates).
-          The Trust Chain MAY end with the
-          Entity Configuration of the Trust Anchor.
+          The Trust Chain logically always ends with the
+          Entity Configuration of the Trust Anchor,
+	  even though it MAY be not present in all representations.
         </t>
+	<t>
+	  The Trust Anchor's Entity Configuration MUST be distributed to all
+	  participants in its federation in some secure out-of-band way
+	  that not described in this specification.
+	  This mechanism is likely to be federation-specific.
+	  Because participants in a federation MUST already have
+	  the Trust Anchor's Entity Configuration,
+	  it need not be included in all representations of trust chains using it.
+	</t>
         <t>
-          If present, the Trust Anchor's Entity Configuration
-          at the end of the chain contains the configuration of the federation,
-          such as the public keys of the Trust Anchor and other parameters
-          considered within the trust evaluation.
-          When this is the case, the Trust Chain
-          consequentially contains the configuration of the federation
+	  The Trust Chain contains the configuration of the federation
+	  as it applies to the Leaf
           at the time of the evaluation of the chain.
         </t>
         <t>
@@ -831,48 +838,49 @@
           will contain the following Entity Statements:
           <list style="numbers">
             <t>
-              an Entity Configuration about the RP published by the RP,
+              an Entity Configuration about the RP published by itself,
             </t>
             <t>
               an Entity Statement about the RP published by Organization A,
             </t>
             <t>
-              an Entity Statement about Organization A published by Federation F.
+              an Entity Statement about Organization A published by the Trust Anchor for F,
             </t>
+	    <t>
+	      an Entity Configuration about the Trust Anchor for F published by itself.
+	    </t>
           </list>
         </t>
         <t>
-          A Trust Chain MUST always be possible to order such that:
-          If we name the Entity Statements ES[0] (the Leaf Entity's
-          Entity Configuration) to ES[i] (an Entity Statement issued
-          by the Trust Anchor), i>0 then:
+	  Let us refer to the Entity Statements in the Trust Chain as
+	  ES[j], where j = 0,...,i,
+	  with 0 being the index of the first Entity Statement
+	  and i being the zero-based index of the last.
+	  Then:
           <list style="symbols">
+	    <t>
+	      ES[0] (the Leaf's Entity Configuration in the Trust Chain)
+	      is signed using a key in ES[0]["jwks"].
+	    </t>
             <t>
-              The <spanx style="verb">iss</spanx> Entity in one Entity Statement
-              is always the
-              <spanx style="verb">sub</spanx>
-              Entity in the next.
-              ES[j]['iss'] == ES[j+1]['sub'], j=0,...,i-1 .
+	      The <spanx style="verb">iss</spanx> claim in an Entity Statement
+	      is equal to the <spanx style="verb">sub</spanx> claim in the next.
+	      Restating this symbolically,
+	      for each j = 0,...,i-1,
+	      ES[j]["iss"] == ES[j+1]["sub"].
             </t>
             <t>
-              There MUST always be a
-              Federation Entity Key carried in the
-              <spanx style="verb">jwks</spanx>
-              claim in
-              ES[j] that can be used to verify the signature of ES[j-1],
-              j=i,...,1 .
+	      An Entity Statement is signed using a key from
+	      the <spanx style="verb">jwks</spanx> claim in the next.
+	      Restating this symbolically,
+	      for each j = 0,...,i-1,
+	      ES[j] is signed by a key in ES[j+1]["jwks"].
             </t>
-            <t>
-              It MUST be possible to verify the signature of ES[0] with
-              one of the keys in ES[0]['jwks'].
-            </t>
+	    <t>
+	      ES[i] (the Trust Anchor's Entity Configuration in the Trust Chain)
+	      is signed using a key in ES[i]["jwks"].
+	    </t>
           </list>
-        </t>
-        <t>
-          The signing key that MUST be used to verify ES[i] is distributed
-          from the Trust Anchors to any Entity that needs to verify a
-          Trust Chain in some secure out-of-band way not described in this
-          document.
         </t>
 	<figure>
           <preamble>
@@ -7753,6 +7761,9 @@ Host: op.umu.se
           <t>
             Fixed #2034: Other use cases of Federation Automatic Registration, FAPI included.
           </t>
+	  <t>
+	    Clarified the role of the Trust Anchor's Entity Configuration in Trust Chains.
+	  </t>
         </list>
       </t>
 
