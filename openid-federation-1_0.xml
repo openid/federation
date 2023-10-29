@@ -625,18 +625,18 @@
               Trust Mark identifiers and issuers are trusted by the federation.
               This claim MUST be ignored if present in an Entity Configuration that
               describes an Entity that is not a Trust Anchor.
-              It is a JSON object with members that are Trust Mark identifiers and
+              It is a JSON object with member names that are Trust Mark identifiers and
               each corresponding value being an array of Entities
 	      that are trusted to represent the accreditation authority
 	      for Trust Marks with that identifier.
-              If the value list following a Trust Mark identifier is empty,
+              If the array following a Trust Mark identifier is empty,
               anyone MAY issue Trust Marks with that identifier.
               Trust Marks are described in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_mark_owners">
               <vspace/>
               OPTIONAL.
-              If a Federation Operator knows that a Trust Mark ID is owned
+              If a Federation Operator knows that a Trust Mark identifier is owned
               by an Entity different from the Trust Mark Issuer, then that
               knowledge MUST be expressed in this claim.
               This claim MUST be ignored if present in an Entity Configuration
@@ -2535,8 +2535,8 @@
           <t>
             If the Federation Operator knows that Trust Marks with a
             certain Trust Mark identifier may legitimately be issued by Trust Mark Issuers
-            that are not the owner of the Trust Mark ID, then information
-            about the owner and the Trust Mark ID MUST be included in the
+            that are not the owner of the Trust Mark identifier, then information
+            about the owner and the Trust Mark identifier MUST be included in the
             <spanx style="verb">trust_mark_owners</spanx> claim in
 	    the Trust Anchor's Entity Configuration.
           </t>
@@ -2558,7 +2558,17 @@
               </t>
               <t hangText="id">
                 <vspace/>
-                REQUIRED. String. Identifier of the Trust Mark.
+		The <spanx style="verb">id</spanx> (identifier) claim
+		provides an identifier for a property of the JWT.
+		Like the <spanx style="verb">sub</spanx> (subject) claim,
+		the processing of this claim is generally application specific.
+		The <spanx style="verb">id</spanx> value is a case-sensitive string
+		containing a StringOrURI value.
+		Use of this claim in JWTs is OPTIONAL.
+		<vspace blankLine="1"/>
+
+		This claim is REQUIRED when the JWT is a Trust Mark.
+		In this case, its value is the identifier of the Trust Mark.
                 The Trust Mark identifier
                 MUST be collision-resistant
                 across multiple federations.
@@ -2590,13 +2600,32 @@
               </t>
               <t hangText="ref">
                 <vspace/>
-                OPTIONAL. String. URL that points to information connected to
-                the issuance of this Trust Mark.
+		The <spanx style="verb">ref</spanx> (reference) claim
+		provides URI property for the JWT.
+		Like the <spanx style="verb">sub</spanx> (subject) claim,
+		the processing of this claim is generally application specific.
+		The <spanx style="verb">ref</spanx> value is a case-sensitive string
+		containing a URI value.
+		Use of this claim in JWTs is OPTIONAL.
+		<vspace blankLine="1"/>
+
+		When the JWT is a Trust Mark,
+		its value is a URL that refers to human-readable information
+		connected to the issuance of the Trust Mark.
               </t>
               <t hangText="delegation">
                 <vspace/>
-                OPTIONAL. A signed JWT containing information about
-		a delegation of the right to issue Trust Marks with a particular ID
+		The <spanx style="verb">delegation</spanx> claim
+		expresses a delegation relationship.
+		Like the <spanx style="verb">sub</spanx> (subject) claim,
+		the processing of this claim is generally application specific.
+		The <spanx style="verb">delegation</spanx> value is a case-sensitive string.
+		Use of this claim in JWTs is OPTIONAL.
+		<vspace blankLine="1"/>
+
+		When the JWT is a Trust Mark,
+		its value is a signed JWT containing information about
+		a delegation of the right to issue Trust Marks with a particular identifier
                 created by the owner of the Trust Mark
 		that identifies the delegated issuer of the Trust Mark.
               </t>
@@ -2665,12 +2694,12 @@
                 it has not expired.
               </t>
               <t>
-                If the Trust Mark ID appears in the
+                If the Trust Mark identifier appears in the
                 <spanx style="verb">trust_mark_owners</spanx> claim,
                 verify that the Trust Mark contains
                 a <spanx style="verb">delegation</spanx>
                 claim.
-                The set of claims for the the Trust Mark ID
+                The set of claims for the the Trust Mark identifier
                 in the <spanx style="verb">trust_mark_owners</spanx> value
                 are used in the following way:
                 <list style="symbols">
@@ -2703,13 +2732,13 @@
           <t>
             If a Trust Mark Issuer is issuing Trust Marks on behalf of a
             Trust Mark owner, then the Trust Anchor MUST publish the
-            connection between the Trust Mark ID
+            connection between the Trust Mark identifier
 	    and the corresponding Trust Mark Issuer in the
             <spanx style="verb">trust_marks_issuers</spanx> claim. This
             signifies that the Trust Anchor has validated
             the Trust Mark owner and that the
             Trust Mark owner has delegated the right to issue Trust Marks
-            with a designated Trust Mark ID to a specified Trust Mark Issuer.
+            with a designated Trust Mark identifier to a specified Trust Mark Issuer.
           </t>
           <t>
             Trust Marks that are not recognized within a federation SHOULD be ignored when
@@ -3610,7 +3639,7 @@ Content-Type: application/json
             <list style="hanging">
               <t hangText="sub">
                 <vspace/>
-                OPTIONAL. The ID of the Entity to which the Trust Mark
+                OPTIONAL. The Entity Identifier of the Entity to which the Trust Mark
                 was issued.
               </t>
               <t hangText="id">
@@ -3637,7 +3666,7 @@ Content-Type: application/json
             <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>
             are not needed. If <spanx style="verb">trust_mark</spanx> is not used,
             then <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>
-            are required.
+            are REQUIRED.
           </t>
           <t>
             <figure>
@@ -5292,7 +5321,7 @@ HTTP/1.1 302 Found
                   <t hangText="authority_hints">
                     <vspace/>
                     REQUIRED.
-                    It MUST be a single element array, whose value references
+                    It MUST be a single-element array, whose value references
                     the immediate Superior authority of the OP in the Trust
                     Chain that the OP selected to process the request. See
                     <xref target="entity-statement"/> for the full
@@ -6207,21 +6236,70 @@ HTTP/1.1 302 Found
 	</t>
 
 	<section anchor="ClaimsContents" title="Registry Contents">
-	  <t> <?rfc subcompact="yes"?>
-	  <list style="symbols">
-	    <t>
-	      Claim Name: <spanx style="verb">keys</spanx>
-	    </t>
-	    <t>
-	      Claim Description: Array of JWK values, as defined in RFC 7517
-	    </t>
-	    <t>
-	      Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	    </t>
-	    <t>
-	      Specification Document(s): Section <xref target="common_metadata"/> of this specification
-	    </t>
-	  </list>
+	  <t>
+	    <?rfc subcompact="yes"?>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">keys</spanx>
+	      </t>
+	      <t>
+		Claim Description: Array of JWK values, as defined in RFC 7517
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section <xref target="common_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">id</spanx>
+	      </t>
+	      <t>
+		Claim Description: Identifier
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section <xref target="trust_mark_claims"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">ref</spanx>
+	      </t>
+	      <t>
+		Claim Description: Reference
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section <xref target="trust_mark_claims"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">delegation</spanx>
+	      </t>
+	      <t>
+		Claim Description: Delegation
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section <xref target="trust_mark_claims"/> of this specification
+	      </t>
+	    </list>
 	  </t>
 	</section>
 	<?rfc subcompact="no"?>
