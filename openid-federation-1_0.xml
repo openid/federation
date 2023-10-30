@@ -1628,45 +1628,61 @@
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
         <t>
-          An Entity MAY publish Entity Type specific policies that apply to the
-          metadata of its Subordinates. Entity Type Identifiers defined in
-          this specification can be found in <xref target="entity_types"/>.
+          Trust Anchors and Intermediate Entities MAY publish Entity
+          Type-specific policies that apply to the metadata of their immediate
+          Subordinates as well as any further Subordinates along the Trust
+          Chain.
         </t>
-        <section title='Using the "metadata_policy" Claim'>
-          <t>
-            A <spanx style="verb">metadata_policy</spanx> for an Entity Type
-            has the following structure:
-            <list style="symbols">
-              <t>It consists of one or more policy entries.</t>
-              <t>A policy entry applies to a single metadata parameter, for example
-                <spanx style="verb">id_token_signed_response_alg</spanx>.
-              </t>
-              <t>A policy entry consists of one or more operators, to check or
-                modify the metadata parameter.
-              </t>
-              <t>An operator may appear only once in a policy entry.</t>
-            </list>
-          </t>
-          <t>
-            Note that metadata policies MUST regard any metadata parameter with
-            a language tag in its name, as described in <xref target="ClaimsLanguagesAndScripts"/>,
-            as distinct from the same metadata parameter without a language tag.
-          </t>
-          <t>
-            <figure>
-              <preamble>
-                The following is a non-normative example of a policy entry:
-              </preamble>
-	      <name>
-		Example Policy Entry
-	      </name>
+        <t>
+          As described in <xref target="entity-statement"/>, the metadata
+          policies are located in the <spanx style="verb">metadata_policy</spanx>
+          claim of an Entity Statement, whose value is a JSON object.
+        </t>
+        <t>
+          Each member in this object is an Entity Type-specific metadata policy,
+          whose member name is an Entity Type Identifier, as specified in
+          <xref target="entity_types"/>, for example
+          <spanx style="verb">openid_relying_party</spanx>. The member value is
+          a JSON object that represents metadata policies for the Entity Type
+          and has the following structure:
+          <list style="symbols">
+            <t>
+              It consists of one or more policy entries, each entry being
+              represented by a JSON object.</t>
+            <t>
+              A policy entry applies to a single metadata parameter, for
+              example <spanx style="verb">id_token_signed_response_alg</spanx>.
+            </t>
+            <t>
+              A policy entry is represented by a JSON object and consists of
+              one or more operators, to check or modify the metadata parameter,
+              as described in <xref target="policy_operators"/>.
+            </t>
+            <t>
+              A policy entry MAY include at most one operator of each kind.
+            </t>
+          </list>
+        </t>
+        <t>
+          Note that metadata policies MUST regard any metadata parameter with
+          a language tag in its name, as described in <xref target="ClaimsLanguagesAndScripts"/>,
+          as distinct from the same metadata parameter without a language tag.
+        </t>
+        <t>
+          <figure>
+            <preamble>
+              The following is a non-normative example of a policy entry:
+            </preamble>
+	        <name>
+		    Example Policy Entry
+	        </name>
               <artwork><![CDATA[
 "id_token_signed_response_alg": {
   "default": "ES256",
   "one_of" : ["ES256", "ES384", "ES512"]
 }
 ]]></artwork>
-            </figure>
+          </figure>
           </t>
           <t>
             <figure>
@@ -1675,7 +1691,7 @@
                 like this:
               </preamble>
 	      <name>
-		Example <spanx style="verb">metadata_policy</spanx> Claim
+		  Example <spanx style="verb">metadata_policy</spanx> Claim
 	      </name>
               <artwork><![CDATA[
 "metadata_policy" : {
@@ -1689,63 +1705,62 @@
 ]]></artwork>
             </figure>
           </t>
-        </section>
         <section title="Operators" anchor="policy_operators">
           <t>
             This specification defines the following metadata policy operators.
           </t>
           <t>
-            Value modifiers:
+            Metadata policy operators that modify values are:
             <list style="hanging">
               <t hangText="value">
                 <vspace/>
-                The metadata parameter MUST be assigned the specified operator
-                value.
+                The metadata parameter MUST be assigned the value that is the
+                value of this operator.
               </t>
               <t hangText="add">
                 <vspace/>
-                The specified operator value or values MUST be added to the
-                metadata parameter. If any of the specified operator values are
-                already present in the metadata parameter, they MUST NOT be
-                added. If the metadata parameter is absent, the parameter MUST
-                be initialized with the specified operator value(s).
+                The value or values of this operator MUST be added to the
+                metadata parameter. If any of these values are already present
+                in the metadata parameter, they MUST NOT be added another time.
+                If the metadata parameter is absent, the parameter MUST be
+                initialized with the value of this operator.
               </t>
               <t hangText="default">
                 <vspace/>
                 If the metadata parameter is absent, it MUST be set to the
-                specified operator value(s).
+                value of this operator.
               </t>
             </list>
           </t>
           <t>
-            Value checks:
+            Metadata policy operators that check values are:
             <list style="hanging">
               <t hangText="essential">
                 <vspace/>
-                If <spanx style="verb">true</spanx> the metadata parameter MUST
-                be present.
+                If the value of this operator is <spanx style="verb">true</spanx>,
+                then the metadata parameter MUST be present.
                 If <spanx style="verb">false</spanx> the metadata parameter is
                 voluntary and may be absent.
-                If the <spanx style="verb">essential</spanx> operator is not
-                present in a policy entry this MUST be treated as if it's
-                present and set to <spanx style="verb">false</spanx>.
+                If the <spanx style="verb">essential</spanx> operator is omitted,
+                this is equivalent to including it with a value of
+                <spanx style="verb">false</spanx>.
               </t>
               <t hangText="one_of">
                 <vspace/>
                 If the metadata parameter is present its value MUST be one of
-                those listed in the operator.
+                those listed in the operator value.
               </t>
               <t hangText="subset_of">
                 <vspace/>
-                If the metadata parameter is present this operator MUST compute
-                the intersection of the values of the operator and the metadata
+                If the metadata parameter is present this operator computes the
+                intersection between the values of the operator and the metadata
                 parameter.
-                If the resulting intersection is non-empty the parameter MUST
-                be set to the values in the intersection.
-                If the intersection is empty the result is determined by the
-                <spanx style="verb">essential</spanx> operator: for an essential
-                metadata parameter the result MUST be an error, for a voluntary
-                the metadata parameter MUST be removed from the metadata.
+                If the intersection is non-empty, the parameter is set to the
+                values in the intersection.
+                If the intersection is empty, the result is determined by the
+                <spanx style="verb">essential</spanx> operator: For an essential
+                metadata parameter, the result is an error; for a voluntary
+                metadata parameter, it MUST be removed from the metadata.
                 Note that this behavior makes <spanx style="verb">subset_of</spanx>
                 a potential value modifier in addition to it being a value check.
               </t>
@@ -1760,7 +1775,7 @@
 
           <t>
             Applications and protocols utilizing metadata policies MAY specify
-            additional policy operators.
+            and use additional policy operators.
           </t>
 
           <t>
@@ -1784,7 +1799,7 @@
             <spanx style="verb">default</spanx> operator values are still
             expressed as lists of strings.
             This language from <xref target="RFC6749"/> also applies to
-            metadata parameters which values can be expressed as a
+            metadata parameters for which values can be expressed as a
             space-separated lists of strings: "If the value contains multiple
             space-delimited strings, their order does not matter, and each
             string adds an additional access range to the requested scope."
@@ -1801,8 +1816,8 @@
               as shown in the last row.
           </preamble>
 	  <name>
-	    Examples of Outputs with Combinations of <spanx style="verb">essential</spanx>
-        and <spanx style="verb">subset_of</spanx> Inputs
+	    Examples of outputs with Combinations of <spanx style="verb">essential</spanx>
+        and <spanx style="verb">subset_of</spanx> inputs
 	  </name>
           <thead>
             <tr>
@@ -2054,13 +2069,13 @@
           <t>
             For every Entity Type metadata parameter for which a policy entry
             is present, the policy operators MUST be applied in accordance to
-            their definition in <xref target="policy_operators"/> and in a
+            their definitions in <xref target="policy_operators"/> and in a
             sequence as follows:
           </t>
           <t>
             <list style="numbers">
               <t hangText="value">
-                If this policy operator is present further policy operators on
+                If this policy operator is present, further policy operators on
                 the metadata parameter MUST NOT be applied.
               </t>
               <t hangText="add">
@@ -2068,9 +2083,9 @@
               <t hangText="default">
               </t>
               <t hangText="essential">
-                If the metadata parameter is absent and designated as voluntary
-                any subsequent policy operators that represent a value check
-                MUST be skipped.
+                If this parameter value is <spanx style="verb">false</spanx> or
+                it is absent, then any subsequent policy operators that
+                represent a value check MUST be skipped.
               </t>
               <t hangText="one_of">
               </t>
@@ -2082,8 +2097,8 @@
           </t>
           <t>
             Applications and protocols that specify additional policy operators
-            MUST define their position relative to the above sequence of
-            operator application.
+            MUST define their order relative to the above sequence of operator
+            application.
           </t>
         </section>
         <section title="Policy Combination Example">
