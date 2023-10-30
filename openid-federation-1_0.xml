@@ -798,7 +798,7 @@
             <t hangText="Leaf">
               <vspace/>
               In an OpenID Connect identity federation, an RP or an OP,
-	      or in an OAuth 2.0 federation, a client, authorization server, or protected resource.
+	      or in an OAuth 2.0 federation, a Client, Authorization Server, or Protected Resource.
             </t>
             <t hangText="Intermediate">
               <vspace/>
@@ -816,16 +816,20 @@
           (if there are no Intermediates).
           The Trust Chain logically always ends with the
           Entity Configuration of the Trust Anchor,
-	  even though it MAY be not present in all representations.
+	  even though it MAY be omitted from
+	  the JSON array representating the Trust Chain in some use cases.
         </t>
 	<t>
 	  The Trust Anchor's Entity Configuration MUST be distributed to all
-	  participants in its federation in some secure out-of-band way
-	  that not described in this specification.
+	  participants in its federation that need it
+	  in some secure out-of-band way that is not described in this specification.
 	  This mechanism is likely to be federation-specific.
-	  Because participants in a federation MUST already have
-	  the Trust Anchor's Entity Configuration,
-	  it need not be included in all representations of trust chains using it.
+	  Because participants in a federation needing it MUST already have
+	  the Trust Anchor's Entity Configuration or be able to retrieve it when needed,
+	  it does not have to be included in the JSON array representing the Trust Chain
+	  in some situations.
+	  Also note that to validate a Trust Chain, a participant MAY only need
+	  the Trust Anchor's signing keys and not its complete Entity Configuration.
 	</t>
         <t>
 	  The Trust Chain contains the configuration of the federation
