@@ -618,7 +618,7 @@
               </list>
               Trust Marks are described in <xref target="trust_marks"/>.
             </t>
-            <t hangText="trust_marks_issuers">
+            <t hangText="trust_mark_issuers">
               <vspace/>
               OPTIONAL.
               A Trust Anchor MAY use this claim to tell which combination of
@@ -637,11 +637,12 @@
               <vspace/>
               OPTIONAL.
               If a Federation Operator knows that a Trust Mark identifier is owned
-              by an Entity different from the Trust Mark Issuer, then that
+              by an Entity different from the Trust Mark issuer, then that
               knowledge MUST be expressed in this claim.
               This claim MUST be ignored if present in an Entity Configuration
               that describes an Entity that is not a Trust Anchor.
-              Its value is a JSON object with these members:
+              It is a JSON object with member names that are Trust Mark identifiers and
+              each corresponding value being a JSON object with these members:
               <list style="hanging">
                 <t hangText="sub">
                   <vspace/>
@@ -677,10 +678,10 @@
         <figure>
           <preamble>
             The following is a non-normative example of
-            a <spanx style="verb">trust_marks_owners</spanx> claim value:
+            a <spanx style="verb">trust_mark_owners</spanx> claim value:
           </preamble>
           <name>
-            Example <spanx style="verb">trust_marks_owners</spanx> Claim Value
+            Example <spanx style="verb">trust_mark_owners</spanx> Claim Value
           </name>
           <artwork><![CDATA[
 {
@@ -707,10 +708,10 @@
         <figure>
           <preamble>
             The following is a non-normative example of
-            a <spanx style="verb">trust_marks_issuers</spanx> claim value:
+            a <spanx style="verb">trust_mark_issuers</spanx> claim value:
           </preamble>
           <name>
-            Example <spanx style="verb">trust_marks_issuers</spanx> Claim Value
+            Example <spanx style="verb">trust_mark_issuers</spanx> Claim Value
           </name>
           <artwork><![CDATA[
 {
@@ -2482,16 +2483,16 @@
 	  claim definition in <xref target="entity-statement"/>.
         </t>
         <t>
-	  A Trust Mark Issuer is a Federation Entity that issues Trust Marks.
-          A Trust Mark Owner is an Entity the owns the right to a Trust Mark
+	  A Trust Mark issuer is a Federation Entity that issues Trust Marks.
+          A Trust Mark owner is an Entity the owns the right to a Trust Mark
           identifier.
         </t>
         <t>
           Trust Marks are signed by a federation-accredited
           authority. All Trust Mark issuers MUST be represented in the
-          federation by an Entity. The fact that a Trust Mark Issuer is
+          federation by an Entity. The fact that a Trust Mark issuer is
           accepted by the federation is expressed in the
-          <spanx style="verb">trust_marks_issuers</spanx> claim of the
+          <spanx style="verb">trust_mark_issuers</spanx> claim of the
           Trust Anchor.
         </t>
 
@@ -2516,7 +2517,7 @@
         <section title="Trust Mark Delegation" anchor="trust_mark_delegation">
           <t>
             There will be cases where the owner of a Trust Mark for some reason
-            may not match the Trust Mark Issuer due to administrative or
+            may not match the Trust Mark issuer due to administrative or
             technical requirements. Take as an example vehicle
             inspection. Vehicle inspection is a procedure mandated by national
             or subnational governments in many countries, in which a vehicle is
@@ -2526,7 +2527,7 @@
             performing the inspections, after which they issue the Trust Mark.
           </t>
           <t>
-            The fact that a Trust Mark is issued by a Trust Mark Issuer that is
+            The fact that a Trust Mark is issued by a Trust Mark issuer that is
             not the owner of the Trust Mark is expressed by including
 	    a <spanx style="verb">delegation</spanx> claim in the Trust Mark,
 	    whose value is a signed JWT.
@@ -2534,7 +2535,7 @@
           </t>
           <t>
             If the Federation Operator knows that Trust Marks with a
-            certain Trust Mark identifier may legitimately be issued by Trust Mark Issuers
+            certain Trust Mark identifier may legitimately be issued by Trust Mark issuers
             that are not the owner of the Trust Mark identifier, then information
             about the owner and the Trust Mark identifier MUST be included in the
             <spanx style="verb">trust_mark_owners</spanx> claim in
@@ -2685,7 +2686,7 @@
           <t>
 	    An Entity SHOULD NOT try to validate a Trust Mark until
 	    it knows which Trust Anchor it is using.
-	    To validate a Trust Mark Issuer, follow the procedure
+	    To validate a Trust Mark issuer, follow the procedure
 	    defined in <xref target="resolving_trust"/>.
 	    To validate a Trust Mark:
             <list style="numbers">
@@ -2726,19 +2727,19 @@
             SHOULD be well known and trusted for a given Trust Mark identifier.
             A Trust Anchor MAY publish a list of accreditation authorities
             of Trust Marks that SHOULD be trusted by other Entities.
-            A Trust Anchor uses the <spanx style="verb">trust_marks_issuers</spanx> claim
+            A Trust Anchor uses the <spanx style="verb">trust_mark_issuers</spanx> claim
             in its Entity Configuration to publish this information.
           </t>
           <t>
-            If a Trust Mark Issuer is issuing Trust Marks on behalf of a
+            If a Trust Mark issuer is issuing Trust Marks on behalf of a
             Trust Mark owner, then the Trust Anchor MUST publish the
             connection between the Trust Mark identifier
-	    and the corresponding Trust Mark Issuer in the
-            <spanx style="verb">trust_marks_issuers</spanx> claim. This
+	    and the corresponding Trust Mark issuer in the
+            <spanx style="verb">trust_mark_issuers</spanx> claim. This
             signifies that the Trust Anchor has validated
             the Trust Mark owner and that the
             Trust Mark owner has delegated the right to issue Trust Marks
-            with a designated Trust Mark identifier to a specified Trust Mark Issuer.
+            with a designated Trust Mark identifier to a specified Trust Mark issuer.
           </t>
           <t>
             Trust Marks that are not recognized within a federation SHOULD be ignored when
@@ -3650,7 +3651,7 @@ Content-Type: application/json
                 <vspace/>
                 OPTIONAL. Time when the Trust Mark was issued. If
                 <spanx style="verb">iat</spanx> is not specified and the
-                Trust Mark Issuer has issued several Trust Marks with the
+                Trust Mark issuer has issued several Trust Marks with the
                 <spanx style="verb">id</spanx> specified in the request to the
                 Entity identified by <spanx style="verb">sub</spanx>, the
                 most recent one is assumed.
@@ -7849,6 +7850,10 @@ Host: op.umu.se
           </t>
 	  <t>
 	    Tightened descriptions of constraints and Trust Marks.
+	    Changed <spanx style="verb">trust_marks_owners</spanx>
+	    to <spanx style="verb">trust_mark_owners</spanx>
+	    and changed <spanx style="verb">trust_marks_issuers</spanx>
+	    to <spanx style="verb">trust_mark_issuers</spanx>.
 	  </t>
         </list>
       </t>
