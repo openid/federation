@@ -819,18 +819,6 @@
 	  even though it MAY be omitted from
 	  the JSON array representating the Trust Chain in some use cases.
         </t>
-	<t>
-	  The Trust Anchor's Entity Configuration MUST be distributed to all
-	  participants in its federation that need it
-	  in some secure out-of-band way that is not described in this specification.
-	  This mechanism is likely to be federation-specific.
-	  Because participants in a federation needing it MUST already have
-	  the Trust Anchor's Entity Configuration or be able to retrieve it when needed,
-	  it does not have to be included in the JSON array representing the Trust Chain
-	  in some situations.
-	  Also note that to validate a Trust Chain, a participant MAY only need
-	  the Trust Anchor's signing keys and not its complete Entity Configuration.
-	</t>
         <t>
 	  The Trust Chain contains the configuration of the federation
 	  as it applies to the Leaf
@@ -885,6 +873,16 @@
 	      is signed using a key in ES[i]["jwks"].
 	    </t>
           </list>
+        </t>
+        <t>
+	  The Trust Anchor's public keys are used to verify the signatures on
+	  ES[i] (the Trust Anchor's Entity Configuration) and
+	  ES[i-1] (the Trust Anchor's Entity Statement about the Entity
+	  immediately Subordinate to it in the Trust Chain).
+	  The Trust Anchor's public keys are distributed
+	  to Entities that need to verify a
+          Trust Chain in some secure out-of-band way not described in this
+          document.
         </t>
 	<figure>
           <preamble>
