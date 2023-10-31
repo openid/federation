@@ -1293,7 +1293,7 @@
         </t>
       </section>
 
-      <section title="Federation Entity">
+      <section anchor="federation_entity" title="Federation Entity">
         <t>
           The Entity Type Identifier is
           <spanx style="verb">federation_entity</spanx>.
@@ -1380,6 +1380,17 @@
               Trust Mark issuers MAY publish a
               <spanx style="verb">federation_trust_mark_list_endpoint</spanx>.
             </t>
+	    <t hangText="federation_historical_keys_endpoint">
+	      <vspace/>
+	      OPTIONAL.
+	      The endpoint described in <xref target="historical_keys"/>.
+	      This URL MUST use the <spanx style="verb">https</spanx>
+	      scheme and MAY contain port,
+	      path, and query parameter components encoded in
+	      <spanx style="verb">application/x-www-form-urlencoded</spanx> format;
+	      it MUST NOT contain a fragment component.
+	      All federation Entities MAY publish a historical keys endpoint.
+	    </t>
             <t hangText="organization_name">
               <vspace/>
               OPTIONAL. A human-readable
@@ -3764,18 +3775,16 @@ Content-Type: application/json
         </section>
       </section>
 
-      <section title="Federation Historical Keys Endpoint">
+      <section anchor="historical_keys" title="Federation Historical Keys Endpoint">
         <t>
           Each Federation Entity MAY publish its previously used
-          federation public keys at the endpoint
-          <spanx style="verb">
-            /.well-known/openid-federation-historical-jwks
-          </spanx>.
+	  Federation Entity Keys at the historical keys endpoint
+	  defined in <xref target="federation_entity"/>.
           The purpose of this endpoint is to provide
           the list of keys previously used by the Federation Entity
-          in order to provide non-repudiation of statements signed by
+          to provide non-repudiation of statements signed by
           it after key rotation. This endpoint also discloses the
-          reason for the retraction of the keys, whether they were
+          reason for the retraction of the keys and whether they were
           expired or revoked, including the reason for the revocation.
         </t>
         <t>
@@ -3792,9 +3801,8 @@ Content-Type: application/json
 
         <section title="Federation Historical Keys Request">
           <t>
-            The request MUST be an HTTP request using the GET method and
-            the <spanx style="verb">https</spanx> scheme to the well known endpoint
-            <spanx style="verb">openid-federation-historical-jwks</spanx>.
+            The request MUST be an HTTP request using the GET method to
+	    the federation historical keys endpoint.
           </t>
           <figure>
             <preamble>
@@ -3805,7 +3813,7 @@ Content-Type: application/json
               Federation Historical Keys Request
             </name>
             <artwork><![CDATA[
-GET /.well-known/openid-federation-historical-jwks HTTP/1.1
+GET /federation_historical_keys HTTP/1.1
 Host: trust-anchor.example.com
 ]]></artwork>
           </figure>
@@ -6289,6 +6297,34 @@ HTTP/1.1 302 Found
 	<?rfc subcompact="no"?>
       </section>
 
+      <section anchor="WellKnownRegistry" title="Well-Known URI Registry">
+	<t>
+	  This specification registers the following well-known URI in the IANA
+	  "Well-Known URIs" registry <xref target="IANA.well-known"/>
+	  established by <xref target="RFC5785"/>.
+	</t>
+
+	<section anchor='WellKnownContents' title='Registry Contents'>
+	  <t> <?rfc subcompact="yes"?>
+	  <list style='symbols'>
+	    <t>
+	      URI suffix: <spanx style="verb">openid-federation</spanx>
+	    </t>
+	    <t>
+	      Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	    </t>
+	    <t>
+	      Specification document: <xref target="federation_configuration"/> of this specification
+	    </t>
+	    <t>
+	      Related information: (none)
+	    </t>
+	  </list>
+	  </t>
+	</section>
+	<?rfc subcompact="no"?>
+      </section>
+
     </section>
 
     <section anchor="Security" title="Security Considerations">
@@ -6445,6 +6481,7 @@ HTTP/1.1 302 Found
 
     <references title="Informative References">
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2046.xml"/>
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5785.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6749.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8725.xml"/>
@@ -7753,6 +7790,9 @@ Host: op.umu.se
           <t>
             Fixed #2034: Other use cases of Federation Automatic Registration, FAPI included.
           </t>
+	  <t>
+	    Fixed #2080: Defined <spanx style="verb">federation_historical_keys_endpoint</spanx> metadata parameter.
+	  </t>
         </list>
       </t>
 
