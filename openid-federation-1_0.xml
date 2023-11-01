@@ -332,7 +332,7 @@
         and Entity Statements that validate the relationship between
         a Superior and a Subordinate, along a path towards the Trust Anchor,
         forms the proof that a Leaf Entity is a member of
-        the Federation configured by the Trust Anchor.
+        the Federation rooted at the Trust Anchor.
       </t>
       <t>
         The chain that links the statements to one another is verified with
@@ -4135,7 +4135,7 @@ Content-Type: application/json
         Entity Identifiers of Trust Anchors together with the public version
         of their signing keys. The consumer will first have to fetch
         sufficient Entity Statements to establish at least one chain of trust
-        from the remote peer to one or more of the configured Trust Anchors.
+        from the remote peer to one or more of the Trust Anchors.
         After that, the Entity MUST validate the Trust Chains independently,
         and if there are multiple valid Trust Chains and if the
         application demands it, choose one.
@@ -4161,13 +4161,13 @@ Content-Type: application/json
         </t>
         <t>
           With the list of all Intermediates and the Trust Anchor, the respective
-          federation API (see <xref target="federation_endpoints"/>) is used to fetch Entity
+          fetch endpoints, as defined in <xref target="fetch_endpoint"/>, are used to fetch Entity
           Statements about the Intermediates and the remote peer.
         </t>
         <t>
           Note: The consumer SHOULD NOT attempt to fetch
           Entity Statements it already has fetched during this
-          process (loop prevention).
+          process to prevent loops.
         </t>
         <t>
           A successful operation will return one or more lists of
@@ -4251,12 +4251,16 @@ Content-Type: application/json
           using the rules laid out in that section.
         </t>
         <t>
-          To validate the chain, the following MUST be done:
+	  Let us refer to the Entity Statements in the Trust Chain as
+	  ES[j], where j = 0,...,i,
+	  with 0 being the index of the first Entity Statement
+	  and i being the zero-based index of the last.
+	  To validate the Trust Chain, the following MUST be done:
         </t>
         <t>
           <list style="symbols">
             <t>
-              For each Entity Statement ES[j] j=i,..,0:
+              For each Entity Statement ES[j], where j = 0,..,i:
               <list style="symbols">
                 <t>
                   Verify that the statement contains all the required claims.
@@ -4272,24 +4276,27 @@ Content-Type: application/json
               </list>
             </t>
             <t>
-              For j=0 verify that <spanx style="verb">iss</spanx> ==
-              <spanx style="verb">sub</spanx>.
+              For ES[0] (the Leaf's Entity Configuration), verify that
+	      <spanx style="verb">iss</spanx> == <spanx style="verb">sub</spanx>.
             </t>
             <t>
-              For j=0,...,i-1: Verify that ES[j]['iss'] == ES[j+1]['sub']
+              For ES[0], verify that its signature validates with a public key
+	      in ES[0]["jwks"].
             </t>
             <t>
-              For j=0,...,i-1: Verify the signature of ES[j] using a public
-              key carried in ES[j+1]['jwks'].
+              For each j = 0,...,i-1, verify that ES[j]["iss"] == ES[j+1]["sub"].
             </t>
             <t>
-              For j == 0 verify the signature of ES[0] using a public
-              key carried in ES[0]['jwks'].
+              For each j = 0,...,i-1, verify the signature of ES[j] with a public
+              key in ES[j+1]["jwks"].
             </t>
             <t>
-              For j == i: verify that a) the issuer matches the configured
-              identifier of a Trust Anchor and b) its signature is valid with
-              the likewise configured public key of said Trust Anchor.
+              For ES[i] (the Trust Anchor's Entity Configuration), verify that
+	      the issuer matches the Entity Identifier of the Trust Anchor.
+	    </t>
+	    <t>
+	      For ES[i], verify that
+	      its signature validates with a public key of the Trust Anchor.
             </t>
           </list>
         </t>
@@ -4297,38 +4304,30 @@ Content-Type: application/json
           Verifying the signature is a much more expensive
           operation than verifying the correctness of the statement and the
           timestamps. An implementer MAY therefore choose not to verify the
-          signature until all the other checks have been done.
+          signatures until all the other checks have been done.
         </t>
         <t>Consumers MAY cache Entity Statements or signature verification
-          results for a given time until they expire, per
+          results until they expire, per
           <xref target="trust_lifetime"/>.
         </t>
-        <t>
-          Note that the second bullet point means that, at each step in the
-          Trust Chain resolution, it MUST be verified that the signing JWK is
-          also present in the <spanx style="verb">jwks</spanx>
-          statement claim issued by the Superior.
-        </t>
       </section>
+
       <section title="Choosing One of the Valid Trust Chains">
         <t>
           If multiple valid Trust Chains are found, the consumer will
           need to decide on which one to use.
-        </t>
-        <t>
-          One simple rule would be to prefer a shorter chain over a longer one.
-        </t>
-        <t>Consumers MAY follow other rules according to local policy.</t>
+	  One simple rule would be to prefer a shorter chain over a longer one.
+	  Consumers MAY follow other rules according to local policy.
+	</t>
       </section>
 
       <section anchor="trust_lifetime"
                title="Calculating the Expiration Time of a Trust Chain">
         <t>
           Each Entity Statement in a Trust Chain is signed and MUST have an
-          expiration time (<spanx style="verb">exp</spanx>) set.
-          The expiration time of the whole Trust
-          Chain is set to the minimum value of
-          (<spanx style="verb">exp</spanx>) within the chain.
+          expiration time (<spanx style="verb">exp</spanx>).
+          The expiration time of the whole Trust Chain is the minimum
+          (<spanx style="verb">exp</spanx>) value within the Trust Chain.
         </t>
       </section>
 
@@ -4763,7 +4762,7 @@ GET /authorize?
                 </t>
               </list>
               Note that if mTLS is used, TLS client authentication MUST be
-              configured, and, in the case of self-signed certificates, the server must
+              configured and, in the case of self-signed certificates, the server must
               omit the certificate chain validation.
             </t>
             <figure>
