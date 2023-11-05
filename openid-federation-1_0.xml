@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="25" month="October" year="2023"/>
+    <date day="5" month="November" year="2023"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -457,11 +457,11 @@
               OPTIONAL. An array of strings representing
               the Entity Identifiers of Intermediate Entities or Trust Anchors
               that MAY issue an Entity Statement about the Entity.
-              This claim is REQUIRED in the Entity Configurations of 
+              This claim is REQUIRED in the Entity Configurations of
               Leaf and Intermediate Entities.
-              Its value MUST NOT be the empty array 
+              Its value MUST NOT be the empty array
               <spanx style="verb">[]</spanx>.
-              This claim MUST NOT be present in the Entity Configurations 
+              This claim MUST NOT be present in the Entity Configurations
               of Trust Anchors with no Superiors.
             </t>
             <t hangText="source_endpoint">
@@ -636,7 +636,7 @@
               <vspace/>
               OPTIONAL.
               If a Federation Operator knows that a Trust Mark ID is owned
-              by an Entity different from the Trust Mark Issuer then that
+              by an Entity different from the Trust Mark issuer then that
               knowledge MUST be expressed in this claim.
               This claim MUST be ignored if present in an Entity Configuration
               that describes an Entity that is not a Trust Anchor.
@@ -879,13 +879,16 @@
             The following is an example of a Trust Chain consisting of
             a Leaf's Entity Configuration and Entity Statements issued
             by an Intermediate Entity and a Trust Anchor. It shows
-            the relation between the three Entities, their Entity
+            the relationship between the three Entities, their Entity
             Configurations and their Entity Statements. The Entity
             Statements are obtained from the
             <spanx style="verb">federation_fetch_endpoint</spanx> of
             the subject's Superior. The URL of the
             <spanx style="verb">federation_fetch_endpoint</spanx> is
             discovered in the Superior's Entity Configuration.
+            Note that the first member of the Trust Chain (the Leaf) 
+            is depicted at the bottom of the diagram and that the last 
+            member (the Trust Anchor) is depicted at the top.
           </preamble>
           <name>
             Relationships between Federation Entities and Statements Issued in a Trust Chain
@@ -1036,6 +1039,57 @@
             </t>
           </list>
         </t>
+	<figure>
+	  <preamble>
+	    The following is a non-normative example of an RP's Entity Configuration:
+	  </preamble>
+	  <name>
+	    Example Relying Party Entity Configuration
+	  </name>
+	  <artwork><![CDATA[
+    {
+      "iss": "https://openid.sunet.se",
+      "sub": "https://openid.sunet.se",
+      "iat": 1516239022,
+      "exp": 1516298022,
+      "metadata": {
+        "openid_relying_party": {
+          "application_type": "web",
+          "redirect_uris": [
+            "https://openid.sunet.se/rp/callback"
+          ],
+          "organization_name": "SUNET",
+          "logo_uri": "https://www.sunet.se/sunet/images/32x32.png",
+          "grant_types": [
+            "authorization_code",
+            "implicit"
+          ],
+          "signed_jwks_uri":"https://openid.sunet.se/rp/signed_jwks.jose",
+          "jwks_uri": "https://openid.sunet.se/rp/jwks.json"
+        }
+      },
+      "jwks": {
+        "keys": [
+          {
+            "alg": "RS256",
+            "e": "AQAB",
+            "key_ops": [
+              "verify"
+            ],
+            "kid": "key1",
+            "kty": "RSA",
+            "n": "pnXBOusEANuug6ewezb9J_...",
+            "use": "sig"
+          }
+        ]
+      },
+      "authority_hints": [
+        "https://edugain.org/federation"
+      ]
+    }
+]]>
+	  </artwork>
+	</figure>
       </section>
 
       <section title="OpenID Provider" anchor="OP_metadata">
@@ -1262,7 +1316,7 @@
           <xref target="RFC8414">RFC 8414</xref>
           and <xref target="common_metadata"/> are applicable,
 	  as well as additional parameters registered in the
-	  IANA "OAuth Dynamic Client Registration Metadata" registry
+	  IANA "OAuth Authorization Server Metadata" registry
 	  <xref target="IANA.OAuth.Parameters"/>.
         </t>
       </section>
@@ -1287,8 +1341,8 @@
           The Entity Type Identifier is
           <spanx style="verb">oauth_resource</spanx>.
 	  The parameters defined in <xref target="common_metadata"/> are applicable.
-	  In addition, while it is not presently a standard,
-	  some deployments are using the protected resource metadata parameters
+	  In addition, while it is not yet a standard,
+	  deployments MAY use the protected resource metadata parameters
 	  defined in <xref target="I-D.ietf-oauth-resource-metadata"/>.
         </t>
       </section>
@@ -1299,12 +1353,12 @@
           <spanx style="verb">federation_entity</spanx>.
         </t>
         <t>
-          All Entities in a federation MAY expose this Entity Type.
-          The Entities that expose federation API endpoints
-          MUST expose this Entity Type.
+          All Entities in a federation MAY use this Entity Type.
+          The Entities that provide federation API endpoints
+          MUST use this Entity Type.
         </t>
         <t>
-          The following properties are allowed:
+          The following Federation Entity properties are defined:
           <list style="hanging">
             <t hangText="federation_fetch_endpoint">
               <vspace/>
@@ -1380,15 +1434,196 @@
               Trust Mark issuers MAY publish a
               <spanx style="verb">federation_trust_mark_list_endpoint</spanx>.
             </t>
+          </list>
+        </t>
+	<t>
+	  It is RECOMMENDED that each Federation Entity contain
+	  an <spanx style="verb">organization_name</spanx> claim,
+	  as defined in <xref target="informational_metadata"/>.
+	</t>
+        <figure>
+	  <preamble>
+	    The following is a non-normative example of the <spanx style="verb">federation_entity</spanx> Entity Type:
+	  </preamble>
+          <name>
+            Example of <spanx style="verb">federation_entity</spanx> Entity Type
+          </name>
+          <artwork><![CDATA[
+"federation_entity": {
+  "federation_fetch_endpoint":
+    "https://amanita.caesarea.example.com/federation_fetch",
+  "federation_list_endpoint":
+    "https://amanita.caesarea.example.com/federation_list",
+  "federation_trust_mark_status_endpoint": "https://amanita.caesarea.example.com/status",
+  "federation_trust_mark_list_endpoint": "https://amanita.caesarea.example.com/trust_marked_list",
+  "organization_name": "Ovulo Mushroom",
+  "homepage_uri": "https://amanita.caesarea.example.com"
+}
+]]></artwork>
+        </figure>
+      </section>
+
+      </section>
+
+      <section title="Metadata Extensions for OpenID Connect and OAuth 2.0" anchor="common_metadata">
+        <t>
+        This section defines additional metadata properties
+        that MAY be used with all the Entity Types above.
+        </t>
+
+	<section anchor="jwks_metadata" title="Metadata Extensions for JWK Sets">
+	  <t>
+	    The following metadata properties define ways of obtaining
+	    JWK Sets for an Entity Type of the Entity.
+	  </t>
+	  <t>
+	    <list style="hanging">
+	      <t hangText="signed_jwks_uri">
+		<vspace/>
+		OPTIONAL. URL referencing a signed JWT having the Entity's
+		JWK Set document for that Entity Type as its payload.
+		The JWT MUST be signed using a Federation Entity Key.
+		This URL MUST use the <spanx style="verb">https</spanx> scheme.
+		When both signing and encryption keys are made available,
+		a <spanx style="verb">use</spanx> (public key use) parameter
+		value is REQUIRED for all keys in the referenced JWK Set
+		to indicate each key's intended usage.
+	      </t>
+	      <t>
+		The following claims are specified for use in the payload,
+		all of which except <spanx style="verb">keys</spanx>
+		are defined in <xref target="RFC7519"/>:
+		<list style="hanging">
+		  <t hangText="keys">
+		    <vspace/>
+		    REQUIRED. Array of JWK values.
+		  </t>
+		  <t hangText="iss">
+		    <vspace/>
+		    REQUIRED. The "iss" (issuer) claim identifies the principal
+		    that issued the JWT.
+		  </t>
+		  <t hangText="sub">
+		    <vspace/>
+		    REQUIRED. This claim identifies the owner of the keys.
+		    It SHOULD be the same as the issuer.
+		  </t>
+		  <t hangText="iat">
+		    <vspace/>
+		    OPTIONAL. This claim identifies the time at which the JWT was
+		    issued.
+		  </t>
+		  <t hangText="exp">
+		    <vspace/>
+		    OPTIONAL. This claim identifies the time at which the JWT is
+		    no longer valid.
+		  </t>
+		</list>
+		More claims are defined in <xref target="RFC7519"/>; of
+		these, <spanx style="verb">aud</spanx> SHOULD NOT be used since
+		the issuer cannot know who the audience is.
+		<spanx style="verb">nbf</spanx> and <spanx style="verb">jti</spanx>
+		are not particularly useful in this context and SHOULD be omitted.
+
+		<figure>
+		  <preamble>
+		    The following is a non-normative example of a signed JWK Set
+		    before serialization and adding a signature.
+		  </preamble>
+		  <name>
+		    Example Signed JWK Set JWT Claims Set
+		  </name>
+		  <artwork><![CDATA[
+    {
+      "keys": [
+        {
+          "kty": "RSA",
+          "kid": "SUdtUndEWVY2cUFDeDV5NVlBWDhvOXJodVl2am1mNGNtR0pmd",
+          "n": "y_Zc8rByfeRIC9fFZrDZ2MGH2ZnxLrc0ZNNwkNet5rwCPYeRF3Sv
+                5nihZA9NHkDTEX97dN8hG6ACfeSo6JB2P7heJtmzM8oOBZbmQ90n
+                EA_JCHszkejHaOtDDfxPH6bQLrMlItF4JSUKua301uLB7C8nzTxm
+                tF3eAhGCKn8LotEseccxsmzApKRNWhfKDLpKPe9i9PZQhhJaurwD
+                kMwbWTAeZbqCScU1o09piuK1JDf2PaDFevioHncZcQO74Obe4nN3
+                oNPNAxrMClkZ9s9GMEd5vMqOD4huXlRpHwm9V3oJ3LRutOTxqQLV
+                yPucu7eHA7her4FOFAiUk-5SieXL9Q",
+          "e": "AQAB"
+        },
+        {
+          "kty": "EC",
+          "kid": "MFYycG1raTI4SkZvVDBIMF9CNGw3VEZYUmxQLVN2T21nSWlkd3",
+          "crv": "P-256",
+          "x": "qAOdPQROkHfZY1daGofOmSNQWpYK8c9G2m2Rbkpbd4c",
+          "y": "G_7fF-T8n2vONKM15Mzj4KR_shvHBxKGjMosF6FdoPY"
+        }
+      ],
+      "iss": "https://example.org/op",
+      "sub": "https://example.org/op",
+      "iat": 1618410883
+    }
+]]>
+		  </artwork>
+		</figure>
+	      </t>
+
+	      <t hangText="jwks_uri">
+		<vspace/>
+		OPTIONAL.
+		URL referencing a JWK Set document
+		containing the Entity's keys for that Entity Type.
+		This URL MUST use the <spanx style="verb">https</spanx> scheme.
+		When both signing and encryption keys are made available,
+		a <spanx style="verb">use</spanx> (public key use) parameter
+		value is REQUIRED for all keys in the referenced JWK Set
+		to indicate each key's intended usage.
+	      </t>
+
+	      <t hangText="jwks">
+		<vspace/>
+		OPTIONAL.
+		JSON Web Key Set document, passed by value,
+		containing the Entity's keys for that Entity Type.
+		This parameter is intended
+		to be used by participants that, for some reason,
+		cannot use the <spanx style="verb">signed_jwks_uri</spanx>
+		parameter.
+		An upside of using <spanx style="verb">jwks</spanx> is that
+		the Entity's keys for the Entity Type are recorded in Trust Chains.
+	      </t>
+
+	    </list>
+	  </t>
+
+	  <section title="Usage of jwks, jwks_uri, and signed_jwks_uri" anchor="jwks_usage">
+	    <t>
+	      It is RECOMMENDED that an Entity Configuration
+	      use only one of
+	      <spanx style="verb">jwks</spanx>,
+	      <spanx style="verb">jwks_uri</spanx>, and
+	      <spanx style="verb">signed_jwks_uri</spanx> in its OpenID Connect or OAuth 2.0 metadata.
+	      However, there may be circumstances in which is it desirable to use multiple
+	      JWK Set representations, such as when an Entity is in multiple federations and the
+	      federations have different policies about the JWK Set representation to be used.
+	      When multiple JWK Set representations are used, the keys present in each
+	      representation SHOULD be the same.  Even if they are not completely the
+	      same at a given instant in time (which may be the case during key rollover operations),
+	      implementations MUST make them consistent in a timely manner.
+	    </t>
+	  </section>
+	</section>
+
+	<section anchor="informational_metadata" title="Informational Metadata Extensions">
+	  <t>
+	    The following metadata properties define ways of obtaining
+	    information about the Entity for an Entity Type.
+	  </t>
+          <list style="hanging">
             <t hangText="organization_name">
               <vspace/>
               OPTIONAL. A human-readable
-              name representing the organization owning the Entity.
-              If the owner is a physical person
+              name representing the organization owning this Entity.
+              If the owner is a physical person,
               this MAY be, for example, the person's name. Note
               that this information will be publicly available.
-              It is RECOMMENDED that each federation Entity
-              expose this claim.
             </t>
             <t hangText="contacts">
               <vspace/>
@@ -1405,219 +1640,20 @@
             </t>
             <t hangText="policy_uri">
               <vspace/>
-              OPTIONAL. URL to the documentation of
+              OPTIONAL. URL of the documentation of
               conditions and policies relevant to this Entity.
             </t>
             <t hangText="homepage_uri">
               <vspace/>
-              OPTIONAL. URL to a generic home page
-              representing this Entity.
+              OPTIONAL. URL of a Web page for the organization owning this Entity.
             </t>
-          </list>
-        </t>
-        <figure>
-	  <preamble>
-	    The following is a non-normative example of the <spanx style="verb">federation_entity</spanx> Entity Type:
-	  </preamble>
-          <name>
-            Example of <spanx style="verb">federation_entity</spanx> Entity Type
-          </name>
-          <artwork><![CDATA[
-"federation_entity": {
-  "federation_fetch_endpoint":
-    "https://example.com/federation_fetch",
-  "federation_list_endpoint":
-    "https://example.com/federation_list",
-  "federation_trust_mark_status_endpoint": "https://example.com/status",
-  "federation_trust_mark_list_endpoint": "https://example.com/trust_marked_list",
-  "organization_name": "The example cooperation",
-  "homepage_uri": "https://www.example.com"
-}
-]]></artwork>
-        </figure>
-      </section>
-
-      </section>
-
-      <section title="OpenID Connect and OAuth 2.0 Metadata Extensions" anchor="common_metadata">
-        <t>
-        The following additional metadata properties are defined,
-        which MAY be used with all the Entity Types above:
-        </t>
-        <t>
-          <list style="hanging">
-            <t hangText="organization_name">
-              <vspace/>
-              OPTIONAL. A human-readable
-              name representing the organization owning the Entity.
-              If the owner is a physical person,
-              this MAY be, for example, the person's name. Note
-              that this information will be publicly available.
-            </t>
-            <t hangText="signed_jwks_uri">
-              <vspace/>
-              OPTIONAL. A URI pointing to a signed JWT having the Entity's
-              JWK Set as its payload. The JWT MUST be signed using a Federation
-              Entity Key.
-              A signed JWT can contain the following claims, all except
-              <spanx style="verb">keys</spanx> defined in
-              <xref target="RFC7519"/>:
-              <list style="hanging">
-                <t hangText="keys">
-                  <vspace/>
-                  REQUIRED. Array of JWK values.
-                </t>
-                <t hangText="iss">
-                  <vspace/>
-                  REQUIRED. The "iss" (issuer) claim identifies the principal
-                  that issued the JWT.
-                </t>
-                <t hangText="sub">
-                  <vspace/>
-                  REQUIRED. This claim identifies the owner of the keys.
-                  It SHOULD be the same as the issuer.
-                </t>
-                <t hangText="iat">
-                  <vspace/>
-                  OPTIONAL. This claim identifies the time at which the JWT was
-                  issued.
-                </t>
-                <t hangText="exp">
-                  <vspace/>
-                  OPTIONAL. This claim identifies the time at which the JWT is
-                  no longer valid.
-                </t>
-              </list>
-              More claims are defined in <xref target="RFC7519"/>; of
-              these, <spanx style="verb">aud</spanx> SHOULD NOT be used since
-              the issuer cannot know who the audience is.
-              <spanx style="verb">nbf</spanx> and <spanx style="verb">jti</spanx>
-              are deemed to not be very useful in this context and are
-              to be omitted.
-
-              <figure>
-                <preamble>
-                  The following is a non-normative example of a signed JWKS
-                  before serialization and adding a signature.
-                </preamble>
-		<name>
-		  Example Signed JWKS JWT Claims Set
-		</name>
-                <artwork><![CDATA[
-{
-  "keys": [
-    {
-      "kty": "RSA",
-      "kid": "SUdtUndEWVY2cUFDeDV5NVlBWDhvOXJodVl2am1mNGNtR0pmd",
-      "n": "y_Zc8rByfeRIC9fFZrDZ2MGH2ZnxLrc0ZNNwkNet5rwCPYeRF3Sv
-            5nihZA9NHkDTEX97dN8hG6ACfeSo6JB2P7heJtmzM8oOBZbmQ90n
-            EA_JCHszkejHaOtDDfxPH6bQLrMlItF4JSUKua301uLB7C8nzTxm
-            tF3eAhGCKn8LotEseccxsmzApKRNWhfKDLpKPe9i9PZQhhJaurwD
-            kMwbWTAeZbqCScU1o09piuK1JDf2PaDFevioHncZcQO74Obe4nN3
-            oNPNAxrMClkZ9s9GMEd5vMqOD4huXlRpHwm9V3oJ3LRutOTxqQLV
-            yPucu7eHA7her4FOFAiUk-5SieXL9Q",
-      "e": "AQAB"
-    },
-    {
-      "kty": "EC",
-      "kid": "MFYycG1raTI4SkZvVDBIMF9CNGw3VEZYUmxQLVN2T21nSWlkd3",
-      "crv": "P-256",
-      "x": "qAOdPQROkHfZY1daGofOmSNQWpYK8c9G2m2Rbkpbd4c",
-      "y": "G_7fF-T8n2vONKM15Mzj4KR_shvHBxKGjMosF6FdoPY"
-    }
-  ],
-  "iss": "https://example.org/op",
-  "sub": "https://example.org/op",
-  "iat": 1618410883
-}
-]]>
-                </artwork>
-              </figure>
-
-              <figure>
-                <preamble>
-                  The following is a non-normative example of an RP's Entity Configuration:
-                </preamble>
-		<name>
-		  Example Relying Party Entity Configuration
-		</name>
-                <artwork><![CDATA[
-{
-  "iss": "https://openid.sunet.se",
-  "sub": "https://openid.sunet.se",
-  "iat": 1516239022,
-  "exp": 1516298022,
-  "metadata": {
-    "openid_relying_party": {
-      "application_type": "web",
-      "redirect_uris": [
-        "https://openid.sunet.se/rp/callback"
-      ],
-      "organization_name": "SUNET",
-      "logo_uri": "https://www.sunet.se/sunet/images/32x32.png",
-      "grant_types": [
-        "authorization_code",
-        "implicit"
-      ],
-      "signed_jwks_uri":"https://openid.sunet.se/rp/signed_jwks.jose",
-      "jwks_uri": "https://openid.sunet.se/rp/jwks.json"
-    }
-  },
-  "jwks": {
-    "keys": [
-      {
-        "alg": "RS256",
-        "e": "AQAB",
-        "key_ops": [
-          "verify"
-        ],
-        "kid": "key1",
-        "kty": "RSA",
-        "n": "pnXBOusEANuug6ewezb9J_...",
-        "use": "sig"
-      }
-    ]
-  },
-  "authority_hints": [
-    "https://edugain.org/federation"
-  ]
-}
-]]>
-                </artwork>
-              </figure>
-            </t>
-
-            <t hangText="jwks">
-              <vspace/>
-              OPTIONAL. JSON Web Key Set document, passed by value, as
-              defined in <xref target="RFC7517"/>.
-              This parameter is intended
-              to be used by participants that, for some reason,
-              cannot use the <spanx style="verb">signed_jwks_uri</spanx>
-              parameter.
-              One significant downside of <spanx style="verb">jwks</spanx>
-              is that it does not enable key rotation
-              (which <spanx style="verb">signed_jwks_uri</spanx> and
-              <spanx style="verb">jwks_uri</spanx> do).
-            </t>
-
-          </list>
-        </t>
-
-	<section title="Usage of jwks, jwks_uri, and signed_jwks_uri" anchor="jwks_usage">
+	  </list>
 	  <t>
-	    It is RECOMMENDED that an Entity Configuration
-	    use only one of
-	    <spanx style="verb">jwks</spanx>,
-	    <spanx style="verb">jwks_uri</spanx>, and
-	    <spanx style="verb">signed_jwks_uri</spanx> in its OpenID Connect or OAuth 2.0 metadata.
-	    However, there may be circumstances in which is it desirable to use multiple
-	    JWK Set representations, such as when an Entity is in multiple federations and the
-	    federations have different policies about the JWK Set representation to be used.
-	    When multiple JWK Set representations are used, the keys present in each
-	    representation SHOULD be the same.  Even if they are not completely the
-	    same at a given instant in time (which may be the case during key rollover operations),
-	    implementations MUST make them consistent in a timely manner.
+	    It is RECOMMENDED that, when present, these metadata properties occur in
+	    an Entity's <spanx style="verb">federation_entity</spanx> metadata section.
+	    They MAY also be present in the Entity's metadata for other Entity Types,
+	    particularly when the values for those Entity Types differ from
+	    those for the <spanx style="verb">federation_entity</spanx> metadata.
 	  </t>
 	</section>
       </section>
@@ -1626,52 +1662,70 @@
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
         <t>
-          An Entity MAY publish metadata policies pertaining to Subordinate
-          Entities of a specific type. Entity Type Identifiers defined in
-          this specification can be found in <xref target="entity_types"/>.
+          Trust Anchors and Intermediate Entities MAY publish Entity
+          Type-specific policies that apply to the metadata of their immediate
+          Subordinates as well as any further Subordinates along the Trust
+          Chain.
         </t>
-        <section title='Using the "metadata_policy" Claim'>
-          <t>
-            A <spanx style="verb">metadata_policy</spanx> for a specific Entity
-            type has the following structure:
-            <list style="symbols">
-              <t>It consists of one or more policy entries.</t>
-              <t>Each policy entry applies to one metadata parameter, such as
-                <spanx style="verb">id_token_signed_response_alg</spanx>.
-              </t>
-              <t>Each policy entry consists of one or more operators, which can be
-                value modifiers or value checks.
-              </t>
-              <t>An operator can only appear once in a policy entry.</t>
-            </list>
-          </t>
-          <t>
-            Note that claim names without language tags are different
-            from the same claim with language tags.
-          </t>
-          <t>
-            <figure>
-              <preamble>
-                The following is a non-normative example of a policy entry:
-              </preamble>
-	      <name>
-		Example Policy Entry
-	      </name>
+        <t>
+          As described in <xref target="entity-statement"/>, the metadata
+          policy operators are located in the <spanx style="verb">metadata_policy</spanx>
+          claim of an Entity Statement, whose value is a JSON object.
+        </t>
+        <t>
+          Each member in this object is an Entity Type-specific metadata policy,
+          whose member name is an Entity Type Identifier, as specified in
+          <xref target="entity_types"/>, for example
+          <spanx style="verb">openid_relying_party</spanx>. The member value is
+          a JSON object that represents metadata policies for the Entity Type
+          and has the following structure:
+          <list style="symbols">
+            <t>
+              It consists of one or more policy entries, each entry being
+              represented by a JSON object.</t>
+            <t>
+              A policy entry applies to a single metadata parameter, for
+              example <spanx style="verb">id_token_signed_response_alg</spanx>.
+            </t>
+            <t>
+              A policy entry is represented by a JSON object and consists of
+              one or more operators, to check or modify the metadata parameter,
+              as described in <xref target="policy_operators"/>.
+            </t>
+            <t>
+              A policy entry MAY include at most one operator of each kind.
+            </t>
+          </list>
+        </t>
+        <t>
+          Note that metadata policies MUST regard any metadata parameter with
+          a language tag in its name, as described in <xref target="ClaimsLanguagesAndScripts"/>,
+          as distinct from the same metadata parameter without a language tag.
+        </t>
+        <t>
+          <figure>
+            <preamble>
+              The following is a non-normative example of a policy entry:
+            </preamble>
+	        <name>
+		    Example Policy Entry
+	        </name>
               <artwork><![CDATA[
 "id_token_signed_response_alg": {
   "default": "ES256",
   "one_of" : ["ES256", "ES384", "ES512"]
 }
 ]]></artwork>
-            </figure>
+          </figure>
           </t>
           <t>
             <figure>
               <preamble>
-                Which fits into a metadata policy like this:
+                Which fits into a metadata policy claim of an Entity Statement
+                like this:
               </preamble>
 	      <name>
-		Example <spanx style="verb">metadata_policy</spanx> Entry
+		  Example <spanx style="verb">metadata_policy</spanx> Claim
 	      </name>
               <artwork><![CDATA[
 "metadata_policy" : {
@@ -1685,84 +1739,84 @@
 ]]></artwork>
             </figure>
           </t>
-        </section>
         <section title="Operators" anchor="policy_operators">
           <t>
-            Value modifiers are:
+            This specification defines the following metadata policy operators.
+          </t>
+          <t>
+            Metadata policy operators that modify values are:
             <list style="hanging">
               <t hangText="value">
                 <vspace/>
-                Disregarding what value the parameter has, if any, the
-                metadata parameter MUST be set to the specified value.
+                The metadata parameter MUST be assigned the value that is the
+                value of this operator.
               </t>
               <t hangText="add">
                 <vspace/>
-                The specified value or values MUST be added to the metadata
-                parameter. If any of the specified values are already present
-                as values of the parameter, they MUST NOT be added. If the
-                parameter is not present, then the parameter MUST be initialized
-                with the specified value(s).
+                The value or values of this operator MUST be added to the
+                metadata parameter. If any of these values are already present
+                in the metadata parameter, they MUST NOT be added another time.
+                If the metadata parameter is absent, the parameter MUST be
+                initialized with the value of this operator.
               </t>
               <t hangText="default">
                 <vspace/>
-                If the metadata parameter
-                is not present, then it MUST be set to
-                the specified default value(s).
+                If the metadata parameter is absent, it MUST be set to the
+                value of this operator.
               </t>
             </list>
           </t>
           <t>
-            Value checks are:
+            Metadata policy operators that check values are:
             <list style="hanging">
               <t hangText="essential">
                 <vspace/>
-                If <spanx style="verb">true</spanx>, then the parameter MUST have a value.
-                If <spanx style="verb">false</spanx>, the parameter is
-                voluntary and is not required to have a value.
-                If essential is missing as an operator, it is treated as if set to
+                If the value of this operator is <spanx style="verb">true</spanx>,
+                then the metadata parameter MUST be present.
+                If <spanx style="verb">false</spanx> the metadata parameter is
+                voluntary and may be absent.
+                If the <spanx style="verb">essential</spanx> operator is omitted,
+                this is equivalent to including it with a value of
                 <spanx style="verb">false</spanx>.
               </t>
               <t hangText="one_of">
                 <vspace/>
-                If the metadata parameter has no value and is voluntary
-                (<spanx style="verb">essential</spanx> policy is missing or set to
-                <spanx style="verb">false</spanx>), then
-                the <spanx style="verb">one_of</spanx> check MUST be ignored.
-                Otherwise the value of the metadata parameter MUST be
-                one of those listed in the directive.
+                If the metadata parameter is present its value MUST be one of
+                those listed in the operator value.
               </t>
               <t hangText="subset_of">
                 <vspace/>
-                If the metadata parameter has no value and is voluntary
-                (<spanx style="verb">essential</spanx> policy is missing or set to
-                <spanx style="verb">false</spanx>), then
-                the <spanx style="verb">subset_of</spanx> check MUST be ignored.
-                Otherwise, this operator MUST compute the intersection of the
-                values in the directive and the values of the parameter.
-                If the resulting intersection is non-empty the parameter
-                MUST be set to the values in the intersection.
+                If the metadata parameter is present this operator computes the
+                intersection between the values of the operator and the metadata
+                parameter.
+                If the intersection is non-empty, the parameter is set to the
+                values in the intersection.
+                If the intersection is empty, the result is determined by the
+                <spanx style="verb">essential</spanx> operator: For an essential
+                metadata parameter, the result is an error; for a voluntary
+                metadata parameter, it MUST be removed from the metadata.
                 Note that this behavior makes <spanx style="verb">subset_of</spanx>
-                a potential value modifier and thus it is not a pure value check.
-                If the
-                intersection is empty the outcome depends on the
-                <spanx style="verb">essential</spanx> parameter:
-		when the value is defined as essential,
-                the parameter MUST be rejected with a policy error,
-                else the parameter MUST be removed
-                (implying a <spanx style="verb">null</spanx> value).
-
+                a potential value modifier in addition to it being a value check.
               </t>
               <t hangText="superset_of">
                 <vspace/>
-                If the metadata parameter has no value and is voluntary
-                (<spanx style="verb">essential</spanx> policy is missing or set to
-                <spanx style="verb">false</spanx>), then
-                the <spanx style="verb">superset_of</spanx> check MUST be ignored.
-                Otherwise the values of the metadata parameter MUST contain those
-                specified in the directive. By mathematically defining
+                If the metadata parameter is present its values MUST contain
+                those specified in the operator. By mathematically defining
                 supersets, equality is included.
               </t>
             </list>
+          </t>
+
+          <t>
+            Applications and protocols utilizing metadata policies MAY specify
+            and use additional policy operators.
+          </t>
+
+          <t>
+            All policy operators MUST consider it an error if a metadata
+            parameter that is being operated on has a <spanx style="verb">null</spanx>
+            value. Policy operators MUST NOT output metadata parameters with a
+            <spanx style="verb">null</spanx> value.
           </t>
 
           <t>
@@ -1772,25 +1826,32 @@
             list values.
           </t>
           <t>
-            Note that when a parameter is defined as a space-separated
-            list of strings like for <spanx style="verb">scope</spanx> in
-            <xref target="RFC7591"/> <spanx style="verb">subset_of</spanx>,
+            Note that when a metadata parameter is defined as a space-separated
+            list of strings, like <spanx style="verb">scope</spanx> in
+            <xref target="RFC7591"/>, the <spanx style="verb">subset_of</spanx>,
             <spanx style="verb">superset_of</spanx> and
-            <spanx style="verb">default</spanx> are still expressed as lists of strings.
-            This language from <xref target="RFC6749"/> also applies to such space-separated lists of strings:
-            "If the value contains multiple space-delimited strings, their order does not matter,
-            and each string adds an additional access range to the requested scope."
+            <spanx style="verb">default</spanx> operator values are still
+            expressed as lists of strings.
+            This language from <xref target="RFC6749"/> also applies to
+            metadata parameters for which values can be expressed as a
+            space-separated lists of strings: "If the value contains multiple
+            space-delimited strings, their order does not matter, and each
+            string adds an additional access range to the requested scope."
           </t>
 
         <table>
           <preamble>
-              The following table is a map of the outputs produced by combining metadata policies with different input values.
-              The <spanx style="verb">subset_of</spanx> check is ignored
-              when the metadata parameter has no value and
-              <spanx style="verb">essential</spanx> is set to <spanx style="verb">false</spanx>, as shown in the last row.
+              The following table is a map of the outputs produced by the
+              combination of the <spanx style="verb">essential</spanx> and
+              <spanx style="verb">subset_of</spanx> policy operators with
+              different input metadata parameter values.
+              Note, the <spanx style="verb">subset_of</spanx> check is ignored
+              when the metadata parameter is absent and designated as voluntary,
+              as shown in the last row.
           </preamble>
 	  <name>
-	    Examples of Outputs with Combinations of <spanx style="verb">essential</spanx> and <spanx style="verb">subset_of</spanx> Inputs
+	    Examples of outputs with Combinations of <spanx style="verb">essential</spanx>
+        and <spanx style="verb">subset_of</spanx> inputs
 	  </name>
           <thead>
             <tr>
@@ -1837,14 +1898,14 @@
             <tr>
               <td>true</td>
               <td>[a,b,c]</td>
-              <td>null or no parameter</td>
+              <td>no parameter</td>
               <td>error</td>
             </tr>
 
             <tr>
               <td>false</td>
               <td>[a,b,c]</td>
-              <td>null or no parameter</td>
+              <td>no parameter</td>
               <td>no parameter</td>
             </tr>
           </tbody>
@@ -2034,52 +2095,44 @@
 
         <section title="Applying Policies" anchor="applying_policies">
           <t>
-            Once combining the metadata policies has been accomplished, the next
-            step is to apply the combined policy to the metadata.
+            The policies that apply to the Entity's metadata are those that
+            result from the combining of the policies from the Entity Statements
+            that make up the Trust Chain, as specified in
+            <xref target="combining_policies"/>.
           </t>
           <t>
-            Doing that, one follows these steps for each parameter in the
-            policy.
+            For every Entity Type metadata parameter for which a policy entry
+            is present, the policy operators MUST be applied in accordance to
+            their definitions in <xref target="policy_operators"/> and in a
+            sequence as follows:
           </t>
           <t>
-            <list style="numbers">
-              <t>
-                If there is a <spanx style="verb">value</spanx> operator in the
-                policy, its value MUST be applied to the parameter and
-                further action stopped.
+            <list style="hanging">
+              <t hangText="value">
+                If this policy operator is present, further policy operators on
+                the metadata parameter MUST NOT be applied.
               </t>
-              <t>
-                Add whatever value is specified in an <spanx style="verb">add</spanx>
-                operator.
+              <t hangText="add">
               </t>
-              <t>
-                If the parameter still has no value, apply the
-                <spanx style="verb">default</spanx> if there is one.
+              <t hangText="default">
               </t>
-              <t>
-                Do the essential check.
-                If <spanx style="verb">essential</spanx> is
-                <spanx style="verb">true</spanx> the parameter
-                MUST have a value, else the operator MUST fail.
-                If the parameter is voluntary and has no value
-                any other value checks MUST be skipped.
+              <t hangText="essential">
+                If this parameter value is <spanx style="verb">false</spanx> or
+                it is absent, then any subsequent policy operators that
+                represent a value check MUST be skipped.
               </t>
-              <t>
-                Do the other checks. Verify that the value is
-                <spanx style="verb">one_of</spanx> or that the
-                values are <spanx style="verb">subset_of</spanx>/<spanx
-                      style="verb">superset_of</spanx>. If the parameter values
-                do not fall within the allowed boundaries,
-                applying the operator MUST fail.
+              <t hangText="one_of">
               </t>
-              <t>
-                If more than one value is specified in
-                <spanx style="verb">one_of</spanx> and the Leaf Entity
-                does not specify a metadata parameter value,
-                it is an implementation choice which value in the
-                <spanx style="verb">one_of</spanx> array to use.
+              <t hangText="subset_of">
+              </t>
+              <t hangText="superset_of">
               </t>
             </list>
+          </t>
+          <t>
+            Applications and protocols that specify additional policy operators
+            MUST define their order relative to the above sequence of operator
+            application.
           </t>
         </section>
         <section title="Policy Combination Example">
@@ -2467,7 +2520,7 @@
         <t>
           The Trust Marks used by this specification are signed JWTs.
         </t>
-        <t>A Trust Mark Issuer is a Federation Entity that issues Trust marks.</t>
+        <t>A Trust Mark issuer is a Federation Entity that issues Trust Marks.</t>
         <t>
           A Trust Mark Owner is an Entity the owns the right to a Trust Mark
           identifier.
@@ -2483,7 +2536,7 @@
 
         <t>
           The key used by the Trust Mark
-          Issuer to sign its Trust Marks MUST be one of the private keys
+          issuer to sign its Trust Marks MUST be one of the private keys
           related to its
           <spanx style="verb">Federation Entity Keys</spanx>.
         </t>
@@ -2502,7 +2555,7 @@
         <section title="Trust Mark Delegation" anchor="trust_mark_delegation">
           <t>
             There will be cases where the owner of a Trust Mark for some reason
-            may not match the Trust Mark Issuer due to administrative or
+            may not match the Trust Mark issuer due to administrative or
             technical requirements. Take as an example vehicle
             inspection. Vehicle inspection is a procedure mandated by national
             or subnational governments in many countries, in which a vehicle is
@@ -2512,7 +2565,7 @@
             performing this check and which then issues the Trust Mark.
           </t>
           <t>
-            The fact that a Trust Mark is issued by a Trust Mark Issuer that is
+            The fact that a Trust Mark is issued by a Trust Mark issuer that is
             not the owner of the Trust Mark is in the Trust Mark expressed by adding a
             signed JWT to the <spanx style="verb">delegation</spanx> claim.
             The format of the signed JWT is as described below.
@@ -2520,7 +2573,7 @@
           <t>
             If the Federation Operator knows of and has verified that Trust
             Marks with a
-            certain Trust Mark identifier may be issued by Trust Mark Issuers
+            certain Trust Mark identifier may be issued by Trust Mark issuers
             that are not the owner of the Trust Mark ID then the information
             about the owner and the Trust Mark ID MUST be added to the
             <spanx style="verb">trust_mark_owners</spanx> claim in the Trust
@@ -2529,7 +2582,7 @@
         </section>
 
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
-          <t>These are the Trust Mark Claims:</t>
+          <t>The Trust Mark claims are listed below:</t>
           <t>
             <list style="hanging">
               <t hangText="iss">
@@ -2574,8 +2627,8 @@
               </t>
               <t hangText="ref">
                 <vspace/>
-                OPTIONAL. String. URL that points to information connected to
-                the issuance of this Trust Mark.
+                OPTIONAL. String. URL that points to human-readable information
+                connected to the Trust Mark.
               </t>
               <t hangText="delegation">
                 <vspace/>
@@ -2639,7 +2692,7 @@
           <t>An Entity SHOULD NOT try to validate a Trust Mark until
             it knows which Trust Anchors it wants to use.
           </t>
-          <t>Validating a Trust Mark Issuer follows the procedure set out in
+          <t>Validating a Trust Mark issuer follows the procedure set out in
             <xref target="resolving_trust"/>. Validating the Trust Mark
             consists of doing the following checks:
             <list style="numbers">
@@ -2684,15 +2737,15 @@
             in its Entity Configuration to publish this information.
           </t>
           <t>
-            If a Trust Mark Issuer is issuing Trust Marks on behalf of a
+            If a Trust Mark issuer is issuing Trust Marks on behalf of a
             Trust Mark owner then the Trust Anchor MUST publish the
             connection between the Trust
-            Mark ID and the corresponding Trust Mark Issuer in the
+            Mark ID and the corresponding Trust Mark issuer in the
             <spanx style="verb">trust_mark_issuers</spanx> claim. This
             signifies that the Trust Anchor has verified that the Trust
             Mark owner is indeed the Trust Mark owner and that the
             Trust Mark owner has delegated the right to issue Trust Marks
-            with a specific Trust Mark ID to a specific Trust Mark Issuer.
+            with a specific Trust Mark ID to a specific Trust Mark issuer.
           </t>
           <t>
             Trust Marks that are not recognized within a federation SHOULD be ignored when
@@ -2768,15 +2821,15 @@
 	    </name>
             <artwork><![CDATA[
 {
-  "id":"https://federation.id/openid_relying_party/public/",
-  "iss": "https://trust-anchor.gov.id",
-  "sub": "https://rp.cie.id",
+  "id":"https://mushrooms.federation.example.com/openid_relying_party/public/",
+  "iss": "https://epigeo.tm-issuer.example.it",
+  "sub": "https://porcino.example.com/rp",
   "iat": 1579621160,
-  "organization_name": "Organization name",
-  "policy_uri": "https://rp.cie.id/privacy_policy",
-  "tos_uri": "https://rp.cie.id/info_policy",
-  "service_documentation": "https://rp.cie.id/api/v1/get/services",
-  "ref": "https://rp.cie.id/documentation/manuale_operativo.pdf"
+  "organization_name": "Porcino Mushrooms & Co.",
+  "policy_uri": "https://porcino.example.com/privacy_policy",
+  "tos_uri": "https://porcino.example.com/info_policy",
+  "service_documentation": "https://porcino.example.com/api/v1/get/services",
+  "ref": "https://porcino.example.com/documentation/manuale_operativo.pdf"
 }
 
 ]]></artwork>
@@ -2793,13 +2846,13 @@
 	    </name>
             <artwork><![CDATA[
 {
-  "id":"https://federation.id/openid_relying_party/private/under-age",
-  "iss": "https://trust-anchor.gov.id",
-  "sub": "https://rp.cie.id",
+  "id":"https://mushrooms.federation.example.com/openid_relying_party/private/under-age",
+  "iss": "https://trustissuer.pinarolo.example.it",
+  "sub": "https://vavuso.example.com/rp",
   "iat": 1579621160,
-  "organization_name": "Organization name",
-  "policy_uri": "https://rp.cie.id/privacy_policy",
-  "tos_uri": "https://rp.cie.id/info_policy"
+  "organization_name": "Pinarolo Suillus luteus",
+  "policy_uri": "https://vavuso.example.com/policy",
+  "tos_uri": "https://vavuso.example.com/tos"
 }
 
 ]]></artwork>
@@ -2815,19 +2868,19 @@
 	    </name>
             <artwork><![CDATA[
 {
-  "id": "https://deleghedigitali.gov.it/openid_relying_party/sgd/",
-  "iss": "https://deleghedigitali.gov.it",
-  "sub": "https://rp.cie.id",
+  "id": "https://mushrooms.federation.example.com/arrosto/agreements",
+  "iss": "https://agaricaceae.example.it",
+  "sub": "https://coppolino.example.com",
   "iat": 1579621160,
-  "logo_uri": "https://deleghedigitali.gov.it/sgd-cmyk-150dpi-90mm.svg",
+  "logo_uri": "https://coppolino.example.com/sgd-cmyk-150dpi-90mm.svg",
   "organization_type": "public",
   "id_code": "123456",
-  "email": "info@rp.cie.id",
-  "organization_name#it": "Nome dell'organizazzione",
-  "policy_uri#it": "https://rp.cie.id/privacy_policy",
-  "tos_uri#it": "https://rp.cie.id/info_policy",
-  "service_documentation": "https://rp.cie.id/api/v1/get/services",
-  "ref": "https://deleghedigitali.gov.it/documentation/manuale_operativo.pdf"
+  "email": "info@coppolino.example.com",
+  "organization_name#it": "Mazza di Tamburo",
+  "policy_uri#it": "https://coppolino.example.com/privacy_policy",
+  "tos_uri#it": "https://coppolino.example.com/info_policy",
+  "service_documentation": "https://coppolino.example.com/api/v1/get/services",
+  "ref": "https://agaricaceae.example.it/documentation/agaricaceae.pdf"
 }
 ]]></artwork>
           </figure>
@@ -2841,12 +2894,12 @@
             </name>
             <artwork><![CDATA[
 {
-  "iss": "https://secusign.org",
-  "sub": "https://example.com/op",
+  "id": "https://mushrooms.federation.example.com/ottimo/commestibile",
+  "iss": "https://cantharellus.cibarius.example.org",
+  "sub": "https://gallinaccio.example.com/op",
   "iat": 1579621160,
-  "id": "https://secusign.org/level/A",
-  "logo_uri": "https://secusign.org/static/levels/level-A.svg",
-  "ref": "https://secusign.org/conformances"
+  "logo_uri": "https://cantharellus.cibarius/static/images/cantharellus-cibarius.svg",
+  "ref": "hhttps://cantharellus.cibarius/cantharellus/cibarius"
 }
 ]]></artwork>
           </figure>
@@ -2858,13 +2911,12 @@
 	    </name>
             <artwork><![CDATA[
 {
-  "iss": "https://example.com/op",
-  "sub": "https://example.com/op",
+  "id": "https://mushrooms.federation.example.com/trust-marks/self-signed",
+  "iss": "https://amanita.muscaria.example.com",
+  "sub": "https://amanita.muscaria.example.com",
   "iat": 1579621160,
-  "id": "https://openid.net/certification/op",
-  "logo_uri": "https://openid.net/statics/oid-l-certification-mark-l.svg",
-  "ref": "https://openid.net/wordpress-content/uploads/2015/
-    09/RolandHedberg-pyoidc-0.7.7-Basic-26-Sept-2015.zip"
+  "logo_uri": "https://amanita.muscaria.example.com/img/amanita-mus.svg",
+  "ref": "https://amanita.muscaria.example.com/uploads/cookbook.zip"
 }
 ]]></artwork>
           </figure>
@@ -3381,11 +3433,11 @@ Host: openid.sunet.se
       "logo_uri":
         "https://op.example.it/static/img/op-logo.svg",
       "op_policy_uri":
-        "https://op.example.it/en/about-the-website/legal-information/",
-      "federation_registration_endpoint":"https://op.example.it/spid/fedreg/",
+        "https://op.example.it/en/about-the-website/legal-information",
+      "federation_registration_endpoint":"https://op.example.it/spid/fedreg",
       "authorization_endpoint":
-        "https://op.example.it/spid/authorization/",
-      "token_endpoint": "https://op.example.it/spid/token/",
+        "https://op.example.it/spid/authorization",
+      "token_endpoint": "https://op.example.it/spid/token",
       "response_types_supported": [
         "code",
         "code id_token",
@@ -3393,12 +3445,11 @@ Host: openid.sunet.se
       ],
       "grant_types_supported": [
         "authorization_code",
-        "implicit",
         "urn:ietf:params:oauth:grant-type:jwt-bearer"
       ],
       "subject_types_supported": ["pairwise"],
       "id_token_signing_alg_values_supported": ["RS256"],
-      "issuer": "https://op.example.it/spid/",
+      "issuer": "https://op.example.it/spid",
       "jwks": {
         "keys": [
           {
@@ -3605,7 +3656,7 @@ Content-Type: application/json
                 <vspace/>
                 OPTIONAL. When the Trust Mark was issued. If
                 <spanx style="verb">iat</spanx> is not specified and the
-                Trust Mark Issuer has issued several Trust Marks with the
+                Trust Mark issuer has issued several Trust Marks with the
                 <spanx style="verb">id</spanx> specified in the request to the
                 Entity identified by <spanx style="verb">sub</spanx>, the
                 most recent one is assumed.
@@ -4598,7 +4649,7 @@ Content-Type: application/json
 }
 .
 {
-  "aud": "https://op.example.org",
+  "aud": "https://op.example.org/authorization-endpoint",
   "client_id": "https://rp.example.com",
   "exp": 1589699162,
   "iat": 1589699102,
@@ -4890,8 +4941,8 @@ HTTP/1.1 302 Found
           <t>
             Automatic Registration is designed to be able to be
             employed for use cases beyond OpenID Federation.
-            For instance, ecosystems using <xref target="OpenID.Core">OpenID Connect</xref>, 
-            <xref target="RFC6749">OAuth 2.0</xref>, and 
+            For instance, ecosystems using <xref target="OpenID.Core">OpenID Connect</xref>,
+            <xref target="RFC6749">OAuth 2.0</xref>, and
             <xref target="FAPI">FAPI</xref> can utilize Automatic Registration.
           </t>
         </section>
@@ -5549,23 +5600,6 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): Section <xref target="OP_metadata"/> of this specification
-              </t>
-            </list>
-          </t>
-          <t>
-            <list style='symbols'>
-              <t>
-                Metadata Name: <spanx style="verb">organization_name</spanx>
-              </t>
-              <t>
-                Metadata Description:
-                Human-readable name representing the organization owning the OP
-              </t>
-              <t>
-                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-              </t>
-              <t>
                 Specification Document(s): <xref target="OP_metadata"/> of this specification
               </t>
             </list>
@@ -5630,13 +5664,13 @@ HTTP/1.1 302 Found
               </t>
               <t>
                 Metadata Description:
-                URI pointing to a signed JWT having the Entity's JWK Set as its payload
+                URL referencing a signed JWT having this authorization server's JWK Set document as its payload
               </t>
               <t>
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="OP_metadata"/> of this specification
+                Specification Document(s): <xref target="jwks_metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -5653,7 +5687,75 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="OP_metadata"/> of this specification
+                Specification Document(s): <xref target="jwks_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+          <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">organization_name</spanx>
+              </t>
+              <t>
+                Metadata Description:
+                Human-readable name representing the organization owning this authorization server
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="informational_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+          <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">contacts</spanx>
+              </t>
+              <t>
+                Metadata Description:
+                Array of strings representing ways to contact people responsible for this authorization server, typically email addresses
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="informational_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+          <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">logo_uri</spanx>
+              </t>
+              <t>
+                Metadata Description:
+		URL that references a logo for the organization owning this authorization server
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="informational_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+          <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">homepage_uri</spanx>
+              </t>
+              <t>
+                Metadata Description:
+		URL of a Web page for the organization owning this authorization server
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="informational_metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -5684,24 +5786,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): Section <xref target="RP_metadata"/> of this specification
-              </t>
-            </list>
-          </t>
-          <t>
-            <list style="symbols">
-              <t>
-                Client Metadata Name: <spanx style="verb">organization_name</spanx>
-              </t>
-              <t>
-                Client Metadata Description:
-                Human-readable name representing the organization owning the RP
-              </t>
-              <t>
-                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-              </t>
-              <t>
-                Specification Document(s): Section <xref target="RP_metadata"/> of this specification
+                Specification Document(s): <xref target="RP_metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -5712,13 +5797,47 @@ HTTP/1.1 302 Found
               </t>
               <t>
                 Client Metadata Description:
-                URI pointing to a signed JWT having the Entity's JWK Set as its payload
+                URL referencing a signed JWT having the client's JWK Set document as its payload
               </t>
               <t>
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): Section <xref target="RP_metadata"/> of this specification
+                Specification Document(s): <xref target="jwks_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>
+                Client Metadata Name: <spanx style="verb">organization_name</spanx>
+              </t>
+              <t>
+                Client Metadata Description:
+                Human-readable name representing the organization owning this client
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="informational_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+          <t>
+            <list style='symbols'>
+              <t>
+                Metadata Name: <spanx style="verb">homepage_uri</spanx>
+              </t>
+              <t>
+                Metadata Description:
+		URL of a Web page for the organization owning this client
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="informational_metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6142,7 +6261,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): Section <xref target="AuthzRequestProcessing"/> of this specification
+                Specification Document(s): <xref target="AuthzRequestProcessing"/> of this specification
               </t>
             </list>
           </t>
@@ -6175,7 +6294,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): Section <xref target="trust_chain"/> of this specification
+                Specification Document(s): <xref target="trust_chain"/> of this specification
               </t>
             </list>
           </t>
@@ -6203,7 +6322,7 @@ HTTP/1.1 302 Found
 	      Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	    </t>
 	    <t>
-	      Specification Document(s): Section <xref target="common_metadata"/> of this specification
+	      Specification Document(s): <xref target="jwks_metadata"/> of this specification
 	    </t>
 	  </list>
 	  </t>
@@ -6439,7 +6558,7 @@ HTTP/1.1 302 Found
         </front>
       </reference>
 
-      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-00.xml" />
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-01.xml" />
 
     </references>
 
@@ -6563,7 +6682,7 @@ HTTP/1.1 302 Found
         Hence the differences in depth in the federations.
       </t>
       <t>
-        Let us assume a researcher from Umea University would like to
+        Let us assume a researcher from Umeå University would like to
         login to
         the LIGO Wiki. At the Wiki, the researcher will use some kind of
         discovery service to find the home identity provider (op.umu.se)
@@ -6866,7 +6985,7 @@ Host: umu.se
         ]
       },
       "organization_name": {
-        "value": "University of Ume\u00e5"
+        "value": "University of Umeå"
       },
       "subject_types_supported": {
         "value": [
@@ -7238,7 +7357,7 @@ Host: geant.org
   "signed_jwks_uri": "https://op.umu.se/openid/jwks.jose",
   "logo_uri":
     "https://www.umu.se/img/umu-logo-left-neg-SE.svg",
-  "organization_name": "University of Ume\u00e5",
+  "organization_name": "University of Umeå",
   "op_policy_uri":
     "https://www.umu.se/en/website/legal-information/",
   "request_parameter_supported": true,
@@ -7751,8 +7870,17 @@ Host: op.umu.se
 	    Fixed #1659: Described use of the <spanx style="verb">trust_chain</spanx> header parameter in resolve responses.
 	  </t>
           <t>
+            Addressed #2060: A concrete order must be specified for the application of all metadata policy operators.
+          </t>
+          <t>
+            Addressed #2069: Metadata parameters with null value must be treated as error when applying metadata policies.
+          </t>
+        <t>
             Fixed #2034: Other use cases of Federation Automatic Registration, FAPI included.
           </t>
+	  <t>
+	    Moved the definitions of <spanx style="verb">organization_name</spanx>, <spanx style="verb">contacts</spanx>, <spanx style="verb">logo_uri</spanx>, <spanx style="verb">policy_uri</spanx>, and <spanx style="verb">homepage_uri</spanx> from the <spanx style="verb">federation_entity</spanx> Entity Type definition to the set of metadata parameters applicable to all Entity Types.
+	  </t>
 	  <t>
 	    Fixed #2081: Renamed
 	    <spanx style="verb">trust_marks_owners</spanx> to
