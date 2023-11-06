@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="25" month="October" year="2023"/>
+    <date day="5" month="November" year="2023"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -797,7 +797,8 @@
             </t>
             <t hangText="Leaf">
               <vspace/>
-              In an OpenID Connect identity federation, an RP or an OP.
+              In an OpenID Connect identity federation, an RP or an OP,
+	      or in an OAuth 2.0 federation, a Client, Authorization Server, or Protected Resource.
             </t>
             <t hangText="Intermediate">
               <vspace/>
@@ -813,16 +814,14 @@
           Trust Anchor about the top-most Intermediate
           (if there are Intermediates) or the Leaf Entity
           (if there are no Intermediates).
-          The Trust Chain MAY end with the
-          Entity Configuration of the Trust Anchor.
+          The Trust Chain logically always ends with the
+          Entity Configuration of the Trust Anchor,
+	  even though it MAY be omitted from
+	  the JSON array representating the Trust Chain in some use cases.
         </t>
         <t>
-          If present, the Trust Anchor's Entity Configuration
-          at the end of the chain contains the configuration of the federation,
-          such as the public keys of the Trust Anchor and other parameters
-          considered within the trust evaluation.
-          When this is the case, the Trust Chain
-          consequentially contains the configuration of the federation
+	  The Trust Chain contains the configuration of the federation
+	  as it applies to the Leaf
           at the time of the evaluation of the chain.
         </t>
         <t>
@@ -831,46 +830,57 @@
           will contain the following Entity Statements:
           <list style="numbers">
             <t>
-              an Entity Configuration about the RP published by the RP,
+              an Entity Configuration about the RP published by itself,
             </t>
             <t>
               an Entity Statement about the RP published by Organization A,
             </t>
             <t>
-              an Entity Statement about Organization A published by Federation F.
+              an Entity Statement about Organization A published by the Trust Anchor for F,
             </t>
+	    <t>
+	      an Entity Configuration about the Trust Anchor for F published by itself.
+	    </t>
           </list>
         </t>
         <t>
-          A Trust Chain MUST always be possible to order such that:
-          If we name the Entity Statements ES[0] (the Leaf Entity's
-          Entity Configuration) to ES[i] (an Entity Statement issued
-          by the Trust Anchor), i>0 then:
+	  Let us refer to the Entity Statements in the Trust Chain as
+	  ES[j], where j = 0,...,i,
+	  with 0 being the index of the first Entity Statement
+	  and i being the zero-based index of the last.
+	  Then:
           <list style="symbols">
+	    <t>
+	      ES[0] (the Leaf's Entity Configuration in the Trust Chain)
+	      is signed using a key in ES[0]["jwks"].
+	    </t>
             <t>
-              The <spanx style="verb">iss</spanx> Entity in one Entity Statement
-              is always the
-              <spanx style="verb">sub</spanx>
-              Entity in the next.
-              ES[j]['iss'] == ES[j+1]['sub'], j=0,...,i-1 .
+	      The <spanx style="verb">iss</spanx> claim in an Entity Statement
+	      is equal to the <spanx style="verb">sub</spanx> claim in the next.
+	      Restating this symbolically,
+	      for each j = 0,...,i-1,
+	      ES[j]["iss"] == ES[j+1]["sub"].
             </t>
             <t>
-              There MUST always be a
-              Federation Entity Key carried in the
-              <spanx style="verb">jwks</spanx>
-              claim in
-              ES[j] that can be used to verify the signature of ES[j-1],
-              j=i,...,1 .
+	      An Entity Statement is signed using a key from
+	      the <spanx style="verb">jwks</spanx> claim in the next.
+	      Restating this symbolically,
+	      for each j = 0,...,i-1,
+	      ES[j] is signed by a key in ES[j+1]["jwks"].
             </t>
-            <t>
-              It MUST be possible to verify the signature of ES[0] with
-              one of the keys in ES[0]['jwks'].
-            </t>
+	    <t>
+	      ES[i] (the Trust Anchor's Entity Configuration in the Trust Chain)
+	      is signed using a key in ES[i]["jwks"].
+	    </t>
           </list>
         </t>
         <t>
-          The signing key that MUST be used to verify ES[i] is distributed
-          from the Trust Anchors to any Entity that needs to verify a
+	  The Trust Anchor's public keys are used to verify the signatures on
+	  ES[i] (the Trust Anchor's Entity Configuration) and
+	  ES[i-1] (the Trust Anchor's Entity Statement about the Entity
+	  immediately Subordinate to it in the Trust Chain).
+	  The Trust Anchor's public keys are distributed
+	  to Entities that need to verify a
           Trust Chain in some secure out-of-band way not described in this
           document.
         </t>
@@ -984,9 +994,9 @@
 	that are applicable to each Entity Type.
       </t>
       <t>
-	As described in <xref target="components"/>,
+	As described in <xref target="entity-statement"/>,
 	Entity metadata is located in the <spanx style="verb">metadata</spanx>
-	member of an Entity Statement, whose value is a JSON object.
+	claim of an Entity Statement, whose value is a JSON object.
 	The member names of this object are Entity Type Identifiers,
 	as specified in <xref target="entity_types"/>.
 	The metadata data structure following each Entity Type Identifier is a JSON object;
@@ -2107,7 +2117,7 @@
             sequence as follows:
           </t>
           <t>
-            <list style="numbers">
+            <list style="hanging">
               <t hangText="value">
                 If this policy operator is present, further policy operators on
                 the metadata parameter MUST NOT be applied.
@@ -2228,6 +2238,14 @@
             metadata, then such a metadata statement MUST
             be regarded as broken and MUST NOT be used.
           </t>
+	  <t>
+	    It is the responsibility of the implementation to verify that the metadata
+	    resulting from applying the policies of a federation that it is using
+	    is supported by the implementation.
+	    For instance, the implementation needs to support any cryptographic algorithms
+	    required by the resulting metadata.
+	    Implementations may need to reevaluate their compliance when policies change.
+	  </t>
         </section>
         <section title="Extending the Policy Language">
           <t>
@@ -4060,14 +4078,15 @@ Content-Type: application/jwk-set+jwt
 
             <t>
               A simple example: In the following Trust Chain the
-              Federation Intermediate attests the Leaf's OpenID Connect
+              Federation Intermediate attests to the Leaf's OpenID Connect RP
               <spanx style="verb">jwks</spanx>
               in the Entity Statement issued for the Leaf. The result is
-              a Trust Chain that contains the Leaf's OIDC Core jwks,
+              a Trust Chain that contains the Leaf's OpenID Connect RP JWK Set,
               needed to verify historical signature on
-              Request Objects, ID Tokens and any other signed JWT issued by the Leaf,
-              if it is an RP or an OP.
-
+              Request Objects and any other signed JWT issued by the Leaf as an RP.
+	    </t>
+	    <t>
+	      This example Trust Chain contains:
               <list style="numbers">
                 <t>
                   an Entity Configuration about the RP published by the RP,
@@ -4077,7 +4096,7 @@ Content-Type: application/jwk-set+jwt
                   with the claim <spanx style="verb">jwks</spanx> contained in
                   <spanx style="verb">metadata</spanx> or
                   <spanx style="verb">metadata_policy</spanx> attesting the
-                  Leaf's OpenID Core <spanx style="verb">jwks</spanx>.
+                  Leaf's OpenID Connect RP <spanx style="verb">jwks</spanx>, and
                 </t>
                 <t>
                   an Entity Statement about Organization A published by Federation F.
@@ -4511,7 +4530,7 @@ Content-Type: application/json
             <t>
               In all interactions with the OP, the RP employs its Entity Identifier as the Client ID.
               The OP retrieves the RP's Entity Configuration
-              from a URL derived from the Entity Identifier, as
+              from the URL derived from the Entity Identifier, as
               described in <xref target="federation_configuration"/>.
             </t>
             <t>
@@ -6404,7 +6423,7 @@ HTTP/1.1 302 Found
           A Trust Mark can be statically validated using the public key of its issuer.
           The static validation of the Trust Marks represents a
           filter against propagation attacks. An attacker
-          could exploit the Federation Entity Discovery mechanism and use an OIDC Federation
+          could exploit the Federation Entity Discovery mechanism and use an OpenID Federation
           to propagate many HTTP requests. For each authorization request crafted
           by an anonymous client, the OP would produce approximately three HTTP requests to third parties
           in the absence of Intermediates, and at least five HTTP requests with at
@@ -6704,7 +6723,7 @@ HTTP/1.1 302 Found
               by the federation operator for signing Entity Statements.
             </t>
             <t>
-              Getting the Entity's Entity Identifier and the JWKS that the Entity
+              Getting the Entity's Entity Identifier and the JWK Set that the Entity
               plans to publish in its Entity Configuration.
             </t>
           </list>
@@ -7858,6 +7877,12 @@ Host: op.umu.se
 	    Moved the definitions of <spanx style="verb">organization_name</spanx>, <spanx style="verb">contacts</spanx>, <spanx style="verb">logo_uri</spanx>, <spanx style="verb">policy_uri</spanx>, and <spanx style="verb">homepage_uri</spanx> from the <spanx style="verb">federation_entity</spanx> Entity Type definition to the set of metadata parameters applicable to all Entity Types.
 	  </t>
 	  <t>
+	    Clarified the role of the Trust Anchor's Entity Configuration in Trust Chains.
+	  </t>
+	  <t>
+	    Fixed #1751: Provided guidance to prevent stuck clients.
+	  </t>
+	  <t>
 	    Fixed #2071: Removed most of the Claims Languages and Scripts text duplicating that in OpenID Connect Core.
 	  </t>
         </list>
@@ -8021,7 +8046,7 @@ Host: op.umu.se
             Fixed #1747: Client Registration Response content-type set to application/entity-statement+jwt.
           </t>
           <t>
-            Fixed #1740: Metadata policy example for OIDC, removed scopes.
+            Fixed #1740: Metadata policy example for OpenID Connect, removed scopes.
           </t>
           <t>
             Fixed #1755: clarification on the key to be used for Federation operations.
