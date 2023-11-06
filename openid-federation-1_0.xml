@@ -626,7 +626,7 @@
               This claim MUST be ignored if present in an Entity Configuration that
               describes an Entity that is not a Trust Anchor.
               It is a JSON object with member names that are Trust Mark identifiers and
-              each corresponding value being an array of Entities
+              each corresponding value being an array of Entity Identifiers
 	      that are trusted to represent the accreditation authority
 	      for Trust Marks with that identifier.
               If the array following a Trust Mark identifier is empty,
@@ -2656,7 +2656,7 @@
               <t hangText="ref">
                 <vspace/>
 		The <spanx style="verb">ref</spanx> (reference) claim
-		provides URI property for the JWT.
+		provides a URI property for the JWT.
 		Like the <spanx style="verb">sub</spanx> (subject) claim,
 		the processing of this claim is generally application specific.
 		The <spanx style="verb">ref</spanx> value is a case-sensitive string
@@ -2720,12 +2720,12 @@
               </t>
               <t hangText="iat">
                 <vspace/>
-                REQUIRED. String. Time when this delegation was issued.
+                REQUIRED. Number. Time when this delegation was issued.
                 This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
               </t>
               <t hangText="exp">
                 <vspace/>
-                OPTIONAL. String. Time when this delegation stops being valid.
+                OPTIONAL. Number. Time when this delegation stops being valid.
                 This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
                 If not present, it means that the delegation does not expire
                 and is valid until revoked.
@@ -3703,7 +3703,7 @@ Content-Type: application/json
               </t>
               <t hangText="iat">
                 <vspace/>
-                OPTIONAL. Time when the Trust Mark was issued. If
+                OPTIONAL. Number. Time when the Trust Mark was issued. If
                 <spanx style="verb">iat</spanx> is not specified and the
                 Trust Mark issuer has issued several Trust Marks with the
                 <spanx style="verb">id</spanx> specified in the request to the
@@ -4626,12 +4626,12 @@ Content-Type: application/json
                 </t>
                 <t hangText="exp">
                   <vspace/>
-                  REQUIRED. Expiration time on or after which the JWT MUST
+                  REQUIRED. Number. Expiration time on or after which the JWT MUST
                   NOT be accepted for processing.
                 </t>
                 <t hangText="iat">
                   <vspace/>
-                  OPTIONAL. Time at which the JWT was issued.
+                  OPTIONAL. Number. Time at which the JWT was issued.
                 </t>
                 <t hangText="trust_chain" anchor="trust_chain_param">
                   <vspace/>
