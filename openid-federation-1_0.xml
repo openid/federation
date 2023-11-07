@@ -5638,6 +5638,52 @@ HTTP/1.1 302 Found
       </t>
     </section>
 
+    <section anchor="Security" title="Security Considerations">
+      <section title="Denial-of-Service Attack Prevention" anchor="DoS">
+        <t>
+          Some of the interfaces defined in this specification could be used for
+          Denial-of-Service attacks (DoS), most notably, the resolve endpoint
+          (<xref target="entity_listing"/>), Explicit Client Registration
+          (<xref target="explicit"/>), and
+          Automatic Client Registration (<xref target="automatic"/>) can
+          be exploited as vectors of HTTP propagation attacks.
+
+          If these endpoints are provided, some adequate defense methods are required,
+          such as those described below and in
+          <xref target="RFC4732"/>.
+        </t>
+        <t>
+          A Trust Mark can be statically validated using the public key of its issuer.
+          The static validation of the Trust Marks represents a
+          filter against propagation attacks. An attacker
+          could exploit the Federation Entity Discovery mechanism and use an OpenID Federation
+          to propagate many HTTP requests. For each authorization request crafted
+          by an anonymous client, the OP would produce approximately three HTTP requests to third parties
+          in the absence of Intermediates, and at least five HTTP requests with at
+          least one Intermediate. If an OP doesn't find at least one
+          valid Trust Mark in an Entity Configuration, it should reject the request and
+          temporary ban the requestor.
+        </t>
+        <t>
+          If client authentication is not demanded at the resolve endpoint
+          then incoming requests should not result in the immediate
+          collection (Federation Entity Discovery process) and evaluation of Trust Chains by default.
+        </t>
+      </section>
+      <section title="Unsigned Error Messages" anchor="UnsignedError">
+        <t>
+          One of the fundamental design goals of this protocol is to
+          protect messages end-to-end. This can not be accomplished by demanding
+          TLS since TLS, in lots of cases, is not end-to-end but ends in a HTTPS
+          to HTTP Reverse Proxy.
+          Allowing unsigned error messages therefore opens up an attack
+          vector for someone who wants to run a Denial of Service attack.
+          This is not specific to OpenID Federation but equally valid for
+          other protocols when HTTPS to HTTP reverse proxies are used.
+        </t>
+      </section>
+    </section>
+
     <section anchor="IANA" title="IANA Considerations">
 
       <section anchor="MetadataRegistry" title="OAuth Authorization Server Metadata Registration">
@@ -6548,52 +6594,6 @@ HTTP/1.1 302 Found
       </section>
 
     </section>
-
-    <section anchor="Security" title="Security Considerations">
-      <section title="Denial-of-Service Attack Prevention" anchor="DoS">
-        <t>
-          Some of the interfaces defined in this specification could be used for
-          Denial-of-Service attacks (DoS), most notably, the resolve endpoint
-          (<xref target="entity_listing"/>), Explicit Client Registration
-          (<xref target="explicit"/>), and
-          Automatic Client Registration (<xref target="automatic"/>) can
-          be exploited as vectors of HTTP propagation attacks.
-
-          If these endpoints are provided, some adequate defense methods are required,
-          such as those described below and in
-          <xref target="RFC4732"/>.
-        </t>
-        <t>
-          A Trust Mark can be statically validated using the public key of its issuer.
-          The static validation of the Trust Marks represents a
-          filter against propagation attacks. An attacker
-          could exploit the Federation Entity Discovery mechanism and use an OpenID Federation
-          to propagate many HTTP requests. For each authorization request crafted
-          by an anonymous client, the OP would produce approximately three HTTP requests to third parties
-          in the absence of Intermediates, and at least five HTTP requests with at
-          least one Intermediate. If an OP doesn't find at least one
-          valid Trust Mark in an Entity Configuration, it should reject the request and
-          temporary ban the requestor.
-        </t>
-        <t>
-          If client authentication is not demanded at the resolve endpoint
-          then incoming requests should not result in the immediate
-          collection (Federation Entity Discovery process) and evaluation of Trust Chains by default.
-        </t>
-      </section>
-      <section title="Unsigned Error Messages" anchor="UnsignedError">
-        <t>
-          One of the fundamental design goals of this protocol is to
-          protect messages end-to-end. This can not be accomplished by demanding
-          TLS since TLS, in lots of cases, is not end-to-end but ends in a HTTPS
-          to HTTP Reverse Proxy.
-          Allowing unsigned error messages therefore opens up an attack
-          vector for someone who wants to run a Denial of Service attack.
-          This is not specific to OpenID Federation but equally valid for
-          other protocols when HTTPS to HTTP reverse proxies are used.
-        </t>
-      </section>
-    </section>
   </middle>
 
   <back>
@@ -6773,6 +6773,16 @@ HTTP/1.1 302 Found
       <reference anchor="IANA.JWT.Claims" target="https://www.iana.org/assignments/jwt">
         <front>
           <title>JSON Web Token Claims</title>
+          <author>
+            <organization>IANA</organization>
+          </author>
+	  <date/>
+        </front>
+      </reference>
+
+      <reference anchor="IANA.well-known" target="https://www.iana.org/assignments/well-known-uris">
+        <front>
+          <title>Well-Known URIs</title>
           <author>
             <organization>IANA</organization>
           </author>
