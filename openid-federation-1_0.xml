@@ -606,11 +606,11 @@
 
               <list style="hanging">
                 <t hangText="id">
-                  The Trust Mark unique identifier.
+                  The Trust Mark identifier.
                   It MUST be the same value as the
                   <spanx style="verb">id</spanx>
                   claim contained in the
-                  Trust Mark JSON Web Token.
+                  Trust Mark JWT.
                 </t>
                 <t hangText="trust_mark">
                   A signed JSON Web Token that represents a Trust Mark.
@@ -2648,7 +2648,7 @@
                 MUST be collision-resistant
                 across multiple federations.
                 It is RECOMMENDED that the
-                identifier
+		identifier
                 value is built
                 using a URL that uniquely identifies the federation
                 or the trust framework
@@ -3648,11 +3648,10 @@ Host: openid.sunet.se
               <t hangText="trust_mark_id">
                 <vspace/>
                 OPTIONAL. If the responder has issued Trust Marks with the
-                <spanx style="verb">trust_mark_id</spanx>,
-                the list obtained in the response MUST be filtered with
+                specified Trust Mark identifier,
+                the list in the response MUST be filtered to only
                 the Subordinates for which that Trust Mark identifier has been
                 issued and is still valid.
-
                 If the responder does not support this feature it MUST
                 use the HTTP status code 400 and set the content type to
                 <spanx style="verb">application/json</spanx>, with
@@ -3736,7 +3735,7 @@ Content-Type: application/json
                 OPTIONAL. The Entity Identifier of the Entity to which the Trust Mark
                 was issued.
               </t>
-              <t hangText="id">
+              <t hangText="trust_mark_id">
                 <vspace/>
                 OPTIONAL. Identifier of the Trust Mark.
               </t>
@@ -3757,16 +3756,16 @@ Content-Type: application/json
           </t>
           <t>
             If <spanx style="verb">trust_mark</spanx> is used, then
-            <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>
+            <spanx style="verb">sub</spanx> and <spanx style="verb">trust_mark_id</spanx>
             are not needed. If <spanx style="verb">trust_mark</spanx> is not used,
-            then <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>
+            then <spanx style="verb">sub</spanx> and <spanx style="verb">trust_mark_id</spanx>
             are REQUIRED.
           </t>
           <t>
             <figure>
               <preamble>
-                The following is a non-normative example of a request using
-                <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>:
+                The following is a non-normative example of a Trust Mark status request using
+                <spanx style="verb">sub</spanx> and <spanx style="verb">trust_mark_id</spanx>:
               </preamble>
 	      <name>
 		Trust Mark Status Request
@@ -3777,7 +3776,7 @@ Host: op.example.org
 Content-Type: application/x-www-form-urlencoded
 
 sub=https%3A%2F%2Fopenid.sunet.se%2FRP
-&id=https%3A%2F%2Frefeds.org%2Fsirtfi
+&trust_mark_id=https%3A%2F%2Frefeds.org%2Fsirtfi
 ]]></artwork>
             </figure>
 
@@ -3853,8 +3852,8 @@ Content-Type: application/json
               <t hangText="trust_mark_id">
                 <vspace/>
                 REQUIRED. If the responder has issued Trust Marks with the
-                <spanx style="verb">trust_mark_id</spanx>,
-                the list obtained in the response MUST be filtered with
+                specified Trust Mark identifier,
+                the list obtained in the response MUST be filtered to only
                 the Entities for which that Trust Mark identifier has been
                 issued and is still valid.
               </t>
@@ -8046,6 +8045,12 @@ Host: op.umu.se
 	    <spanx style="verb">trust_mark_owners</spanx> and renamed
 	    <spanx style="verb">trust_marks_issuers</spanx> to
 	    <spanx style="verb">trust_mark_issuers</spanx>.
+	  </t>
+	  <t>
+	    Fixed #2079: Renamed the <spanx style="verb">id</spanx> Trust Mark status
+	    request parameter to <spanx style="verb">trust_mark_id</spanx> to match
+	    the parameter names used in Subordinate listing requests and
+	    Trust Marked entities listing requests.
 	  </t>
         </list>
       </t>
