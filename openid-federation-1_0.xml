@@ -4479,26 +4479,25 @@ Content-Type: application/json
 
     <section title="Updating Metadata, Key Rollover, and Revocation">
       <t>
-        This specification allows for a smooth process of updating metadata
+        This specification facilitates smoothly updating metadata
         and public keys.
       </t>
       <t>
-        As described above in <xref target="trust_lifetime"/>,
+        As described in <xref target="trust_lifetime"/>,
         each Trust Chain has an expiration time.
-        A consumer of metadata using this specification MUST support
+        A consumer of metadata MUST support
         refreshing a Trust Chain when it expires.
         How often a consumer SHOULD re-evaluate the Trust Chain depends on
-        how quickly the consumer wants to find out that something has changed
-        in the Trust Chain.
+        how quickly the consumer wants to find out that something has changed.
       </t>
 
       <section title="Protocol Key Rollover">
         <t>
-          If a Leaf Entity publishes its public keys in the metadata part
-          using <spanx style="verb">jwks</spanx>, setting an expiration time on
-          the self-signed Entity
-          Statement can be used to control how often the receiving Entity is
-          fetching an updated version of the public key.
+          If a Leaf Entity publishes its public keys in its metadata
+          using <spanx style="verb">jwks</spanx>, the expiration time of
+          its Entity Configuration
+	  can be used to control how often the receiving Entity
+          needs to fetch an updated set of public keys.
         </t>
       </section>
 
@@ -4508,19 +4507,19 @@ Content-Type: application/json
           A Trust Anchor MUST publish an Entity Configuration about
           itself. The Trust Anchor SHOULD set a reasonable expiration
           time on that Statement, such that the consumers will re-fetch the
-          Entity Configuration at reasonable intervals. If the Trust Anchor wants to
-          roll over its signing keys, it would have to:
+          Entity Configuration at reasonable intervals.
+	  When a Trust Anchor rolls over its signing keys, it needs to:
         </t>
         <t>
           <list style="numbers">
             <t>
               Add the new keys to the <spanx style="verb">jwks</spanx> representing
-              the Trust Anchor's signing keys.
+              the Trust Anchor's signing keys in its Entity Configuration.
             </t>
             <t>
               Keep signing the Entity Configuration and the Entity Statements using
               the old keys for a long enough time period to allow all
-              Subordinates to have gotten access to the new keys.
+              Subordinates to have obtained the new keys.
             </t>
             <t>
               Switch to signing with the new keys.
@@ -4552,10 +4551,10 @@ Content-Type: application/json
 
       <section title="Revocation">
         <t>
-          Since the consumers are expected to check the Trust Chain at regular,
-          reasonably frequent times, this specification does not define a
-          standard revocation process. Specific federations MAY make a
-          different choice and will then have to add such a process.
+          Since the consumers are expected to check the Trust Chain on a regular
+          frequent basis, this specification does not define a
+          revocation process. Specific federations MAY make a
+          different choice and will then have to define their own revocation process.
         </t>
       </section>
     </section>
