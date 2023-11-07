@@ -196,7 +196,7 @@
           BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/>.
         </t>
       </section>
-      <section title="Terminology">
+      <section anchor="Terminology" title="Terminology">
         <t>
           This specification uses the terms
           "Claim Name", "Claim Value", "JSON Web Token (JWT)",
@@ -625,23 +625,24 @@
               Trust Mark identifiers and issuers are trusted by the federation.
               This claim MUST be ignored if present in an Entity Configuration that
               describes an Entity that is not a Trust Anchor.
-              It is a JSON object with keys representing Trust Mark identifiers and values
-              being an array of trusted Entities representing the accreditation authority.
-
-              If the value list bound to a Trust Mark identifier is empty,
-              anyone can issue Trust Marks with that identifier.
+              It is a JSON object with member names that are Trust Mark identifiers and
+              each corresponding value being an array of Entity Identifiers
+	      that are trusted to represent the accreditation authority
+	      for Trust Marks with that identifier.
+              If the array following a Trust Mark identifier is empty,
+              anyone MAY issue Trust Marks with that identifier.
               Trust Marks are described in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_mark_owners">
               <vspace/>
               OPTIONAL.
-              If a Federation Operator knows that a Trust Mark ID is owned
-              by an Entity different from the Trust Mark issuer then that
+              If a Federation Operator knows that a Trust Mark identifier is owned
+              by an Entity different from the Trust Mark issuer, then that
               knowledge MUST be expressed in this claim.
               This claim MUST be ignored if present in an Entity Configuration
               that describes an Entity that is not a Trust Anchor.
-              The value is a JSON object with member names representing Trust Mark identifiers
-              and the values being JSON objects that contain claims. These claims are:
+              It is a JSON object with member names that are Trust Mark identifiers and
+              each corresponding value being a JSON object with these members:
               <list style="hanging">
                 <t hangText="sub">
                   <vspace/>
@@ -652,15 +653,16 @@
                   <vspace/>
                   REQUIRED
                   <xref target="RFC7517">JSON Web Key Set (JWKS)</xref>
-                  representing the public part of the owner's signing keys.
+                  containing the owner's Federation Entity Keys used for signing.
                 </t>
               </list>
+	      Other members MAY also be defined and used.
 	    </t>
           </list>
         </t>
         <t>
           Applications and protocols utilizing Entity Statements MAY specify
-          additional claims.
+          and use additional claims.
         </t>
         <t>
           The Entity Statement is signed using the private key of the issuer
@@ -1712,27 +1714,11 @@
           a language tag in its name, as described in <xref target="ClaimsLanguagesAndScripts"/>,
           as distinct from the same metadata parameter without a language tag.
         </t>
-        <t>
-          <figure>
-            <preamble>
-              The following is a non-normative example of a policy entry:
-            </preamble>
-	        <name>
-		    Example Policy Entry
-	        </name>
-              <artwork><![CDATA[
-"id_token_signed_response_alg": {
-  "default": "ES256",
-  "one_of" : ["ES256", "ES384", "ES512"]
-}
-]]></artwork>
-          </figure>
-          </t>
           <t>
             <figure>
               <preamble>
-                Which fits into a metadata policy claim of an Entity Statement
-                like this:
+                The following is a non-normative example of a policy entry
+		providing metadata policy for an OpenID Connect RP:
               </preamble>
 	      <name>
 		  Example <spanx style="verb">metadata_policy</spanx> Claim
@@ -2154,23 +2140,22 @@
 	      Example Federation's Policy for OAuth 2.0 Clients
 	    </name>
             <artwork><![CDATA[
-{
-  "grant_types": {
-
-    "subset_of": ["authorization_code", "implicit", "refresh_token"],
-
-    "superset_of": ["authorization_code"],
-
-    "default": ["authorization_code", "refresh_token"]
-  },
-  "token_endpoint_auth_method": {
-    "one_of": [
-      "client_secret_post",
-      "client_secret_basic"
-    ]
-  },
-  "contacts": {
-    "add": "helpdesk@federation.example.org"
+"metadata_policy": {
+  "oauth_client": {
+    "grant_types": {
+      "subset_of": ["authorization_code", "implicit", "refresh_token"],
+      "superset_of": ["authorization_code"],
+      "default": ["authorization_code", "refresh_token"]
+    },
+    "token_endpoint_auth_method": {
+      "one_of": [
+        "client_secret_post",
+        "client_secret_basic"
+      ]
+    },
+    "contacts": {
+      "add": "helpdesk@federation.example.org"
+    }
   }
 }
 ]]></artwork>
@@ -2183,20 +2168,22 @@
 	      Example Organization's Policy for OAuth 2.0 Clients
 	    </name>
             <artwork><![CDATA[
-{
-  "grant_types": {
-    "subset_of": ["authorization_code", "refresh_token", "implicit"],
-    "default": ["authorization_code", "refresh_token"]
-  },
-  "token_endpoint_auth_method": {
-    "one_of": [
-      "client_secret_post",
-      "client_secret_basic"
-    ],
-    "default": "client_secret_basic"
-  },
-  "contacts": {
-    "add": "helpdesk@org.example.org"
+"metadata_policy": {
+  "oauth_client": {
+    "grant_types": {
+      "subset_of": ["authorization_code", "refresh_token", "implicit"],
+      "default": ["authorization_code", "refresh_token"]
+    },
+    "token_endpoint_auth_method": {
+      "one_of": [
+        "client_secret_post",
+        "client_secret_basic"
+      ],
+      "default": "client_secret_basic"
+    },
+    "contacts": {
+      "add": "helpdesk@org.example.org"
+    }
   }
 }
 ]]></artwork>
@@ -2209,24 +2196,26 @@
 	      Combined Policies from the Previous Two Examples
 	    </name>
             <artwork><![CDATA[
-{
-  "grant_types": {
-    "subset_of": ["authorization_code", "refresh_token"],
-    "superset_of": ["authorization_code"],
-    "default": ["authorization_code", "refresh_token"]
-  },
-  "token_endpoint_auth_method": {
-    "one_of": [
-      "client_secret_post",
-      "client_secret_basic"
-    ],
-    "default": "client_secret_basic"
-  },
-  "contacts": {
-    "add": [
-      "helpdesk@federation.example.org",
-      "helpdesk@org.example.org"
-    ]
+"metadata_policy": {
+  "oauth_client": {
+    "grant_types": {
+      "subset_of": ["authorization_code", "refresh_token"],
+      "superset_of": ["authorization_code"],
+      "default": ["authorization_code", "refresh_token"]
+    },
+    "token_endpoint_auth_method": {
+      "one_of": [
+	"client_secret_post",
+	"client_secret_basic"
+      ],
+      "default": "client_secret_basic"
+    },
+    "contacts": {
+      "add": [
+	"helpdesk@federation.example.org",
+	"helpdesk@org.example.org"
+      ]
+    }
   }
 }
 ]]></artwork>
@@ -2275,16 +2264,18 @@
 	      RP's Metadata from its Entity Configuration
 	    </name>
             <artwork><![CDATA[
-{
-  "contacts": [
-    "rp_admins@cs.example.com"
-  ],
-  "redirect_uris": [
-    "https://cs.example.com/rp1"
-  ],
-  "response_types": [
-    "code"
-  ]
+"metadata": {
+  "openid_relying_party": {
+    "contacts": [
+      "rp_admins@cs.example.com"
+    ],
+    "redirect_uris": [
+      "https://cs.example.com/rp1"
+    ],
+    "response_types": [
+      "code"
+    ]
+  }
 }
 ]]></artwork>
           </figure>
@@ -2296,19 +2287,21 @@
 	      Federation's Policy for RPs
 	    </name>
             <artwork><![CDATA[
-{
-  "id_token_signed_response_alg": {
-    "one_of": [
-      "ES256",
-      "ES384"
-    ],
-    "default": "ES256",
-  },
-  "response_types": {
-    "subset_of": [
-      "code",
-      "code id_token"
-    ]
+"metadata_policy": {
+  "openid_relying_party": {
+    "id_token_signed_response_alg": {
+      "one_of": [
+        "ES256",
+        "ES384"
+      ],
+      "default": "ES256",
+    },
+    "response_types": {
+      "subset_of": [
+        "code",
+        "code id_token"
+      ]
+    }
   }
 }
 ]]></artwork>
@@ -2354,27 +2347,36 @@
 	      RP's Metadata After Application of Policies
 	    </name>
             <artwork><![CDATA[
-{
-  "contacts": [
-    "rp_admins@cs.example.com",
-    "helpdesk@example.com"
-  ],
-  "logo_uri": "https://example.com/logo_small.svg",
-  "policy_uri": "https://example.com/policy.html",
-  "tos_uri": "https://example.com/tos.html",
-  "id_token_signed_response_alg": "ES256",
-  "response_types": [
-    "code"
-  ],
-  "redirect_uris": [
-    "https://cs.example.com/rp1"
-  ]
+"metadata": {
+  "openid_relying_party": {
+    "contacts": [
+      "rp_admins@cs.example.com",
+      "helpdesk@example.com"
+    ],
+    "logo_uri": "https://example.com/logo_small.svg",
+    "policy_uri": "https://example.com/policy.html",
+    "tos_uri": "https://example.com/tos.html",
+    "id_token_signed_response_alg": "ES256",
+    "response_types": [
+      "code"
+    ],
+    "redirect_uris": [
+      "https://cs.example.com/rp1"
+    ]
+  }
 }
 ]]></artwork>
           </figure>
         </section>
       </section>
-      <section title="Applying Constraints" anchor="chain_constraints">
+      <section title="Constraints" anchor="chain_constraints">
+	<t>
+	  Constraints define criteria applied to Trust Chains,
+	  as described in the <spanx style="verb">constraints</spanx>
+	  claim definition in <xref target="entity-statement"/>.
+	  Constraints are applied to all Entity Statements
+	  that are subordinates of the one containing them.
+	</t>
         <t>A set of constraints can contain the following claims:</t>
         <t>
           <list style="hanging">
@@ -2460,7 +2462,7 @@
             MUST have a value greater than or equal to zero.
           </t>
           <t>
-            Not adding a max_path_length constraint just means that there are
+            Not including a <spanx style="verb">max_path_length</spanx> constraint means that there are
             no additional constraints apart from those already in effect.
           </t>
           <t>
@@ -2469,7 +2471,7 @@
               <t>Entity Configuration of the Leaf Entity (LE)</t>
               <t>Entity Statement by Intermediate 1 (I1) about LE</t>
               <t>Entity Statement by Intermediate 2 (I2) about I1</t>
-              <t>Entity Statement by Trust Anchor (TA) about I2</t>
+              <t>Entity Statement by the Trust Anchor (TA) about I2</t>
             </list>
           </t>
           <t>
@@ -2477,7 +2479,7 @@
             <list style="symbols">
               <t>
                 The TA specifies a <spanx style="verb">max_path_length</spanx> that
-                is equal to or bigger than 2.
+                is greater than or equal to 2.
               </t>
               <t>
                 TA specifies a <spanx style="verb">max_path_length</spanx> of 2,
@@ -2528,26 +2530,33 @@
                  anchor="leaf_entity_type_constraints">
           <t>
             The <spanx style="verb">allowed_leaf_entity_types</spanx> constraint
-            specifies what Entity Types are possible for Leaf Entities beneath an
+            specifies what Entity Types are acceptable for Leaf Entities beneath an
             Entity. If there is no <spanx style="verb">allowed_leaf_entity_types</spanx>
-            defined it means that any type is allowed.
+            constraint, it means that any Entity Type is allowed.
           </t>
         </section>
       </section>
       <section title="Trust Marks" anchor="trust_marks">
-        <t>
-          The Trust Marks used by this specification are signed JWTs.
+	<t>
+	  Per the definition in <xref target="Terminology"/>,
+	  Trust Marks are statements of conformance to sets of criteria
+	  determined by an accreditation authority.
+	  Trust Marks used by this specification are signed JWTs.
+	  Entity Statements MAY include Trust Marks,
+	  as described in the <spanx style="verb">trust_marks</spanx>
+	  claim definition in <xref target="entity-statement"/>.
         </t>
-        <t>A Trust Mark issuer is a Federation Entity that issues Trust Marks.</t>
         <t>
-          A Trust Mark Owner is an Entity the owns the right to a Trust Mark
+	  A Trust Mark issuer is a Federation Entity that issues Trust Marks.
+          A Trust Mark owner is an Entity the owns the right to a Trust Mark
           identifier.
         </t>
         <t>
-          The Trust Marks are signed by a federation-accredited
-          authority. All Trust Mark issuers are
-          federation Entities. A Trust Mark issuer is
-          part of the federation if expressed in the
+          Trust Marks are signed by a federation-accredited
+          authority called a Trust Mark issuer.
+	  All Trust Mark issuers MUST be represented in the
+          federation by an Entity. The fact that a Trust Mark issuer is
+          accepted by the federation is expressed in the
           <spanx style="verb">trust_marks_issuers</spanx> claim of the
           Trust Anchor's Entity Configuration.
         </t>
@@ -2561,14 +2570,14 @@
 
         <t>
           Note that a federation MAY allow an Entity to self-sign
-          some Trust Marks.
+          Trust Marks.
         </t>
 
         <t>
           Trust Mark JWTs MUST be explicitly typed by setting the
           <spanx style="verb">typ</spanx> header parameter to
           <spanx style="verb">trust-mark+jwt</spanx>. This is done to prevent
-          cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
+          cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
         </t>
         <section title="Trust Mark Delegation" anchor="trust_mark_delegation">
           <t>
@@ -2578,87 +2587,121 @@
             inspection. Vehicle inspection is a procedure mandated by national
             or subnational governments in many countries, in which a vehicle is
             inspected to ensure that it conforms to regulations governing
-            safety, emissions, or both. The bodies that mandates the inspection
-            does not perform them instead there may be commercial companies
-            performing this check and which then issues the Trust Mark.
+            safety, emissions, or both. The body that mandates the inspections
+            does not perform them; instead, there may be commercial companies
+            performing the inspections, after which they issue the Trust Mark.
           </t>
           <t>
             The fact that a Trust Mark is issued by a Trust Mark issuer that is
-            not the owner of the Trust Mark is in the Trust Mark expressed by adding a
-            signed JWT to the <spanx style="verb">delegation</spanx> claim.
-            The format of the signed JWT is as described below.
+            not the owner of the Trust Mark is expressed by including
+	    a <spanx style="verb">delegation</spanx> claim in the Trust Mark,
+	    whose value is a signed JWT.
+            The format of the delegation JWT is described below.
           </t>
           <t>
-            If the Federation Operator knows of and has verified that Trust
-            Marks with a
-            certain Trust Mark identifier may be issued by Trust Mark issuers
-            that are not the owner of the Trust Mark ID then the information
-            about the owner and the Trust Mark ID MUST be added to the
-            <spanx style="verb">trust_mark_owners</spanx> claim in the Trust
-            Anchor Entity Configuration.
+            If the Federation Operator knows that Trust Marks with a
+            certain Trust Mark identifier may legitimately be issued by Trust Mark issuers
+            that are not the owner of the Trust Mark identifier, then information
+            about the owner and the Trust Mark identifier MUST be included in the
+            <spanx style="verb">trust_mark_owners</spanx> claim in
+	    the Trust Anchor's Entity Configuration.
           </t>
         </section>
 
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
-          <t>The Trust Mark claims are listed below:</t>
+          <t>
+	    These claims are used in Trust Marks:
+	  </t>
           <t>
             <list style="hanging">
               <t hangText="iss">
                 <vspace/>
-                REQUIRED. String. The issuer of the Trust Mark.
+                REQUIRED. String. Issuer of the Trust Mark.
               </t>
               <t hangText="sub">
                 <vspace/>
-                REQUIRED. String. The Entity this Trust Mark applies to.
+                REQUIRED. String. Entity this Trust Mark applies to.
               </t>
               <t hangText="id">
                 <vspace/>
-                REQUIRED. String. An identifier of the Trust Mark.
-                The Trust Mark <spanx style="verb">id</spanx>
+		The <spanx style="verb">id</spanx> (identifier) claim
+		provides an identifier for a property of the JWT.
+		Like the <spanx style="verb">sub</spanx> (subject) claim,
+		the processing of this claim is generally application specific.
+		The <spanx style="verb">id</spanx> value is a case-sensitive string
+		containing a StringOrURI value.
+		Use of this claim in JWTs is OPTIONAL.
+		<vspace blankLine="1"/>
+
+		This claim is REQUIRED when the JWT is a Trust Mark.
+		In this case, its value is the identifier of the Trust Mark.
+                The Trust Mark identifier
                 MUST be collision-resistant
                 across multiple federations.
                 It is RECOMMENDED that the
-                <spanx style="verb">id</spanx>
+                identifier
                 value is built
-                using the unique URL that uniquely identifies the federation,
-                or the trust framework,
+                using a URL that uniquely identifies the federation
+                or the trust framework
                 within which it was issued. This is required to prevent
                 Trust Marks issued in different federations
                 from having colliding identifiers.
               </t>
               <t hangText="iat">
                 <vspace/>
-                REQUIRED. Number. When this Trust Mark was issued.
-                Expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
+                REQUIRED. Number. Time when this Trust Mark was issued.
+                This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
               </t>
               <t hangText="logo_uri">
                 <vspace/>
-                OPTIONAL. String. A URL that points to a mark/logo that the
-                subject is allowed to display to a user of the Entity.
+                OPTIONAL. String. URL that references a logo for the Entity.
+		The value of this field MUST point to a valid image file.
               </t>
               <t hangText="exp">
                 <vspace/>
-                OPTIONAL. Number. When this Trust Mark is not valid anymore.
-                Expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
+                OPTIONAL. Number. Time when this Trust Mark is no longer valid.
+                This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
                 If not present, it means that
-                the Trust Mark is valid forever.
+                the Trust Mark does not expire.
               </t>
               <t hangText="ref">
                 <vspace/>
-                OPTIONAL. String. URL that points to human-readable information
-                connected to the Trust Mark.
+		The <spanx style="verb">ref</spanx> (reference) claim
+		provides a URI property for the JWT.
+		Like the <spanx style="verb">sub</spanx> (subject) claim,
+		the processing of this claim is generally application specific.
+		The <spanx style="verb">ref</spanx> value is a case-sensitive string
+		containing a URI value.
+		Use of this claim in JWTs is OPTIONAL.
+		<vspace blankLine="1"/>
+
+		When the JWT is a Trust Mark,
+		its value is a URL that refers to human-readable information
+		connected to the issuance of the Trust Mark.
+		Use of this claim in Trust Marks is OPTIONAL.
               </t>
               <t hangText="delegation">
                 <vspace/>
-                OPTIONAL. Signed JWT. A signed JWT containing information about
-	              a delegation of the right to issue Trust Marks, with a special ID,
-                from the owner of the Trust Mark to an issuer of the Trust Mark.
+		The <spanx style="verb">delegation</spanx> claim
+		expresses a delegation relationship.
+		Like the <spanx style="verb">sub</spanx> (subject) claim,
+		the processing of this claim is generally application specific.
+		The <spanx style="verb">delegation</spanx> value is a case-sensitive string.
+		Use of this claim in JWTs is OPTIONAL.
+		<vspace blankLine="1"/>
+
+		When the JWT is a Trust Mark,
+		its value is a signed JWT containing information about
+		a delegation of the right to issue Trust Marks with a particular identifier
+                created by the owner of the Trust Mark
+		that identifies the delegated issuer of the Trust Mark.
+		Use of this claim in Trust Marks is OPTIONAL.
               </t>
             </list>
           </t>
           <t>
-            Other claims MAY be used in conjunction with the claims outlined above.
-            The recommendations for claim naming described in Section 5.1.2 of
+            Other claims MAY be defined and used in conjunction with the claims above.
+            The recommendations for claim naming in Section 5.1.2 of
             <xref target="OpenID.Core">OpenID Connect Core 1.0</xref> apply.
           </t>
         </section>
@@ -2667,7 +2710,7 @@
             Trust Mark delegation JWTs MUST be explicitly typed, by setting the
             <spanx style="verb">typ</spanx> header parameter to
             trust-mark-delegation+jwt. This prevents
-            cross-JWT confusion (see [RFC8725], section 3.11).
+            cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
           </t>
           <t>
             The delegation claims:
@@ -2688,15 +2731,15 @@
               </t>
               <t hangText="iat">
                 <vspace/>
-                REQUIRED. String. When this delegation was issued.
-                Expressed as Seconds Since the Epoch, per [RFC7519].
+                REQUIRED. Number. Time when this delegation was issued.
+                This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
               </t>
               <t hangText="exp">
                 <vspace/>
-                OPTIONAL. String. When this delegation stops being valid.
-                Expressed as Seconds Since the Epoch, per [RFC7519].
-                If not present, it means that the delegation is valid forever
-                or until revoked.
+                OPTIONAL. Number. Time when this delegation stops being valid.
+                This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
+                If not present, it means that the delegation does not expire
+                and is valid until revoked.
               </t>
               <t hangText="ref">
                 <vspace/>
@@ -2707,42 +2750,42 @@
           </t>
         </section>
         <section title="Validating a Trust Mark" anchor="trust_valid">
-          <t>An Entity SHOULD NOT try to validate a Trust Mark until
-            it knows which Trust Anchors it wants to use.
-          </t>
-          <t>Validating a Trust Mark issuer follows the procedure set out in
-            <xref target="resolving_trust"/>. Validating the Trust Mark
-            consists of doing the following checks:
+          <t>
+	    An Entity SHOULD NOT try to validate a Trust Mark until
+	    it knows which Trust Anchor it is using.
+	    To validate a Trust Mark issuer, follow the procedure
+	    defined in <xref target="resolving_trust"/>.
+	    To validate a Trust Mark:
             <list style="numbers">
               <t>
-                Checking the signature of the signed JWT and verifying that
-                it has not passed its expiration time.
+                Check the signature of the signed JWT and verify that
+                it has not expired.
               </t>
               <t>
-                If the Trust Mark ID appears in the
-                <spanx style="verb">trust_mark_owners</spanx> claim
-                make certain that the Trust Mark contains
+                If the Trust Mark identifier appears in the
+                <spanx style="verb">trust_mark_owners</spanx> claim,
+                verify that the Trust Mark contains
                 a <spanx style="verb">delegation</spanx>
                 claim.
-                The claim set that can be found by looking up the Trust Mark ID
-                in the <spanx style="verb">trust_mark_owners</spanx> claim can
-                be used in the following way.
+                The set of claims for the the Trust Mark identifier
+                in the <spanx style="verb">trust_mark_owners</spanx> value
+                are used in the following way:
                 <list style="symbols">
                   <t>
-                    The signature of the delegation claim value MUST
-                    be possible to verify with a key that can be found in the
-                    <spanx style="verb">jwks</spanx> part of the claim set.
+                    The signature of the <spanx style="verb">delegation</spanx> JWT
+                    MUST verify with a key from <spanx style="verb">jwks</spanx> claim.
                   </t>
                   <t>
-                    The issuer of the delegation claim value MUST match the
-                    <spanx style="verb">sub</spanx> claim in the claim set.
+                    The issuer of the <spanx style="verb">delegation</spanx> JWT
+		    MUST match the <spanx style="verb">sub</spanx> value
+		    in this set of claims.
                   </t>
                 </list>
               </t>
               <t>
                 Using the Trust Mark issuer status endpoint to verify that the
-                Trust Mark is still active.
-                Described in <xref target="status_endpoint"/>
+                Trust Mark is still active
+                is described in <xref target="status_endpoint"/>.
               </t>
             </list>
           </t>
@@ -2756,18 +2799,18 @@
           </t>
           <t>
             If a Trust Mark issuer is issuing Trust Marks on behalf of a
-            Trust Mark owner then the Trust Anchor MUST publish the
-            connection between the Trust
-            Mark ID and the corresponding Trust Mark issuer in the
+            Trust Mark owner, then the Trust Anchor MUST publish the
+            connection between the Trust Mark identifier
+	    and the corresponding Trust Mark issuer in the
             <spanx style="verb">trust_marks_issuers</spanx> claim. This
-            signifies that the Trust Anchor has verified that the Trust
-            Mark owner is indeed the Trust Mark owner and that the
+            signifies that the Trust Anchor has validated
+            the Trust Mark owner and that the
             Trust Mark owner has delegated the right to issue Trust Marks
-            with a specific Trust Mark ID to a specific Trust Mark issuer.
+            with a designated Trust Mark identifier to a specified Trust Mark issuer.
           </t>
           <t>
             Trust Marks that are not recognized within a federation SHOULD be ignored when
-            evaluating the trust in the Entity that presented them. Such Trust Marks can
+            evaluating trust in the Entity that presented them. Such Trust Marks can
             appear for various reasons, such as the Entity Configuration including Trust
             Marks associated with another federation, or Trust Marks intended for specific
             purposes or Entity audiences.
@@ -2781,10 +2824,11 @@
         <section title="Trust Mark Examples" anchor="trust_example">
           <figure>
             <preamble>
-              A non-normative example of a <spanx style="verb">trust_marks</spanx> claim inside an Entity Configuration is:
+              A non-normative example of a <spanx style="verb">trust_marks</spanx>
+	      claim in an Entity Configuration is:
             </preamble>
 	    <name>
-	      Trust Marks Provided with an Entity Configuration
+	      Trust Mark in an Entity Configuration
 	    </name>
             <artwork><![CDATA[
 {
@@ -2794,7 +2838,7 @@
   "exp": 1516298022,
   "trust_marks": [
     {
-     "id": "https://www.spid.gov.it/certification/rp/",
+     "id": "https://www.spid.gov.it/certification/rp",
      "trust_mark":
        "eyJraWQiOiJmdWtDdUtTS3hwWWJjN09lZUk3Ynlya3N5a0E1bDhPb2RFSXVyOH
         JoNFlBIiwidHlwIjoidHJ1c3QtbWFyaytqd3QiLCJhbGciOiJSUzI1NiJ9.eyJ
@@ -2819,12 +2863,10 @@
       "client_name": "https://rp.example.it/spid/",
       "contacts": [
         "ops@rp.example.it"
-      ],
-
-       ... follows other claims ...
-
-   ... follows other claims ...
-
+      ]
+    }
+  }
+}
 ]]></artwork>
           </figure>
 
@@ -3397,14 +3439,14 @@ Host: openid.sunet.se
               </t>
               <t hangText="iat">
                 <vspace/>
-                REQUIRED. Number. When this resolution was issued.
-                Expressed as Seconds Since the Epoch, as defined in
+                REQUIRED. Number. Time when this resolution was issued.
+                This is expressed as Seconds Since the Epoch, as defined in
                 <xref target="RFC7519"/>.
               </t>
               <t hangText="exp">
                 <vspace/>
-                REQUIRED. Number. When this resolution is not valid anymore.
-                Expressed as Seconds Since the Epoch, as defined in <xref target="RFC7519"/>.
+                REQUIRED. Number. Time when this resolution is no longer valid.
+                This is expressed as Seconds Since the Epoch, as defined in <xref target="RFC7519"/>.
                 It MUST correspond to the <spanx style="verb">exp</spanx> value of
                 the Trust Chain from which the resolve response was derived.
               </t>
@@ -3691,7 +3733,7 @@ Content-Type: application/json
               </t>
               <t hangText="iat">
                 <vspace/>
-                OPTIONAL. When the Trust Mark was issued. If
+                OPTIONAL. Number. Time when the Trust Mark was issued. If
                 <spanx style="verb">iat</spanx> is not specified and the
                 Trust Mark issuer has issued several Trust Marks with the
                 identifier specified in the request to the
@@ -3709,7 +3751,7 @@ Content-Type: application/json
             <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>
             are not needed. If <spanx style="verb">trust_mark</spanx> is not used,
             then <spanx style="verb">sub</spanx> and <spanx style="verb">id</spanx>
-            are required.
+            are REQUIRED.
           </t>
           <t>
             <figure>
@@ -3927,7 +3969,7 @@ Host: trust-anchor.example.com
               </t>
               <t hangText="iat">
                 <vspace/>
-                REQUIRED. Number. When the signed JWT was issued,
+                REQUIRED. Number. Time when the signed JWT was issued,
                 using the time format defined for the
                 <spanx style="verb">iat</spanx> claim in
                 <xref target="RFC7519"/>.
@@ -4536,7 +4578,7 @@ Content-Type: application/json
       <t>
         Independent of whether the RP uses Automatic or Explicit Registration,
         the way that the RP learns about the OP is the same.
-        It will use the procedure that is
+        It uses the procedure
         described in <xref target="resolving_trust"/>.
       </t>
 
@@ -4619,12 +4661,12 @@ Content-Type: application/json
                 </t>
                 <t hangText="exp">
                   <vspace/>
-                  REQUIRED. Expiration time on or after which the JWT MUST
+                  REQUIRED. Number. Expiration time on or after which the JWT MUST
                   NOT be accepted for processing.
                 </t>
                 <t hangText="iat">
                   <vspace/>
-                  OPTIONAL. Time at which the JWT was issued.
+                  OPTIONAL. Number. Time at which the JWT was issued.
                 </t>
                 <t hangText="trust_chain" anchor="trust_chain_param">
                   <vspace/>
@@ -5369,7 +5411,7 @@ HTTP/1.1 302 Found
                   <t hangText="authority_hints">
                     <vspace/>
                     REQUIRED.
-                    It MUST be a single element array, whose value references
+                    It MUST be a single-element array, whose value references
                     the immediate Superior authority of the OP in the Trust
                     Chain that the OP selected to process the request. See
                     <xref target="entity-statement"/> for the full
@@ -5412,7 +5454,7 @@ HTTP/1.1 302 Found
                     If the response indicates success the RP MUST verify that
                     its content is a valid Entity Statement and issued by the OP.
                     <vspace/>
-                    The RP MUST ensure the signing Federation Entity key used
+                    The RP MUST ensure the signing Federation Entity Key used
                     by the OP is present in the
                     <spanx style="verb">jwks</spanx> claim of the Entity
                     Statement issued by the OP's immediate Superior authority
@@ -5569,51 +5611,27 @@ HTTP/1.1 302 Found
 
     <section anchor="ClaimsLanguagesAndScripts" title="Claims Languages and Scripts">
       <t>
-        Human-readable Claim Values and Claim Values that reference human-readable values
+        Human-readable claim values and claim values that reference human-readable values
         MAY be represented in multiple languages and scripts.
         This specification enables such representations in the same manner as defined in
         Section 5.2 of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
-        The paragraphs that follow are excerpted from there.
       </t>
       <t>
-        To specify the languages and scripts, <xref
+        As described in OpenID Connect Core,
+	to specify the languages and scripts, <xref
               target="RFC5646">BCP47</xref> language tags are added to member names,
         delimited by a <spanx style="verb">#</spanx> character.  For example,
         <spanx style="verb">family_name#ja-Kana-JP</spanx> expresses the
         Family Name in Katakana in Japanese, which is commonly used to index
-        and represent the phonetics of the Kanji representation of the same
+        and represent the phonetics of the Kanji representation of the same name
         represented as <spanx style="verb">family_name#ja-Hani-JP</spanx>.
-        As another example, both <spanx style="verb">website</spanx> and
-        <spanx style="verb">website#de</spanx> Claim Values might be returned,
-        referencing a Web site in an unspecified language and a Web site
-        in German.
       </t>
       <t>
-        Since Claim Names are case sensitive, it is strongly RECOMMENDED
-        that language tag values used in Claim Names be spelled using the
-        character case with which they are registered in the
-        IANA "Language Subtag Registry" <xref target="IANA.Language"/>.
-        In particular, language names are often spelled with lowercase characters,
-        region names are spelled with uppercase characters, and
-        scripts are spelled with mixed-case characters.
-        However, since BCP47 language tag values are case-insensitive,
-        implementations SHOULD interpret the language tag values supplied
-        in a case-insensitive manner.
-      </t>
-      <t>
-        Per the recommendations in BCP47, language tag values for Claims
-        SHOULD only be as specific as necessary.
-        For instance, using <spanx style="verb">fr</spanx> might be sufficient
-        in many contexts, rather than <spanx style="verb">fr-CA</spanx> or
-        <spanx style="verb">fr-FR</spanx>.
-        Where possible, OPs SHOULD try to match requested Claim locales with
-        Claims it has.  For instance, if the Client asks for a Claim with
-        a <spanx style="verb">de</spanx> (German) language tag and the OP
-        has a value tagged with <spanx style="verb">de-CH</spanx> (Swiss German)
-        and no generic German value, it would be appropriate for the OP
-        to return the Swiss German value to the Client.
-        (This intentionally moves as much of the complexity of language tag
-        matching to the OP as possible to simplify Clients.)
+	Language tags can be used in any data structures
+	containing or referencing human-readable values,
+	including metadata parameters and Trust Mark parameters.
+	For instance, both <spanx style="verb">organization_name</spanx> and
+	<spanx style="verb">organization_name#de</spanx> might occur together in metadata.
       </t>
     </section>
 
@@ -6351,21 +6369,70 @@ HTTP/1.1 302 Found
 	</t>
 
 	<section anchor="ClaimsContents" title="Registry Contents">
-	  <t> <?rfc subcompact="yes"?>
-	  <list style="symbols">
-	    <t>
-	      Claim Name: <spanx style="verb">keys</spanx>
-	    </t>
-	    <t>
-	      Claim Description: Array of JWK values, as defined in RFC 7517
-	    </t>
-	    <t>
-	      Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	    </t>
-	    <t>
-	      Specification Document(s): <xref target="jwks_metadata"/> of this specification
-	    </t>
-	  </list>
+	  <t>
+	    <?rfc subcompact="yes"?>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">keys</spanx>
+	      </t>
+	      <t>
+		Claim Description: Array of JWK values, as defined in RFC 7517
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section <xref target="common_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">id</spanx>
+	      </t>
+	      <t>
+		Claim Description: Identifier
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section <xref target="trust_mark_claims"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">ref</spanx>
+	      </t>
+	      <t>
+		Claim Description: Reference
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section <xref target="trust_mark_claims"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">delegation</spanx>
+	      </t>
+	      <t>
+		Claim Description: Delegation
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section <xref target="trust_mark_claims"/> of this specification
+	      </t>
+	    </list>
 	  </t>
 	</section>
 	<?rfc subcompact="no"?>
@@ -6518,9 +6585,9 @@ HTTP/1.1 302 Found
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9126.xml"/>
 
       <reference anchor="OpenID.Core"
-                 target="http://openid.net/specs/openid-connect-core-1_0.html">
+                 target="https://openid.net/specs/openid-connect-core-1_0.html">
         <front>
-          <title>OpenID Connect Discovery 1.0</title>
+          <title>OpenID Connect Core 1.0</title>
 
           <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
             <organization abbrev="NRI">Nomura Research Institute,
@@ -6545,12 +6612,12 @@ HTTP/1.1 302 Found
             <organization abbrev="Salesforce">Salesforce</organization>
           </author>
 
-          <date day="3" month="August" year="2015"/>
+          <date day="8" month="November" year="2014"/>
         </front>
       </reference>
 
       <reference anchor="OpenID.Discovery"
-                 target="http://openid.net/specs/openid-connect-discovery-1_0.html">
+                 target="https://openid.net/specs/openid-connect-discovery-1_0.html">
         <front>
           <title>OpenID Connect Discovery 1.0</title>
 
@@ -6572,12 +6639,12 @@ HTTP/1.1 302 Found
             <organization abbrev="Illumila">Illumila</organization>
           </author>
 
-          <date day="3" month="August" year="2015"/>
+          <date day="8" month="November" year="2014"/>
         </front>
       </reference>
 
       <reference anchor="OpenID.Registration"
-                 target="http://openid.net/specs/openid-connect-registration-1_0.html">
+                 target="https://openid.net/specs/openid-connect-registration-1_0.html">
         <front>
           <title>OpenID Connect Dynamic Client Registration 1.0</title>
 
@@ -6595,7 +6662,7 @@ HTTP/1.1 302 Found
             <organization abbrev="Microsoft">Microsoft</organization>
           </author>
 
-          <date day="3" month="August" year="2015"/>
+          <date day="8" month="November" year="2014"/>
         </front>
       </reference>
 
@@ -6671,7 +6738,7 @@ HTTP/1.1 302 Found
         </front>
       </reference>
 
-      <reference anchor="IANA.JWT.Claims" target="http://www.iana.org/assignments/jwt">
+      <reference anchor="IANA.JWT.Claims" target="https://www.iana.org/assignments/jwt">
         <front>
           <title>JSON Web Token Claims</title>
           <author>
@@ -7927,6 +7994,12 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #1751: Provided guidance to prevent stuck clients.
+	  </t>
+	  <t>
+	    Fixed #2071: Removed most of the Claims Languages and Scripts text duplicating that in OpenID Connect Core.
+	  </t>
+	  <t>
+	    Tightened descriptions of constraints and Trust Marks.
 	  </t>
 	  <t>
 	    Tightened descriptions of Federation Endpoints.
