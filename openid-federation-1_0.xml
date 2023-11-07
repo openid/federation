@@ -1714,27 +1714,11 @@
           a language tag in its name, as described in <xref target="ClaimsLanguagesAndScripts"/>,
           as distinct from the same metadata parameter without a language tag.
         </t>
-        <t>
-          <figure>
-            <preamble>
-              The following is a non-normative example of a policy entry:
-            </preamble>
-	        <name>
-		    Example Policy Entry
-	        </name>
-              <artwork><![CDATA[
-"id_token_signed_response_alg": {
-  "default": "ES256",
-  "one_of" : ["ES256", "ES384", "ES512"]
-}
-]]></artwork>
-          </figure>
-          </t>
           <t>
             <figure>
               <preamble>
-                Which fits into a metadata policy claim of an Entity Statement
-                like this:
+                The following is a non-normative example of a policy entry
+		providing metadata policy for an OpenID Connect RP:
               </preamble>
 	      <name>
 		  Example <spanx style="verb">metadata_policy</spanx> Claim
@@ -2156,23 +2140,22 @@
 	      Example Federation's Policy for OAuth 2.0 Clients
 	    </name>
             <artwork><![CDATA[
-{
-  "grant_types": {
-
-    "subset_of": ["authorization_code", "implicit", "refresh_token"],
-
-    "superset_of": ["authorization_code"],
-
-    "default": ["authorization_code", "refresh_token"]
-  },
-  "token_endpoint_auth_method": {
-    "one_of": [
-      "client_secret_post",
-      "client_secret_basic"
-    ]
-  },
-  "contacts": {
-    "add": "helpdesk@federation.example.org"
+"metadata_policy": {
+  "oauth_client": {
+    "grant_types": {
+      "subset_of": ["authorization_code", "implicit", "refresh_token"],
+      "superset_of": ["authorization_code"],
+      "default": ["authorization_code", "refresh_token"]
+    },
+    "token_endpoint_auth_method": {
+      "one_of": [
+        "client_secret_post",
+        "client_secret_basic"
+      ]
+    },
+    "contacts": {
+      "add": "helpdesk@federation.example.org"
+    }
   }
 }
 ]]></artwork>
@@ -2185,20 +2168,22 @@
 	      Example Organization's Policy for OAuth 2.0 Clients
 	    </name>
             <artwork><![CDATA[
-{
-  "grant_types": {
-    "subset_of": ["authorization_code", "refresh_token", "implicit"],
-    "default": ["authorization_code", "refresh_token"]
-  },
-  "token_endpoint_auth_method": {
-    "one_of": [
-      "client_secret_post",
-      "client_secret_basic"
-    ],
-    "default": "client_secret_basic"
-  },
-  "contacts": {
-    "add": "helpdesk@org.example.org"
+"metadata_policy": {
+  "oauth_client": {
+    "grant_types": {
+      "subset_of": ["authorization_code", "refresh_token", "implicit"],
+      "default": ["authorization_code", "refresh_token"]
+    },
+    "token_endpoint_auth_method": {
+      "one_of": [
+        "client_secret_post",
+        "client_secret_basic"
+      ],
+      "default": "client_secret_basic"
+    },
+    "contacts": {
+      "add": "helpdesk@org.example.org"
+    }
   }
 }
 ]]></artwork>
@@ -2211,24 +2196,26 @@
 	      Combined Policies from the Previous Two Examples
 	    </name>
             <artwork><![CDATA[
-{
-  "grant_types": {
-    "subset_of": ["authorization_code", "refresh_token"],
-    "superset_of": ["authorization_code"],
-    "default": ["authorization_code", "refresh_token"]
-  },
-  "token_endpoint_auth_method": {
-    "one_of": [
-      "client_secret_post",
-      "client_secret_basic"
-    ],
-    "default": "client_secret_basic"
-  },
-  "contacts": {
-    "add": [
-      "helpdesk@federation.example.org",
-      "helpdesk@org.example.org"
-    ]
+"metadata_policy": {
+  "oauth_client": {
+    "grant_types": {
+      "subset_of": ["authorization_code", "refresh_token"],
+      "superset_of": ["authorization_code"],
+      "default": ["authorization_code", "refresh_token"]
+    },
+    "token_endpoint_auth_method": {
+      "one_of": [
+	"client_secret_post",
+	"client_secret_basic"
+      ],
+      "default": "client_secret_basic"
+    },
+    "contacts": {
+      "add": [
+	"helpdesk@federation.example.org",
+	"helpdesk@org.example.org"
+      ]
+    }
   }
 }
 ]]></artwork>
@@ -2277,16 +2264,18 @@
 	      RP's Metadata from its Entity Configuration
 	    </name>
             <artwork><![CDATA[
-{
-  "contacts": [
-    "rp_admins@cs.example.com"
-  ],
-  "redirect_uris": [
-    "https://cs.example.com/rp1"
-  ],
-  "response_types": [
-    "code"
-  ]
+"metadata": {
+  "openid_relying_party": {
+    "contacts": [
+      "rp_admins@cs.example.com"
+    ],
+    "redirect_uris": [
+      "https://cs.example.com/rp1"
+    ],
+    "response_types": [
+      "code"
+    ]
+  }
 }
 ]]></artwork>
           </figure>
@@ -2298,19 +2287,21 @@
 	      Federation's Policy for RPs
 	    </name>
             <artwork><![CDATA[
-{
-  "id_token_signed_response_alg": {
-    "one_of": [
-      "ES256",
-      "ES384"
-    ],
-    "default": "ES256",
-  },
-  "response_types": {
-    "subset_of": [
-      "code",
-      "code id_token"
-    ]
+"metadata_policy": {
+  "openid_relying_party": {
+    "id_token_signed_response_alg": {
+      "one_of": [
+        "ES256",
+        "ES384"
+      ],
+      "default": "ES256",
+    },
+    "response_types": {
+      "subset_of": [
+        "code",
+        "code id_token"
+      ]
+    }
   }
 }
 ]]></artwork>
@@ -2356,21 +2347,23 @@
 	      RP's Metadata After Application of Policies
 	    </name>
             <artwork><![CDATA[
-{
-  "contacts": [
-    "rp_admins@cs.example.com",
-    "helpdesk@example.com"
-  ],
-  "logo_uri": "https://example.com/logo_small.svg",
-  "policy_uri": "https://example.com/policy.html",
-  "tos_uri": "https://example.com/tos.html",
-  "id_token_signed_response_alg": "ES256",
-  "response_types": [
-    "code"
-  ],
-  "redirect_uris": [
-    "https://cs.example.com/rp1"
-  ]
+"metadata": {
+  "openid_relying_party": {
+    "contacts": [
+      "rp_admins@cs.example.com",
+      "helpdesk@example.com"
+    ],
+    "logo_uri": "https://example.com/logo_small.svg",
+    "policy_uri": "https://example.com/policy.html",
+    "tos_uri": "https://example.com/tos.html",
+    "id_token_signed_response_alg": "ES256",
+    "response_types": [
+      "code"
+    ],
+    "redirect_uris": [
+      "https://cs.example.com/rp1"
+    ]
+  }
 }
 ]]></artwork>
           </figure>
@@ -5596,51 +5589,27 @@ HTTP/1.1 302 Found
 
     <section anchor="ClaimsLanguagesAndScripts" title="Claims Languages and Scripts">
       <t>
-        Human-readable Claim Values and Claim Values that reference human-readable values
+        Human-readable claim values and claim values that reference human-readable values
         MAY be represented in multiple languages and scripts.
         This specification enables such representations in the same manner as defined in
         Section 5.2 of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
-        The paragraphs that follow are excerpted from there.
       </t>
       <t>
-        To specify the languages and scripts, <xref
+        As described in OpenID Connect Core,
+	to specify the languages and scripts, <xref
               target="RFC5646">BCP47</xref> language tags are added to member names,
         delimited by a <spanx style="verb">#</spanx> character.  For example,
         <spanx style="verb">family_name#ja-Kana-JP</spanx> expresses the
         Family Name in Katakana in Japanese, which is commonly used to index
-        and represent the phonetics of the Kanji representation of the same
+        and represent the phonetics of the Kanji representation of the same name
         represented as <spanx style="verb">family_name#ja-Hani-JP</spanx>.
-        As another example, both <spanx style="verb">website</spanx> and
-        <spanx style="verb">website#de</spanx> Claim Values might be returned,
-        referencing a Web site in an unspecified language and a Web site
-        in German.
       </t>
       <t>
-        Since Claim Names are case sensitive, it is strongly RECOMMENDED
-        that language tag values used in Claim Names be spelled using the
-        character case with which they are registered in the
-        IANA "Language Subtag Registry" <xref target="IANA.Language"/>.
-        In particular, language names are often spelled with lowercase characters,
-        region names are spelled with uppercase characters, and
-        scripts are spelled with mixed-case characters.
-        However, since BCP47 language tag values are case-insensitive,
-        implementations SHOULD interpret the language tag values supplied
-        in a case-insensitive manner.
-      </t>
-      <t>
-        Per the recommendations in BCP47, language tag values for Claims
-        SHOULD only be as specific as necessary.
-        For instance, using <spanx style="verb">fr</spanx> might be sufficient
-        in many contexts, rather than <spanx style="verb">fr-CA</spanx> or
-        <spanx style="verb">fr-FR</spanx>.
-        Where possible, OPs SHOULD try to match requested Claim locales with
-        Claims it has.  For instance, if the Client asks for a Claim with
-        a <spanx style="verb">de</spanx> (German) language tag and the OP
-        has a value tagged with <spanx style="verb">de-CH</spanx> (Swiss German)
-        and no generic German value, it would be appropriate for the OP
-        to return the Swiss German value to the Client.
-        (This intentionally moves as much of the complexity of language tag
-        matching to the OP as possible to simplify Clients.)
+	Language tags can be used in any data structures
+	containing or referencing human-readable values,
+	including metadata parameters and Trust Mark parameters.
+	For instance, both <spanx style="verb">organization_name</spanx> and
+	<spanx style="verb">organization_name#de</spanx> might occur together in metadata.
       </t>
     </section>
 
@@ -6594,9 +6563,9 @@ HTTP/1.1 302 Found
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9126.xml"/>
 
       <reference anchor="OpenID.Core"
-                 target="http://openid.net/specs/openid-connect-core-1_0.html">
+                 target="https://openid.net/specs/openid-connect-core-1_0.html">
         <front>
-          <title>OpenID Connect Discovery 1.0</title>
+          <title>OpenID Connect Core 1.0</title>
 
           <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
             <organization abbrev="NRI">Nomura Research Institute,
@@ -6621,12 +6590,12 @@ HTTP/1.1 302 Found
             <organization abbrev="Salesforce">Salesforce</organization>
           </author>
 
-          <date day="3" month="August" year="2015"/>
+          <date day="8" month="November" year="2014"/>
         </front>
       </reference>
 
       <reference anchor="OpenID.Discovery"
-                 target="http://openid.net/specs/openid-connect-discovery-1_0.html">
+                 target="https://openid.net/specs/openid-connect-discovery-1_0.html">
         <front>
           <title>OpenID Connect Discovery 1.0</title>
 
@@ -6648,12 +6617,12 @@ HTTP/1.1 302 Found
             <organization abbrev="Illumila">Illumila</organization>
           </author>
 
-          <date day="3" month="August" year="2015"/>
+          <date day="8" month="November" year="2014"/>
         </front>
       </reference>
 
       <reference anchor="OpenID.Registration"
-                 target="http://openid.net/specs/openid-connect-registration-1_0.html">
+                 target="https://openid.net/specs/openid-connect-registration-1_0.html">
         <front>
           <title>OpenID Connect Dynamic Client Registration 1.0</title>
 
@@ -6671,7 +6640,7 @@ HTTP/1.1 302 Found
             <organization abbrev="Microsoft">Microsoft</organization>
           </author>
 
-          <date day="3" month="August" year="2015"/>
+          <date day="8" month="November" year="2014"/>
         </front>
       </reference>
 
@@ -6747,7 +6716,7 @@ HTTP/1.1 302 Found
         </front>
       </reference>
 
-      <reference anchor="IANA.JWT.Claims" target="http://www.iana.org/assignments/jwt">
+      <reference anchor="IANA.JWT.Claims" target="https://www.iana.org/assignments/jwt">
         <front>
           <title>JSON Web Token Claims</title>
           <author>
@@ -8003,6 +7972,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #1751: Provided guidance to prevent stuck clients.
+	  </t>
+	  <t>
+	    Fixed #2071: Removed most of the Claims Languages and Scripts text duplicating that in OpenID Connect Core.
 	  </t>
 	  <t>
 	    Tightened descriptions of constraints and Trust Marks.
