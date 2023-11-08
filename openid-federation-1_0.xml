@@ -3609,6 +3609,53 @@ Host: openid.sunet.se
 	  in its <spanx style="verb">federation_list_endpoint</spanx> parameter.
 	</t>
 
+        <t>
+        
+                  <figure>
+	    <preamble>
+	      The following example shows a tree of Entities belonging to the 
+          same federation including the Trust Anchor, Intermediate Entities, 
+          and Leaf Entities, discovered and collected through the Subordinate
+          listing endpoints:
+	    </preamble>
+            <name>
+	      Tree of Entities in a Federation Collected through 
+          Subordinate Listing Endpoints
+            </name>
+            <artwork><![CDATA[
+                       +----------------------+
+                       |    Trust Anchor      |
+                       +----------------------+
+       +---------------+ Subordinate  listing +--------------+
+       |               +----------+-----------+              |
+       |                          |                          |
+       |                          |                          |
+       |                          |                          |
+       |                          |                          |
+       |                          |                          |
++------v-------+       +----------v-----------+       +------v-------+
+|     Leaf     |       |     Intermediate     |       |     Leaf     |
++--------------+       +----------------------+       +--------------+
+                  +----+ Subordinate  listing |
+                  |    +------------+---------+
+                  |                 |
+                  |                 |
+                  |                 |
+       +----------v-----------+     |
+       |     Intermediate     |     |
+       +----------------------+     |
+       | Subordinate  listing |     |
+       +-+---------+----------+     |
+         |         |                |
+         |         |                |
+ +-------v--+     +v--------+    +--v------+
+ |  Leaf    |     |  Leaf   |    |  Leaf   |
+ +----------+     +---------+    +---------+
+]]></artwork>
+          </figure>
+        
+        </t>
+
         <section title="Subordinate Listing Request">
           <t>
             The request MUST be an HTTP request using the GET method and
