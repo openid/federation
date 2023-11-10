@@ -458,7 +458,7 @@
               the Entity Identifiers of Intermediate Entities or Trust Anchors
               that MAY issue an Entity Statement about the Entity.
               This claim is REQUIRED in the Entity Configurations of
-              Leaf and Intermediate Entities.
+              the Entities that have any Superiors, such as Leaf and Intermediate Entities.
               Its value MUST NOT be the empty array
               <spanx style="verb">[]</spanx>.
               This claim MUST NOT be present in the Entity Configurations
@@ -1445,6 +1445,20 @@
               it MUST NOT contain a fragment component.
               Trust Mark issuers MAY publish a
               <spanx style="verb">federation_trust_mark_list_endpoint</spanx>.
+            </t>
+            <t hangText="federation_trust_mark_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The endpoint described in
+              <xref target="tm_endpoint"/>.
+              This URL MUST use the <spanx style="verb">https</spanx>
+              scheme and MAY contain port,
+              path, and query parameter components encoded in
+              <spanx style="verb">application/x-www-form-urlencoded</spanx>
+              format;
+              it MUST NOT contain a fragment component.
+              Trust Mark issuers MAY publish a
+              <spanx style="verb">federation_trust_mark_endpoint</spanx>.
             </t>
 	    <t hangText="federation_historical_keys_endpoint">
 	      <vspace/>
@@ -3950,6 +3964,86 @@ Content-Type: application/json
   "https://blackboard.ntnu.no/openid/rp",
   "https://that-rp.example.org"
 ]
+]]></artwork>
+          </figure>
+        </section>
+      </section>
+
+     <section title="Trust Mark Endpoint" anchor="tm_endpoint">
+        <t>
+		  The Trust Mark endpoint is exposed by
+          Trust Mark issuers
+          to provide a valid Trust Mark related to a specific Entity.
+        </t>
+	<t>
+	  The Trust Mark endpoint location is published in the Entity's metadata
+	  for the <spanx style="verb">federation_entity</spanx> Entity Type
+	  in its <spanx style="verb">federation_trust_mark_endpoint</spanx> parameter.
+	</t>
+
+        <section title="Trust Mark Request">
+          <t>
+            The request MUST be an HTTP request using the GET method and
+            the <spanx style="verb">https</spanx> scheme with the
+            following query parameters, encoded in
+            <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
+          </t>
+          <t>
+            <list style="hanging">
+              <t hangText="trust_mark_id">
+                <vspace/>
+                REQUIRED. If the responder has issued Trust Marks with the
+                specified Trust Mark identifier,
+                the list obtained in the response MUST be filtered to only
+                the Entities for which that Trust Mark identifier has been
+                issued and is still valid.
+              </t>
+              <t hangText="sub">
+                <vspace/>
+                REQUIRED. The Entity Identifier of the subject.
+              </t>
+
+            </list>
+          </t>
+          <figure>
+            <preamble>
+              The following is a non-normative example of an API
+              request for a specific Trust Mark ID issued for the specified Entity:
+            </preamble>
+            <name>
+              Trust Mark Request
+            </name>
+            <artwork><![CDATA[
+GET /trust_mark?trust_mark_id=https%3A%2F%2Ftuber.cert.example.org%2Fnero%2Fpregiato%2Fnorcia&sub=https%3A%2F%2Ftartufo.example.it" HTTP/1.1
+Host: tuber.cert.example.org
+]]></artwork>
+          </figure>
+        </section>
+
+        <section title="Trust Mark Response">
+          <t>
+            A successful response MUST use the HTTP status code 200
+            with the content type <spanx style="verb">application/jose</spanx>,
+            containing a signed JWT representing the Trust Mark.
+          </t>
+
+          <t>
+            If the response is negative, the response
+            MUST use the HTTP status code 404.
+          </t>
+
+          <figure>
+            <preamble>
+              The following is a non-normative example of a response, containing
+              the Trust Mark for a specific Entity:
+            </preamble>
+            <name>
+              Trust Mark Response
+            </name>
+            <artwork><![CDATA[
+200 OK
+
+eyJhbGciOiJSUzI1NiIsImtpZCI6Im1VRXR0aW5SNTNpLW9Bc1JoN2l6blY1R1hlaFh3QzZ1aTRScG1QeUt5ZDgifQ.eyJpc3MiOiJodHRwczovL3R1YmVyLmNlcnQuZXhhbXBsZS5vcmciLCJzdWIiOiJodHRwczovL3RhcnR1Zm8uZXhhbXBsZS5pdCIsImlhdCI6MTU3OTYyMTE2MCwiZXhwIjoxNTc5NzIxMTYwLCJpZCI6Imh0dHBzOi8vdHViZXIuY2VydC5leGFtcGxlLm9yZy9uZXJvL3ByZWdpYXRvL25vcmNpYSJ9.HwzNAJVPDYC9AM-ILWfgmT5YDz-pjtklQhtEQbqhC7P0nv88W8Wx74oE5IR5WgJP9Q3xPD-UO7o6O_Z0PMR186TzcBnaXtogn6-QxHRomCPwytviVGykXE1MkOnf9wTYWb5q13A53w8y0vUTlwZhBHt9qYNp3t4XwjR8eEZTptHeI_NHkaOsknT3cI16FbxqXVdTudQCfPJEYKGGL1QDg2EdVGFgjq4V-2UTKlBQvnorNUmfNOxgRT0DR37ZezluvGJ5NjK15h2rrJRN4e_8favIJNTNO8fhK7bjyUFJlVGYmLUpfCuJmxBv-EMhiAkeoDtk71Tc6ou62rxqFCU3LQ
 ]]></artwork>
           </figure>
         </section>
@@ -8047,6 +8141,15 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+
+      <t>
+        -32
+        <list style="symbols">
+          <t>
+            Fixed #2075: Trust Mark endpoint for the provisioning of the Trust Marks.
+          </t>
+        </list>
+      </t>
 
       <t>
         -31
