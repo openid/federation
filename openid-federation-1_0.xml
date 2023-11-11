@@ -458,7 +458,8 @@
               the Entity Identifiers of Intermediate Entities or Trust Anchors
               that MAY issue an Entity Statement about the Entity.
               This claim is REQUIRED in the Entity Configurations of
-              the Entities that have any Superiors, such as Leaf and Intermediate Entities.
+              the Entities that have at least a Superior above them, 
+              such as Leaf and Intermediate Entities.
               Its value MUST NOT be the empty array
               <spanx style="verb">[]</spanx>.
               This claim MUST NOT be present in the Entity Configurations
@@ -3976,9 +3977,10 @@ Content-Type: application/json
           to provide a valid Trust Mark related to a specific Entity.
         </t>
 	<t>
-	  The Trust Mark endpoint location is published in the Entity's metadata
-	  for the <spanx style="verb">federation_entity</spanx> Entity Type
-	  in its <spanx style="verb">federation_trust_mark_endpoint</spanx> parameter.
+	  The Trust Mark endpoint is published in the 
+      <spanx style="verb">federation_entity</spanx> metadata
+	  using the 
+	  <spanx style="verb">federation_trust_mark_endpoint</spanx> claim.
 	</t>
 
         <section title="Trust Mark Request">
@@ -3992,11 +3994,7 @@ Content-Type: application/json
             <list style="hanging">
               <t hangText="trust_mark_id">
                 <vspace/>
-                REQUIRED. If the responder has issued Trust Marks with the
-                specified Trust Mark identifier,
-                the list obtained in the response MUST be filtered to only
-                the Entities for which that Trust Mark identifier has been
-                issued and is still valid.
+                REQUIRED. Trust Mark identifier.
               </t>
               <t hangText="sub">
                 <vspace/>
@@ -4007,8 +4005,8 @@ Content-Type: application/json
           </t>
           <figure>
             <preamble>
-              The following is a non-normative example of an API
-              request for a specific Trust Mark ID issued for the specified Entity:
+              The following is a non-normative example of an HTTP
+              Request for a specific Trust Mark ID and a specific Entity:
             </preamble>
             <name>
               Trust Mark Request
@@ -4028,14 +4026,16 @@ Host: tuber.cert.example.org
           </t>
 
           <t>
-            If the response is negative, the response
+            If the specified Entity doesn't have 
+            the specified Trust Mark, the
+            response is negative and
             MUST use the HTTP status code 404.
           </t>
 
           <figure>
             <preamble>
               The following is a non-normative example of a response, containing
-              the Trust Mark for a specific Entity:
+              the Trust Mark for the specified Entity:
             </preamble>
             <name>
               Trust Mark Response
