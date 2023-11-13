@@ -458,7 +458,7 @@
               the Entity Identifiers of Intermediate Entities or Trust Anchors
               that MAY issue an Entity Statement about the Entity.
               This claim is REQUIRED in the Entity Configurations of
-              the Entities that have at least a Superior above them, 
+              the Entities that have at least one Superior above them, 
               such as Leaf and Intermediate Entities.
               Its value MUST NOT be the empty array
               <spanx style="verb">[]</spanx>.
@@ -3976,6 +3976,13 @@ Content-Type: application/json
           Trust Mark issuers
           to provide a valid Trust Mark related to a specific Entity.
         </t>
+        <t>
+		  This endpoint allows any Federation Entity, recognizable within 
+          a federation, to publish Trust Marks for specific subjects.
+          Trust Marks, unlike Entity Statements, can be transversal 
+          and not bound by a Superior-Subordinate relationship, 
+          as expressed by the Entity Statements.
+        </t>
 	<t>
 	  The Trust Mark endpoint is published in the 
       <spanx style="verb">federation_entity</spanx> metadata
@@ -3985,10 +3992,10 @@ Content-Type: application/json
 
         <section title="Trust Mark Request">
           <t>
-            The HTTP request MUST use the GET method and
-            the <spanx style="verb">https</spanx> scheme with the
+            The HTTP request MUST use the GET method with the
             following query parameters, encoded in
-            <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
+            <spanx style="verb">application/x-www-form-urlencoded</spanx> 
+            format.
           </t>
           <t>
             <list style="hanging">
