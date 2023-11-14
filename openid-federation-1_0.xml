@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Federation">OpenID Federation 1.0 -
-      draft 31
+      draft 32
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="8" month="November" year="2023"/>
+    <date day="11" month="November" year="2023"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -3064,7 +3064,7 @@
 	    <preamble>
 	      In this example, the requesting party would make the following request to the Entity
 	      <spanx style="verb">https://openid.sunet.se</spanx>
-	      to obtain its configuration information:
+	      to obtain its Entity Configuration:
 	    </preamble>
             <name>
 	      Request for Entity Configuration
@@ -6777,16 +6777,6 @@ HTTP/1.1 302 Found
         </front>
       </reference>
 
-      <reference anchor="IANA.Language" target="https://www.iana.org/assignments/language-subtag-registry">
-        <front>
-          <title>Language Subtag Registry</title>
-          <author>
-            <organization>IANA</organization>
-          </author>
-          <date/>
-        </front>
-      </reference>
-
       <reference anchor="IANA.OAuth.Parameters" target="https://www.iana.org/assignments/oauth-parameters">
         <front>
           <title>OAuth Parameters</title>
@@ -6839,8 +6829,7 @@ HTTP/1.1 302 Found
 
     </references>
 
-    <section
-            title="Provider Information Discovery and Client Registration in a Federation">
+    <section anchor="ChainBuildingExample" title="Example Provider Information Discovery in a Federation">
       <t>
         Let us assume the following: The project LIGO would like to offer access
         to its wiki to all OPs in eduGAIN. LIGO is registered with the InCommon
@@ -6882,7 +6871,7 @@ HTTP/1.1 302 Found
         Let us assume a researcher from Umeå University would like to
         login to
         the LIGO Wiki. At the Wiki, the researcher will use some kind of
-        discovery service to find the home identity provider (op.umu.se)
+        discovery service to find the home identity provider (op.umu.se).
       </t>
       <t>
         Once the RP part of the Wiki knows which OP it SHOULD talk to, it has
@@ -6899,7 +6888,7 @@ HTTP/1.1 302 Found
           These are the steps to set up a federation infrastructure:
           <list style="symbols">
             <t>
-              Generation of signing keys. These must be public/private key pairs.
+              Generation of Trust Anchor signing keys. These MUST be public/private key pairs.
             </t>
             <t>
               Set up a signing service that can sign JWTs/Entity Statements
@@ -6915,7 +6904,7 @@ HTTP/1.1 302 Found
           </list>
         </t>
         <t>
-          Once the previous requirements have been satisfied, a Federation Operator
+          Once these requirements have been satisfied, a Federation Operator
           can add Entities to the federation.
           Adding an Entity comes down to:
           <list style="symbols">
@@ -6936,7 +6925,7 @@ HTTP/1.1 302 Found
           layout of the federation. Is it supposed to be a one-layer federation
           like InCommon, a two-layer one like the SWAMID federation,
           or a multi-layer federation?
-          The federation may also want to think about implementing other
+          The federation may also want to consider implementing other
           policies using the federation policy framework,
           as described in <xref target="federation_policy"/>.
         </t>
@@ -6944,27 +6933,28 @@ HTTP/1.1 302 Found
           With the federation in place, things can start happening.
         </t>
       </section>
+
       <section title="The LIGO Wiki Discovers the OP's Metadata"
                anchor="op_discovery">
         <t>
           Federation Entity Discovery is a sequence of steps that starts with the RP
-          fetching the Entity Configuration of the Leaf Entity (in this case,
+          fetching the Entity Configuration of the OP Leaf Entity (in this case,
           https://op.umu.se) using the process defined in
           <xref target="federation_configuration"/>.
           What follows after that is this sequence of steps:
           <list style="numbers">
             <t>Pick out the immediate Superior Entities using the authority
-              hints
+              hints.
             </t>
             <t>
-              Fetch the configuration for each such Entity. This uses the
+              Fetch the Entity Configuration for each such Entity. This uses the
               process defined in
-              <xref target="federation_configuration"/>
+              <xref target="federation_configuration"/>.
             </t>
             <t>
-              Using the fetch endpoint of the Superiors to
-              ask for information about the Subordinate Entity
-              <xref target="fetch_statement"/>.
+              Use the fetch endpoint of each Superior to
+              obtain Entity Statements about the Subordinate Entity,
+              per <xref target="fetch_statement"/>.
             </t>
           </list>
         </t>
@@ -6980,11 +6970,11 @@ HTTP/1.1 302 Found
           Entity Configuration issued by the Leaf.
         </t>
         <t>
-          The Entity Configuration concerning Intermediates is not
+          The Entity Configurations of Intermediates are not
           part of the Trust Chain.
         </t>
 
-        <section title="Configuration Information for https://op.umu.se">
+        <section title="Entity Configuration for https://op.umu.se">
           <t>The LIGO WIKI RP fetches the Entity Configuration from the
             OP (op.umu.se)
             using the process defined in <xref
@@ -7069,9 +7059,10 @@ HTTP/1.1 302 Found
             This Entity Configuration is the first link in the Trust Chain.
           </t>
         </section>
-        <section title="Configuration Information for https://umu.se">
+
+        <section title="Entity Configuration for https://umu.se">
           <t>The LIGO RP fetches the Entity Configuration from
-            "https://umu.se" using the process defined in
+            https://umu.se using the process defined in
             <xref target="federation_configuration"/>.
           </t>
           <figure>
@@ -7125,18 +7116,19 @@ Host: umu.se
           </figure>
           <t>
             The only piece of information that is used from this Entity
-            Statement is
+            Configuration in this process is
             the <spanx style="verb">federation_fetch_endpoint</spanx>,
             which is used in the next step.
           </t>
         </section>
+
         <section
                 title="Entity Statement Published by https://umu.se about https://op.umu.se">
           <t>
-            The RP uses the fetch endpoint provided by https://umu.se
-            as defined in <xref target="fetch_statement"/>
+            The RP uses the fetch endpoint provided by https://umu.se,
+            as defined in <xref target="fetch_statement"/>,
             to fetch information about
-            "https://op.umu.se".
+            https://op.umu.se.
           </t>
           <figure>
 	    <preamble>
@@ -7163,6 +7155,7 @@ Host: umu.se
   "exp": 1568397247,
   "iat": 1568310847,
   "iss": "https://umu.se",
+  "sub": "https://op.umu.se",
   "source_endpoint": "https://umu.se/oidc/fedapi",
   "jwks": {
     "keys": [
@@ -7202,22 +7195,22 @@ Host: umu.se
         ]
       }
     }
-  },
-  "sub": "https://op.umu.se"
+  }
 }
 ]]></artwork>
           </figure>
           <t>
-            This is the second link in the Trust Chain.
+            This Entity Statement is the second link in the Trust Chain.
           </t>
           <t>
             Notable here is that this path leads to two Trust Anchors using the
-            same next step ("https://swamid.se").
+            same next step (https://swamid.se).
           </t>
         </section>
-        <section title="Configuration Information for https://swamid.se">
+
+        <section title="Entity Configuration for https://swamid.se">
           <t>The LIGO Wiki RP fetches the Entity Configuration from
-            "https://swamid.se" using the process defined in
+            https://swamid.se using the process defined in
             <xref target="federation_configuration"/>.
           </t>
           <figure>
@@ -7247,6 +7240,7 @@ Host: swamid.se
   "exp": 1568397247,
   "iat": 1568310847,
   "iss": "https://swamid.se",
+  "sub": "https://swamid.se",
   "jwks": {
     "keys": [
       {
@@ -7265,26 +7259,26 @@ Host: swamid.se
       "homepage_uri": "https://www.sunet.se/swamid/",
       "organization_name": "SWAMID"
     }
-  },
-  "sub": "https://swamid.se"
+  }
 }
 ]]></artwork>
           </figure>
           <t>
             The only piece of information that is used from this Entity
-            Statement is
+            Configuration in this process is
             the <spanx style="verb">federation_fetch_endpoint</spanx>,
             which is used in the next step.
           </t>
         </section>
+
         <section
                 title="Entity Statement Published by https://swamid.se about https://umu.se">
           <t>
             The LIGO Wiki RP uses the fetch endpoint provided by
-            "https://swamid.se" as defined in
+            https://swamid.se as defined in
             <xref target="fetch_statement"/>
             to fetch information about
-            "https://umu.se".
+            https://umu.se.
           </t>
           <figure>
 	    <preamble>
@@ -7353,7 +7347,7 @@ Host: swamid.se
 ]]></artwork>
           </figure>
           <t>
-            This is the third link in the Trust Chain.
+            This Entity Statement is the third link in the Trust Chain.
           </t>
           <t>
             If we assume that the issuer of this Entity Statement is not in the
@@ -7361,10 +7355,10 @@ Host: swamid.se
             one step further.
           </t>
         </section>
-        <section
-                title="Configuration Information for https://edugain.geant.org">
+
+        <section title="Entity Configuration for https://edugain.geant.org">
           <t>The RP fetches the Entity Configuration from
-            "https://edugain.geant.org" using the process defined in
+            https://edugain.geant.org using the process defined in
             <xref target="federation_configuration"/>.
           </t>
           <figure>
@@ -7417,11 +7411,11 @@ Host: edugain.geant.org
             Each Entity within a
             Federation may change their Federation Entity Keys,
             or any other attributes, at any time. See
-            <xref target="key_rollover_anchor"/> for futhers details.
+            <xref target="key_rollover_anchor"/> for further details.
           </t>
         </section>
-        <section
-                title="Entity Statement Published by https://edugain.geant.org about https://swamid.se">
+
+        <section title="Entity Statement Published by https://edugain.geant.org about https://swamid.se">
           <t>
             The LIGO Wiki RP uses the fetch endpoint of
             https://edugain.geant.org as
@@ -7483,25 +7477,43 @@ Host: geant.org
           </figure>
           <t>
             If we assume that the issuer of this statement appears in the list
-            of Trust Anchors the LIGO Wiki RP has access to, this would be
-            the fourth and final Entity Statement in the Trust Chain.
+            of Trust Anchors the LIGO Wiki RP has access to,
+	    this Entity Statement would be the fourth link in the Trust Chain.
+	    The Trust Anchor's Entity Configuration MAY also be included in
+	    the Trust chain; in this case, it would the fifth and final link.
           </t>
           <t>
-            We now have the whole chain from the Entity Configuration of
-            the
-            Leaf Entity up until the last one that is issued by a Trust Anchor. All in
-            all,
-            we have:
-            <list style="numbers">
-              <t>Entity Configuration by the Leaf Entity (https://op.umu.se)</t>
-              <t>Entity Configuration by https://umu.se</t>
-              <t>Statement issued by https://umu.se about https://op.umu.se</t>
-              <t>Entity Configuration by https://swamid.se</t>
-              <t>Statement issued by https://swamid.se about https://umu.se</t>
-              <t>Entity Configuration by https://edugain.geant.org</t>
-              <t>Statement issued by https://edugain.geant.org about
-                https://swamid.se
-              </t>
+	    We now have retrieved all the members of the Trust Chain.
+	    Recapping, these Entity Statements were obtained:
+            <list style="symbols">
+              <t>
+		Entity Configuration for the Leaf Entity https://op.umu.se
+		- the first link in the Trust Chain
+	      </t>
+              <t>
+		Entity Configuration for https://umu.se
+		- not included in the Trust Chain
+	      </t>
+              <t>
+		Entity Statement issued by https://umu.se about https://op.umu.se
+		- the second link in the Trust Chain
+	      </t>
+              <t>
+		Entity Configuration for https://swamid.se
+		- not included in the Trust Chain
+	      </t>
+              <t>
+		Entity Statement issued by https://swamid.se about https://umu.se
+		- the third link in the Trust Chain
+	      </t>
+              <t>
+		Entity Configuration for https://edugain.geant.org
+		- optionally, the fifth and last link in the Trust Chain
+	      </t>
+              <t>
+		Entity Statement issued by https://edugain.geant.org about https://swamid.se
+		- the fourth link in the Trust Chain
+	      </t>
             </list>
           </t>
           <t>
@@ -7512,6 +7524,7 @@ Host: geant.org
             <xref target="trust_chain_validation"/>.
           </t>
         </section>
+
         <section title="Verified Metadata for https://op.umu.se">
           <t>Having verified the chain, the LIGO Wiki RP can proceed with the
             next step.
@@ -7582,7 +7595,9 @@ Host: geant.org
           </t>
         </section>
       </section>
-      <section title="The Two Ways of Doing Client Registration">
+    </section>
+
+      <section anchor="ClientRegExample" title="The Two Ways of Doing Client Registration">
         <t>
           As described in
           <xref target="client_registration"/>,
@@ -7607,6 +7622,7 @@ Host: geant.org
             </t>
           </list>
         </t>
+
         <section title="RP Sends Authentication Request (Automatic Client Registration)" anchor="AutomaticRegExample">
           <t>
             The LIGO Wiki RP does not do any registration but goes directly to
@@ -7651,6 +7667,7 @@ Host: op.umu.se
             and
             establish trust with the RP.
           </t>
+
           <section title="OP Fetches Entity Statements">
             <t>
               The OP needs to establish a Trust Chain for the RP
@@ -7686,6 +7703,7 @@ Host: op.umu.se
               </list>
             </t>
           </section>
+
           <section title="OP Evaluates the RP Metadata"
                    anchor="rp_metadata_eval">
             <t>
@@ -7703,7 +7721,7 @@ Host: op.umu.se
               and <spanx style="verb">metadata_policy</spanx> parts.
               There are two metadata policies:
               <list style="hanging">
-                <t hangText="edugain.geant.org">
+                <t hangText="edugain.geant.org:">
                   <figure>
 		    <name>
 		      Metadata Policies Related to Multiple Metadata Types
@@ -7728,7 +7746,7 @@ Host: op.umu.se
             </t>
             <t>
               <list style="hanging">
-                <t hangText="incommon.org">
+                <t hangText="incommon.org:">
                   <figure>
 		    <name>
 		      Metadata Policy Related to the RP
@@ -7767,24 +7785,26 @@ Host: op.umu.se
 	      </name>
               <artwork><![CDATA[
 "metadata": {
-  "application_type": "web",
-  "client_name": "LIGO Wiki",
-  "contacts": [
-    "ops@ligo.org"
-  ],
-  "grant_types": [
-    "authorization_code",
-    "refresh_token"
-  ],
-  "id_token_signed_response_alg": "RS256",
-  "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
-  "redirect_uris": [
-    "https://wiki.ligo.org/openid/callback"
-  ],
-  "response_types": [
-    "code"
-  ],
-  "subject_type": "public"
+  "openid_relying_party": {
+    "application_type": "web",
+    "client_name": "LIGO Wiki",
+    "contacts": [
+      "ops@ligo.org"
+    ],
+    "grant_types": [
+      "authorization_code",
+      "refresh_token"
+    ],
+    "id_token_signed_response_alg": "RS256",
+    "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
+    "redirect_uris": [
+      "https://wiki.ligo.org/openid/callback"
+    ],
+    "response_types": [
+      "code"
+    ],
+    "subject_type": "public"
+  }
 }
 ]]></artwork>
             </figure>
@@ -7796,27 +7816,29 @@ Host: op.umu.se
 		Final Metadata After Metadata Policy has been Applied
 	      </name>
               <artwork><![CDATA[
-{
-  "application_type": "web",
-  "client_name": "LIGO Wiki",
-  "contacts": [
-    "ops@ligo.org",
-    "ops@edugain.geant.org",
-    "ops@incommon.org"
-  ],
-  "grant_types": [
-    "refresh_token",
-    "authorization_code"
-  ],
-  "id_token_signed_response_alg": "RS256",
-  "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
-  "redirect_uris": [
-    "https://wiki.ligo.org/openid/callback"
-  ],
-  "response_types": [
-    "code"
-  ],
-  "subject_type": "public"
+"metadata": {
+  "openid_relying_party": {
+    "application_type": "web",
+    "client_name": "LIGO Wiki",
+    "contacts": [
+      "ops@ligo.org",
+      "ops@edugain.geant.org",
+      "ops@incommon.org"
+    ],
+    "grant_types": [
+      "refresh_token",
+      "authorization_code"
+    ],
+    "id_token_signed_response_alg": "RS256",
+    "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
+    "redirect_uris": [
+      "https://wiki.ligo.org/openid/callback"
+    ],
+    "response_types": [
+      "code"
+    ],
+    "subject_type": "public"
+  }
 }
 ]]></artwork>
             </figure>
@@ -7830,6 +7852,7 @@ Host: op.umu.se
             </t>
           </section>
         </section>
+
         <section title="RP Starts with Client Registration (Explicit Client Registration)" anchor="ExplicitRegExample">
           <t>
             Here the LIGO Wiki RP sends an Explicit Registration request to the
@@ -7913,6 +7936,11 @@ Host: op.umu.se
 	    </name>
             <artwork><![CDATA[
 {
+  "iss": "https://op.umu.se",
+  "sub": "https://wiki.ligo.org",
+  "aud": "https://wiki.ligo.org",
+  "iat": 1601457619,
+  "exp": 1601544019,
   "trust_anchor_id": "https://edugain.geant.org",
   "metadata": {
     "openid_relying_party": {
@@ -7945,7 +7973,6 @@ Host: op.umu.se
   "authority_hints": [
     "https://incommon.org"
   ],
-  "aud": "https://wiki.ligo.org",
   "jwks": {
     "keys": [
       {
@@ -7966,16 +7993,13 @@ Host: op.umu.se
         "y": "812nU6OCKxgc2ZgSPt_dkXbYldG_smHJi4wXByDHc6g"
       }
     ]
-  },
-  "iss": "https://op.umu.se",
-  "iat": 1601457619,
-  "exp": 1601544019
+  }
 }
 ]]></artwork>
           </figure>
         </section>
       </section>
-    </section>
+
     <section anchor="Notices" title="Notices">
       <t>
         Copyright (c) 2023 The OpenID Foundation.
@@ -8047,6 +8071,15 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+
+      <t>
+        -32
+        <list style="symbols">
+          <t>
+	    Tightened appendix examples.
+	  </t>
+	</list>
+      </t>
 
       <t>
         -31
