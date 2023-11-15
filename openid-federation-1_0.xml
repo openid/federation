@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="11" month="November" year="2023"/>
+    <date day="14" month="November" year="2023"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -199,9 +199,8 @@
       <section anchor="Terminology" title="Terminology">
         <t>
           This specification uses the terms
-          "Claim Name", "Claim Value", "JSON Web Token (JWT)",
-          defined by
-          <xref target="RFC7519">JSON Web Token (JWT)</xref>,
+          "Claim Name", "Claim Value", "JSON Web Token (JWT)", and "JWT Claims Set"
+          defined by <xref target="RFC7519">JSON Web Token (JWT)</xref>
           and the terms "OpenID Provider (OP)" and "Relying Party (RP)" defined
           by <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
         </t>
@@ -724,8 +723,8 @@
 
         <figure>
           <preamble>
-            The following is a non-normative example of an Entity Statement
-            before adding a signature. The example contains
+            The following is a non-normative example of the JWT Claims Set for an Entity Statement.
+            The example contains
             a critical extension <spanx style="verb">jti</spanx> (JWT ID) to the
             Entity Statement and one critical extension to the policy language
             <spanx style="verb">regexp</spanx>
@@ -1053,10 +1052,10 @@
         </t>
 	<figure>
 	  <preamble>
-	    The following is a non-normative example of an RP's Entity Configuration:
+	    The following is a non-normative example of the JWT Claims Set for an RP's Entity Configuration:
 	  </preamble>
 	  <name>
-	    Example Relying Party Entity Configuration
+	    Example Relying Party Entity Configuration JWT Claims Set
 	  </name>
 	  <artwork><![CDATA[
     {
@@ -1238,10 +1237,10 @@
 
         <figure>
 	  <preamble>
-	    The following is a non-normative example of an OP's Entity Configuration:
+	    The following is a non-normative example of the JWT Claims Set for an OP's Entity Configuration:
 	  </preamble>
           <name>
-            Example OpenID Provider Entity Configuration
+            Example OpenID Provider Entity Configuration JWT Claims Set
           </name>
           <artwork><![CDATA[
 {
@@ -1550,11 +1549,10 @@
 
 		<figure>
 		  <preamble>
-		    The following is a non-normative example of a signed JWK Set
-		    before serialization and adding a signature.
+		    The following is a non-normative example of the JWT Claims Set for a signed JWK Set.
 		  </preamble>
 		  <name>
-		    Example Signed JWK Set JWT Claims Set
+		    Example JWT Claims Set for a Signed JWK Set
 		  </name>
 		  <artwork><![CDATA[
     {
@@ -2834,10 +2832,10 @@
           <figure>
             <preamble>
               A non-normative example of a <spanx style="verb">trust_marks</spanx>
-	      claim in an Entity Configuration is:
+	      claim in the JWT Claims Set for an Entity Configuration is:
             </preamble>
 	    <name>
-	      Trust Mark in an Entity Configuration
+	      Trust Mark in an Entity Configuration JWT Claims Set
 	    </name>
             <artwork><![CDATA[
 {
@@ -3095,16 +3093,13 @@
         <t>
           <figure>
 	    <preamble>
-	      The following is a non-normative example response from an
-	      Intermediate Entity, before serialization and adding a signature:
+	      The following is a non-normative example JWT Claims Set for a response from an
+	      Intermediate Entity:
 	    </preamble>
             <name>
-	      JWT Claims Set from an Entity Configuration Response
+	      Entity Configuration Response JWT Claims Set
             </name>
             <artwork><![CDATA[
-200 OK
-Content-Type: application/entity-statement+jwt
-
 {
   "iss": "https://openid.sunet.se",
   "sub": "https://openid.sunet.se",
@@ -3228,7 +3223,7 @@ Content-Type: application/entity-statement+jwt
           </t>
           <figure>
             <preamble>
-              The following is a non-normative example of an API request for
+              The following is a non-normative example of an HTTP GET request for
 	      an Entity Statement related to https://openid.sunet.se:
             </preamble>
             <name>
@@ -3255,16 +3250,12 @@ Host: edugain.org
           </t>
           <figure>
             <preamble>
-              The following is a non-normative example of a fetch response, before
-              serialization and adding a signature:
+              The following is a non-normative example of the JWT Claims Set for a fetch response:
             </preamble>
             <name>
-	      JWT Claims Set for a Fetch Response
+	      Fetch Response JWT Claims Set
             </name>
             <artwork><![CDATA[
-200 OK
-Content-Type: application/entity-statement+jwt
-
 {
   "iss": "https://edugain.org/federation",
   "sub": "https://openid.sunet.se",
@@ -3390,7 +3381,6 @@ Host: openid.sunet.se
             containing resolved metadata and
             verified Trust Marks.
           </t>
-
           <t>
             The response is a signed JWT, explicitly typed by setting the
             <spanx style="verb">typ</spanx> header parameter to
@@ -3398,7 +3388,6 @@ Host: openid.sunet.se
             This is done to prevent
             cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
           </t>
-
           <t>
             The resolve response JWT MAY return
             the sequence of the Entity Statements that compose the Trust Chain
@@ -3496,11 +3485,10 @@ Host: openid.sunet.se
 
           <figure>
             <preamble>
-              The following is a non-normative example of a resolve response, before
-              serialization and adding a signature:
+              The following is a non-normative example of the JWT Claims Set for a resolve response:
             </preamble>
             <name>
-              JWT Claims Set for a Resolve Response
+              Resolve Response JWT Claims Set
             </name>
             <artwork><![CDATA[
 {
@@ -3709,7 +3697,7 @@ Host: openid.sunet.se
           </t>
           <figure>
             <preamble>
-              The following is a non-normative example of an API
+              The following is a non-normative example of an HTTP GET
               request for a list of Subordinates:
             </preamble>
             <name>
@@ -3908,7 +3896,7 @@ Content-Type: application/json
           </t>
           <figure>
             <preamble>
-              The following is a non-normative example of an API
+              The following is a non-normative example of an HTTP GET
               request for a list of Trust Marked Entities:
             </preamble>
             <name>
@@ -4105,16 +4093,12 @@ Host: trust-anchor.example.com
 
           <figure>
             <preamble>
-              The following is a non-normative example of a historical keys response,
-	      before serialization and adding a signature:
+              The following is a non-normative example of the JWT Claims Set for a historical keys response:
             </preamble>
 	    <name>
-              JWT Claims Set from a Federation Historical Keys Response
+              Federation Historical Keys Response JWT Claims Set
             </name>
             <artwork><![CDATA[
-HTTP/1.1 200 OK
-Content-Type: application/jwk-set+jwt
-
 {
     "iss": "https://trust-anchor.federation.example.com",
     "iat": 123972394272,
@@ -4771,11 +4755,11 @@ Content-Type: application/json
 
             <figure>
               <preamble>
-                The following is a non-normative example of the Claims in a
-                Request Object before base64url encoding and signing:
+                The following is a non-normative example of the JWT Claims Set in a
+                Request Object:
               </preamble>
 	      <name>
-		JWT Claims Set for a Request Object
+		Request Object JWT Claims Set
 	      </name>
               <artwork><![CDATA[
 {
@@ -7847,7 +7831,7 @@ Host: op.umu.se
 	      An example JWT Claims Set for the RP's Entity Configuration is:
 	    </preamble>
 	    <name>
-	      JWT Claims Set for the RP's Entity Configuration
+	      RP's Entity Configuration JWT Claims Set
 	    </name>
 	    <artwork><![CDATA[
 {
