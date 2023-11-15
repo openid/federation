@@ -5695,26 +5695,43 @@ HTTP/1.1 302 Found
           Automatic Client Registration (<xref target="automatic"/>) can
           be exploited as vectors of HTTP propagation attacks.
 
+          An adversary, providing hundreds of fake
+          <spanx style="verb">authority_hints</spanx>
+          in its Entity Configuration,
+          could exploit the Federation Entity Discovery mechanism and use an OpenID Federation
+          to propagate several HTTP requests. For each request crafted
+          by an adversary, the OP produces one request for 
+          the adversary's Entity Configuration and another one 
+          for each of the Superiors.
+
           If these endpoints are provided, some adequate defense methods are required,
           such as those described below and in
           <xref target="RFC4732"/>.
         </t>
         <t>
-          A Trust Mark can be statically validated using the public key of its issuer.
-          The static validation of the Trust Marks represents a
-          filter against propagation attacks. An attacker
-          could exploit the Federation Entity Discovery mechanism and use an OpenID Federation
-          to propagate many HTTP requests. For each authorization request crafted
-          by an anonymous client, the OP would produce approximately three HTTP requests to third parties
-          in the absence of Intermediates, and at least five HTTP requests with at
-          least one Intermediate. If an OP doesn't find at least one
-          valid Trust Mark in an Entity Configuration, it should reject the request and
-          temporary ban the requestor.
+          A static Trust Chain, such as the one provided in the JWS headers and described in
+          <xref target="trust_chain_head_param"/>, provides a predefined trust path.
+          This prevents the Federation Entity Discovery to start. In this case,
+          the propagation attacks will
+          not happen, since the Trust Chain can be statically validated with the
+          Trust Anchor's public key and renewed following the static path provided,
+          from the Leaf to the Trust Anchor.
         </t>
         <t>
-          If client authentication is not demanded at the resolve endpoint
+          A Trust Mark can be statically validated using the public key of its issuer.
+          The static validation of the Trust Marks represents a
+          filter against propagation attacks. 
+          If an OP doesn't find at least one
+          valid Trust Mark in an Entity Configuration, it should reject the request and
+          temporary ban the Relying Party.
+        </t>
+        <t>
+          If Client authentication is not demanded at the resolve endpoint
           then incoming requests should not result in the immediate
-          collection (Federation Entity Discovery process) and evaluation of Trust Chains by default.
+          collection (Federation Entity Discovery process) and evaluation of 
+          Trust Chains by default. The resolve endpoint, for the 
+          incoming requests issued by the unauthenticated Clients, should not
+          initiate the Federation Entity Discovery.
         </t>
       </section>
       <section title="Unsigned Error Messages" anchor="UnsignedError">
