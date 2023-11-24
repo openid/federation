@@ -5694,7 +5694,7 @@ HTTP/1.1 302 Found
           (<xref target="explicit"/>), and
           Automatic Client Registration (<xref target="automatic"/>) can
           be exploited as vectors of HTTP propagation attacks.
-          Below is an explanation of how this situation can occur and 
+          Below is an explanation of how such an attack can occur and 
           the countermeasures to prevent it.
         </t>
         <t>
@@ -5702,9 +5702,9 @@ HTTP/1.1 302 Found
           <spanx style="verb">authority_hints</spanx>
           in its Entity Configuration,
           could exploit the Federation Entity Discovery mechanism and use an OpenID Federation
-          to propagate several HTTP requests. 
-          Imagine an adversary controlling an RP that send and authorization
-          request to an OP, for each request crafted
+          to propagate many HTTP requests. 
+          Imagine an adversary controlling an RP that sends an authorization
+          request to an OP. For each request crafted
           by an adversary, the OP produces one request for 
           the adversary's Entity Configuration and another one 
           for each of the Superiors.
@@ -5714,12 +5714,14 @@ HTTP/1.1 302 Found
           <xref target="RFC4732"/>.
         </t>
         <t>
-          A static Trust Chain, such as the one provided in the JWS headers and described in
-          <xref target="trust_chain_head_param"/>, provides a predefined trust path.
-          This prevents the Federation Entity Discovery to start. In this case,
-          the propagation attacks will
-          not happen, since the Trust Chain can be statically validated with the
-          Trust Anchor's public key and renewed following the static path provided,
+          A static <xref target="trust_chain_head_param">Trust Chain</xref>, 
+          can be provided by the entity issuing the request
+          in the JWS headers.
+          The static Trust Chain gives a predefined trust path, 
+          meaning that Federation Entity Discovery need not be performed.
+          In this case, the propagation attacks will
+          be prevented, since the Trust Chain can be statically validated with the
+          Trust Anchor's public key and renewed by following the static path provided,
           from the Leaf to the Trust Anchor.
         </t>
         <t>
@@ -5736,7 +5738,9 @@ HTTP/1.1 302 Found
           collection (Federation Entity Discovery process) and evaluation of 
           Trust Chains by default. The resolve endpoint, for the 
           incoming requests issued by the unauthenticated Clients, should not
-          initiate the Federation Entity Discovery.
+          initiate the Federation Entity Discovery. The resolve endpoint 
+          should only provide
+          cached responses about the Entities already evaluated as trusted.
         </t>
       </section>
       <section title="Unsigned Error Messages" anchor="UnsignedError">
