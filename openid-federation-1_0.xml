@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Federation">OpenID Federation 1.0 -
-      draft 31
+      draft 32
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="8" month="November" year="2023"/>
+    <date day="14" month="November" year="2023"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -199,9 +199,8 @@
       <section anchor="Terminology" title="Terminology">
         <t>
           This specification uses the terms
-          "Claim Name", "Claim Value", "JSON Web Token (JWT)",
-          defined by
-          <xref target="RFC7519">JSON Web Token (JWT)</xref>,
+          "Claim Name", "Claim Value", "JSON Web Token (JWT)", and "JWT Claims Set"
+          defined by <xref target="RFC7519">JSON Web Token (JWT)</xref>
           and the terms "OpenID Provider (OP)" and "Relying Party (RP)" defined
           by <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
         </t>
@@ -428,7 +427,7 @@
             <t hangText="exp">
               <vspace/>
               REQUIRED.
-              Expiration time on or after which the statement MUST NOT be
+              Expiration time after which the statement MUST NOT be
               accepted for processing. Its value is a JSON number representing
               the number of seconds from 1970-01-01T0:0:0Z as measured in UTC
               until the date/time.
@@ -548,7 +547,7 @@
               are being used that MUST be understood and processed.
               It is used in the same way that
               <spanx style="verb">crit</spanx>
-              is used for extension <xref target="RFC7515">JWS</xref> header
+              is used for extension JWS header
               parameters that MUST be understood and processed.
               Its value is an array listing the Entity Statement claims
               present in the Entity Statement that use those extensions.
@@ -723,8 +722,8 @@
 
         <figure>
           <preamble>
-            The following is a non-normative example of an Entity Statement
-            before adding a signature. The example contains
+            The following is a non-normative example of the JWT Claims Set for an Entity Statement.
+            The example contains
             a critical extension <spanx style="verb">jti</spanx> (JWT ID) to the
             Entity Statement and one critical extension to the policy language
             <spanx style="verb">regexp</spanx>
@@ -1052,10 +1051,10 @@
         </t>
 	<figure>
 	  <preamble>
-	    The following is a non-normative example of an RP's Entity Configuration:
+	    The following is a non-normative example of the JWT Claims Set for an RP's Entity Configuration:
 	  </preamble>
 	  <name>
-	    Example Relying Party Entity Configuration
+	    Example Relying Party Entity Configuration JWT Claims Set
 	  </name>
 	  <artwork><![CDATA[
     {
@@ -1237,10 +1236,10 @@
 
         <figure>
 	  <preamble>
-	    The following is a non-normative example of an OP's Entity Configuration:
+	    The following is a non-normative example of the JWT Claims Set for an OP's Entity Configuration:
 	  </preamble>
           <name>
-            Example OpenID Provider Entity Configuration
+            Example OpenID Provider Entity Configuration JWT Claims Set
           </name>
           <artwork><![CDATA[
 {
@@ -1532,12 +1531,12 @@
 		  </t>
 		  <t hangText="iat">
 		    <vspace/>
-		    OPTIONAL. This claim identifies the time at which the JWT was
+		    OPTIONAL. This claim identifies the time when the JWT was
 		    issued.
 		  </t>
 		  <t hangText="exp">
 		    <vspace/>
-		    OPTIONAL. This claim identifies the time at which the JWT is
+		    OPTIONAL. This claim identifies the time when the JWT is
 		    no longer valid.
 		  </t>
 		</list>
@@ -1549,11 +1548,10 @@
 
 		<figure>
 		  <preamble>
-		    The following is a non-normative example of a signed JWK Set
-		    before serialization and adding a signature.
+		    The following is a non-normative example of the JWT Claims Set for a signed JWK Set.
 		  </preamble>
 		  <name>
-		    Example Signed JWK Set JWT Claims Set
+		    Example JWT Claims Set for a Signed JWK Set
 		  </name>
 		  <artwork><![CDATA[
     {
@@ -2254,7 +2252,7 @@
             encounters a keyword it does not understand,
             it MUST ignore it unless it is listed in a
             <spanx style="verb">policy_language_crit</spanx> list,
-            as is done for <xref target="RFC7515">JWS</xref> header parameters
+            as is done for JWS header parameters
             with the <spanx style="verb">crit</spanx> parameter.
             If the policy language extension keyword
             is listed in the <spanx style="verb">policy_language_crit</spanx> list
@@ -2833,10 +2831,10 @@
           <figure>
             <preamble>
               A non-normative example of a <spanx style="verb">trust_marks</spanx>
-	      claim in an Entity Configuration is:
+	      claim in the JWT Claims Set for an Entity Configuration is:
             </preamble>
 	    <name>
-	      Trust Mark in an Entity Configuration
+	      Trust Mark in an Entity Configuration JWT Claims Set
 	    </name>
             <artwork><![CDATA[
 {
@@ -3094,16 +3092,13 @@
         <t>
           <figure>
 	    <preamble>
-	      The following is a non-normative example response from an
-	      Intermediate Entity, before serialization and adding a signature:
+	      The following is a non-normative example JWT Claims Set for a response from an
+	      Intermediate Entity:
 	    </preamble>
             <name>
-	      JWT Claims Set from an Entity Configuration Response
+	      Entity Configuration Response JWT Claims Set
             </name>
             <artwork><![CDATA[
-200 OK
-Content-Type: application/entity-statement+jwt
-
 {
   "iss": "https://openid.sunet.se",
   "sub": "https://openid.sunet.se",
@@ -3227,7 +3222,7 @@ Content-Type: application/entity-statement+jwt
           </t>
           <figure>
             <preamble>
-              The following is a non-normative example of an API request for
+              The following is a non-normative example of an HTTP GET request for
 	      an Entity Statement related to https://openid.sunet.se:
             </preamble>
             <name>
@@ -3254,16 +3249,12 @@ Host: edugain.org
           </t>
           <figure>
             <preamble>
-              The following is a non-normative example of a fetch response, before
-              serialization and adding a signature:
+              The following is a non-normative example of the JWT Claims Set for a fetch response:
             </preamble>
             <name>
-	      JWT Claims Set for a Fetch Response
+	      Fetch Response JWT Claims Set
             </name>
             <artwork><![CDATA[
-200 OK
-Content-Type: application/entity-statement+jwt
-
 {
   "iss": "https://edugain.org/federation",
   "sub": "https://openid.sunet.se",
@@ -3389,7 +3380,6 @@ Host: openid.sunet.se
             containing resolved metadata and
             verified Trust Marks.
           </t>
-
           <t>
             The response is a signed JWT, explicitly typed by setting the
             <spanx style="verb">typ</spanx> header parameter to
@@ -3397,7 +3387,6 @@ Host: openid.sunet.se
             This is done to prevent
             cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
           </t>
-
           <t>
             The resolve response JWT MAY return
             the sequence of the Entity Statements that compose the Trust Chain
@@ -3495,11 +3484,10 @@ Host: openid.sunet.se
 
           <figure>
             <preamble>
-              The following is a non-normative example of a resolve response, before
-              serialization and adding a signature:
+              The following is a non-normative example of the JWT Claims Set for a resolve response:
             </preamble>
             <name>
-              JWT Claims Set for a Resolve Response
+              Resolve Response JWT Claims Set
             </name>
             <artwork><![CDATA[
 {
@@ -3708,7 +3696,7 @@ Host: openid.sunet.se
           </t>
           <figure>
             <preamble>
-              The following is a non-normative example of an API
+              The following is a non-normative example of an HTTP GET
               request for a list of Subordinates:
             </preamble>
             <name>
@@ -3907,7 +3895,7 @@ Content-Type: application/json
           </t>
           <figure>
             <preamble>
-              The following is a non-normative example of an API
+              The following is a non-normative example of an HTTP GET
               request for a list of Trust Marked Entities:
             </preamble>
             <name>
@@ -4046,7 +4034,7 @@ Host: trust-anchor.example.com
                     </t>
                     <t hangText="iat">
                       <vspace/>
-                      OPTIONAL. Time at which the key was issued,
+                      OPTIONAL. Time when the key was issued,
                       using the time format defined for the
                       <spanx style="verb">iat</spanx> claim in
                       <xref target="RFC7519"/>.
@@ -4067,7 +4055,7 @@ Host: trust-anchor.example.com
                       <list style="hanging">
                         <t hangText="revoked_at">
                           <vspace/>
-                          REQUIRED. Time at which the key was revoked
+                          REQUIRED. Time when the key was revoked
                           or must be considered revoked,
                           using the time format defined for the
                           <spanx style="verb">iat</spanx> claim in
@@ -4104,16 +4092,12 @@ Host: trust-anchor.example.com
 
           <figure>
             <preamble>
-              The following is a non-normative example of a historical keys response,
-	      before serialization and adding a signature:
+              The following is a non-normative example of the JWT Claims Set for a historical keys response:
             </preamble>
 	    <name>
-              JWT Claims Set from a Federation Historical Keys Response
+              Federation Historical Keys Response JWT Claims Set
             </name>
             <artwork><![CDATA[
-HTTP/1.1 200 OK
-Content-Type: application/jwk-set+jwt
-
 {
     "iss": "https://trust-anchor.federation.example.com",
     "iat": 123972394272,
@@ -4612,21 +4596,20 @@ Content-Type: application/json
 
     <section title="OpenID Connect Client Registration" anchor="client_registration">
       <t>
-        This section describes how the trust framework in this specification
-        is used to establish trust between an RP and an OP
-        that have no explicit configuration or registration in advance.
+        This section describes how the mechanisms defined in this specification
+        are used to establish trust between an RP and an OP
+        that have no explicit configuration or registration between them in advance.
       </t>
       <t>
         There are two alternative approaches to establish trust between an
         RP and an OP, which we call Automatic and Explicit Registration.
         Members of a federation or a community
         SHOULD agree upon which one to use. While implementations should
-        support both methods, deployments MAY choose to disable the use of one
-        of them.
+        support both methods, deployments MAY choose to use one or the other of them.
       </t>
       <t>
         Independent of whether the RP uses Automatic or Explicit Registration,
-        the way that the RP learns about the OP is the same.
+        the way that the RP learns about the OP is the same:
         It uses the procedure
         described in <xref target="resolving_trust"/>.
       </t>
@@ -4654,32 +4637,38 @@ Content-Type: application/json
               asymmetric cryptography to authenticate its requests.
             </t>
             <t>
-              The OP MUST publish that it supports a request authentication
-              method using the <spanx style="verb">metadata</spanx> claim
+              The OP MUST publish that it supports one or more request authentication
+              methods using the <spanx style="verb">openid_provider</spanx> metadata parameter
               <spanx style="verb">request_authentication_methods_supported</spanx>.
             </t>
           </list>
         </t>
+        <t>
+          An OP that supports Automatic Registration MUST include the
+          <spanx style="verb">automatic</spanx> keyword in its
+          <spanx style="verb">client_registration_types_supported</spanx>
+          metadata parameter.
+	</t>
 
         <section title="Authentication Request">
           <t>
             The Authentication Request is performed by passing a
-            Request Object by value as described in Section 6.1 in
+            Request Object by value as described in Section 6.1 of
             <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>
-            or using pushed authorization as described in
+            or using a pushed authorization request, as described in
             <xref target="RFC9126">Pushed Authorization Requests</xref>.
           </t>
 
           <section title="Using a Request Object" anchor="UsingAuthzRequestObject">
 
             <t>
-              In the case where a Request Object is used, the value of the
+              When a Request Object is used, the value of the
               <spanx style="verb">request</spanx>
               parameter is a JWT whose Claims are the request parameters
               specified in Section 3.1.2 in
               <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
               The JWT MUST be signed and MAY be encrypted.
-              The following parameters apply to the JWT:
+              The following parameters are used in the Request Object:
 
               <list style="hanging">
                 <t hangText="aud">
@@ -4689,44 +4678,45 @@ Content-Type: application/json
                 </t>
                 <t hangText="iss">
                   <vspace/>
-                  REQUIRED. The claim <spanx style="verb">iss</spanx>
-                  MUST contain the Client Identifier.
+                  REQUIRED. The <spanx style="verb">iss</spanx>
+                  value MUST be the Client Identifier.
                 </t>
                 <t hangText="sub">
                   <vspace/>
                   MUST NOT be present. This, together with the value of
                   <spanx style="verb">aud</spanx>,
-                  SHOULD make reuse of the statement for
+                  prevent reuse of the statement for
                   <spanx style="verb">private_key_jwt</spanx>
-                  client authentication not feasible.
+                  client authentication.
                 </t>
                 <t hangText="jti">
                   <vspace/>
                   REQUIRED. JWT ID. A unique identifier for the JWT, which can
-                  be used to prevent reuse of the token. These tokens MUST only
+                  be used to prevent reuse of the Request Object.
+		  A Request Object MUST only
                   be used once, unless conditions for reuse were negotiated
                   between the parties; any such negotiation is beyond the scope
                   of this specification.
                 </t>
                 <t hangText="exp">
                   <vspace/>
-                  REQUIRED. Number. Expiration time on or after which the JWT MUST
+                  REQUIRED. Number. Expiration time after which the JWT MUST
                   NOT be accepted for processing.
                 </t>
                 <t hangText="iat">
                   <vspace/>
-                  OPTIONAL. Number. Time at which the JWT was issued.
+                  OPTIONAL. Number. Time when the JWT was issued.
                 </t>
                 <t hangText="trust_chain" anchor="trust_chain_param">
                   <vspace/>
-                  OPTIONAL. Array containing the sequence of the statements
-                  that compose the Trust Chain between the RP that makes
+                  OPTIONAL. Array containing the sequence of Entity Statements
+                  that comprise the Trust Chain between the RP making
                   the request and the selected Trust Anchor,
-                  sorted as shown in <xref target="trust_chain"/>.
-                  When the RP and the OP are part of the same federation
-                  the RP MUST select the Trust Anchor that it has in common
-                  with the OP, otherwise the RP is free to select the
-                  Trust Anchor it deems most significant.
+                  sorted as in <xref target="trust_chain"/>.
+                  When the RP and the OP are part of the same federation,
+                  the RP MUST select a Trust Anchor that it has in common
+                  with the OP; otherwise, the RP is free to select the
+                  Trust Anchor to use.
                 </t>
               </list>
             </t>
@@ -4736,39 +4726,39 @@ Content-Type: application/json
               <t>
               When the
               <spanx style="verb">trust_chain</spanx>
-              <xref target="RFC7515">JWS</xref> header parameter is
+              JWS header parameter is
               used in conjunction with the <spanx style="verb">trust_chain</spanx>
               request parameter,
-              both contents MUST be identical, otherwise the request MUST be rejected.
+              both contents MUST be identical. Otherwise the request MUST be rejected.
               </t>
 
               <t>
               When the <spanx style="verb">trust_chain</spanx>
-              <xref target="RFC7515">JWS</xref> header parameter or the
+              JWS header parameter or the
               <spanx style="verb">trust_chain</spanx>
               request parameter
-              is used in the Authorization Request Object, the Relying Party
-              informs the OP about the sequence of the statements
+              are used in the Authorization Request Object, the Relying Party
+              informs the OP of the sequence of Entity Statements
               that proves the trust relationship between it
               and the selected Trust Anchor.
               </t>
 
               <t>
-              Due to the large size of a Trust Chain, it could be necessary
+              Due to the large size of a Trust Chain, it may be necessary
               to use the HTTP POST method,
-              <spanx style="verb">request_uri</spanx>
+              <spanx style="verb">request_uri</spanx>,
               or
-              <xref target="RFC9126">Pushed Authorization Request</xref>
+              a <xref target="RFC9126">Pushed Authorization Request</xref>
               for the request.
               </t>
 
             <figure>
               <preamble>
-                The following is a non-normative example of the Claims in a
-                Request Object before base64url encoding and signing:
+                The following is a non-normative example of the JWT Claims Set in a
+                Request Object:
               </preamble>
 	      <name>
-		JWT Claims Set for a Request Object
+		Request Object JWT Claims Set
 	      </name>
               <artwork><![CDATA[
 {
@@ -4848,13 +4838,11 @@ GET /authorize?
                 Chains related to the requestor.
               </t>
               <t>
-                An RP MAY present to the OP a Trust Chain related to itself,
-                using the <xref target="trust_chain_param">trust_chain</xref>
-                request parameter or the
-                <xref target="trust_chain_head_param">trust_chain</xref>
-                <xref target="RFC7515">JWS</xref> header parameter
-                in the Request Object.
-
+                An RP MAY present a Trust Chain related to itself to the OP in the Request Object using the
+                <spanx style="verb">trust_chain</spanx> request parameter
+		defined in <xref target="trust_chain_param"/> or the
+                <spanx style="verb">trust_chain</spanx> JWS header parameter
+		defined in <xref target="trust_chain_head_param"/>.
                 If the OP doesn't have a valid registration for the RP or
                 its registration has expired, the OP MAY use the received
                 Trust Chain as a hint for which path to take from the
@@ -4862,50 +4850,45 @@ GET /authorize?
                 The OP MAY evaluate the statements in the
                 <spanx style="verb">trust_chain</spanx>
                 to make its Federation Entity Discovery procedure more efficient,
-                especially if the RP shows more than a single authority hint in
+                especially if the RP contains multiple authority hints in
                 its Entity Configuration.
-
+	      </t>
+	      <t>
                 If the OP already has a valid registration for the RP, it MAY
                 use the received Trust Chain to update the RP's registration.
-
                 Whenever the OP uses a Trust Chain submitted by an RP, the
-                OP MUST fully verify it, with every statement contained in it.
-
+                OP MUST fully verify it, including every Entity Statement contained in it.
                 A Trust Chain may be relied upon by the OP because it has validated
                 all of its statements. This is true whether these statements
                 are retrieved from their URLs or whether they
                 are provided via the <spanx style="verb">trust_chain</spanx>
                 request parameter or the
-                <xref target="RFC7515">JWS</xref> header parameter
+                JWS header parameter
                 in the Request Object.
               </t>
-              <t anchor="TrustChainParamAbsent">
+              <t>
                 If the RP doesn't include the
-                <xref target="trust_chain_param">trust_chain</xref>
+                <spanx style="verb">trust_chain</spanx>
                 request parameter or the
-                <xref target="RFC7515">JWS</xref> header parameter
+                JWS header parameter
                 in the Request Object,
                 or the OP doesn't support this feature, it then MUST
                 validate the possible Trust Chains, starting with the RP's Entity
                 Configuration as described in <xref target="fetching-es"/>,
-                and resolve the RP metadata with type
+                and resolve the RP metadata with Entity Type
                 <spanx style="verb">openid_relying_party</spanx>.
               </t>
               <t>
-                The OP SHOULD furthermore consider the resolved metadata of the
-                RP
-                and verify that it complies with the client metadata
-                specification
-                in <xref target="OpenID.Registration">OpenID Connect Dynamic
-                Client
-                Registration 1.0</xref>.
+                The OP SHOULD furthermore verify that the resolved metadata of the RP
+                complies with the client metadata specification
+                <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>.
               </t>
               <t>
                 Once the OP has the RP's metadata, it can verify that the client
                 was actually the one sending the Authentication Request by
                 verifying the signature of the Request Object using the key
-                material the client published through its metadata (underneath
-                <spanx style="verb">metadata/openid_relying_party</spanx>).
+                material the client published in its metadata for the
+                <spanx style="verb">openid_relying_party</spanx> Entity Type.
               </t>
             </section>
           </section>
@@ -4913,35 +4896,33 @@ GET /authorize?
             <t>
               <xref target="RFC9126">Pushed Authorization Requests</xref>
               provide an
-              interoperable way to push the payload of a Request Object
+              interoperable way to push a Request Object
               directly to the AS in exchange for a
               <spanx style="verb">request_uri</spanx>.
             </t>
             <t>
-              When it comes to request authentication, the applicable
-              methods are four:
+              There are four applicable authentication methods:
               <list style="symbols">
-                <t>Using a JWT for Client authentication as described
+                <t>
+		  JWT Client authentication, as described
                   for <spanx style="verb">private_key_jwt</spanx> in Section 9
                   of
                   <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
                 </t>
                 <t>
-                  mTLS as described in Section 2.2 of
-                  <xref target="RFC8705"/>
-                  based on self-signed certificates.
+                  mTLS using self-signed certificates,
+		  as described in Section 2.2 of <xref target="RFC8705"/>.
                   In this case, the self-signed certificate MUST be present as
                   the value of an <spanx style="verb">x5c</spanx>
                   claim for one key in the JWK Set describing
                   the RP's keys.
                 </t>
                 <t>
-                  mTLS as described in Section 2.1 of
-                  <xref target="RFC8705"/>
-                  based on public key infrastructure (PKI).
+                  mTLS using public key infrastructure (PKI),
+		  as described in Section 2.1 of <xref target="RFC8705"/>.
                 </t>
                 <t>
-                  A Request Object as described in
+                  A Request Object, as described in
                   <xref target="UsingAuthzRequestObject"/>
                   and <xref target="trust_chain_authz"/>.
                 </t>
@@ -4989,24 +4970,24 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
             </figure>
             <section title="Processing the Authentication Request">
               <t>
-                All the assumptions and requirements already defined in
+                The requirements specified in
                 <xref target="AuthzRequestProcessing"/>
                 also apply to <xref target="RFC9126">Pushed Authorization Requests</xref>.
               </t>
               <t>
                 Once the OP has the RP's metadata, it can verify the client
-		using the keys published under the
+		using the keys published for the
 		<spanx style="verb">openid_relying_party</spanx>
 		Entity Type Identifier.
-                This is where it diverges depending on which client
+                This is where it diverges, depending on which client
                 authentication method was used.
                 <list style="hanging">
                   <t hangText="private_key_jwt">
                     <vspace/>
-                    If this method is used, then the OP will try to verify the
+                    If this method is used, then the OP verifies the
                     signature of the signed JWT using the key material published
                     by the RP in its metadata. If the authentication is
-                    successful, then the registration is regarded as correct.
+                    successful, then the registration is valid.
                   </t>
                   <t hangText="tls_client_auth">
                     <vspace/>
@@ -5017,11 +4998,11 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                   </t>
                   <t hangText="self_signed_tls_client_auth">
                     <vspace/>
-                    If mTLS is using a self-signed
+                    If mTLS is used with a self-signed
                     certificate, then the certificate MUST be present as the
                     value
                     of an <spanx style="verb">x5c</spanx>
-                    claim for one key in the JWK Set describing the RP's
+                    claim for a key in the JWK Set containing the RP's
                     keys.
                   </t>
                 </list>
@@ -5037,8 +5018,9 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
             that aids the RP in understanding what is wrong.
           </t>
           <t>
-            In addition to the error codes defined in Section 3.1.2.6 of OpenID
-            Connect Core, this specification also defines the following error
+            In addition to the error codes contained in the
+	    IANA "OAuth Extensions Error Registry" registry <xref target="IANA.OAuth.Parameters"/>,
+	    this specification also defines the following error
             codes:
           </t>
           <t>
@@ -5084,11 +5066,11 @@ HTTP/1.1 302 Found
 
       <section title="Explicit Registration" anchor="explicit">
         <t>
-          With this method the RP establishes its client registration with the
+          Using this method, the RP establishes its client registration with the
           OP by means of a dedicated registration request, similar to
-          <xref target="OpenID.Registration"/>, but instead of its metadata the
+          <xref target="OpenID.Registration"/>, but instead of its metadata, the
           RP submits its Entity Configuration or an entire Trust Chain. When
-          the Explicit Registration step is completed the RP can proceed to
+          the Explicit Registration is completed, the RP can proceed to
           make regular OpenID authentication requests to the OP.
         </t>
 
@@ -5112,26 +5094,26 @@ HTTP/1.1 302 Found
         <t>An example of an Explicit Registration is provided in
           <xref target="ExplicitRegExample"/>.
         </t>
+
         <section anchor="Clireg" title="Explicit Client Registration">
           <section anchor="Cliregreq" title="Explicit Client Registration Request">
             <t>
-              The RP prepares the request as follows:
+              The RP performs Explicit Client Registration as follows:
             </t>
             <t>
               <list style="numbers">
 
                 <t>
-                  Once it has a list of acceptable Trust Anchors to the OP,
-                  it MUST choose the subset it wants to progress with. This
-                  subset can be as small as one Trust Anchor, but it can also
-                  contain more than one.
+                  Once the RP has determined a set of Trust Anchors it has in common with the OP,
+                  it chooses the subset it wants to proceed with. This
+                  may be a single Trust Anchor, or it can also be more than one.
                   The RP MUST perform a Trust Chain and metadata resolution for
                   the OP, as specified in <xref target="resolving_trust"/>. If
                   the resolution is not successful the RP MUST abort the
                   request.
                 </t>
                 <t>
-                  Using this subset of Trust Anchors, the RP will choose a set of
+                  Using this subset of Trust Anchors, the RP chooses a set of
                   <spanx style="verb">authority_hints</spanx>
                   from the hints that are available to it. Each hint MUST,
                   when used as a starting point for Trust Chain collection,
@@ -5142,12 +5124,12 @@ HTTP/1.1 302 Found
                   include multiple ones.
                 </t>
                 <t>
-                  The RP will now construct its Entity Configuration
+                  The RP will then construct its Entity Configuration,
                   where the metadata statement chosen is influenced by the OP's
                   metadata and where the
                   <spanx style="verb">authority_hints</spanx>
                   included are picked by the process described above.
-                  From its immediate Superior authorities the RP MUST select
+                  From its immediate Superior authorities, the RP MUST select
                   one or more <spanx style="verb">authority_hints</spanx> so
                   that every hint, when used as the starting point for a Trust
                   Chain collection, leads to at least one of the Trust Anchors
@@ -5156,15 +5138,16 @@ HTTP/1.1 302 Found
                 <t>
                   The RP MAY include its Entity Configuration
                   in a Trust Chain regarding itself.
-                  The Registration Request will contain an
-                  array containing the sequence of the
-                  statements that compose the Trust Chain
-                  between the RP that makes the request and the
+                  In that case, the Registration Request will contain an
+                  array with the sequence of
+                  Entity Statements that compose the Trust Chain
+                  between the RP that is making the request and the
                   selected Trust Anchor.
-                  To construct its Entity Configuration the RP MUST include its
-                  metadata in the statement and use the
+                  The RP MUST include its
+                  metadata in its Entity Configuration and use the
                   <spanx style="verb">authority_hints</spanx> selected above.
-                  <vspace/>
+                  <vspace blankLine="1"/>
+
                   The RP SHOULD select its metadata parameters to comply with
                   the resolved OP metadata and thus ensure a successful
                   registration with the OP. Note that if the submitted RP
@@ -5175,23 +5158,21 @@ HTTP/1.1 302 Found
 
                 <t>
                   The Entity Configuration, or the entire Trust Chain,
-                  is sent, using POST, to the
-                  <spanx style="verb">federation_registration_endpoint</spanx>
-                  defined in this specification.
-                  There are no parameters in the POST;
-                  the Entity Configuration or Trust Chain is the entire POST body.
+                  is sent, using HTTP POST, to the
+                  <spanx style="verb">federation_registration_endpoint</spanx>.
+                  The Entity Configuration or Trust Chain is the entire POST body.
                   The RP MUST sign its Entity Configuration with a current
                   Federation Entity Key in its possession.
                 </t>
                 <t>
                   The content type of the Registration Request MUST be
                   <spanx style="verb">application/entity-statement+jwt</spanx>
-                  if it contains only the Entity Configuration of the
-                  requestor. Otherwise, if it contains the Trust Chain, the
+                  when it contains only the Entity Configuration of the
+                  requestor. Otherwise, when it contains the Trust Chain, the
                   content type of the Registration Request MUST be
                   <spanx style="verb">application/trust-chain+json</spanx>.
                   The RP MAY include its Entity Configuration in a Trust Chain
-                  that leads to the RP. In this case the registration request
+                  that leads to the RP. In this case, the registration request
                   will contain an array consisting of the sequence of
                   statements that make up the Trust Chain between the RP and
                   the Trust Anchor the RP selected.
@@ -5200,7 +5181,7 @@ HTTP/1.1 302 Found
             </t>
             <t>
               The following Entity Configuration claims are specified for use
-              in Explicit Registration requests. Their full description is in
+              in Explicit Registration requests. Their full descriptions are in
               <xref target="entity-statement"/>.
             </t>
             <t>
@@ -5275,7 +5256,7 @@ HTTP/1.1 302 Found
               <t>
                 <list style="numbers">
                   <t>
-                    Upon receiving a registration request the OP MUST inspect
+                    Upon receiving a registration request, the OP MUST inspect
                     the content type to determine whether it contains an Entity
                     Configuration or an entire Trust Chain.
                   </t>
@@ -5308,7 +5289,8 @@ HTTP/1.1 302 Found
                     want to ensure the completion of concurrent OpenID
                     authentication requests initiated by the RP while the
                     registration request is being processed.
-                    <vspace/>
+                    <vspace blankLine="1"/>
+
                     The OP MAY retain client credentials and key material from
                     the invalidated registration in order to verify past RP
                     signatures and perform other cryptographic operations on
@@ -5318,19 +5300,22 @@ HTTP/1.1 302 Found
                     The OP will now use the RP metadata to create a client
                     registration compliant with its own OP metadata and other
                     applicable policies.
-                    <vspace/>
+                    <vspace blankLine="1"/>
+
                     The OP MAY provision the RP with a
                     <spanx style="verb">client_id</spanx> other than the RP's
                     Entity Identifier. This enables Explicit Registration to be
                     implemented on top of the
                     <xref target="OpenID.Registration">OpenID Connect Dynamic
                     Client Registration 1.0</xref> endpoint of an OP.
-                    <vspace/>
+                    <vspace blankLine="1"/>
+
                     If the RP is provisioned with a
                     <spanx style="verb">client_secret</spanx> it MUST NOT
                     expire before the expiration of the registration Entity
                     Statement that will be returned to the RP.
-                    <vspace/>
+                    <vspace blankLine="1"/>
+
                     The OP SHOULD NOT provision the RP with a
                     <spanx style="verb">registration_access_token</spanx> and a
                     <spanx style="verb">registration_client_uri</spanx>
@@ -5341,7 +5326,8 @@ HTTP/1.1 302 Found
                     some purpose, for example to let it independently check its
                     registered metadata, the token MUST NOT allow modification
                     of the registration.
-                    <spanx/>
+                    <vspace blankLine="1"/>
+
                     The OP MAY modify the received RP metadata, for example by
                     substituting an invalid or unsupported parameter, in order
                     to make it compliant with its own OP metadata and other
@@ -5363,19 +5349,22 @@ HTTP/1.1 302 Found
                     If the OP created a client registration for the RP it MUST
                     then construct a success response in the form of an Entity
                     Statement.
-                    <vspace/>
+                    <vspace blankLine="1"/>
+
                     The OP MUST set the <spanx style="verb">trust_anchor_id</spanx>
                     claim of the Entity Statement to the Trust Anchor it
                     selected to process the request. The
                     <spanx style="verb">authority_hints</spanx> claim MUST be
                     set to the OP's immediate Superior authority in the
                     selected Trust Chain.
-                    <vspace/>
+                    <vspace blankLine="1"/>
+
                     The OP MUST set the <spanx style="verb">exp</spanx> claim
                     to the expiration time of the created registration. The OP
                     MAY choose to invalidate the registration before that, as
                     explained in <xref target="AfterExplicitReg"/>.
-                    <vspace/>
+                    <vspace blankLine="1"/>
+
                     The OP MUST express the client registration it created for
                     the RP by means of the <spanx style="verb">metadata</spanx>
                     claim, by placing the metadata parameters under the
@@ -5386,7 +5375,8 @@ HTTP/1.1 302 Found
                     for the RP. If the RP was provisioned with credentials,
                     for example a <spanx style="verb">client_secret</spanx>,
                     these MUST be included as well.
-                    <vspace/>
+                    <vspace blankLine="1"/>
+
                     The OP SHOULD include metadata parameters that have a
                     default value, for example
                     <spanx style="verb">token_endpoint_auth_method</spanx>
@@ -5500,9 +5490,10 @@ HTTP/1.1 302 Found
               <t>
                 <list style="numbers">
                   <t>
-                    If the response indicates success the RP MUST verify that
+                    If the response indicates success, the RP MUST verify that
                     its content is a valid Entity Statement and issued by the OP.
-                    <vspace/>
+                    <vspace blankLine="1"/>
+
                     The RP MUST ensure the signing Federation Entity Key used
                     by the OP is present in the
                     <spanx style="verb">jwks</spanx> claim of the Entity
@@ -5554,13 +5545,12 @@ HTTP/1.1 302 Found
             registration Entity Statement to devise a suitable strategy for
             renewing its client registration. RP implementers should note that
             if the OP expiration of the <spanx style="verb">client_id</spanx>
-            coincides with an OAuth flow that was just initiated by the RP this
-            may cause OpenID authentication requests, token requests or
+            coincides with an OAuth 2.0 flow that was just initiated by the RP, this
+            may cause OpenID Connect authentication requests, token requests, or
             UserInfo requests to suddenly fail. Renewing the RP registration
-            prior to its expiration can thus prevent such errors from
+            prior to its expiration can prevent such errors from
             occurring and ensure the end-user experience is not disrupted.
           </t>
-
           <t>
             An OP MAY invalidate a client registration before the expiration
             that is indicated in the registration Entity Statement for the RP.
@@ -5583,9 +5573,9 @@ HTTP/1.1 302 Found
         <t>
           Similarly, an RP that obtained an Automatic or Explicit Registration
           MUST NOT use it past the expiration of the Trust Chain the RP used to
-          establish trust in the OP. For an RP using Automatic Registration the
+          establish trust in the OP. For an RP using Automatic Registration, the
           trust in the OP MUST be successfully reevaluated before continuing to
-          make requests to the OP. For an RP using Explicit Registration the RP
+          make requests to the OP. For an RP using Explicit Registration, the RP
           MUST successfully renew its registration. An RP MAY choose to perform
           additional periodic reevaluations of the Trust Chain for the OP
           before the Trust Chain reaches its expiration time.
@@ -5625,34 +5615,37 @@ HTTP/1.1 302 Found
 
           This enables the following benefits in
           a federation:
+          <list style="symbols">
 
-          <t anchor="MetadataUpdateHint">
+          <t>
             It solves the problem of OPs using RP metadata that has become stale.
             This stale data may occur when the OP uses cached RP metadata from a Trust Chain
             that hasn't reached its expiration time yet.
             The RP MAY notify the OP that a change has taken place by passing
             in the request the <xref target="trust_chain_head_param">trust_chain</xref> header parameter
             or the <spanx style="verb">trust_chain</spanx>
-            request parameter
-            , thus letting the OP update its client
-            registration and prevent potential temporary faults due to stale metadata.
+            request parameter,
+            thus letting the OP update its Client
+            Registration and prevent potential temporary faults due to stale metadata.
           </t>
 
-          <t anchor="TrustPathHint">
+          <t>
             It enables the RP to pass a verifiable hint for which trust path to
-            take in order to build the Trust Chain. This can reduce the costs
+            take to build the Trust Chain. This can reduce the costs
             of RP Federation Entity Discovery for OPs in complex federations where the
             RP has multiple Trust Anchors or the Trust Chain resolution may
             result in dead-ends.
           </t>
 
-          <t anchor="ECHint">
+          <t>
             It enables direct passing of the Entity Configuration, including
             any present Trust Marks, thus saving the OP from having to make
             an HTTP request to the RP
             <spanx style="verb">/.well-known/openid-federation</spanx>
             endpoint.
           </t>
+
+	  </list>
         </t>
       </section>
 
@@ -7841,7 +7834,7 @@ Host: op.umu.se
 	      An example JWT Claims Set for the RP's Entity Configuration is:
 	    </preamble>
 	    <name>
-	      JWT Claims Set for the RP's Entity Configuration
+	      RP's Entity Configuration JWT Claims Set
 	    </name>
 	    <artwork><![CDATA[
 {
@@ -8046,6 +8039,15 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+
+      <t>
+        -32
+        <list style="symbols">
+          <t>
+	    Tightened OpenID Connect Client Registration section.
+	  </t>
+	</list>
+      </t>
 
       <t>
         -31
