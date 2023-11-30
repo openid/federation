@@ -4729,7 +4729,6 @@ Content-Type: application/json
             </t>
 
             <section title="Authorization Request with a Trust Chain" anchor="trust_chain_authz">
-
               <t>
               When the
               <spanx style="verb">trust_chain</spanx>
@@ -4738,7 +4737,6 @@ Content-Type: application/json
               request parameter,
               both contents MUST be identical. Otherwise the request MUST be rejected.
               </t>
-
               <t>
               When the <spanx style="verb">trust_chain</spanx>
               JWS header parameter or the
@@ -4749,7 +4747,6 @@ Content-Type: application/json
               that proves the trust relationship between it
               and the selected Trust Anchor.
               </t>
-
               <t>
               Due to the large size of a Trust Chain, it may be necessary
               to use the HTTP POST method,
@@ -4891,14 +4888,16 @@ GET /authorize?
                 <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>.
               </t>
               <t>
-                Once the OP has the RP's metadata, it can verify that the client
+                Once the OP has the RP's metadata, it MUST verify that the client
                 was actually the one sending the Authentication Request by
                 verifying the signature of the Request Object using the key
                 material the client published in its metadata for the
                 <spanx style="verb">openid_relying_party</spanx> Entity Type.
+		If the signature does not verify, the OP MUST reject the request.
               </t>
             </section>
           </section>
+
           <section title="Using Pushed Authorization">
             <t>
               <xref target="RFC9126">Pushed Authorization Requests</xref>
@@ -4975,6 +4974,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
   DwA7B0ZqmuSmMFQ
 ]]></artwork>
             </figure>
+
             <section title="Processing the Authentication Request">
               <t>
                 The requirements specified in
@@ -4982,12 +4982,14 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                 also apply to <xref target="RFC9126">Pushed Authorization Requests</xref>.
               </t>
               <t>
-                Once the OP has the RP's metadata, it can verify the client
+                Once the OP has the RP's metadata, it MUST verify the client
 		using the keys published for the
 		<spanx style="verb">openid_relying_party</spanx>
 		Entity Type Identifier.
-                This is where it diverges, depending on which client
-                authentication method was used.
+		If the RP does not verify, the OP MUST reject the request.
+	      </t>
+	      <t>
+                The means of verification depends on the client authentication method used:
                 <list style="hanging">
                   <t hangText="private_key_jwt">
                     <vspace/>
@@ -5017,6 +5019,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
             </section>
           </section>
         </section>
+
         <section title="Authentication Error Response" anchor="AuthenticationError">
           <t>
             If the OP fails to establish trust with the RP, it SHOULD use an
@@ -8076,6 +8079,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Tightened appendix examples.
+	  </t>
+	  <t>
+	    Strenghten language requiring client verification with automatic registration.
 	  </t>
 	</list>
       </t>
