@@ -456,7 +456,8 @@
               the Entity Identifiers of Intermediate Entities or Trust Anchors
               that MAY issue an Entity Statement about the Entity.
               This claim is REQUIRED in the Entity Configurations of
-              Leaf and Intermediate Entities.
+              the Entities that have at least one Superior above them, 
+              such as Leaf and Intermediate Entities.
               Its value MUST NOT be the empty array
               <spanx style="verb">[]</spanx>.
               This claim MUST NOT be present in the Entity Configurations
@@ -1450,6 +1451,20 @@
               it MUST NOT contain a fragment component.
               Trust Mark issuers MAY publish a
               <spanx style="verb">federation_trust_mark_list_endpoint</spanx>.
+            </t>
+            <t hangText="federation_trust_mark_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The endpoint described in
+              <xref target="tm_endpoint"/>.
+              This URL MUST use the <spanx style="verb">https</spanx>
+              scheme and MAY contain port,
+              path, and query parameter components encoded in
+              <spanx style="verb">application/x-www-form-urlencoded</spanx>
+              format;
+              it MUST NOT contain a fragment component.
+              Trust Mark issuers MAY publish a
+              <spanx style="verb">federation_trust_mark_endpoint</spanx>.
             </t>
 	    <t hangText="federation_historical_keys_endpoint">
 	      <vspace/>
@@ -3944,6 +3959,130 @@ Content-Type: application/json
   "https://blackboard.ntnu.no/openid/rp",
   "https://that-rp.example.org"
 ]
+]]></artwork>
+          </figure>
+        </section>
+      </section>
+
+     <section title="Trust Mark Endpoint" anchor="tm_endpoint">
+        <t>
+		  The Trust Mark endpoint is protected endpoint 
+          exposed by
+          Trust Mark issuers
+          to provide the Trust Marks to their owners.
+        </t>
+	<t>
+	  The Trust Mark endpoint is published in the 
+      <spanx style="verb">federation_entity</spanx> metadata
+	  using the 
+	  <spanx style="verb">federation_trust_mark_endpoint</spanx> claim.
+	</t>
+
+        <section title="Trust Mark Request">
+          <t>
+            The HTTP request MUST use the POST method with the
+            following query parameters, encoded in
+            <spanx style="verb">application/x-www-form-urlencoded</spanx> 
+            format.
+          </t>
+          <t>
+            <list style="hanging">
+              <t hangText="trust_mark_id">
+                <vspace/>
+                REQUIRED. Trust Mark identifier.
+              </t>
+              <t hangText="client_assertion">
+                <vspace/>
+                REQUIRED. Signed JWT using the private key of the 
+                subject's Federation Entity Key. 
+                The payload of the signed JWT MUST contain the 
+                following parameters:
+                <list>
+                    <t hangText="iss">
+                        <vspace/>
+                        REQUIRED. The Entity Identifier of the subject.
+                    </t>
+                    <t hangText="sub">
+                        <vspace/>
+                        REQUIRED. This MUST the same as iss.
+                    </t>
+                    <t hangText="aud">
+                        <vspace/>
+                        REQUIRED. URL of the federation Trust Mark endpoint.
+                    </t>
+                    <t hangText="iat">
+                        <vspace/>
+                        REQUIRED. The time the statement was issued.
+              Its value is a JSON number representing the number of seconds from
+              1970-01-01T0:0:0Z as measured in UTC until the date/time.
+              See <xref target="RFC3339"/> for
+              details regarding date/times in general and UTC in particular.
+                    </t>
+                    <t hangText="exp">
+                        <vspace/>
+                        Expiration time on or after which the JWT MUST NOT be
+              accepted for processing. Its value is a JSON number representing
+              the number of seconds from 1970-01-01T0:0:0Z as measured in UTC
+              until the date/time.
+                    </t>
+                </list>
+              </t>
+              <t hangText="client_assertion_type">
+                <vspace/>
+                REQUIRED. It MUST be set to 
+                <spanx style="verb">urn:ietf:params:oauth:client-assertion-type:jwt-bearer</spanx>.
+              </t>
+            </list>
+          </t>
+          <figure>
+            <preamble>
+              The following is a non-normative example of an HTTP
+              request for a specific Trust Mark ID and a specific Entity:
+            </preamble>
+            <name>
+              Trust Mark Request
+            </name>
+            <artwork><![CDATA[
+POST /trust_mark HTTP/1.1
+Host: tuber.cert.example.org
+Content-Type: application/x-www-form-urlencoded
+
+trust_mark_id=https%3A%2F%2Ftuber.cert.example.org%2Fnero%2Fpregiato%2Fnorcia&
+client_assertion=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiw
+ibmFtZSI6IlNQSUQiLCJhZG1pbiI6dHJ1ZX0.LVyRDPVJm0S9q7oiXcYVIIqGWY0wWQlqxvFGYswL…&
+client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwtbearer
+
+]]></artwork>
+          </figure>
+        </section>
+
+        <section title="Trust Mark Response">
+          <t>
+            A successful response MUST use the HTTP status code 200
+            with the content type 
+            <spanx style="verb">application/trust-mark+jwt</spanx>,
+            containing the Trust Mark.
+          </t>
+
+          <t>
+            If the specified Entity doesn't have 
+            the specified Trust Mark, the
+            response is negative and
+            MUST use the HTTP status code 404.
+          </t>
+
+          <figure>
+            <preamble>
+              The following is a non-normative example of a response, containing
+              the Trust Mark for the specified Entity:
+            </preamble>
+            <name>
+              Trust Mark Response
+            </name>
+            <artwork><![CDATA[
+200 OK
+
+eyJhbGciOiJSUzI1NiIsImtpZCI6Im1VRXR0aW5SNTNpLW9Bc1JoN2l6blY1R1hlaFh3QzZ1aTRScG1QeUt5ZDgifQ.eyJpc3MiOiJodHRwczovL3R1YmVyLmNlcnQuZXhhbXBsZS5vcmciLCJzdWIiOiJodHRwczovL3RhcnR1Zm8uZXhhbXBsZS5pdCIsImlhdCI6MTU3OTYyMTE2MCwiZXhwIjoxNTc5NzIxMTYwLCJpZCI6Imh0dHBzOi8vdHViZXIuY2VydC5leGFtcGxlLm9yZy9uZXJvL3ByZWdpYXRvL25vcmNpYSJ9.HwzNAJVPDYC9AM-ILWfgmT5YDz-pjtklQhtEQbqhC7P0nv88W8Wx74oE5IR5WgJP9Q3xPD-UO7o6O_Z0PMR186TzcBnaXtogn6-QxHRomCPwytviVGykXE1MkOnf9wTYWb5q13A53w8y0vUTlwZhBHt9qYNp3t4XwjR8eEZTptHeI_NHkaOsknT3cI16FbxqXVdTudQCfPJEYKGGL1QDg2EdVGFgjq4V-2UTKlBQvnorNUmfNOxgRT0DR37ZezluvGJ5NjK15h2rrJRN4e_8favIJNTNO8fhK7bjyUFJlVGYmLUpfCuJmxBv-EMhiAkeoDtk71Tc6ou62rxqFCU3LQ
 ]]></artwork>
           </figure>
         </section>
@@ -8072,12 +8211,15 @@ Host: op.umu.se
         -32
         <list style="symbols">
           <t>
-	    Tightened OpenID Connect Client Registration section.
-	  </t>
-	  <t>
-	    Tightened appendix examples.
-	  </t>
-	</list>
+            Fixed #2075: Trust Mark endpoint for the provisioning of the Trust Marks.
+          </t>
+          <t>
+            Tightened OpenID Connect Client Registration section.
+          </t>
+          <t>
+            Tightened appendix examples.
+          </t>
+        </list>
       </t>
 
       <t>
