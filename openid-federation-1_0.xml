@@ -541,28 +541,32 @@
             <t hangText="crit">
               <vspace/>
               OPTIONAL.
-              The <spanx style="verb">crit</spanx> (critical) Entity Statement
-              claim
-              indicates that extensions to Entity Statement claims defined by
-              this specification
-              are being used that MUST be understood and processed.
+              The <spanx style="verb">crit</spanx> (critical) claim
+              indicates that extensions to the set of claims
+	      specified for use in this type of JWT are being used
+	      that MUST be understood and processed.
               It is used in the same way that
-              <spanx style="verb">crit</spanx>
-              is used for extension JWS header
-              parameters that MUST be understood and processed.
-              Its value is an array listing the Entity Statement claims
-              present in the Entity Statement that use those extensions.
-              If any of the listed extension Entity Statement claims are not
-              understood and supported by the recipient, then the Entity
-              Statement is invalid.
-              Producers MUST NOT include Entity Statement claim names defined by
-              this specification or
-              names that do not occur as Entity Statement claim names in the
-              Entity Statement
+              the <spanx style="verb">crit</spanx> header parameter
+              is used for extension JOSE header parameters
+	      that MUST be understood and processed.
+              Its value is an array listing the claim names
+              present in the JWT that use those extensions.
+              If any of the listed claims are not
+              understood and supported by the recipient, then the JWT is invalid.
+              Producers MUST NOT include claim names already
+	      specified for use in this type of JWT,
+	      duplicate names, or
+              names that do not occur as claim names in the JWT
               in the <spanx style="verb">crit</spanx> list.
               Producers MUST NOT use the empty array
               <spanx style="verb">[]</spanx>
               as the <spanx style="verb">crit</spanx> value.
+	      <vspace blankLine="1"/>
+
+	      When the JWT is an Entity Statement, this claim is OPTIONAL,
+	      but when present, it MUST be understood and processed.
+	      Claims specified for use in Entity Statements by this specification
+	      MUST NOT be included in the list.
             </t>
             <t hangText="policy_language_crit">
               <vspace/>
@@ -5405,7 +5409,7 @@ HTTP/1.1 302 Found
           </section>
 
           <section anchor="cliregresp" title="Explicit Client Registration Response">
-            <section title="Processing of the Request by the OP">
+            <section anchor="ExplicitRegOP" title="Processing of the Request by the OP">
               <t>
                 The OP processes the request as follows:
               </t>
@@ -5642,7 +5646,7 @@ HTTP/1.1 302 Found
               </t>
             </section>
 
-            <section title="Processing of the Response by the RP">
+            <section anchor="ExplicitRegRP" title="Processing of the Response by the RP">
               <t>
                 <list style="numbers">
                   <t>
@@ -6675,6 +6679,38 @@ HTTP/1.1 302 Found
 	      </t>
 	      <t>
 		Specification Document(s): Section <xref target="trust_mark_claims"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_anchor_id</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Anchor ID
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section <xref target="ExplicitRegOP"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">crit</spanx>
+	      </t>
+	      <t>
+		Claim Description: Critical Claim
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section <xref target="entity-statement"/> of this specification
 	      </t>
 	    </list>
 	  </t>
