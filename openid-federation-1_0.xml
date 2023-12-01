@@ -3364,7 +3364,7 @@ Host: edugain.org
               </t>
               <t hangText="anchor">
                 <vspace/>
-                REQUIRED. The Trust Anchor that the remote peer
+                REQUIRED. The Trust Anchor that the resolve endpoint
                 MUST use when resolving the metadata. The value is an Entity
                 identifier.
               </t>
@@ -4454,27 +4454,27 @@ Content-Type: application/json
     </section>
 
     <section anchor="resolving_trust"
-             title="Resolving Trust Chain and Metadata">
+             title="Resolving the Trust Chain and Metadata">
       <t>
-        An Entity (e.g., the consumer) that wants to establish trust with a
-        remote peer MUST have the remote peer's Entity Identifier and a list of
-        Entity Identifiers of Trust Anchors together with the public version
-        of their signing keys. The consumer will first have to fetch
+        An Entity (Party A) that wants to establish trust with
+        another Entity (Party B) MUST have Party B's Entity Identifier and a list of
+        Entity Identifiers of Trust Anchors and their public signing keys.
+        Party A will first have to fetch
         sufficient Entity Statements to establish at least one chain of trust
-        from the remote peer to one or more of the Trust Anchors.
-        After that, the Entity MUST validate the Trust Chains independently,
+        from Party B to one or more of the Trust Anchors.
+        After that, Party A MUST validate the Trust Chains independently,
         and if there are multiple valid Trust Chains and if the
-        application demands it, choose one.
+        application demands it, choose one to use.
       </t>
 
       <section anchor="fetching-es"
                title="Fetching Entity Statements to Establish a Trust Chain">
         <t>
-          Depending on the circumstances, the consumer MAY be
-          handed the remote peer's Entity Configuration, or it may
+          Depending on the circumstances, Party A MAY be
+          handed Party B's Entity Configuration, or it may
           have to fetch it by itself. If it needs to fetch it, it will use the
           process described in <xref target="federation_configuration"/>
-          based on the Entity Identifier of the remote peer.
+          based on the Entity Identifier of Party B.
         </t>
         <t>
           The next step is to iterate through the list of
@@ -4487,12 +4487,12 @@ Content-Type: application/json
         </t>
         <t>
           With the list of all Intermediates and the Trust Anchor, the respective
-          fetch endpoints, as defined in <xref target="fetch_endpoint"/>, are used to fetch Entity
-          Statements about the Intermediates and the remote peer.
+          fetch endpoints, as defined in <xref target="fetch_endpoint"/>, are used to fetch
+          Entity Statements about the Intermediates and Party B.
         </t>
         <t>
-          Note: The consumer SHOULD NOT attempt to fetch
-          Entity Statements it already has fetched during this
+          Note: Federation participants SHOULD NOT attempt to fetch
+          Entity Statements they already have obtained during this
           process to prevent loops.
         </t>
         <t>
@@ -4501,17 +4501,19 @@ Content-Type: application/json
           Entity Statement is issued by a Trust Anchor.
         </t>
         <t>
-          If there is no path from the remote peer to at least one of the
+          If there is no path from Party B to at least one of the
           trusted Trust Anchors, then the list will be empty and there is no
-          way of establishing trust in the remote peer's information. How the
-          consumer deals with this is out of scope for this specification.
+          way of establishing trust in Party B's information.
+          How Party A deals with this is out of scope for this specification.
         </t>
 
       <figure>
         <preamble>
 	  The following sequence diagram represents the interactions between the RP,
 	  the OP, and the Trust Anchor during a trust evaluation made by the OP
-	  for the RP:
+	  about the RP.
+	  Relating this to the the preceeding description, in this diagram,
+	  Party A is the OP and Party B is the RP.
         </preamble>
 	<name>
           Resolving Trust Chain and Metadata from the Perspective of an OP
@@ -4565,14 +4567,13 @@ Content-Type: application/json
    |                                |<---------------------------------     |
 ]]></artwork>
 	</figure>
-
       </section>
 
       <section title="Validating a Trust Chain" anchor="trust_chain_validation">
         <t>
           As described in <xref target="trust_chain"/>,
-          a Trust Chain consists of an ordered list of Entity
-          Statements. So whichever way the consumer has acquired the set of
+          a Trust Chain consists of an ordered list of Entity Statements.
+          So whichever way Party A has acquired the set of
           Entity Statements, it MUST now verify that it is a proper Trust Chain
           using the rules laid out in that section.
         </t>
@@ -4632,7 +4633,8 @@ Content-Type: application/json
           timestamps. An implementer MAY therefore choose not to verify the
           signatures until all the other checks have been done.
         </t>
-        <t>Consumers MAY cache Entity Statements or signature verification
+        <t>
+	  Federation participants MAY cache Entity Statements and signature verification
           results until they expire, per
           <xref target="trust_lifetime"/>.
         </t>
@@ -4640,10 +4642,10 @@ Content-Type: application/json
 
       <section title="Choosing One of the Valid Trust Chains">
         <t>
-          If multiple valid Trust Chains are found, the consumer will
+          If multiple valid Trust Chains are found, Party A will
           need to decide on which one to use.
 	  One simple rule would be to prefer a shorter chain over a longer one.
-	  Consumers MAY follow other rules according to local policy.
+	  Federation participants MAY follow other rules according to local policy.
 	</t>
       </section>
 
@@ -4676,10 +4678,10 @@ Content-Type: application/json
       <t>
         As described in <xref target="trust_lifetime"/>,
         each Trust Chain has an expiration time.
-        A consumer of metadata MUST support
+        Federation participants MUST support
         refreshing a Trust Chain when it expires.
-        How often a consumer SHOULD re-evaluate the Trust Chain depends on
-        how quickly the consumer wants to find out that something has changed.
+        How often a participant reevaluates the Trust Chain depends on
+        how quickly it wants to find out that something has changed.
       </t>
 
       <section title="Protocol Key Rollover">
@@ -4696,9 +4698,9 @@ Content-Type: application/json
                anchor="key_rollover_anchor">
         <t>
           A Trust Anchor MUST publish an Entity Configuration about
-          itself. The Trust Anchor SHOULD set a reasonable expiration
-          time on that Statement, such that the consumers will re-fetch the
-          Entity Configuration at reasonable intervals.
+          itself. The Trust Anchor SHOULD set an expiration
+          time on its Entity Configuration,
+	  such that federation participants will re-fetch it at reasonable intervals.
 	  When a Trust Anchor rolls over its signing keys, it needs to:
         </t>
         <t>
@@ -4742,7 +4744,7 @@ Content-Type: application/json
 
       <section title="Revocation">
         <t>
-          Since the consumers are expected to check the Trust Chain on a regular
+          Since the participants in federations are expected to check the Trust Chain on a regular
           frequent basis, this specification does not define a
           revocation process. Specific federations MAY make a
           different choice and will then have to define their own revocation process.
@@ -6909,8 +6911,7 @@ HTTP/1.1 302 Found
           <title>Financial-grade API Security Profile 1.0 - Part 2: Advanced</title>
 
           <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
-            <organization abbrev="NRI">Nat Consulting
-            </organization>
+            <organization abbrev="NRI">Nat Consulting</organization>
           </author>
 
           <author fullname="John Bradley" initials="J." surname="Bradley">
