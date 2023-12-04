@@ -959,11 +959,11 @@
           The issuer of the JWS SHOULD select the Trust Anchor that it has in common
           with the audience of the JWS.
 	      Otherwise, the issuer is free to select a Trust Anchor.
-          All signed JWTs MAY include the 
-          <spanx style="verb">trust_chain</spanx> JWS header parameter, 
-          with the exception of Entity Configurations and Entity Statements. 
-          These MUST NOT contain the 
-          <spanx style="verb">trust_chain</spanx> header parameter, 
+          All signed JWTs MAY include the
+          <spanx style="verb">trust_chain</spanx> JWS header parameter,
+          with the exception of Entity Configurations and Entity Statements.
+          These MUST NOT contain the
+          <spanx style="verb">trust_chain</spanx> header parameter,
           as they are integral components of a Trust Chain themselves.
           Use of this header parameter is OPTIONAL.
           </t>
@@ -3710,6 +3710,19 @@ Host: openid.sunet.se
                 issued and is still valid.
                 If the responder does not support this feature it MUST
                 use the HTTP status code 400 and set the content type to
+                <spanx style="verb">application/json</spanx>, with
+                the error code
+                <spanx style="verb">unsupported_parameter</spanx>.
+              </t>
+              <t hangText="intermediate">
+                <vspace/>
+                OPTIONAL. Boolean. If the parameter
+                <spanx style="verb">intermediate</spanx> is present and set to
+                <spanx style="verb">true</spanx>, then if the responder knows
+                whether its Subordinates are intermediates or not,
+                the result MUST be filtered accordingly.
+                If the responder does not support this feature it MUST
+                use the HTTP status code 400 and the content type
                 <spanx style="verb">application/json</spanx>, with
                 the error code
                 <spanx style="verb">unsupported_parameter</spanx>.
