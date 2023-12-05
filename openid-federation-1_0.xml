@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="28" month="November" year="2023"/>
+    <date day="4" month="December" year="2023"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -3220,25 +3220,24 @@
             to a fetch endpoint with the
             following query string parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
+	    The request is made to the fetch endpoint of the specified issuer.
           </t>
           <t>
             <list style="hanging">
               <t hangText="iss">
                 <vspace/>
-                OPTIONAL. The Entity Identifier of the issuer
-                from which the Entity Statement issued. Because of the
+                REQUIRED. The Entity Identifier of the issuer
+                from which the Entity Statement is issued. Because of the
                 normalization of the URL, multiple issuers MAY resolve to a
                 shared fetch endpoint. This parameter makes it explicit exactly
-                which issuer the Entity Statements must come from. Without this
-                parameter, the issuer matches to the Entity at
-                which the request was made.
+                which issuer the Entity Statement must come from.
               </t>
               <t hangText="sub">
                 <vspace/>
                 OPTIONAL. The Entity Identifier of the subject
                 for which the Entity Statement is being requested. If this
-                parameter is left out, it is considered to be the same as the
-                issuer and would indicate a request for a self-signed
+                parameter is omitted, it is considered to be the same as the
+                issuer and indicates a request for a self-signed
                 Entity Configuration.
               </t>
             </list>
@@ -3246,13 +3245,14 @@
           <figure>
             <preamble>
               The following is a non-normative example of an HTTP GET request for
-	      a Subordinate Statement about https://openid.sunet.se:
+	      a Subordinate Statement from edugain.org about https://openid.sunet.se:
             </preamble>
             <name>
 	      API Request for a Subordinate Statement
             </name>
             <artwork><![CDATA[
 GET /federation_fetch_endpoint?
+iss=https%3A%2F%2Fedugain%2Eorg&
 sub=https%3A%2F%2Fopenid%2Esunet%2Ese HTTP/1.1
 Host: edugain.org
 ]]></artwork>
@@ -3365,8 +3365,9 @@ Host: edugain.org
               </t>
               <t hangText="anchor">
                 <vspace/>
-                REQUIRED. The Trust Anchor that the remote peer
-                MUST use when resolving the metadata. The value is an Entity Identifier.
+                REQUIRED. The Trust Anchor that the resolve endpoint
+                MUST use when resolving the metadata.
+		The value is an Entity identifier.
               </t>
               <t hangText="type">
                 <vspace/>
@@ -3714,6 +3715,19 @@ Host: openid.sunet.se
                 the error code
                 <spanx style="verb">unsupported_parameter</spanx>.
               </t>
+              <t hangText="intermediate">
+                <vspace/>
+                OPTIONAL. Boolean. If the parameter
+                <spanx style="verb">intermediate</spanx> is present and set to
+                <spanx style="verb">true</spanx>, then if the responder knows
+                whether its Subordinates are Intermediates or not,
+                the result MUST be filtered accordingly.
+                If the responder does not support this feature it MUST
+                use the HTTP status code 400 and the content type
+                <spanx style="verb">application/json</spanx>, with
+                the error code
+                <spanx style="verb">unsupported_parameter</spanx>.
+              </t>
             </list>
           </t>
           <figure>
@@ -3913,6 +3927,12 @@ Content-Type: application/json
                 the Entities for which that Trust Mark identifier has been
                 issued and is still valid.
               </t>
+              <t hangText="sub">
+                <vspace/>
+                OPTIONAL. The Entity Identifier of the Entity to which the Trust Mark
+                was issued. The list obtained in the response MUST be filtered to only
+                the Entity matching this value.
+              </t>              
             </list>
           </t>
           <figure>
@@ -4074,7 +4094,8 @@ client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwtb
           <figure>
             <preamble>
               The following is a non-normative example of a response, containing
-              the Trust Mark for the specified Entity:
+              the Trust Mark for the specified Entity
+	      (with line wraps within values for display purposes only):
             </preamble>
             <name>
               Trust Mark Response
@@ -4082,7 +4103,16 @@ client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwtb
             <artwork><![CDATA[
 200 OK
 
-eyJhbGciOiJSUzI1NiIsImtpZCI6Im1VRXR0aW5SNTNpLW9Bc1JoN2l6blY1R1hlaFh3QzZ1aTRScG1QeUt5ZDgifQ.eyJpc3MiOiJodHRwczovL3R1YmVyLmNlcnQuZXhhbXBsZS5vcmciLCJzdWIiOiJodHRwczovL3RhcnR1Zm8uZXhhbXBsZS5pdCIsImlhdCI6MTU3OTYyMTE2MCwiZXhwIjoxNTc5NzIxMTYwLCJpZCI6Imh0dHBzOi8vdHViZXIuY2VydC5leGFtcGxlLm9yZy9uZXJvL3ByZWdpYXRvL25vcmNpYSJ9.HwzNAJVPDYC9AM-ILWfgmT5YDz-pjtklQhtEQbqhC7P0nv88W8Wx74oE5IR5WgJP9Q3xPD-UO7o6O_Z0PMR186TzcBnaXtogn6-QxHRomCPwytviVGykXE1MkOnf9wTYWb5q13A53w8y0vUTlwZhBHt9qYNp3t4XwjR8eEZTptHeI_NHkaOsknT3cI16FbxqXVdTudQCfPJEYKGGL1QDg2EdVGFgjq4V-2UTKlBQvnorNUmfNOxgRT0DR37ZezluvGJ5NjK15h2rrJRN4e_8favIJNTNO8fhK7bjyUFJlVGYmLUpfCuJmxBv-EMhiAkeoDtk71Tc6ou62rxqFCU3LQ
+eyJhbGciOiJSUzI1NiIsImtpZCI6Im1VRXR0aW5SNTNpLW9Bc1JoN2l6blY1R1hlaFh3QzZ1
+aTRScG1QeUt5ZDgifQ.eyJpc3MiOiJodHRwczovL3R1YmVyLmNlcnQuZXhhbXBsZS5vcmciL
+CJzdWIiOiJodHRwczovL3RhcnR1Zm8uZXhhbXBsZS5pdCIsImlhdCI6MTU3OTYyMTE2MCwiZ
+XhwIjoxNTc5NzIxMTYwLCJpZCI6Imh0dHBzOi8vdHViZXIuY2VydC5leGFtcGxlLm9yZy9uZ
+XJvL3ByZWdpYXRvL25vcmNpYSJ9.HwzNAJVPDYC9AM-ILWfgmT5YDz-pjtklQhtEQbqhC7P0
+nv88W8Wx74oE5IR5WgJP9Q3xPD-UO7o6O_Z0PMR186TzcBnaXtogn6-QxHRomCPwytviVGyk
+XE1MkOnf9wTYWb5q13A53w8y0vUTlwZhBHt9qYNp3t4XwjR8eEZTptHeI_NHkaOsknT3cI16
+FbxqXVdTudQCfPJEYKGGL1QDg2EdVGFgjq4V-2UTKlBQvnorNUmfNOxgRT0DR37ZezluvGJ5
+NjK15h2rrJRN4e_8favIJNTNO8fhK7bjyUFJlVGYmLUpfCuJmxBv-EMhiAkeoDtk71Tc6ou6
+2rxqFCU3LQ
 ]]></artwork>
           </figure>
         </section>
@@ -4444,27 +4474,27 @@ Content-Type: application/json
     </section>
 
     <section anchor="resolving_trust"
-             title="Resolving Trust Chain and Metadata">
+             title="Resolving the Trust Chain and Metadata">
       <t>
-        An Entity (e.g., the consumer) that wants to establish trust with a
-        remote peer MUST have the remote peer's Entity Identifier and a list of
-        Entity Identifiers of Trust Anchors together with the public version
-        of their signing keys. The consumer will first have to fetch
+        An Entity (Party A) that wants to establish trust with
+        another Entity (Party B) MUST have Party B's Entity Identifier and a list of
+        Entity Identifiers of Trust Anchors and their public signing keys.
+        Party A will first have to fetch
         sufficient Entity Statements to establish at least one chain of trust
-        from the remote peer to one or more of the Trust Anchors.
-        After that, the Entity MUST validate the Trust Chains independently,
+        from Party B to one or more of the Trust Anchors.
+        After that, Party A MUST validate the Trust Chains independently,
         and if there are multiple valid Trust Chains and if the
-        application demands it, choose one.
+        application demands it, choose one to use.
       </t>
 
       <section anchor="fetching-es"
                title="Fetching Entity Statements to Establish a Trust Chain">
         <t>
-          Depending on the circumstances, the consumer MAY be
-          handed the remote peer's Entity Configuration, or it may
+          Depending on the circumstances, Party A MAY be
+          handed Party B's Entity Configuration, or it may
           have to fetch it by itself. If it needs to fetch it, it will use the
           process described in <xref target="federation_configuration"/>
-          based on the Entity Identifier of the remote peer.
+          based on the Entity Identifier of Party B.
         </t>
         <t>
           The next step is to iterate through the list of
@@ -4478,11 +4508,11 @@ Content-Type: application/json
         <t>
           With the list of all Intermediates and the Trust Anchor, the respective
           fetch endpoints, as defined in <xref target="fetch_endpoint"/>, are used to fetch
-          Entity Statements about the Intermediates and the remote peer.
+          Entity Statements about the Intermediates and Party B.
         </t>
         <t>
-          Note: The consumer SHOULD NOT attempt to fetch
-          Entity Statements it already has fetched during this
+          Note: Federation participants SHOULD NOT attempt to fetch
+          Entity Statements they already have obtained during this
           process to prevent loops.
         </t>
         <t>
@@ -4491,17 +4521,19 @@ Content-Type: application/json
           Entity Statement is issued by a Trust Anchor.
         </t>
         <t>
-          If there is no path from the remote peer to at least one of the
+          If there is no path from Party B to at least one of the
           trusted Trust Anchors, then the list will be empty and there is no
-          way of establishing trust in the remote peer's information. How the
-          consumer deals with this is out of scope for this specification.
+          way of establishing trust in Party B's information.
+          How Party A deals with this is out of scope for this specification.
         </t>
 
       <figure>
         <preamble>
 	  The following sequence diagram represents the interactions between the RP,
 	  the OP, and the Trust Anchor during a trust evaluation made by the OP
-	  for the RP:
+	  about the RP.
+	  Relating this to the the preceeding description, in this diagram,
+	  Party A is the OP and Party B is the RP.
         </preamble>
 	<name>
           Resolving Trust Chain and Metadata from the Perspective of an OP
@@ -4555,14 +4587,13 @@ Content-Type: application/json
    |                               |<---------------------------------      |
 ]]></artwork>
 	</figure>
-
       </section>
 
       <section title="Validating a Trust Chain" anchor="trust_chain_validation">
         <t>
           As described in <xref target="trust_chain"/>,
           a Trust Chain consists of an ordered list of Entity Statements.
-          So whichever way the consumer has acquired the set of
+          So whichever way Party A has acquired the set of
           Entity Statements, it MUST now verify that it is a proper Trust Chain
           using the rules laid out in that section.
         </t>
@@ -4622,7 +4653,8 @@ Content-Type: application/json
           timestamps. An implementer MAY therefore choose not to verify the
           signatures until all the other checks have been done.
         </t>
-        <t>Consumers MAY cache Entity Statements and signature verification
+        <t>
+	  Federation participants MAY cache Entity Statements and signature verification
           results until they expire, per
           <xref target="trust_lifetime"/>.
         </t>
@@ -4630,10 +4662,10 @@ Content-Type: application/json
 
       <section title="Choosing One of the Valid Trust Chains">
         <t>
-          If multiple valid Trust Chains are found, the consumer will
+          If multiple valid Trust Chains are found, Party A will
           need to decide on which one to use.
 	  One simple rule would be to prefer a shorter chain over a longer one.
-	  Consumers MAY follow other rules according to local policy.
+	  Federation participants MAY follow other rules according to local policy.
 	</t>
       </section>
 
@@ -4666,10 +4698,10 @@ Content-Type: application/json
       <t>
         As described in <xref target="trust_lifetime"/>,
         each Trust Chain has an expiration time.
-        A consumer of metadata MUST support
+        Federation participants MUST support
         refreshing a Trust Chain when it expires.
-        How often a consumer SHOULD re-evaluate the Trust Chain depends on
-        how quickly the consumer wants to find out that something has changed.
+        How often a participant reevaluates the Trust Chain depends on
+        how quickly it wants to find out that something has changed.
       </t>
 
       <section title="Protocol Key Rollover">
@@ -4686,9 +4718,9 @@ Content-Type: application/json
                anchor="key_rollover_anchor">
         <t>
           A Trust Anchor MUST publish an Entity Configuration about
-          itself. The Trust Anchor SHOULD set a reasonable expiration
-          time on that Statement, such that the consumers will re-fetch the
-          Entity Configuration at reasonable intervals.
+          itself. The Trust Anchor SHOULD set an expiration
+          time on its Entity Configuration,
+	  such that federation participants will re-fetch it at reasonable intervals.
 	  When a Trust Anchor rolls over its signing keys, it needs to:
         </t>
         <t>
@@ -4732,7 +4764,7 @@ Content-Type: application/json
 
       <section title="Revocation">
         <t>
-          Since the consumers are expected to check the Trust Chain on a regular
+          Since the participants in federations are expected to check the Trust Chain on a regular
           frequent basis, this specification does not define a
           revocation process. Specific federations MAY make a
           different choice and will then have to define their own revocation process.
@@ -6898,8 +6930,7 @@ HTTP/1.1 302 Found
           <title>Financial-grade API Security Profile 1.0 - Part 2: Advanced</title>
 
           <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
-            <organization abbrev="NRI">Nat Consulting
-            </organization>
+            <organization abbrev="NRI">Nat Consulting</organization>
           </author>
 
           <author fullname="John Bradley" initials="J." surname="Bradley">
@@ -8186,10 +8217,11 @@ Host: op.umu.se
         Francesco Marino,
         Roberto Polli,
         Jouke Roorda,
+	Nat Sakimura,
         Mischa Sallé,
         Stefan Santesson,
         Marcos Sanz,
-        Peter Schober,
+        Peter Brand,
         Michael Schwartz,
         Giada Sciarretta,
         Amir Sharif,
@@ -8214,6 +8246,14 @@ Host: op.umu.se
           <t>
             Fixed #2075: Trust Mark endpoint for the provisioning of the Trust Marks.
           </t>
+	  <t>
+            Fixed #2085: Trust Marked Entities Listing,
+	    added <spanx style="verb">sub</spanx> urlquery parameter.
+          </t>
+	  <t>
+	    Made fetch issuer unambiguous by making
+	    the <spanx style="verb">iss</spanx> parameter REQUIRED.
+	  </t>
 	  <t>
 	    Introduced the term "Subordinate Statement"
 	    and applied it throughout the specification.
