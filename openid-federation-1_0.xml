@@ -3219,39 +3219,39 @@
             the <spanx style="verb">https</spanx> scheme to a resolved federation endpoint with the
             following query string parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
+	    The request is made to the fetch endpoint of the specified issuer.
           </t>
           <t>
             <list style="hanging">
               <t hangText="iss">
                 <vspace/>
-                OPTIONAL. The Entity Identifier of the issuer
-                from which the Entity Statement issued. Because of the
+                REQUIRED. The Entity Identifier of the issuer
+                from which the Entity Statement is issued. Because of the
                 normalization of the URL, multiple issuers MAY resolve to a
                 shared fetch endpoint. This parameter makes it explicit exactly
-                which issuer the Entity Statements must come from. Without this
-                parameter, the issuer matches to the Entity at
-                which the request was made.
+                which issuer the Entity Statement must come from.
               </t>
               <t hangText="sub">
                 <vspace/>
                 OPTIONAL. The Entity Identifier of the subject
                 for which the Entity Statement is issued. If this
-                parameter is left out, it is considered to be the same as the
-                issuer and would indicate a request for a self-signed
-                statement.
+                parameter is omitted, it is considered to be the same as the
+                issuer and indicates a request for a self-signed
+                Entity Configuration.
               </t>
             </list>
           </t>
           <figure>
             <preamble>
               The following is a non-normative example of an HTTP GET request for
-	      an Entity Statement related to https://openid.sunet.se:
+	      a Subordinate Statement from edugain.org about https://openid.sunet.se:
             </preamble>
             <name>
 	      API Request for an Entity Statement
             </name>
             <artwork><![CDATA[
 GET /federation_fetch_endpoint?
+iss=https%3A%2F%2Fedugain%2Eorg&
 sub=https%3A%2F%2Fopenid%2Esunet%2Ese HTTP/1.1
 Host: edugain.org
 ]]></artwork>
@@ -8221,6 +8221,7 @@ Host: op.umu.se
         Francesco Marino,
         Roberto Polli,
         Jouke Roorda,
+	Nat Sakimura,
         Mischa Sallé,
         Stefan Santesson,
         Marcos Sanz,
@@ -8252,6 +8253,10 @@ Host: op.umu.se
           <t>
             Tightened appendix examples.
           </t>
+	  <t>
+	    Made fetch issuer unambiguous by making
+	    the <spanx style="verb">iss</spanx> parameter REQUIRED.
+	  </t>
         </list>
       </t>
 
