@@ -961,13 +961,18 @@
           <xref target="RFC7515">JWS</xref>.
           The issuer of the JWS SHOULD select the Trust Anchor that it has in common
           with the audience of the JWS.
-	  Otherwise, the issuer is free to select a Trust Anchor.
+	      Otherwise, the issuer is free to select a Trust Anchor.
           All signed JWTs MAY include the
-          <spanx style="verb">trust_chain</spanx> JWS header parameter,
-          with the exception of Entity Configurations and Subordinate Statements.
-          These MUST NOT contain the
-          <spanx style="verb">trust_chain</spanx> header parameter,
-          as they are integral components of a Trust Chain themselves.
+          <spanx style="verb">trust_chain</spanx> JWS header parameter.
+          However, there are exceptions to this rule. The 
+          Entity Configurations and Subordinate Statements MUST NOT 
+          contain the 'trust_chain' header parameter,
+          as they are integral components of a Trust Chain. Additionally, 
+          the Authorization Signed Request Object SHOULD NOT contain the 
+          <spanx style="verb">trust_chain</spanx> header parameter, because
+          the <spanx style="verb">trust_chain</spanx> 
+          parameter is intended to be part of its JWS payload, as defined in
+          <xref target="trust_chain_param"/>.
           Use of this header parameter is OPTIONAL.
           </t>
 
@@ -3417,8 +3422,8 @@ Host: openid.sunet.se
 	  </t>
           <t>
             The resolve response MAY also return the Trust Chain
-	    from its issuer to the Trust Anchor
-	    in the <spanx style="verb">trust_chain</spanx> JWS header parameter,
+            from its issuer to the Trust Anchor
+            in the <spanx style="verb">trust_chain</spanx> JWS header parameter,
             as specified in <xref target="trust_chain_head_param"/>.
             When this is present, the Trust Anchor in the Trust Chain
             MUST match the Trust Anchor requested in the
@@ -4868,7 +4873,7 @@ Content-Type: application/json
                   <vspace/>
                   REQUIRED. JWT ID. A unique identifier for the JWT, which can
                   be used to prevent reuse of the Request Object.
-		  A Request Object MUST only
+                  A Request Object MUST only
                   be used once, unless conditions for reuse were negotiated
                   between the parties; any such negotiation is beyond the scope
                   of this specification.
@@ -4899,18 +4904,7 @@ Content-Type: application/json
             <section title="Authorization Request with a Trust Chain" anchor="trust_chain_authz">
 
               <t>
-              When the
-              <spanx style="verb">trust_chain</spanx>
-              JWS header parameter is
-              used in conjunction with the <spanx style="verb">trust_chain</spanx>
-              request parameter,
-              both contents MUST be identical. Otherwise the request MUST be rejected.
-              </t>
-
-              <t>
               When the <spanx style="verb">trust_chain</spanx>
-              JWS header parameter or the
-              <spanx style="verb">trust_chain</spanx>
               request parameter
               are used in the Authorization Request Object, the Relying Party
               informs the OP of the sequence of Entity Statements
@@ -4939,11 +4933,6 @@ Content-Type: application/json
 {
   "alg": "RS256",
   "kid": "that-kid-which-points-to-a-jwk-contained-in-the-trust-chain",
-  "trust_chain" : [
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6Ims1NEhRdERpYnlHY3M5WldWTWZ2aUhm ...",
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ...",
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ..."
-  ]
 }
 .
 {
@@ -4957,7 +4946,12 @@ Content-Type: application/json
   "redirect_uri": "https://rp.example.com/authz_cb",
   "response_type": "code",
   "scope": "openid profile email address phone",
-  "state": "YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ"
+  "state": "YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ",
+  "trust_chain" : [
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6Ims1NEhRdERpYnlHY3M5WldWTWZ2aUhm ...",
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ...",
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ..."
+  ]
 }
 ]]></artwork>
             </figure>
@@ -4965,7 +4959,7 @@ Content-Type: application/json
               <preamble>
                 The following is a non-normative example of an Authentication
                 Request using the <spanx style="verb">request</spanx> parameter
-		(with line wraps within values for display purposes only):
+                (with line wraps within values for display purposes only):
               </preamble>
 	      <name>
 		Authentication Request Using Request Object
@@ -4977,26 +4971,27 @@ GET /authorize?
     &scope=openid+profile+email+address+phone
     &response_type=code
     &client_id=https%3A%2F%2Frp.example.com
-    &request=eyJ0cnVzdF9jaGFpbiI6WyJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SW1z
-      MU5FaFJkRVJwWW5sSFkzTTVXbGRXVFdaMmFVaG0gLi4uIiwiZXlKaGJHY2lPaUpT
-      VXpJMU5pSXNJbXRwWkNJNklrSllkbVp5Ykc1b1FVMTFTRkl3TjJGcVZXMUJZMEpT
-      IC4uLiIsImV5SmhiR2NpT2lKU1V6STFOaUlzSW10cFpDSTZJa0pZZG1aeWJHNW9R
-      VTExU0ZJd04yRnFWVzFCWTBKUyAuLi4iXSwiYWxnIjoiUlMyNTYiLCJraWQiOiI2
-      X2VGcGNoNXpTYm1QT3hMdGRGLXlrM1dqVFJvUGpBMll6UTd5YnJmV2dvIn0.eyJh
-      dWQiOiJodHRwczovL29wLmV4YW1wbGUub3JnIiwiY2xpZW50X2lkIjoiaHR0cHM6
-      Ly9ycC5leGFtcGxlLmNvbSIsImV4cCI6MTU4OTY5OTE2MiwiaWF0IjoxNTg5Njk5
-      MTAyLCJpc3MiOiJodHRwczovL3JwLmV4YW1wbGUuY29tIiwianRpIjoiNGQzZWMw
-      ZjgxZjEzNGVlOWE5N2UwNDQ5YmU2ZDMyYmUiLCJub25jZSI6IjRMWDBtRk14ZEJq
-      a0dtdHg3YThXSU9uQiIsInJlZGlyZWN0X3VyaSI6Imh0dHBzOi8vcnAuZXhhbXBs
-      ZS5jb20vYXV0aHpfY2IiLCJyZXNwb25zZV90eXBlIjoiY29kZSIsInNjb3BlIjoi
-      b3BlbmlkIHByb2ZpbGUgZW1haWwgYWRkcmVzcyBwaG9uZSIsInN0YXRlIjoiWW1Y
-      OFBNOUk3V2JOb01ubmllS0tCaXB0Vlcwc1AyT1oiLCJzdWIiOiJodHRwczovL3Jw
-      LmV4YW1wbGUuY29tIn0.Gjo1NSYAx5PIllnUJhRCzZT-ezqyofU95pnGsgzclTfj
-      cYCwSef_g2cniIWX4-35cAYR-NcAGEzaDIvQgzQ90O_24HlCtZ6yvUlb65uhZGGt
-      O1TvsI7bl-92yrYCKD8fmaWH73R7qXZ8uLNspRy0L4emGXdUrFJ8RozE5asEdY_L
-      _1orhot6uwWWrYE5cSyxJqCk_G1ackqKRmOlHB3EX3pNmVZodz6DQyONLeBqiMId
-      xpvVALEkmpAQavEwrfpA-s4K3QIJrKAbEVQ1AfyQR0cGDd7fF4bju-wigYhBura0
-      Pv4PrEFSNYG22b5ZPoubTPoFe-7W5Ypec_Io1aXNDA HTTP/1.1
+    &request=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5fX0Q5OEl2QjhOYWUta3dBNm5yT3QtaXBU
+        aGpIa0R4MzduaWNETUgzTjQifQ.eyJhdWQiOiJodHRwczovL29wLmV4YW1wbGUub
+        3JnL2F1dGhvcml6YXRpb24tZW5kcG9pbnQiLCJjbGllbnRfaWQiOiJodHRwczovL
+        3JwLmV4YW1wbGUuY29tIiwiZXhwIjoxNTg5Njk5MTYyLCJpYXQiOjE1ODk2OTkxM
+        DIsImlzcyI6Imh0dHBzOi8vcnAuZXhhbXBsZS5jb20iLCJqdGkiOiI0ZDNlYzBmO
+        DFmMTM0ZWU5YTk3ZTA0NDliZTZkMzJiZSIsIm5vbmNlIjoiNExYMG1GTXhkQmprR
+        210eDdhOFdJT25CIiwicmVkaXJlY3RfdXJpIjoiaHR0cHM6Ly9ycC5leGFtcGxlL
+        mNvbS9hdXRoel9jYiIsInJlc3BvbnNlX3R5cGUiOiJjb2RlIiwic2NvcGUiOiJvc
+        GVuaWQgcHJvZmlsZSBlbWFpbCBhZGRyZXNzIHBob25lIiwic3RhdGUiOiJZbVg4U
+        E05STdXYk5vTW5uaWVLS0JpcHRWVzBzUDJPWiIsInRydXN0X2NoYWluIjpbImV5S
+        mhiR2NpT2lKU1V6STFOaUlzSW10cFpDSTZJbXMxTkVoUmRFUnBZbmxIWTNNNVdsZ
+        FdUV1oyYVVobSAuLi4iLCJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SWtKW
+        WRtWnliRzVvUVUxMVNGSXdOMkZxVlcxQlkwSlMgLi4uIiwiZXlKaGJHY2lPaUpTV
+        XpJMU5pSXNJbXRwWkNJNklrSllkbVp5Ykc1b1FVMTFTRkl3TjJGcVZXMUJZMEpTI
+        C4uLiJdfQ.Rv0isfuku0FcRFintgxgKDk7EnhFkpQRg3Tm6N6fCHAHEKFxVVdjy4
+        9JboJtxKcQVZKN9TKn3lEYM1wtF1e9PQrNt4HZ21ICfnzxXuNx1F5SY1GXCU2n2y
+        FVKtz3N0YkAFbTStzy-sPRTXB0stLBJH74RoPiLs2c6dDvrwEv__GA7oGkg2gWt6
+        VDvnfDpnvFi3ZEUR1J8MOeW_VFsayrT9sNjyjsz62Po4LzvQKQMKxq0dNwPNYuuS
+        fUmb-YvmFguxDb3weYl8WS-
+        48EIkP1h4b_KGU9x9n7a1fUOHrS02ATQZmaL8jUil7yLJqx5MiCsPr4pCAXV0doA
+        4pwhs_FIw HTTP/1.1
 
 ]]></artwork>
             </figure>
@@ -5015,9 +5010,7 @@ GET /authorize?
               <t>
                 An RP MAY present a Trust Chain related to itself to the OP in the Request Object using the
                 <spanx style="verb">trust_chain</spanx> request parameter
-		defined in <xref target="trust_chain_param"/> or the
-                <spanx style="verb">trust_chain</spanx> JWS header parameter
-		defined in <xref target="trust_chain_head_param"/>.
+		        defined in <xref target="trust_chain_param"/>.
                 If the OP does not have a valid registration for the RP or
                 its registration has expired, the OP MAY use the received
                 Trust Chain as a hint for which path to take from the
@@ -5037,16 +5030,12 @@ GET /authorize?
                 all of its statements. This is true whether these statements
                 are retrieved from their URLs or whether they
                 are provided via the <spanx style="verb">trust_chain</spanx>
-                request parameter or the
-                JWS header parameter
-                in the Request Object.
+                request parameter in the Request Object.
               </t>
               <t>
                 If the RP does not include the
                 <spanx style="verb">trust_chain</spanx>
-                request parameter or the
-                JWS header parameter
-                in the Request Object,
+                request parameter in the Request Object,
                 or the OP does not support this feature, it then MUST
                 validate the possible Trust Chains, starting with the RP's Entity Configuration,
                 as described in <xref target="fetching-es"/>,
@@ -8266,6 +8255,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #2093: Numbered the list defining the order policy operators are applied in.
+	  </t>
+	  <t>
+	    Fixed #2096: Authorization Signed Request Object may contain <spanx style="verb">trust_chain</spanx> in its payload and should not in its JWS header parameters.
 	  </t>
 	</list>
       </t>
