@@ -5867,14 +5867,15 @@ HTTP/1.1 302 Found
           An adversary, providing hundreds of fake
           <spanx style="verb">authority_hints</spanx>
           in its Entity Configuration,
-          could exploit the Federation Entity Discovery mechanism and use an OpenID Federation
+          could exploit the Federation Entity Discovery mechanism
           to propagate many HTTP requests. 
           Imagine an adversary controlling an RP that sends an authorization
           request to an OP. For each request crafted
-          by an adversary, the OP produces one request for 
+          by the adversary, the OP produces one request for 
           the adversary's Entity Configuration and another one 
-          for each of the Superiors.
-
+          for each URL found in the <spanx style="verb">authority_hints</spanx>.
+        </t>
+        <t>
           If these endpoints are provided, some adequate defense methods are required,
           such as those described below and in
           <xref target="RFC4732"/>.
@@ -5883,32 +5884,31 @@ HTTP/1.1 302 Found
           Implementations should set a limit on the number of 
           <spanx style="verb">authority_hints</spanx> 
           they are willing to inspect. This is to protect against attacks 
-          where an adversary might define hundreds of false 
+          where an adversary might define a large count of false 
           <spanx style="verb">authority_hints</spanx> 
           in their Entity Configuration.
         </t>        
         <t>
-          A static <xref target="trust_chain_head_param">Trust Chain</xref>, 
-          can be provided by the entity issuing the request, as explained 
+          A static <xref target="trust_chain_head_param">Trust Chain</xref> 
+          can be provided by the Entity issuing the request, as explained 
           in <xref target="UsingAuthzRequestObject"/>.
           The static Trust Chain gives a predefined trust path, 
           meaning that Federation Entity Discovery need not be performed.
           In this case, the propagation attacks will
           be prevented, since the Trust Chain can be statically validated with the
-          Trust Anchor's public key and renewed by following the static path provided,
-          from the Leaf to the Trust Anchor.
+          Trust Anchor's public key.
         </t>
         <t>
           A Trust Mark can be statically validated using the public key of its issuer.
           The static validation of the Trust Marks represents a
           filter against propagation attacks. 
           If the OpenID Provider (OP) discovers at least one valid Trust Mark 
-          within an Entity Configuration, it serves as evidence of 
+          within an Entity Configuration, this may serve as evidence of 
           the reliability of the Relying Party that initiated the request.
           Given that the Trust Mark is optional, the decision to require 
-          it is at the discretion of the federation implementation. 
+          one is at the discretion of the federation implementation. 
           A federation can choose to define and require Trust Marks 
-          as per their specific needs.
+          according to their specific needs.
         </t>
         <t>
           If Client authentication is not required at the resolve endpoint, 
