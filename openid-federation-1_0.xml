@@ -910,38 +910,47 @@
           </name>
           <artwork><![CDATA[
 .----------------.  .---------------------------.         .---------------------------.
-| ROLE           |  | .well-known/              |         | TRUST CHAIN               |
+| Role           |  | .well-known/              |         | Trust Chain               |
 |                |  | openid-federation         |         |                           |
-+----------------+  +---------------------------+         +---------------------------+
-|                |  |                           |         |                           |
-| .------------. |  | .-----------------------. | Fetch   | .-----------------------. |
-| |            | |  | | ENTITY CONFIGURATION  | | Endpoint| | ENTITY STATEMENT      | |
-| |Trust Anchor| |  | |                       +------------->                       | |
-| |            +------> Federation Entity Keys| |         | | Federation Entity Keys| |
-| '------------' |  | | Metadata              | |         | | Metadata Policy       | |
-|                |  | | Trust Mark issuers    | |         | | Metadata              | |
-|                |  | | Constraints           | |         | | Constraints           | |
-|                |  | |                       | |         | '-----------+-----------' |
-|                |  | '-----------------------' |         |             |sub and      |
-|                |  |                           |         |             |cryptographic|
-|                |  |                           |         |             |binding      |
-| .------------. |  | .-----------------------. | Fetch   | .-----------v-----------. |
-| |            | |  | | ENTITY CONFIGURATION  | | Endpoint| | ENTITY STATEMENT      | |
-| |Intermediate+------>                       +------------->                       | |
-| |            | |  | | Federation Entity Keys| |         | | Federation Entity Keys| |
-| '------------' |  | | Metadata              | |         | | Metadata Policy       | |
-|                |  | | Trust Marks           | |         | | Metadata              | |
-|                |  | |                       | |         | |                       | |
-|                |  | |                       | |         | '-----------+-----------' |
-|                |  | '-----------------------' |         |             |sub and      |
-|                |  |                           |         |             |cryptographic|
-|                |  |                           |         |             |binding      |
+.----------------.  .---------------------------.         .---------------------------.
+| .------------. |  | .-----------------------. |         | .-----------------------. |
+| |            | |  | | Entity Configuration  | |         | | Entity Configuration  | |
+| |Trust Anchor+-+--+->                       +-+---------+->                       | |
+| |            | |  | | federation entity keys| |         | | federation entity keys| |
+| '-----.------' |  | | metadata              | |         | | metadata              | |
+|       |        |  | | trust mark issuers    | |         | | trust mark issuers    | |
+|       |        |  | | constraints           | |         | | constraints           | |
+|       |        |  | |                       | |         | |                       | |
+|       |        |  | '-----------------------' |         | '-----------------------' |
+|       |        |  |                           |         |                           |
+|       |        |  |                           |Fetch    | .-----------------------. |
+|       |        |  |                           |endpoint | | Subordinate Statement | |
+|       +--------+--+---------------------------+---------+->                       | |
+|                |  |                           |         | | federation entity keys| |
+|                |  |                           |         | | metadata policy       | |
+|                |  |                           |         | | metadata              | |
+|                |  |                           |         | |                       | |
+|                |  |                           |         | '-----------.-----------' |
+| .------------. |  | .-----------------------. |         |             |             |
+| |            | |  | | Entity Configuration  | |         |             |             |
+| |Intermediate+-+--+->                       | |         |             |sub and key  |
+| |            | |  | | federation entity keys| |         |             | binding     |
+| '------.-----' |  | | metadata              | |         | .-----------v-----------. |
+|        |       |  | | trust marks           | |         | | Subordinate Statement | |
+|        |       |  | |                       | |         | |                       | |
+|        |       |  | |                       | |         | | federation entity keys| |
+|        |       |  | '-----------------------' |Fetch    | | metadata policy       | |
+|        |       |  |                           |endpoint | | metadata              | |
+|        +-------+--+---------------------------+---------+->                       | |
+|                |  |                           |         | '-----------.-----------' |
+|                |  |                           |         |             |sub and key  |
+|                |  |                           |         |             | binding     |
 | .------------. |  | .-----------------------. |         | .-----------v-----------. |
-| |            | |  | | ENTITY CONFIGURATION  | |         | | ENTITY CONFIGURATION  | |
-| |Leaf        +------>                       |------------->                       | |
-| |            | |  | | Federation Entity Keys| |         | | Federation Entity Keys| |
-| '------------' |  | | Metadata              | |         | | Metadata              | |
-|                |  | | Trust Marks           | |         | | Trust Marks           | |
+| |            | |  | | Entity Configuration  | |         | | Entity Configuration  | |
+| | Leaf       +-+--+->                       +-+---------+->                       | |
+| |            | |  | | federation entity keys| |         | | federation entity keys| |
+| '------------' |  | | metadata              | |         | | metadata              | |
+|                |  | | trust marks           | |         | | trust marks           | |
 |                |  | |                       | |         | |                       | |
 |                |  | |                       | |         | |                       | |
 |                |  | '-----------------------' |         | '-----------------------' |
@@ -8203,6 +8212,7 @@ Host: op.umu.se
         The authors wish to acknowledge the contributions of the following
         individuals and organizations to this specification:
         Pasquale Barbaro,
+        David Chadwick,
         Michele D'Amico,
         Andrii Deinega,
         Erick Domingues,
@@ -8214,7 +8224,7 @@ Host: op.umu.se
         Francesco Marino,
         Roberto Polli,
         Jouke Roorda,
-	Nat Sakimura,
+	    Nat Sakimura,
         Mischa Sallé,
         Stefan Santesson,
         Marcos Sanz,
