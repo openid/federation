@@ -5849,27 +5849,65 @@ HTTP/1.1 302 Found
           (<xref target="explicit"/>), and
           Automatic Client Registration (<xref target="automatic"/>) can
           be exploited as vectors of HTTP propagation attacks.
-
+          Below is an explanation of how such an attack can occur and 
+          the countermeasures to prevent it.
+        </t>
+        <t>
+          An adversary, providing hundreds of fake
+          <spanx style="verb">authority_hints</spanx>
+          in its Entity Configuration,
+          could exploit the Federation Entity Discovery mechanism
+          to propagate many HTTP requests. 
+          Imagine an adversary controlling an RP that sends an authorization
+          request to an OP. For each request crafted
+          by the adversary, the OP produces one request for 
+          the adversary's Entity Configuration and another one 
+          for each URL found in the <spanx style="verb">authority_hints</spanx>.
+        </t>
+        <t>
           If these endpoints are provided, some adequate defense methods are required,
           such as those described below and in
           <xref target="RFC4732"/>.
         </t>
         <t>
-          A Trust Mark can be statically validated using the public key of its issuer.
-          The static validation of the Trust Marks represents a
-          filter against propagation attacks. An attacker
-          could exploit the Federation Entity Discovery mechanism and use an OpenID Federation
-          to propagate many HTTP requests. For each authorization request crafted
-          by an anonymous client, the OP would produce approximately three HTTP requests to third parties
-          in the absence of Intermediates, and at least five HTTP requests with at
-          least one Intermediate. If an OP does not find at least one
-          valid Trust Mark in an Entity Configuration, it should reject the request and
-          temporary ban the requestor.
+          Implementations should set a limit on the number of 
+          <spanx style="verb">authority_hints</spanx> 
+          they are willing to inspect. This is to protect against attacks 
+          where an adversary might define a large count of false 
+          <spanx style="verb">authority_hints</spanx> 
+          in their Entity Configuration.
+        </t>        
+        <t>
+          Entities may be required to include a 
+          <xref target="trust_chain_head_param">Trust Chain</xref> 
+          in their requests, as explained in <xref target="UsingAuthzRequestObject"/>.
+          The static Trust Chain gives a predefined trust path, 
+          meaning that Federation Entity Discovery need not be performed.
+          In this case, the propagation attacks will
+          be prevented, since the Trust Chain can be statically validated with the
+          Trust Anchor's public key.
         </t>
         <t>
-          If client authentication is not demanded at the resolve endpoint
-          then incoming requests should not result in the immediate
-          collection (Federation Entity Discovery process) and evaluation of Trust Chains by default.
+          A Trust Mark can be statically validated using the public key of its issuer.
+          The static validation of the Trust Marks represents a
+          filter against propagation attacks. 
+          If the OpenID Provider (OP) discovers at least one valid Trust Mark 
+          within an Entity Configuration, this may serve as evidence of 
+          the reliability of the Relying Party that initiated the request.
+          Given that the Trust Mark is optional, the decision to require 
+          one is at the discretion of the federation implementation, 
+          where a federation may define and require Trust Marks 
+          according to specific needs.
+        </t>
+        <t>
+          If Client authentication is not required at the resolve endpoint, 
+          then incoming requests should not automatically trigger the collection 
+          (Federation Entity Discovery process) and assessment of Trust Chains. 
+          Instead, the resolve endpoint should only respond to unauthenticated 
+          Client requests with cached information about Entities that have 
+          already been evaluated and deemed trustworthy. The initiation of 
+          the Federation Entity Discovery process should not be the default 
+          action for the resolve endpoint in this case.
         </t>
       </section>
       <section title="Unsigned Error Messages" anchor="UnsignedError">
