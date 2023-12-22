@@ -474,7 +474,7 @@
               the Entity Identifiers of Intermediate Entities or Trust Anchors
               that MAY issue Subordinate Statements about the Entity.
               This claim is REQUIRED in the Entity Configurations of
-              the Entities that have at least one Superior above them, 
+              the Entities that have at least one Superior above them,
               such as Leaf and Intermediate Entities.
               Its value MUST NOT be the empty array
               <spanx style="verb">[]</spanx>.
@@ -2210,7 +2210,7 @@
 "metadata_policy": {
   "oauth_client": {
     "grant_types": {
-      "subset_of": ["authorization_code", "refresh_token", "implicit"],
+      "subset_of": ["authorization_code", "refresh_token"],
       "default": ["authorization_code", "refresh_token"]
     },
     "token_endpoint_auth_method": {
@@ -3942,7 +3942,7 @@ Content-Type: application/json
                 OPTIONAL. The Entity Identifier of the Entity to which the Trust Mark
                 was issued. The list obtained in the response MUST be filtered to only
                 the Entity matching this value.
-              </t>              
+              </t>
             </list>
           </t>
           <figure>
@@ -3996,15 +3996,15 @@ Content-Type: application/json
 
      <section title="Trust Mark Endpoint" anchor="tm_endpoint">
         <t>
-		  The Trust Mark endpoint is protected endpoint 
+		  The Trust Mark endpoint is protected endpoint
           exposed by
           Trust Mark issuers
           to provide the Trust Marks to their owners.
         </t>
 	<t>
-	  The Trust Mark endpoint is published in the 
+	  The Trust Mark endpoint is published in the
       <spanx style="verb">federation_entity</spanx> metadata
-	  using the 
+	  using the
 	  <spanx style="verb">federation_trust_mark_endpoint</spanx> claim.
 	</t>
 
@@ -4012,7 +4012,7 @@ Content-Type: application/json
           <t>
             The HTTP request MUST use the POST method with the
             following query parameters, encoded in
-            <spanx style="verb">application/x-www-form-urlencoded</spanx> 
+            <spanx style="verb">application/x-www-form-urlencoded</spanx>
             format.
           </t>
           <t>
@@ -4023,9 +4023,9 @@ Content-Type: application/json
               </t>
               <t hangText="client_assertion">
                 <vspace/>
-                REQUIRED. Signed JWT using the private key of the 
-                subject's Federation Entity Key. 
-                The payload of the signed JWT MUST contain the 
+                REQUIRED. Signed JWT using the private key of the
+                subject's Federation Entity Key.
+                The payload of the signed JWT MUST contain the
                 following parameters:
                 <list>
                     <t hangText="iss">
@@ -4059,7 +4059,7 @@ Content-Type: application/json
               </t>
               <t hangText="client_assertion_type">
                 <vspace/>
-                REQUIRED. It MUST be set to 
+                REQUIRED. It MUST be set to
                 <spanx style="verb">urn:ietf:params:oauth:client-assertion-type:jwt-bearer</spanx>.
               </t>
             </list>
@@ -4089,13 +4089,13 @@ client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwtb
         <section title="Trust Mark Response">
           <t>
             A successful response MUST use the HTTP status code 200
-            with the content type 
+            with the content type
             <spanx style="verb">application/trust-mark+jwt</spanx>,
             containing the Trust Mark.
           </t>
 
           <t>
-            If the specified Entity doesn't have 
+            If the specified Entity doesn't have
             the specified Trust Mark, the
             response is negative and
             MUST use the HTTP status code 404.
