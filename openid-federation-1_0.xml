@@ -540,30 +540,9 @@
             <t hangText="crit">
               <vspace/>
               OPTIONAL.
-              The <spanx style="verb">crit</spanx> (critical) claim
-              indicates that extensions to the set of claims
-	      specified for use in this type of JWT are being used
-	      that MUST be understood and processed.
-              It is used in the same way that
-              the <spanx style="verb">crit</spanx> header parameter
-              is used for extension JOSE header parameters
-	      that MUST be understood and processed.
-              Its value is an array listing the claim names
-              present in the JWT that use those extensions.
-              If any of the listed claims are not
-              understood and supported by the recipient, then the JWT is invalid.
-              Producers MUST NOT include claim names already
-	      specified for use in this type of JWT,
-	      duplicate names, or
-              names that do not occur as claim names in the JWT
-              in the <spanx style="verb">crit</spanx> list.
-              Producers MUST NOT use the empty array
-              <spanx style="verb">[]</spanx>
-              as the <spanx style="verb">crit</spanx> value.
-	      <vspace blankLine="1"/>
-
-	      When the JWT is an Entity Statement, this claim is OPTIONAL,
-	      but when present, it MUST be understood and processed.
+	      Entity Statements require that
+	      the <spanx style="verb">crit</spanx> (critical) claim
+	      defined in <xref target="critClaim"/> be understand and processed.
 	      Claims specified for use in Entity Statements by this specification
 	      MUST NOT be included in the list.
             </t>
@@ -2662,17 +2641,10 @@
               </t>
               <t hangText="id">
                 <vspace/>
+		REQUIRED.
 		The <spanx style="verb">id</spanx> (identifier) claim
-		provides an identifier for a property of the JWT.
-		Like the <spanx style="verb">sub</spanx> (subject) claim,
-		the processing of this claim is generally application specific.
-		The <spanx style="verb">id</spanx> value is a case-sensitive string
-		containing a StringOrURI value.
-		Use of this claim in JWTs is OPTIONAL.
-		<vspace blankLine="1"/>
-
-		This claim is REQUIRED when the JWT is a Trust Mark.
-		In this case, its value is the identifier of the Trust Mark.
+		defined in <xref target="idClaim"/> is used in Trust Marks
+		to provide the identifier of the Trust Mark.
                 The Trust Mark identifier
                 MUST be collision-resistant
                 across multiple federations.
@@ -2704,36 +2676,21 @@
               </t>
               <t hangText="ref">
                 <vspace/>
+		OPTIONAL.
 		The <spanx style="verb">ref</spanx> (reference) claim
-		provides a URI property for the JWT.
-		Like the <spanx style="verb">sub</spanx> (subject) claim,
-		the processing of this claim is generally application specific.
-		The <spanx style="verb">ref</spanx> value is a case-sensitive string
-		containing a URI value.
-		Use of this claim in JWTs is OPTIONAL.
-		<vspace blankLine="1"/>
-
-		When the JWT is a Trust Mark,
-		its value is a URL that refers to human-readable information
-		connected to the issuance of the Trust Mark.
-		Use of this claim in Trust Marks is OPTIONAL.
+		defined in <xref target="refClaim"/> is used in Trust Marks
+		to provide a URL referring to human-readable information
+		about the issuance of the Trust Mark.
               </t>
               <t hangText="delegation">
                 <vspace/>
+		OPTIONAL.
 		The <spanx style="verb">delegation</spanx> claim
-		expresses a delegation relationship.
-		Like the <spanx style="verb">sub</spanx> (subject) claim,
-		the processing of this claim is generally application specific.
-		The <spanx style="verb">delegation</spanx> value is a case-sensitive string.
-		Use of this claim in JWTs is OPTIONAL.
-		<vspace blankLine="1"/>
-
-		When the JWT is a Trust Mark,
-		its value is a signed JWT containing information about
+		defined in <xref target="delegationClaim"/> is used in Trust Marks
+		to provide a signed JWT containing information about
 		a delegation of the right to issue Trust Marks with a particular identifier
                 created by the owner of the Trust Mark
 		that identifies the delegated issuer of the Trust Mark.
-		Use of this claim in Trust Marks is OPTIONAL.
               </t>
             </list>
           </t>
@@ -5827,6 +5784,76 @@ HTTP/1.1 302 Found
 
     </section>
 
+    <section anchor="GeneralPurposeClaims" title="General-Purpose JWT Claims">
+      <t>
+	This section defines general-purpose JWT claims designed to be used
+	by many different JWT profiles.
+	They are also used in specific kinds of JWTs defined by this specification.
+      </t>
+
+      <section anchor="critClaim" title='"crit" (Critical) Claim'>
+	<t>
+	  The <spanx style="verb">crit</spanx> (critical) claim
+	  indicates that extensions to the set of claims
+	  specified for use in this type of JWT are being used
+	  that MUST be understood and processed.
+	  It is used in the same way that
+	  the <spanx style="verb">crit</spanx> header parameter
+	  is used for extension JOSE header parameters
+	  that MUST be understood and processed.
+	  Its value is an array listing the claim names
+	  present in the JWT that use those extensions.
+	  If any of the listed claims are not
+	  understood and supported by the recipient, then the JWT is invalid.
+	  Producers MUST NOT include claim names already
+	  specified for use in this type of JWT,
+	  duplicate names, or
+	  names that do not occur as claim names in the JWT
+	  in the <spanx style="verb">crit</spanx> list.
+	  Producers MUST NOT use the empty array
+	  <spanx style="verb">[]</spanx>
+	  as the <spanx style="verb">crit</spanx> value.
+	  Use of this claim is OPTIONAL.
+	</t>
+      </section>
+
+      <section anchor="idClaim" title='"id" (Identifier) Claim'>
+	<t>
+	  The <spanx style="verb">id</spanx> (identifier) claim
+	  provides an identifier for a property of the JWT.
+	  Like the <spanx style="verb">sub</spanx> (subject) claim,
+	  the processing of this claim is generally application specific.
+	  The <spanx style="verb">id</spanx> value is a case-sensitive string
+	  containing a StringOrURI value.
+	  Use of this claim is OPTIONAL.
+	</t>
+      </section>
+
+      <section anchor="refClaim" title='"ref" (Reference) Claim'>
+	<t>
+	  The <spanx style="verb">ref</spanx> (reference) claim
+	  provides a URI for information pertaining to the JWT.
+	  Like the <spanx style="verb">sub</spanx> (subject) claim,
+	  the processing of this claim is generally application specific.
+	  The <spanx style="verb">ref</spanx> value is a case-sensitive string
+	  containing a URI value.
+	  Use of this claim is OPTIONAL.
+	</t>
+      </section>
+
+      <section anchor="delegationClaim" title='"delegation" (Delegation) Claim'>
+	<t>
+	  The <spanx style="verb">delegation</spanx> claim
+	  expresses a delegation relationship.
+	  Like the <spanx style="verb">sub</spanx> (subject) claim,
+	  the processing of this claim is generally application specific.
+	  The <spanx style="verb">delegation</spanx> value is a case-sensitive string
+	  containing a StringOrURI value.
+	  Use of this claim is OPTIONAL.
+	</t>
+      </section>
+    </section>
+
     <section anchor="ClaimsLanguagesAndScripts" title="Claims Languages and Scripts">
       <t>
         Human-readable claim values and claim values that reference human-readable values
@@ -6691,54 +6718,6 @@ HTTP/1.1 302 Found
 	  <t>
 	    <list style="symbols">
 	      <t>
-		Claim Name: <spanx style="verb">id</spanx>
-	      </t>
-	      <t>
-		Claim Description: Identifier
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): Section <xref target="trust_mark_claims"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">ref</spanx>
-	      </t>
-	      <t>
-		Claim Description: Reference
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): Section <xref target="trust_mark_claims"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">delegation</spanx>
-	      </t>
-	      <t>
-		Claim Description: Delegation
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): Section <xref target="trust_mark_claims"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
 		Claim Name: <spanx style="verb">trust_anchor_id</spanx>
 	      </t>
 	      <t>
@@ -6764,7 +6743,55 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): Section <xref target="entity-statement"/> of this specification
+		Specification Document(s): Section <xref target="critClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">id</spanx>
+	      </t>
+	      <t>
+		Claim Description: Identifier
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section <xref target="idClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">ref</spanx>
+	      </t>
+	      <t>
+		Claim Description: Reference
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section <xref target="refClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">delegation</spanx>
+	      </t>
+	      <t>
+		Claim Description: Delegation
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): Section <xref target="delegationClaim"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -8314,6 +8341,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #2076: Promoted Trust Marks to be a top-level section.
+	  </t>
+	  <t>
+	    Added General-Purpose JWT Claims section.
 	  </t>
 	</list>
       </t>
