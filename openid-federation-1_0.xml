@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="5" month="January" year="2024"/>
+    <date day="9" month="January" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -3015,163 +3015,6 @@
         </section>
       </section>
 
-    <section
-            title="Obtaining Federation Entity Configuration Information"
-            anchor="federation_configuration">
-      <t>
-        The Entity Configuration of every participant SHOULD be exposed at a well-known endpoint.
-        The configuration endpoint is found using the
-        <xref target="RFC8615">Well-Known URIs</xref>
-        specification, with the suffix
-        <spanx style="verb">openid-federation</spanx>.
-        The scheme, host, and port
-        are taken directly from the Entity Identifier combined with the following
-        path: <spanx style="verb">/.well-known/openid-federation</spanx>.
-      </t>
-      <t>
-        If the Entity Identifier contains a path, it is concatenated after
-        <spanx style="verb">/.well-known/openid-federation</spanx>
-        in the same
-        manner
-        that path components are concatenated to the well-known identifier in
-        the OAuth 2.0 Authorization Server Metadata
-        <xref target="RFC8414"/>
-        specification.
-        Of course, in real multi-tenant deployments, in which the Entity Identifier
-        might be of the form
-        <spanx style="verb">https://multi-tenant-service.example.com/my-tenant-identifier</spanx>
-        the tenant is very likely to not have control over the path
-        <spanx style="verb">https://multi-tenant-service.example.com/.well-known/openid-federation/my-tenant-identifier</spanx>
-        whereas it is very likely to have control over the path
-        <spanx style="verb">https://multi-tenant-service.example.com/my-tenant-identifier/.well-known/openid-federation</spanx>.
-        Therefore, if using the configuration endpoint at the URL with the
-        tenant path
-        after the well-known part fails,
-        it is RECOMMENDED that callers retry at the URL with the tenant path
-        before the well-known part
-        (even though this violates <xref target="RFC8615"/>).
-      </t>
-      <t>
-        Entities SHOULD make an Entity Configuration document
-        available at the configuration endpoint.
-        There is only one exception to this
-        rule and that is for an RP that only does Explicit Registration.
-        Since it posts the Entity Configuration to the OP during client
-        registration, the OP has everything it needs from the RP.
-      </t>
-      <section title="Federation Entity Configuration Request">
-        <t>
-          An Entity Configuration document MUST be queried using an
-          HTTP GET request at the previously specified path.
-        </t>
-        <t>
-          <figure>
-	    <preamble>
-	      In this example, the requesting party would make the following request to the Entity
-	      <spanx style="verb">https://openid.sunet.se</spanx>
-	      to obtain its Entity Configuration:
-	    </preamble>
-            <name>
-	      Request for Entity Configuration
-            </name>
-            <artwork><![CDATA[
-  GET /.well-known/openid-federation HTTP/1.1
-  Host: openid.sunet.se
-]]></artwork>
-          </figure>
-        </t>
-      </section>
-      <section title="Federation Entity Configuration Response">
-        <t>The response is an Entity Configuration, as described in
-          <xref target="entity-statement"/>.
-          If the Entity is an Intermediate Entity or a Trust Anchor, the
-          response MUST contain metadata for a federation Entity
-          (<spanx style="verb">federation_entity</spanx>).
-        </t>
-        <t>
-          A successful response MUST use the HTTP status code 200
-          with the content type
-          <spanx style="verb">application/entity-statement+jwt</spanx>,
-          to make it clear that the response contains an Entity Statement.
-          In case of an error, the response
-          is as defined in
-          <xref target="error_response"/>.
-        </t>
-        <t>
-          <figure>
-	    <preamble>
-	      The following is a non-normative example JWT Claims Set for a response from an
-	      Intermediate Entity:
-	    </preamble>
-            <name>
-	      Entity Configuration Response JWT Claims Set
-            </name>
-            <artwork><![CDATA[
-{
-  "iss": "https://openid.sunet.se",
-  "sub": "https://openid.sunet.se",
-  "iat": 1516239022,
-  "exp": 1516298022,
-  "metadata": {
-    "openid_provider": {
-      "issuer": "https://openid.sunet.se",
-      "signed_jwks_uri": "https://openid.sunet.se/jwks.jose",
-      "authorization_endpoint":
-        "https://openid.sunet.se/authorization",
-      "client_registration_types_supported": [
-        "automatic",
-        "explicit"
-      ],
-      "grant_types_supported": [
-        "authorization_code"
-      ],
-      "id_token_signing_alg_values_supported": [
-        "ES256", "RS256"
-      ],
-      "logo_uri":
-        "https://www.umu.se/img/umu-logo-left-neg-SE.svg",
-      "op_policy_uri":
-        "https://www.umu.se/en/website/legal-information/",
-      "response_types_supported": [
-        "code"
-      ],
-      "subject_types_supported": [
-        "pairwise",
-        "public"
-      ],
-      "token_endpoint": "https://openid.sunet.se/token",
-      "federation_registration_endpoint":
-        "https://op.umu.se/openid/fedreg",
-      "token_endpoint_auth_methods_supported": [
-        "private_key_jwt"
-      ]
-
-    }
-  },
-  "jwks": {
-    "keys": [
-      {
-        "alg": "RS256",
-        "e": "AQAB",
-        "key_ops": [
-          "verify"
-        ],
-        "kid": "key1",
-        "kty": "RSA",
-        "n": "pnXBOusEANuug6ewezb9J_...",
-        "use": "sig"
-      }
-    ]
-  },
-  "authority_hints": [
-    "https://edugain.org/federation"
-  ]
-}
-]]></artwork>
-          </figure>
-        </t>
-      </section>
-    </section>
     <section title="Federation Endpoints" anchor="federation_endpoints">
       <t>
         The federation endpoints of an Entity can be found in the
@@ -4462,6 +4305,164 @@ Content-Type: application/json
 }
 ]]></artwork>
         </figure>
+      </section>
+    </section>
+
+    <section
+            title="Obtaining Federation Entity Configuration Information"
+            anchor="federation_configuration">
+      <t>
+        The Entity Configuration of every participant SHOULD be exposed at a well-known endpoint.
+        The configuration endpoint is found using the
+        <xref target="RFC8615">Well-Known URIs</xref>
+        specification, with the suffix
+        <spanx style="verb">openid-federation</spanx>.
+        The scheme, host, and port
+        are taken directly from the Entity Identifier combined with the following
+        path: <spanx style="verb">/.well-known/openid-federation</spanx>.
+      </t>
+      <t>
+        If the Entity Identifier contains a path, it is concatenated after
+        <spanx style="verb">/.well-known/openid-federation</spanx>
+        in the same
+        manner
+        that path components are concatenated to the well-known identifier in
+        the OAuth 2.0 Authorization Server Metadata
+        <xref target="RFC8414"/>
+        specification.
+        Of course, in real multi-tenant deployments, in which the Entity Identifier
+        might be of the form
+        <spanx style="verb">https://multi-tenant-service.example.com/my-tenant-identifier</spanx>
+        the tenant is very likely to not have control over the path
+        <spanx style="verb">https://multi-tenant-service.example.com/.well-known/openid-federation/my-tenant-identifier</spanx>
+        whereas it is very likely to have control over the path
+        <spanx style="verb">https://multi-tenant-service.example.com/my-tenant-identifier/.well-known/openid-federation</spanx>.
+        Therefore, if using the configuration endpoint at the URL with the
+        tenant path
+        after the well-known part fails,
+        it is RECOMMENDED that callers retry at the URL with the tenant path
+        before the well-known part
+        (even though this violates <xref target="RFC8615"/>).
+      </t>
+      <t>
+        Entities SHOULD make an Entity Configuration document
+        available at the configuration endpoint.
+        There is only one exception to this
+        rule and that is for an RP that only does Explicit Registration.
+        Since it posts the Entity Configuration to the OP during client
+        registration, the OP has everything it needs from the RP.
+      </t>
+      <section title="Federation Entity Configuration Request">
+        <t>
+          An Entity Configuration document MUST be queried using an
+          HTTP GET request at the previously specified path.
+        </t>
+        <t>
+          <figure>
+	    <preamble>
+	      In this example, the requesting party would make the following request to the Entity
+	      <spanx style="verb">https://openid.sunet.se</spanx>
+	      to obtain its Entity Configuration:
+	    </preamble>
+            <name>
+	      Request for Entity Configuration
+            </name>
+            <artwork><![CDATA[
+  GET /.well-known/openid-federation HTTP/1.1
+  Host: openid.sunet.se
+]]></artwork>
+          </figure>
+        </t>
+      </section>
+      <section title="Federation Entity Configuration Response">
+        <t>The response is an Entity Configuration, as described in
+          <xref target="entity-statement"/>.
+          If the Entity is an Intermediate Entity or a Trust Anchor, the
+          response MUST contain metadata for a federation Entity
+          (<spanx style="verb">federation_entity</spanx>).
+        </t>
+        <t>
+          A successful response MUST use the HTTP status code 200
+          with the content type
+          <spanx style="verb">application/entity-statement+jwt</spanx>,
+          to make it clear that the response contains an Entity Statement.
+          In case of an error, the response
+          is as defined in
+          <xref target="error_response"/>.
+        </t>
+        <t>
+          <figure>
+	    <preamble>
+	      The following is a non-normative example JWT Claims Set for a response from an
+	      Intermediate Entity:
+	    </preamble>
+            <name>
+	      Entity Configuration Response JWT Claims Set
+            </name>
+            <artwork><![CDATA[
+{
+  "iss": "https://openid.sunet.se",
+  "sub": "https://openid.sunet.se",
+  "iat": 1516239022,
+  "exp": 1516298022,
+  "metadata": {
+    "openid_provider": {
+      "issuer": "https://openid.sunet.se",
+      "signed_jwks_uri": "https://openid.sunet.se/jwks.jose",
+      "authorization_endpoint":
+        "https://openid.sunet.se/authorization",
+      "client_registration_types_supported": [
+        "automatic",
+        "explicit"
+      ],
+      "grant_types_supported": [
+        "authorization_code"
+      ],
+      "id_token_signing_alg_values_supported": [
+        "ES256", "RS256"
+      ],
+      "logo_uri":
+        "https://www.umu.se/img/umu-logo-left-neg-SE.svg",
+      "op_policy_uri":
+        "https://www.umu.se/en/website/legal-information/",
+      "response_types_supported": [
+        "code"
+      ],
+      "subject_types_supported": [
+        "pairwise",
+        "public"
+      ],
+      "token_endpoint": "https://openid.sunet.se/token",
+      "federation_registration_endpoint":
+        "https://op.umu.se/openid/fedreg",
+      "token_endpoint_auth_methods_supported": [
+        "private_key_jwt"
+      ]
+
+    }
+  },
+  "jwks": {
+    "keys": [
+      {
+        "alg": "RS256",
+        "e": "AQAB",
+        "key_ops": [
+          "verify"
+        ],
+        "kid": "key1",
+        "kty": "RSA",
+        "n": "pnXBOusEANuug6ewezb9J_...",
+        "use": "sig"
+      }
+    ]
+  },
+  "authority_hints": [
+    "https://edugain.org/federation"
+  ]
+}
+]]></artwork>
+          </figure>
+        </t>
       </section>
     </section>
 
@@ -8373,6 +8374,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Added General-Purpose JWT Claims section.
+	  </t>
+	  <t>
+	    Moved Federation Endpoints section before Obtaining Federation Entity Configuration Information section.
 	  </t>
 	</list>
       </t>
