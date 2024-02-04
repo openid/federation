@@ -3512,21 +3512,14 @@ Host: openid.sunet.se
               <t hangText="entity_type">
                 <vspace/>
                 OPTIONAL. The value of this parameter is an Entity Type Identifier.
-                If the responder knows the Entity Types of its Subordinates,
-                the result is filtered to include only those that include this Entity Type.
-
-                In cases where multiple `entity_type` parameters are provided in a URL,
-                such as `entity_type=openid_provider&entity_type=openid_relying_party`,
-                the expected behavior is to interpret these parameters using an `OR`
-                operator in the underlying filter.
-                This means that the filter should return results that match
-                any of the provided values.
-                For example, if the parameter `entity_type` is specified
-                multiple times with
-                different values, the filter should include entities that are
-                either `openid_provider` or `openid_relying_party`.
-                This approach allows for more flexible and inclusive filtering
-                based on multiple criteria specified under the same parameter name.
+                If the responder knows the Entity Types of its Subordinates, the result MUST be
+                filtered to include only those that include the specified Entity Type. When 
+                multiple <spanx style="verb">entity_type</spanx>
+                parameters are present, for example 
+                <spanx style="verb">
+                    entity_type=openid_provider&amp;entity_type=openid_relying_party
+                </spanx>, 
+                the result MUST be filtered to include all specified Entity Types.
                 
                 If the responder does not support this feature it MUST
                 use the HTTP status code 400 and the content type
