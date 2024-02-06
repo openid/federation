@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="9" month="January" year="2024"/>
+    <date day="6" month="February" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -509,10 +509,9 @@
               If <spanx style="verb">metadata</spanx> is used in a Subordinate Statement,
 	      it is only valid for the subject of the Subordinate Statement
 	      and has no impact on the subject's Subordinates.
-              If a <spanx style="verb">metadata</spanx> claim appears along with a
-              <spanx style="verb">metadata_policy</spanx> claim in an
-              Entity Statement, then for each Entity Type Identifier, claims that appear in
-              <spanx style="verb">metadata</spanx> MUST NOT appear in
+              If both <spanx style="verb">metadata</spanx> and
+              <spanx style="verb">metadata_policy</spanx> appear in a Subordinate Statement,
+              then <spanx style="verb">metadata</spanx> MUST be applied before
               <spanx style="verb">metadata_policy</spanx>.
             </t>
             <t hangText="metadata_policy">
@@ -968,13 +967,13 @@
 	      Otherwise, the issuer is free to select a Trust Anchor.
           All signed JWTs MAY include the
           <spanx style="verb">trust_chain</spanx> JWS header parameter.
-          However, there are exceptions to this rule. The 
-          Entity Configurations and Subordinate Statements MUST NOT 
+          However, there are exceptions to this rule. The
+          Entity Configurations and Subordinate Statements MUST NOT
           contain the <spanx style="verb">trust_chain</spanx>  header parameter,
-          as they are integral components of a Trust Chain. Additionally, 
-          the Authorization Signed Request Object SHOULD NOT contain the 
+          as they are integral components of a Trust Chain. Additionally,
+          the Authorization Signed Request Object SHOULD NOT contain the
           <spanx style="verb">trust_chain</spanx> header parameter, because
-          the <spanx style="verb">trust_chain</spanx> 
+          the <spanx style="verb">trust_chain</spanx>
           parameter is intended to be part of its JWS payload, as defined in
           <xref target="trust_chain_param"/>.
           Use of this header parameter is OPTIONAL.
@@ -3828,9 +3827,8 @@ Content-Type: application/json
      <section title="Trust Mark Endpoint" anchor="tm_endpoint">
         <t>
           The Trust Mark endpoint is a protected endpoint
-          exposed by
-          Trust Mark issuers
-          to provide the Trust Marks to their owners.
+          exposed by a Trust Mark issuer
+          to provide Trust Marks to subjects.
         </t>
 	<t>
 	  The Trust Mark endpoint location is published in
@@ -3865,11 +3863,11 @@ Content-Type: application/json
                     </t>
                     <t hangText="sub">
                         <vspace/>
-                        REQUIRED. This MUST the same as iss.
+                        REQUIRED. This MUST be the same as <spanx style="verb">iss</spanx>.
                     </t>
                     <t hangText="aud">
                         <vspace/>
-                        REQUIRED. URL of the federation Trust Mark endpoint.
+                        REQUIRED. URL of the Trust Mark endpoint.
                     </t>
                     <t hangText="iat">
                         <vspace/>
@@ -5923,7 +5921,7 @@ HTTP/1.1 302 Found
           (<xref target="explicit"/>), and
           Automatic Client Registration (<xref target="automatic"/>) can
           be exploited as vectors of HTTP propagation attacks.
-          Below is an explanation of how such an attack can occur and 
+          Below is an explanation of how such an attack can occur and
           the countermeasures to prevent it.
         </t>
         <t>
@@ -5931,11 +5929,11 @@ HTTP/1.1 302 Found
           <spanx style="verb">authority_hints</spanx>
           in its Entity Configuration,
           could exploit the Federation Entity Discovery mechanism
-          to propagate many HTTP requests. 
+          to propagate many HTTP requests.
           Imagine an adversary controlling an RP that sends an authorization
           request to an OP. For each request crafted
-          by the adversary, the OP produces one request for 
-          the adversary's Entity Configuration and another one 
+          by the adversary, the OP produces one request for
+          the adversary's Entity Configuration and another one
           for each URL found in the <spanx style="verb">authority_hints</spanx>.
         </t>
         <t>
@@ -5944,18 +5942,18 @@ HTTP/1.1 302 Found
           <xref target="RFC4732"/>.
         </t>
         <t>
-          Implementations should set a limit on the number of 
-          <spanx style="verb">authority_hints</spanx> 
-          they are willing to inspect. This is to protect against attacks 
-          where an adversary might define a large count of false 
-          <spanx style="verb">authority_hints</spanx> 
+          Implementations should set a limit on the number of
+          <spanx style="verb">authority_hints</spanx>
+          they are willing to inspect. This is to protect against attacks
+          where an adversary might define a large count of false
+          <spanx style="verb">authority_hints</spanx>
           in their Entity Configuration.
-        </t>        
+        </t>
         <t>
-          Entities may be required to include a 
-          <xref target="trust_chain_head_param">Trust Chain</xref> 
+          Entities may be required to include a
+          <xref target="trust_chain_head_param">Trust Chain</xref>
           in their requests, as explained in <xref target="UsingAuthzRequestObject"/>.
-          The static Trust Chain gives a predefined trust path, 
+          The static Trust Chain gives a predefined trust path,
           meaning that Federation Entity Discovery need not be performed.
           In this case, the propagation attacks will
           be prevented, since the Trust Chain can be statically validated with the
@@ -5964,23 +5962,23 @@ HTTP/1.1 302 Found
         <t>
           A Trust Mark can be statically validated using the public key of its issuer.
           The static validation of the Trust Marks represents a
-          filter against propagation attacks. 
-          If the OpenID Provider (OP) discovers at least one valid Trust Mark 
-          within an Entity Configuration, this may serve as evidence of 
+          filter against propagation attacks.
+          If the OpenID Provider (OP) discovers at least one valid Trust Mark
+          within an Entity Configuration, this may serve as evidence of
           the reliability of the Relying Party that initiated the request.
-          Given that the Trust Mark is optional, the decision to require 
-          one is at the discretion of the federation implementation, 
-          where a federation may define and require Trust Marks 
+          Given that the Trust Mark is optional, the decision to require
+          one is at the discretion of the federation implementation,
+          where a federation may define and require Trust Marks
           according to specific needs.
         </t>
         <t>
-          If Client authentication is not required at the resolve endpoint, 
-          then incoming requests should not automatically trigger the collection 
-          (Federation Entity Discovery process) and assessment of Trust Chains. 
-          Instead, the resolve endpoint should only respond to unauthenticated 
-          Client requests with cached information about Entities that have 
-          already been evaluated and deemed trustworthy. The initiation of 
-          the Federation Entity Discovery process should not be the default 
+          If Client authentication is not required at the resolve endpoint,
+          then incoming requests should not automatically trigger the collection
+          (Federation Entity Discovery process) and assessment of Trust Chains.
+          Instead, the resolve endpoint should only respond to unauthenticated
+          Client requests with cached information about Entities that have
+          already been evaluated and deemed trustworthy. The initiation of
+          the Federation Entity Discovery process should not be the default
           action for the resolve endpoint in this case.
         </t>
       </section>
@@ -7888,9 +7886,8 @@ Host: geant.org
           </t>
         </section>
       </section>
-    </section>
 
-      <section anchor="ClientRegExample" title="The Two Ways of Doing Client Registration">
+      <section anchor="ClientRegExample" title="Examples of the Two Ways of Doing Client Registration">
         <t>
           As described in
           <xref target="client_registration"/>,
@@ -8289,6 +8286,7 @@ Host: op.umu.se
           </figure>
         </section>
       </section>
+    </section>
 
     <section anchor="Notices" title="Notices">
       <t>
