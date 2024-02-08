@@ -553,29 +553,14 @@
             <t hangText="metadata_policy_crit">
               <vspace/>
               OPTIONAL.
-              The <spanx style="verb">metadata_policy_crit</spanx> (critical)
-              Entity Statement claim
-              indicates that extensions to the policy language defined by this
-              specification
-              are being used that MUST be understood and processed.
-              It is used in the same way that
-              <spanx style="verb">crit</spanx>
-              is used for extension
-              JWS header parameters that MUST be
-              understood and processed.
-              Its value is an array listing the policy language extensions
-              present in the policy language statements that use those
-              extensions.
-              If any of the listed extension policy language extensions are not
-              understood and supported by the recipient, then the Entity Statement is invalid.
-              Producers MUST NOT include policy language names defined by this
-              specification or
-              names that do not occur in metadata policy statements in the
-              Entity Statement
-              in the <spanx style="verb">metadata_policy_crit</spanx> list.
-              Producers MUST NOT use the empty array
-              <spanx style="verb">[]</spanx>
-              as the <spanx style="verb">metadata_policy_crit</spanx> value.
+              Array of strings specifying critical metadata policy operators
+              other than the standard ones defined in <xref target="policy_operators"/>
+              that MUST be understood and supported. Only Subordinate Statements
+              MAY include this claim and when included its value MUST NOT be an
+              empty array <spanx style="verb">[]</spanx>. If any of the listed
+              policy operators are not understood and supported, then the
+              Subordinate Statement and thus the Trust Chain that includes it
+              MUST be considered invalid.
             </t>
             <t hangText="trust_marks">
               <vspace/>
@@ -8362,6 +8347,9 @@ Host: op.umu.se
       <t>
 	-33
         <list style="symbols">
+      <t>
+        Addressed #2111: The policy_metadata_crit claim MAY only appear in Subordinate Statements and its values apply to all metadata_policies found in the Trust Chain.
+      </t>
 	  <t>
 	    Fixed #2096: Authorization Signed Request Object may contain <spanx style="verb">trust_chain</spanx> in its payload and should not in its JWS header parameters.
 	  </t>
