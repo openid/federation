@@ -3514,8 +3514,15 @@ Host: openid.sunet.se
               <t hangText="entity_type">
                 <vspace/>
                 OPTIONAL. The value of this parameter is an Entity Type Identifier.
-		If the responder knows the Entity Types of its Subordinates,
-                the result is filtered to include only those that include this Entity Type.
+                If the responder knows the Entity Types of its Subordinates, the result MUST be
+                filtered to include only those that include the specified Entity Type. When 
+                multiple <spanx style="verb">entity_type</spanx>
+                parameters are present, for example 
+                <spanx style="verb">
+                    entity_type=openid_provider&amp;entity_type=openid_relying_party
+                </spanx>, 
+                the result MUST be filtered to include all specified Entity Types.
+                
                 If the responder does not support this feature it MUST
                 use the HTTP status code 400 and the content type
                 <spanx style="verb">application/json</spanx>, with
@@ -3761,7 +3768,7 @@ Content-Type: application/json
               <t hangText="trust_mark_id">
                 <vspace/>
                 REQUIRED. The value of this parameter is a Trust Mark identifier.
-		If the responder has issued Trust Marks with the
+                If the responder has issued Trust Marks with the
                 specified Trust Mark identifier,
                 the list in the response is filtered to include only
                 the Entities for which that Trust Mark identifier has been
@@ -8387,6 +8394,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Moved Federation Endpoints section before Obtaining Federation Entity Configuration Information section.
+	  </t>
+	  <t>
+	    Fixed #2110: explaination text when multiple `entity_type` are provided in the Subordinate Listing endpoint.
 	  </t>
 	</list>
       </t>
