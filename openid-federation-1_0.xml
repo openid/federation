@@ -3828,11 +3828,6 @@ Content-Type: application/json
 	  in the <spanx style="verb">federation_trust_mark_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
 	</t>
-	<t>
-	  By default, client authentication is OPTIONAL at this endpoint,
-	  as described in <xref target="ClientAuthentication"/>.
-	  As also described there, individual federations can choose to require it.
-	</t>
 
         <section title="Trust Mark Request">
           <t>
@@ -4174,7 +4169,7 @@ Host: trust-anchor.example.com
 
       </section>
 
-      <section title="Client Authentication to Federation Endpoints"
+      <section title="Client Authentication at Federation Endpoints"
 	       anchor="ClientAuthentication">
 	<t>
 	  Client authentication is OPTIONAL at all the federation endpoints,
@@ -4184,9 +4179,12 @@ Host: trust-anchor.example.com
 	</t>
 	<t>
 	  Client authentication with <spanx style="verb">private_key_jwt</spanx>
-	  using a Federation Entity Key
 	  is the default client authentication method to federation endpoints,
 	  when client authentication is supported.
+	  This client authentication method is described in Section 9 of
+	  <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
+	  The client authentication JWT MUST be signed with a Federation Entity Key.
+	  The audience of the JWT MUST be the URL of the federation endpoint.
 	  Federations can choose to also use other client authentication methods.
 	</t>
       </section>
