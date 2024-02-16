@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="15" month="February" year="2024"/>
+    <date day="16" month="February" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -3030,9 +3030,10 @@
         <section title="Fetch Entity Statement Request"
                  anchor="fetch_statement">
           <t>
-            The request MUST be an HTTP request using the GET method
+	    When client authentication is not used,
+            the request MUST be an HTTP request using the GET method
             to a fetch endpoint with the
-            following query string parameters, encoded in
+            following query parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
 	    The request is made to the fetch endpoint of the specified issuer.
           </t>
@@ -3056,6 +3057,11 @@
               </t>
             </list>
           </t>
+	  <t>
+	    When client authentication is used,
+	    the request MUST be an HTTP request using the POST method,
+	    with the parameters passed in the POST body.
+	  </t>
           <figure>
             <preamble>
               The following is a non-normative example of an HTTP GET request for
@@ -3166,9 +3172,10 @@ Host: edugain.org
 
         <section title="Resolve Request">
           <t>
-            The request MUST be an HTTP request using the GET method
+	    When client authentication is not used,
+            the request MUST be an HTTP request using the GET method
             to a resolve endpoint with the
-            following query string parameters, encoded in
+            following query parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
           <t>
@@ -3193,6 +3200,11 @@ Host: edugain.org
               </t>
             </list>
           </t>
+	  <t>
+	    When client authentication is used,
+	    the request MUST be an HTTP request using the POST method,
+	    with the parameters passed in the POST body.
+	  </t>
           <figure>
             <preamble>
               The following is a non-normative example of a resolve request:
@@ -3489,7 +3501,8 @@ Host: openid.sunet.se
 
         <section title="Subordinate Listing Request">
           <t>
-            The request MUST be an HTTP request using the GET method
+	    When client authentication is not used,
+            the request MUST be an HTTP request using the GET method
             to a list endpoint with the
             following query parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
@@ -3559,6 +3572,11 @@ Host: openid.sunet.se
               </t>
             </list>
           </t>
+	  <t>
+	    When client authentication is used,
+	    the request MUST be an HTTP request using the POST method,
+	    with the parameters passed in the POST body.
+	  </t>
           <figure>
             <preamble>
               The following is a non-normative example of an HTTP GET
@@ -3623,9 +3641,9 @@ Content-Type: application/json
 
         <section title="Trust Mark Status Request">
           <t>
-            The request MUST be an HTTP request using the POST method and
-            the <spanx style="verb">https</spanx> scheme to a Trust Mark status endpoint with the
-            following parameters, encoded in
+            The request MUST be an HTTP request using the POST method
+            to a Trust Mark status endpoint
+            with the following parameters sent in the POST body, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
           <t>
@@ -3743,7 +3761,8 @@ Content-Type: application/json
 
         <section title="Trust Marked Entities Listing Request">
           <t>
-            The request MUST be an HTTP request using the GET method
+	    When client authentication is not used,
+            the request MUST be an HTTP request using the GET method
             to a list endpoint with the
             following query parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
@@ -3767,6 +3786,11 @@ Content-Type: application/json
               </t>
             </list>
           </t>
+	  <t>
+	    When client authentication is used,
+	    the request MUST be an HTTP request using the POST method,
+	    with the parameters passed in the POST body.
+	  </t>
           <figure>
             <preamble>
               The following is a non-normative example of an HTTP GET
@@ -3831,10 +3855,9 @@ Content-Type: application/json
 
         <section title="Trust Mark Request">
           <t>
-            The HTTP request MUST use the POST method with the
-            following query parameters, encoded in
-            <spanx style="verb">application/x-www-form-urlencoded</spanx>
-            format.
+            The request MUST be an HTTP request using the POST method
+            with the following parameters sent in the POST body, encoded in
+            <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
           <t>
             <list style="hanging">
@@ -3930,9 +3953,15 @@ NjK15h2rrJRN4e_8favIJNTNO8fhK7bjyUFJlVGYmLUpfCuJmxBv-EMhiAkeoDtk71Tc6ou6
 
         <section title="Federation Historical Keys Request">
           <t>
-            The request MUST be an HTTP request using the GET method to
+	    When client authentication is not used,
+            the request MUST be an HTTP request using the GET method to
 	    the federation historical keys endpoint.
           </t>
+	  <t>
+	    When client authentication is used,
+	    the request MUST be an HTTP request using the POST method,
+	    with the client authentication parameters passed in the POST body.
+	  </t>
           <figure>
             <preamble>
               The following is a non-normative example of a
@@ -4172,9 +4201,9 @@ Host: trust-anchor.example.com
       <section title="Client Authentication at Federation Endpoints"
 	       anchor="ClientAuthentication">
 	<t>
-	  Client authentication is OPTIONAL at all the federation endpoints,
+	  Client authentication is not used at any of the federation endpoints,
 	  by default.
-	  Federations can choose to make client authentication REQUIRED
+	  Federations can choose to make client authentication OPTIONAL, REQUIRED,
 	  and/or not allowed at particular federation endpoints.
 	</t>
 	<t>
@@ -4185,6 +4214,9 @@ Host: trust-anchor.example.com
 	  <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
 	  The client authentication JWT MUST be signed with a Federation Entity Key.
 	  The audience of the JWT MUST be the URL of the federation endpoint.
+	  When client authentication is used,
+	  the request MUST be an HTTP request using the POST method,
+	  with the client authentication and endpoint request parameters passed in the POST body.
 	  Federations can choose to also use other client authentication methods.
 	</t>
 
@@ -4203,8 +4235,8 @@ Host: trust-anchor.example.com
 	  <t>
 	    Specifically, for each of the federation endpoints defined in
 	    <xref target="federation_entity"/>, endpoints named
-	    <spanx style="verb">*_auth_methods_supported</spanx> and
-	    <spanx style="verb">*_auth_signing_alg_values_supported</spanx>
+	    <spanx style="verb">*_auth_methods</spanx> and
+	    <spanx style="verb">*_auth_signing_algs</spanx>
 	    are defined, where the <spanx style="verb">*</spanx> represents the
 	    federation endpoint names
 	    <spanx style="verb">federation_fetch_endpoint</spanx>,
@@ -4212,7 +4244,7 @@ Host: trust-anchor.example.com
 	    <spanx style="verb">federation_historical_keys_endpoint</spanx>.
 	  </t>
 	  <t>
-	    The <spanx style="verb">*_auth_methods_supported</spanx>
+	    The <spanx style="verb">*_auth_methods</spanx>
 	    metadata parameters list supported client authentication methods, just as
 	    <spanx style="verb">token_endpoint_auth_methods_supported</spanx> does.
 	    In addition, the value <spanx style="verb">none</spanx> MAY be used
@@ -4221,25 +4253,25 @@ Host: trust-anchor.example.com
           <figure>
             <preamble>
 	      So, for instance, this metadata declaration states that
-	      only unauthenticated requests are accepted at the
-	      <spanx style="verb">federation_fetch_endpoint</spanx>:
+	      unauthenticated requests and requests authenticated with
+	      <spanx style="verb">private_key_jwt</spanx>
+	      are accepted at the
+	      <spanx style="verb">federation_trust_mark_endpoint</spanx>:
             </preamble>
             <name>
-              Declaring that only unauthenticated requests are accepted
+              Declaring that client authentication is OPTIONAL at an endpoint
             </name>
             <artwork><![CDATA[
-"federation_fetch_endpoint_auth_methods_supported": ["none"]
+"federation_trust_mark_endpoint_auth_methods": ["none", "private_key_jwt"]
 ]]></artwork>
           </figure>
 	  <t>
 	    If omitted, the default value for these methods is
-	    <spanx style="verb">["none", "private_key_jwt"]</spanx>,
-	    indicating that either unauthenticated requests are accepted or
-	    requests authenticated with <spanx style="verb">private_key_jwt</spanx>
-	    are accepted.
+	    <spanx style="verb">["none"]</spanx>,
+	    indicating that only unauthenticated requests are accepted.
 	  </t>
 	  <t>
-	    The <spanx style="verb">*_auth_signing_alg_values_supported</spanx>
+	    The <spanx style="verb">*_auth_signing_algs</spanx>
 	    metadata parameters list supported client authentication
 	    signing algorithms supported, just as
 	    <spanx style="verb">token_endpoint_auth_signing_alg_values_supported</spanx> does.
