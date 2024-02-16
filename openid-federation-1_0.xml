@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="9" month="February" year="2024"/>
+    <date day="15" month="February" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -4187,6 +4187,68 @@ Host: trust-anchor.example.com
 	  The audience of the JWT MUST be the URL of the federation endpoint.
 	  Federations can choose to also use other client authentication methods.
 	</t>
+
+	<section title="Client Authentication Metadata for Federation Endpoints"
+		 anchor="ClientAuthenticationMetadata">
+	  <t>
+	    Like other OAuth and OpenID endpoints supporting client authentication,
+	    this specification defines metadata parameters saying which
+	    client authentication methods are supported.
+	    These largely parallel the
+	    <spanx style="verb">token_endpoint_auth_methods_supported</spanx> and
+	    <spanx style="verb">token_endpoint_auth_signing_alg_values_supported</spanx>
+	    metadata values defined in Section 3 of
+	    <xref target="OpenID.Discovery">OpenID Connect Discovery 1.0</xref>.
+	  </t>
+	  <t>
+	    Specifically, for each of the federation endpoints defined in
+	    <xref target="federation_entity"/>, endpoints named
+	    <spanx style="verb">*_auth_methods_supported</spanx> and
+	    <spanx style="verb">*_auth_signing_alg_values_supported</spanx>
+	    are defined, where the <spanx style="verb">*</spanx> represents the
+	    federation endpoint names
+	    <spanx style="verb">federation_fetch_endpoint</spanx>,
+	    <spanx style="verb">federation_list_endpoint</spanx>, ...,
+	    <spanx style="verb">federation_historical_keys_endpoint</spanx>.
+	  </t>
+	  <t>
+	    The <spanx style="verb">*_auth_methods_supported</spanx>
+	    metadata parameters list supported client authentiation methods, just as
+	    <spanx style="verb">token_endpoint_auth_methods_supported</spanx> does.
+	    In addition, the value <spanx style="verb">none</spanx> MAY be used
+	    to indicate that client authentication is not required at the endpoint.
+	  </t>
+          <figure>
+            <preamble>
+	      So, for instance, this metadata declaration states that
+	      only unauthenticated requests are accepted at the
+	      <spanx style="verb">federation_fetch_endpoint</spanx>:
+            </preamble>
+            <name>
+              Declaring that only unauthenticated requests are accepted
+            </name>
+            <artwork><![CDATA[
+"federation_fetch_endpoint_auth_methods_supported": ["none"]
+]]></artwork>
+          </figure>
+	  <t>
+	    If omitted, the default value for these methods is
+	    <spanx style="verb">["none", "private_key_jwt"]</spanx>,
+	    indicating that either unauthenticated requests are accepted or
+	    requests authenticated with <spanx style="verb">private_key_jwt</spanx>
+	    are accepted.
+	  </t>
+	  <t>
+	    The <spanx style="verb">*_auth_signing_alg_values_supported</spanx>
+	    metadata parameters list supported client authentication
+	    signing algorithms supported, just as
+	    <spanx style="verb">token_endpoint_auth_signing_alg_values_supported</spanx> does.
+	    If omitted and <spanx style="verb">private_key_jwt</spanx> is supported,
+	    the default value is <spanx style="verb">["RS256"]</spanx>.
+	    The value <spanx style="verb">none</spanx> MUST NOT be used.
+	  </t>
+	</section>
+
       </section>
 
       <section title="Error Responses from Federation Endpoints" anchor="error_response">
