@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="9" month="February" year="2024"/>
+    <date day="16" month="February" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -533,13 +533,8 @@
             </t>
             <t hangText="constraints">
               <vspace/>
-              OPTIONAL. JSON object that describes constraints that apply to the Trust Chain,
+              OPTIONAL. JSON object that defines constraints that apply to the Trust Chain,
 	      as described in <xref target="chain_constraints"/>.
-              If the claim appears in an Entity Configuration, it MUST be applied
-              to all Subordinates of that Entity.
-              If the claim appears in a Subordinate Statement,
-              then it MUST be applied to the subject of the Subordinate Statement
-	      and all the subject's Subordinates.
             </t>
             <t hangText="crit">
               <vspace/>
@@ -2391,42 +2386,49 @@
           </figure>
         </section>
       </section>
+
       <section title="Constraints" anchor="chain_constraints">
 	<t>
-	  Constraints define criteria applied to Trust Chains,
-	  as described in the <spanx style="verb">constraints</spanx>
-	  claim definition in <xref target="entity-statement"/>.
-	  Constraints are applied to all Entity Statements
-	  that are subordinates of the one containing them.
+	  Constraints define criteria applied to Trust Chains.
+	  They occur in the <spanx style="verb">constraints</spanx>
+	  claim of Entity Statements, per <xref target="entity-statement"/>.
+	  If the claim appears in an Entity Configuration, it MUST be applied
+	  to all Subordinates of that Entity.
+	  If the claim appears in a Subordinate Statement,
+	  then it MUST be applied to the subject of the Subordinate Statement
+	  and all the subject's Subordinates.
 	</t>
-        <t>A set of constraints can contain the following claims:</t>
+        <t>
+	  The following constraint parameters are defined:
+	</t>
         <t>
           <list style="hanging">
             <t hangText="max_path_length">
               <vspace/>
-              OPTIONAL. Integer. The maximum number of Entity Statements
-              between this Entity Statement and the last Entity Statement in
-              the Trust Chain.
+              OPTIONAL. Integer specifying the maximum number of Entity Statements
+              between the Entity Statement containing the constraint
+	      and the last Entity Statement in the Trust Chain.
             </t>
             <t hangText="naming_constraints">
               <vspace/>
-              OPTIONAL. JSON object. Restriction on the Entity Identifiers of
-              the
-              Entities below this Entity. The behavior of this claim mimics
-              what is defined in Section 4.2.1.10 of <xref target="RFC5280"/>.
-              Restrictions are defined in terms of permitted or excluded name
+              OPTIONAL. JSON object specifying restrictions on the URIs of the
+	      Entity Identifiers of the Entities subject to the constraints.
+              Restrictions are defined in terms of permitted or excluded URI name
               subtrees.
             </t>
             <t hangText="allowed_leaf_entity_types">
               <vspace/>
-              OPTIONAL. An array of strings. Each string is an Entity Type.
-              Entity Type Identifiers defined in this specification
-              can be found in <xref target="entity_types"/>.
-              This constraint restricts what types of Leaf Entities MAY
-              appear beneath the Entity described in this Entity Statement.
+              OPTIONAL. Array of string Entity Type Identifiers.
+              Entity Type Identifiers are defined in <xref target="entity_types"/>.
+              This constraint restricts the types of Leaf Entities that MAY appear
+	      as Entities subject to the constraints.
             </t>
           </list>
         </t>
+	<t>
+	  Other constraint parameters MAY be defined and used.
+	  If they are not understood, they MUST be ignored.
+	</t>
         <figure>
 	  <preamble>
 	    The following is a non-normative example of a set of constraints:
@@ -2445,7 +2447,8 @@
     ]
   },
   "max_path_length": 2,
-  "allowed_leaf_entity_types": ["openid_provider", "openid_relying_party"]
+  "allowed_leaf_entity_types":
+    ["openid_provider", "openid_relying_party"]
 }
 ]]></artwork>
         </figure>
@@ -2525,18 +2528,22 @@
         <section title="Naming Constraints" anchor="naming_constraints">
           <t>
             The <spanx style="verb">naming_constraints</spanx> member
-            specifies a namespace within which all subject
-            Entity Identifiers in Subordinate Entity Statements in a Trust Chain
-            MUST be located.
+            specifies a URI namespace within which all Entity Identifiers
+	    for Entities Subordinate to the subject of the Entity
+	    specifying the constraints in a Trust Chain MUST be located.
           </t>
           <t>
-            Restrictions are defined in terms of permitted or excluded domain name
-            subtrees. Any name matching a restriction in the excluded
-            claim is invalid regardless of the information appearing in the
-            permitted claim.
+	    Restrictions are defined in terms of URI name subtrees,
+	    using <spanx style="verb">permitted</spanx> and/or
+	    <spanx style="verb">excluded</spanx> members within the
+	    <spanx style="verb">naming_constraints</spanx> member,
+	    each of which contains an array of names to be permitted or excluded.
+	    Any name matching a restriction in the excluded list is invalid,
+	    regardless of the information appearing in the permitted list.
           </t>
           <t>
-            Domain name constraints are as specified in Section 4.2.1.10 of <xref target="RFC5280"/>.
+	    This specification uses the syntax of domain name constraints
+	    specified in Section 4.2.1.10 of <xref target="RFC5280"/>.
             As stated there, a domain name constraint MUST be specified as a fully qualified domain name
             and MAY specify a host or a domain. Examples are
             "host.example.com" and ".example.com". When the domain name constraint begins
@@ -2545,8 +2552,10 @@
             host.example.com and my.host.example.com. However, the domain name constraint
             ".example.com" is not satisfied by "example.com". When the
             domain name constraint does not begin with a period, it specifies a host.
+	    As in RFC 5280, domain name constraints apply to the host part of the URI.
           </t>
         </section>
+
         <section title="Leaf Entity Type Constraints"
                  anchor="leaf_entity_type_constraints">
           <t>
@@ -8385,6 +8394,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #2110: explaination text when multiple `entity_type` are provided in the Subordinate Listing endpoint.
+	  </t>
+	  <t>
+	    Fixed #2103: Addressed ambiguities in the definition of constraints.
 	  </t>
 	</list>
       </t>
