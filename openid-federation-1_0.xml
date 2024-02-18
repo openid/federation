@@ -583,8 +583,16 @@
                   A signed JSON Web Token that represents a Trust Mark.
                 </t>
               </list>
-	      This claim MUST NOT be present in Subordinate Statements.
               Trust Marks are described in <xref target="trust_marks"/>.
+	            This claim SHOULD be present only in the Entity Configurations.
+
+              Implementation profiles might opt to include Trust Marks within
+              Subordinate Statements as well.
+              This might be relevant for informational purposes when the
+              issuer of the Subordinate Statement also serves as the
+              Trust Mark issuer for a specific Trust Mark
+              issued to the subject of the Subordinate Statement.
+              Such cases fall outside the scope of this specification.
             </t>
             <t hangText="trust_mark_issuers">
               <vspace/>
@@ -595,11 +603,11 @@
               for an Entity that is not a Trust Anchor.
               It is a JSON object with member names that are Trust Mark identifiers and
               each corresponding value being an array of Entity Identifiers
-	      that are trusted to represent the accreditation authority
-	      for Trust Marks with that identifier.
+	            that are trusted to represent the accreditation authority
+	            for Trust Marks with that identifier.
               If the array following a Trust Mark identifier is empty,
               anyone MAY issue Trust Marks with that identifier.
-	      This claim MUST NOT be present in Subordinate Statements.
+	            This claim MUST NOT be present in Subordinate Statements.
               Trust Marks are described in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_mark_owners">
@@ -8385,6 +8393,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #2110: explaination text when multiple `entity_type` are provided in the Subordinate Listing endpoint.
+	  </t>
+	  <t>
+	    Fixed #2104: Allow trust marks in Subordinate Statements for implementation profiles that might want this.
 	  </t>
 	</list>
       </t>
