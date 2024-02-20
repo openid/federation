@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="16" month="February" year="2024"/>
+    <date day="20" month="February" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -3641,9 +3641,10 @@ Content-Type: application/json
 
         <section title="Trust Mark Status Request">
           <t>
-            The request MUST be an HTTP request using the POST method
+	    When client authentication is not used,
+            the request MUST be an HTTP request using the GET method
             to a Trust Mark status endpoint
-            with the following parameters sent in the POST body, encoded in
+            with the following query parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
           <t>
@@ -3679,7 +3680,11 @@ Content-Type: application/json
             then <spanx style="verb">sub</spanx> and <spanx style="verb">trust_mark_id</spanx>
             are REQUIRED.
           </t>
-          <t>
+	  <t>
+	    When client authentication is used,
+	    the request MUST be an HTTP request using the POST method,
+	    with the parameters passed in the POST body.
+	  </t>
             <figure>
               <preamble>
                 The following is a non-normative example of a Trust Mark status request using
@@ -3689,17 +3694,14 @@ Content-Type: application/json
 		Trust Mark Status Request
 	      </name>
               <artwork><![CDATA[
-POST /federation_trust_mark_status_endpoint HTTP/1.1
+GET /federation_trust_mark_status_endpoint?
+sub=https%3A%2F%2Fopenid.sunet.se%2FRP&
+trust_mark_id=https%3A%2F%2Frefeds.org%2Fsirtfi HTTP/1.1
 Host: op.example.org
-Content-Type: application/x-www-form-urlencoded
-
-sub=https%3A%2F%2Fopenid.sunet.se%2FRP
-&trust_mark_id=https%3A%2F%2Frefeds.org%2Fsirtfi
 ]]></artwork>
             </figure>
-
-          </t>
         </section>
+
         <section title="Trust Mark Status Response">
           <t>
             A successful response MUST use the HTTP status code 200
@@ -3855,8 +3857,9 @@ Content-Type: application/json
 
         <section title="Trust Mark Request">
           <t>
-            The request MUST be an HTTP request using the POST method
-            with the following parameters sent in the POST body, encoded in
+	    When client authentication is not used,
+            the request MUST be an HTTP request using the GET method
+            with the following query parameter, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
           <t>
@@ -3867,6 +3870,11 @@ Content-Type: application/json
               </t>
             </list>
           </t>
+	  <t>
+	    When client authentication is used,
+	    the request MUST be an HTTP request using the POST method,
+	    with the parameters passed in the POST body.
+	  </t>
           <figure>
             <preamble>
               The following is a non-normative example of an HTTP
@@ -3876,11 +3884,8 @@ Content-Type: application/json
               Trust Mark Request
             </name>
             <artwork><![CDATA[
-POST /trust_mark HTTP/1.1
+GET /trust_mark?trust_mark_id=https%3A%2F%2Ftuber.cert.example.org%2Fnero%2Fpregiato%2Fnorcia HTTP/1.1
 Host: tuber.cert.example.org
-Content-Type: application/x-www-form-urlencoded
-
-trust_mark_id=https%3A%2F%2Ftuber.cert.example.org%2Fnero%2Fpregiato%2Fnorcia
 ]]></artwork>
           </figure>
         </section>
@@ -4253,16 +4258,16 @@ Host: trust-anchor.example.com
           <figure>
             <preamble>
 	      So, for instance, this metadata declaration states that
-	      unauthenticated requests and requests authenticated with
+	      requests authenticated with
 	      <spanx style="verb">private_key_jwt</spanx>
-	      are accepted at the
+	      are REQUIRED at the
 	      <spanx style="verb">federation_trust_mark_endpoint</spanx>:
             </preamble>
             <name>
-              Declaring that client authentication is OPTIONAL at an endpoint
+              Declaring that client authentication is REQUIRED at an endpoint
             </name>
             <artwork><![CDATA[
-"federation_trust_mark_endpoint_auth_methods": ["none", "private_key_jwt"]
+"federation_trust_mark_endpoint_auth_methods": ["private_key_jwt"]
 ]]></artwork>
           </figure>
 	  <t>
