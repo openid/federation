@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="9" month="February" year="2024"/>
+    <date day="22" month="February" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -3035,9 +3035,10 @@
         <section title="Fetch Entity Statement Request"
                  anchor="fetch_statement">
           <t>
-            The request MUST be an HTTP request using the GET method
+	    When client authentication is not used,
+            the request MUST be an HTTP request using the GET method
             to a fetch endpoint with the
-            following query string parameters, encoded in
+            following query parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
 	    The request is made to the fetch endpoint of the specified issuer.
           </t>
@@ -3061,6 +3062,11 @@
               </t>
             </list>
           </t>
+	  <t>
+	    When client authentication is used,
+	    the request MUST be an HTTP request using the POST method,
+	    with the parameters passed in the POST body.
+	  </t>
           <figure>
             <preamble>
               The following is a non-normative example of an HTTP GET request for
@@ -3171,9 +3177,10 @@ Host: edugain.org
 
         <section title="Resolve Request">
           <t>
-            The request MUST be an HTTP request using the GET method
+	    When client authentication is not used,
+            the request MUST be an HTTP request using the GET method
             to a resolve endpoint with the
-            following query string parameters, encoded in
+            following query parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
           <t>
@@ -3198,6 +3205,11 @@ Host: edugain.org
               </t>
             </list>
           </t>
+	  <t>
+	    When client authentication is used,
+	    the request MUST be an HTTP request using the POST method,
+	    with the parameters passed in the POST body.
+	  </t>
           <figure>
             <preamble>
               The following is a non-normative example of a resolve request:
@@ -3494,7 +3506,8 @@ Host: openid.sunet.se
 
         <section title="Subordinate Listing Request">
           <t>
-            The request MUST be an HTTP request using the GET method
+	    When client authentication is not used,
+            the request MUST be an HTTP request using the GET method
             to a list endpoint with the
             following query parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
@@ -3564,6 +3577,11 @@ Host: openid.sunet.se
               </t>
             </list>
           </t>
+	  <t>
+	    When client authentication is used,
+	    the request MUST be an HTTP request using the POST method,
+	    with the parameters passed in the POST body.
+	  </t>
           <figure>
             <preamble>
               The following is a non-normative example of an HTTP GET
@@ -3628,9 +3646,10 @@ Content-Type: application/json
 
         <section title="Trust Mark Status Request">
           <t>
-            The request MUST be an HTTP request using the POST method and
-            the <spanx style="verb">https</spanx> scheme to a Trust Mark status endpoint with the
-            following parameters, encoded in
+	    When client authentication is not used,
+            the request MUST be an HTTP request using the GET method
+            to a Trust Mark status endpoint
+            with the following query parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
           <t>
@@ -3666,7 +3685,11 @@ Content-Type: application/json
             then <spanx style="verb">sub</spanx> and <spanx style="verb">trust_mark_id</spanx>
             are REQUIRED.
           </t>
-          <t>
+	  <t>
+	    When client authentication is used,
+	    the request MUST be an HTTP request using the POST method,
+	    with the parameters passed in the POST body.
+	  </t>
             <figure>
               <preamble>
                 The following is a non-normative example of a Trust Mark status request using
@@ -3676,17 +3699,14 @@ Content-Type: application/json
 		Trust Mark Status Request
 	      </name>
               <artwork><![CDATA[
-POST /federation_trust_mark_status_endpoint HTTP/1.1
+GET /federation_trust_mark_status_endpoint?
+sub=https%3A%2F%2Fopenid.sunet.se%2FRP&
+trust_mark_id=https%3A%2F%2Frefeds.org%2Fsirtfi HTTP/1.1
 Host: op.example.org
-Content-Type: application/x-www-form-urlencoded
-
-sub=https%3A%2F%2Fopenid.sunet.se%2FRP
-&trust_mark_id=https%3A%2F%2Frefeds.org%2Fsirtfi
 ]]></artwork>
             </figure>
-
-          </t>
         </section>
+
         <section title="Trust Mark Status Response">
           <t>
             A successful response MUST use the HTTP status code 200
@@ -3748,7 +3768,8 @@ Content-Type: application/json
 
         <section title="Trust Marked Entities Listing Request">
           <t>
-            The request MUST be an HTTP request using the GET method
+	    When client authentication is not used,
+            the request MUST be an HTTP request using the GET method
             to a list endpoint with the
             following query parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
@@ -3772,6 +3793,11 @@ Content-Type: application/json
               </t>
             </list>
           </t>
+	  <t>
+	    When client authentication is used,
+	    the request MUST be an HTTP request using the POST method,
+	    with the parameters passed in the POST body.
+	  </t>
           <figure>
             <preamble>
               The following is a non-normative example of an HTTP GET
@@ -3823,7 +3849,7 @@ Content-Type: application/json
 
      <section title="Trust Mark Endpoint" anchor="tm_endpoint">
         <t>
-          The Trust Mark endpoint is a protected endpoint
+          The Trust Mark endpoint is
           exposed by a Trust Mark issuer
           to provide Trust Marks to subjects.
         </t>
@@ -3836,10 +3862,10 @@ Content-Type: application/json
 
         <section title="Trust Mark Request">
           <t>
-            The HTTP request MUST use the POST method with the
-            following query parameters, encoded in
-            <spanx style="verb">application/x-www-form-urlencoded</spanx>
-            format.
+	    When client authentication is not used,
+            the request MUST be an HTTP request using the GET method
+            with the following query parameter, encoded in
+            <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
           <t>
             <list style="hanging">
@@ -3847,49 +3873,13 @@ Content-Type: application/json
                 <vspace/>
                 REQUIRED. Trust Mark identifier.
               </t>
-              <t hangText="client_assertion">
-                <vspace/>
-                REQUIRED. Signed JWT using the private key of the
-                subject's Federation Entity Key.
-                The payload of the signed JWT MUST contain the
-                following parameters:
-                <list>
-                    <t hangText="iss">
-                        <vspace/>
-                        REQUIRED. The Entity Identifier of the subject.
-                    </t>
-                    <t hangText="sub">
-                        <vspace/>
-                        REQUIRED. This MUST be the same as <spanx style="verb">iss</spanx>.
-                    </t>
-                    <t hangText="aud">
-                        <vspace/>
-                        REQUIRED. URL of the Trust Mark endpoint.
-                    </t>
-                    <t hangText="iat">
-                        <vspace/>
-                        REQUIRED. The time the statement was issued.
-              Its value is a JSON number representing the number of seconds from
-              1970-01-01T0:0:0Z as measured in UTC until the date/time.
-              See <xref target="RFC3339"/> for
-              details regarding date/times in general and UTC in particular.
-                    </t>
-                    <t hangText="exp">
-                        <vspace/>
-                        Expiration time on or after which the JWT MUST NOT be
-              accepted for processing. Its value is a JSON number representing
-              the number of seconds from 1970-01-01T0:0:0Z as measured in UTC
-              until the date/time.
-                    </t>
-                </list>
-              </t>
-              <t hangText="client_assertion_type">
-                <vspace/>
-                REQUIRED. It MUST be set to
-                <spanx style="verb">urn:ietf:params:oauth:client-assertion-type:jwt-bearer</spanx>.
-              </t>
             </list>
           </t>
+	  <t>
+	    When client authentication is used,
+	    the request MUST be an HTTP request using the POST method,
+	    with the parameters passed in the POST body.
+	  </t>
           <figure>
             <preamble>
               The following is a non-normative example of an HTTP
@@ -3899,15 +3889,8 @@ Content-Type: application/json
               Trust Mark Request
             </name>
             <artwork><![CDATA[
-POST /trust_mark HTTP/1.1
+GET /trust_mark?trust_mark_id=https%3A%2F%2Ftuber.cert.example.org%2Fnero%2Fpregiato%2Fnorcia HTTP/1.1
 Host: tuber.cert.example.org
-Content-Type: application/x-www-form-urlencoded
-
-trust_mark_id=https%3A%2F%2Ftuber.cert.example.org%2Fnero%2Fpregiato%2Fnorcia&
-client_assertion=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiw
-ibmFtZSI6IlNQSUQiLCJhZG1pbiI6dHJ1ZX0.LVyRDPVJm0S9q7oiXcYVIIqGWY0wWQlqxvFGYswL…&
-client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3Aclient-assertion-type%3Ajwtbearer
-
 ]]></artwork>
           </figure>
         </section>
@@ -3980,9 +3963,15 @@ NjK15h2rrJRN4e_8favIJNTNO8fhK7bjyUFJlVGYmLUpfCuJmxBv-EMhiAkeoDtk71Tc6ou6
 
         <section title="Federation Historical Keys Request">
           <t>
-            The request MUST be an HTTP request using the GET method to
+	    When client authentication is not used,
+            the request MUST be an HTTP request using the GET method to
 	    the federation historical keys endpoint.
           </t>
+	  <t>
+	    When client authentication is used,
+	    the request MUST be an HTTP request using the POST method,
+	    with the client authentication parameters passed in the POST body.
+	  </t>
           <figure>
             <preamble>
               The following is a non-normative example of a
@@ -4219,15 +4208,97 @@ Host: trust-anchor.example.com
 
       </section>
 
-      <section title="Generic Error Response" anchor="error_response">
+      <section title="Client Authentication at Federation Endpoints"
+	       anchor="ClientAuthentication">
+	<t>
+	  Client authentication is not used at any of the federation endpoints,
+	  by default.
+	  Federations can choose to make client authentication OPTIONAL, REQUIRED,
+	  and/or not allowed at particular federation endpoints.
+	</t>
+	<t>
+	  Client authentication with <spanx style="verb">private_key_jwt</spanx>
+	  is the default client authentication method to federation endpoints,
+	  when client authentication is supported.
+	  This client authentication method is described in Section 9 of
+	  <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
+	  The client authentication JWT MUST be signed with a Federation Entity Key.
+	  The audience of the JWT MUST be the URL of the federation endpoint.
+	  When client authentication is used,
+	  the request MUST be an HTTP request using the POST method,
+	  with the client authentication and endpoint request parameters passed in the POST body.
+	  Federations can choose to also use other client authentication methods.
+	</t>
+
+	<section title="Client Authentication Metadata for Federation Endpoints"
+		 anchor="ClientAuthenticationMetadata">
+	  <t>
+	    Like other OAuth and OpenID endpoints supporting client authentication,
+	    this specification defines metadata parameters saying which
+	    client authentication methods are supported.
+	    These largely parallel the
+	    <spanx style="verb">token_endpoint_auth_methods_supported</spanx> and
+	    <spanx style="verb">token_endpoint_auth_signing_alg_values_supported</spanx>
+	    metadata values defined in Section 3 of
+	    <xref target="OpenID.Discovery">OpenID Connect Discovery 1.0</xref>.
+	  </t>
+	  <t>
+	    Specifically, for each of the federation endpoints defined in
+	    <xref target="federation_entity"/>, parameters named
+	    <spanx style="verb">*_auth_methods</spanx> and
+	    <spanx style="verb">*_auth_signing_algs</spanx>
+	    are defined, where the <spanx style="verb">*</spanx> represents the
+	    federation endpoint names
+	    <spanx style="verb">federation_fetch_endpoint</spanx>,
+	    <spanx style="verb">federation_list_endpoint</spanx>, ...,
+	    <spanx style="verb">federation_historical_keys_endpoint</spanx>.
+	  </t>
+	  <t>
+	    The <spanx style="verb">*_auth_methods</spanx>
+	    metadata parameters list supported client authentication methods, just as
+	    <spanx style="verb">token_endpoint_auth_methods_supported</spanx> does.
+	    In addition, the value <spanx style="verb">none</spanx> MAY be used
+	    to indicate that client authentication is not required at the endpoint.
+	  </t>
+          <figure>
+            <preamble>
+	      So, for instance, this metadata declaration states that
+	      requests authenticated with
+	      <spanx style="verb">private_key_jwt</spanx>
+	      are REQUIRED at the
+	      <spanx style="verb">federation_trust_mark_endpoint</spanx>:
+            </preamble>
+            <name>
+              Declaring that client authentication is REQUIRED at an endpoint
+            </name>
+            <artwork><![CDATA[
+"federation_trust_mark_endpoint_auth_methods": ["private_key_jwt"]
+]]></artwork>
+          </figure>
+	  <t>
+	    If omitted, the default value for these methods is
+	    <spanx style="verb">["none"]</spanx>,
+	    indicating that only unauthenticated requests are accepted.
+	  </t>
+	  <t>
+	    The <spanx style="verb">*_auth_signing_algs</spanx>
+	    metadata parameters list supported client authentication
+	    signing algorithms supported, just as
+	    <spanx style="verb">token_endpoint_auth_signing_alg_values_supported</spanx> does.
+	    If omitted and <spanx style="verb">private_key_jwt</spanx> is supported,
+	    the default value is <spanx style="verb">["RS256"]</spanx>.
+	    The value <spanx style="verb">none</spanx> MUST NOT be used.
+	  </t>
+	</section>
+
+      </section>
+
+      <section title="Error Responses from Federation Endpoints" anchor="error_response">
         <t>
           If the request was malformed or an error occurred during
           the processing of the request,
           the response body SHOULD be a JSON object with the content type
           <spanx style="verb">application/json</spanx>.
-        </t>
-
-        <t>
           In compliance with
           <xref target="RFC6749"/>, the following
           standardized error format SHOULD be used:
@@ -8393,6 +8464,12 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #2104: Allow trust marks in Subordinate Statements for implementation profiles that might want this.
+	  </t>
+	  <t>
+	    Fixed #2112, #2113, and #2114: Defined that client authentication is
+	    not used by default and that the default client authentication method,
+	    when used, is <spanx style="verb">private_key_jwt</spanx>.
+	    Specified that requests using client authentication use HTTP POST.
 	  </t>
 	</list>
       </t>
