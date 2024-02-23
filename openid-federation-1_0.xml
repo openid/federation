@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="22" month="February" year="2024"/>
+    <date day="23" month="February" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -478,12 +478,12 @@
               OPTIONAL. An array of strings representing
               the Entity Identifiers of Intermediate Entities or Trust Anchors
               that MAY issue Subordinate Statements about the Entity.
-              This claim is REQUIRED in the Entity Configurations of
+              This claim is REQUIRED in Entity Configurations of
               the Entities that have at least one Superior above them,
               such as Leaf and Intermediate Entities.
               Its value MUST NOT be the empty array
               <spanx style="verb">[]</spanx>.
-              This claim MUST NOT be present in the Entity Configurations
+              This claim MUST NOT be present in Entity Configurations
               of Trust Anchors with no Superiors.
 	      It MUST NOT be present in Subordinate Statements.
             </t>
@@ -578,8 +578,8 @@
                   A signed JSON Web Token that represents a Trust Mark.
                 </t>
               </list>
-	      This claim MUST NOT be present in Subordinate Statements.
               Trust Marks are described in <xref target="trust_marks"/>.
+	            This claim SHOULD only be used in Entity Configurations.
             </t>
             <t hangText="trust_mark_issuers">
               <vspace/>
@@ -590,11 +590,11 @@
               for an Entity that is not a Trust Anchor.
               It is a JSON object with member names that are Trust Mark identifiers and
               each corresponding value being an array of Entity Identifiers
-	      that are trusted to represent the accreditation authority
-	      for Trust Marks with that identifier.
+	            that are trusted to represent the accreditation authority
+	            for Trust Marks with that identifier.
               If the array following a Trust Mark identifier is empty,
               anyone MAY issue Trust Marks with that identifier.
-	      This claim MUST NOT be present in Subordinate Statements.
+	            This claim MUST NOT be present in Subordinate Statements.
               Trust Marks are described in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_mark_owners">
@@ -8467,13 +8467,16 @@ Host: op.umu.se
 	    Fixed #2110: explaination text when multiple `entity_type` are provided in the Subordinate Listing endpoint.
 	  </t>
 	  <t>
-	    Fixed #2103: Addressed ambiguities in the definition of constraints.
-	  </t>
-	  <t>
 	    Fixed #2112, #2113, and #2114: Defined that client authentication is
 	    not used by default and that the default client authentication method,
 	    when used, is <spanx style="verb">private_key_jwt</spanx>.
 	    Specified that requests using client authentication use HTTP POST.
+	  </t>
+	  <t>
+	    Fixed #2104: Allow trust marks in Subordinate Statements for implementation profiles that might want this.
+	  </t>
+	  <t>
+	    Fixed #2103: Addressed ambiguities in the definition of constraints.
 	  </t>
 	</list>
       </t>
