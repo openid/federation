@@ -3650,10 +3650,9 @@ Content-Type: application/json
 
         <section title="Trust Mark Status Request">
           <t>
-	    When client authentication is not used,
-            the request MUST be an HTTP request using the GET method
+            The request MUST be an HTTP request using the POST method
             to a Trust Mark status endpoint
-            with the following query parameters, encoded in
+            with the following parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
           <t>
@@ -3703,10 +3702,12 @@ Content-Type: application/json
 		Trust Mark Status Request
 	      </name>
               <artwork><![CDATA[
-GET /federation_trust_mark_status_endpoint?
-sub=https%3A%2F%2Fopenid.sunet.se%2FRP&
-trust_mark_id=https%3A%2F%2Frefeds.org%2Fsirtfi HTTP/1.1
+POST /federation_trust_mark_status_endpoint HTTP/1.1
 Host: op.example.org
+Content-Type: application/x-www-form-urlencoded
+
+sub=https%3A%2F%2Fopenid.sunet.se%2FRP
+&trust_mark_id=https%3A%2F%2Frefeds.org%2Fsirtfi
 ]]></artwork>
             </figure>
         </section>
@@ -3715,9 +3716,8 @@ Host: op.example.org
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type
-            <spanx style="verb">application/json</spanx>,
-            to make it clear that the response contains a JSON
-            object containing the data below:
+            <spanx style="verb">application/json</spanx>.
+            The response body is a JSON object containing the data below:
           </t>
 
           <t>
@@ -8446,7 +8446,8 @@ Host: op.umu.se
 	-34
 	<list style="symbols">
 	  <t>
-	    TBD
+	    Changed the HTTP method used at the Trust Mark Status Endpoint
+	    back to POST because of the potentially large size of the request.
 	  </t>
 	</list>
       </t>
