@@ -2151,18 +2151,28 @@
         <section title="Policy Combination Example">
           <figure>
             <preamble>
-              We start with a federation's policy for OAuth 2.0 clients:
+              We start with a federation's <spanx style="verb">metadata_policy</spanx>
+              for OAuth 2.0 clients:
             </preamble>
 	    <name>
-	      Example Federation's Policy for OAuth 2.0 Clients
+	      Example Federation's Metadata Policy for OAuth 2.0 Clients
 	    </name>
             <artwork><![CDATA[
 "metadata_policy": {
   "oauth_client": {
     "grant_types": {
-      "subset_of": ["authorization_code", "implicit", "refresh_token"],
-      "superset_of": ["authorization_code"],
-      "default": ["authorization_code", "refresh_token"]
+      "subset_of": [
+        "authorization_code",
+        "implicit",
+        "refresh_token"
+      ],
+      "superset_of": [
+        "authorization_code"
+      ],
+      "default": [
+        "authorization_code",
+        "refresh_token"
+      ]
     },
     "token_endpoint_auth_method": {
       "one_of": [
@@ -2171,7 +2181,9 @@
       ]
     },
     "contacts": {
-      "add": "helpdesk@federation.example.org"
+      "add": [
+        "helpdesk@federation.example.org"
+      ]
     }
   }
 }
@@ -2179,17 +2191,24 @@
           </figure>
           <figure>
             <preamble>
-              Next, we have an organization's policy for OAuth 2.0 clients:
+              Next, we have an organization's <spanx style="verb">metadata_policy</spanx>
+              for OAuth 2.0 clients:
             </preamble>
 	    <name>
-	      Example Organization's Policy for OAuth 2.0 Clients
+	      Example Organization's Metadata Policy for OAuth 2.0 Clients
 	    </name>
             <artwork><![CDATA[
 "metadata_policy": {
   "oauth_client": {
     "grant_types": {
-      "subset_of": ["authorization_code", "refresh_token"],
-      "default": ["authorization_code", "refresh_token"]
+      "subset_of": [
+        "authorization_code",
+        "refresh_token"
+      ],
+      "default": [
+        "authorization_code",
+        "refresh_token"
+      ]
     },
     "token_endpoint_auth_method": {
       "one_of": [
@@ -2199,7 +2218,9 @@
       "default": "client_secret_basic"
     },
     "contacts": {
-      "add": "helpdesk@org.example.org"
+      "add": [
+        "helpdesk@org.example.org"
+      ]
     }
   }
 }
@@ -2207,30 +2228,38 @@
           </figure>
           <figure>
             <preamble>
-              The resulting combined metadata policy is:
+              The resulting combined <spanx style="verb">metadata_policy</spanx> is:
             </preamble>
 	    <name>
-	      Combined Policies from the Previous Two Examples
+	      The Combined Metadata Policies from the Previous Two Examples
 	    </name>
             <artwork><![CDATA[
 "metadata_policy": {
   "oauth_client": {
     "grant_types": {
-      "subset_of": ["authorization_code", "refresh_token"],
-      "superset_of": ["authorization_code"],
-      "default": ["authorization_code", "refresh_token"]
+      "subset_of": [
+        "authorization_code",
+        "refresh_token"
+      ],
+      "superset_of": [
+        "authorization_code"
+      ],
+      "default": [
+        "authorization_code",
+        "refresh_token"
+      ]
     },
     "token_endpoint_auth_method": {
       "one_of": [
-	"client_secret_post",
-	"client_secret_basic"
+	    "client_secret_post",
+	    "client_secret_basic"
       ],
       "default": "client_secret_basic"
     },
     "contacts": {
       "add": [
-	"helpdesk@federation.example.org",
-	"helpdesk@org.example.org"
+	    "helpdesk@federation.example.org",
+	    "helpdesk@org.example.org"
       ]
     }
   }
@@ -2270,12 +2299,13 @@
         </section>
         <section title="Example of Applying Policies">
           <t>
-            The following is a non-normative example of a set of policies being
-            applied to an RP's metadata.
+            The following is a non-normative example of applying metadata policies
+            and metadata values to an RP's metadata.
           </t>
           <figure>
             <preamble>
-              The RP's metadata from its Entity Configuration is:
+                The RP's <spanx style="verb">metadata</spanx> from its Entity
+                Configuration is:
             </preamble>
 	    <name>
 	      RP's Metadata from its Entity Configuration
@@ -2298,10 +2328,11 @@
           </figure>
           <figure>
             <preamble>
-              The federation's policy for RPs is:
+                The federation's <spanx style="verb">metadata_policy</spanx>
+                for RPs is:
             </preamble>
 	    <name>
-	      Federation's Policy for RPs
+	      Federation's Metadata Policy for RPs
 	    </name>
             <artwork><![CDATA[
 "metadata_policy": {
@@ -2311,7 +2342,7 @@
         "ES256",
         "ES384"
       ],
-      "default": "ES256",
+      "default": "ES256"
     },
     "response_types": {
       "subset_of": [
@@ -2325,17 +2356,20 @@
           </figure>
           <figure>
             <preamble>
-              The organization's policy for RPs is:
+              An organization's <spanx style="verb">metadata_policy</spanx>
+              and <spanx style="verb">metadata</spanx> values for RPs is:
             </preamble>
 	    <name>
-	      Organization's Policy for RPs
+	      Organization's Metadata Policy and Metadata Values for RPs
 	    </name>
             <artwork><![CDATA[
 {
   "metadata_policy": {
     "openid_relying_party": {
       "contacts": {
-        "add": "helpdesk@example.com"
+        "add": [
+          "helpdesk@example.com"
+        ]
       },
       "logo_uri": {
         "one_of": [
@@ -2357,11 +2391,12 @@
           </figure>
           <figure>
 	    <preamble>
-	      After applying the policies above,
-	      the metadata for the Entity in question would become:
+	      After applying the metadata policies and values above, the
+          <spanx style="verb">metadata</spanx> for the Entity in question
+          becomes:
 	    </preamble>
 	    <name>
-	      RP's Metadata After Application of Policies
+	      RP's Metadata After Application of Metadata Policies and Metadata Values
 	    </name>
             <artwork><![CDATA[
 "metadata": {
@@ -8445,6 +8480,9 @@ Host: op.umu.se
       <t>
 	-34
 	<list style="symbols">
+	  <t>
+	    Fixed #2119: Federation metadata_policy example figures and descriptions.
+	  </t>
 	  <t>
 	    Changed the HTTP method used at the Trust Mark Status Endpoint
 	    back to POST because of the potentially large size of the request.
