@@ -3912,6 +3912,11 @@ Content-Type: application/json
                 <vspace/>
                 REQUIRED. Trust Mark identifier.
               </t>
+              <t hangText="sub">
+                <vspace/>
+                REQUIRED. The Entity Identifier of the Entity to which the
+                Trust Mark is issued.
+              </t>
             </list>
           </t>
 	  <t>
@@ -3922,13 +3927,13 @@ Content-Type: application/json
           <figure>
             <preamble>
               The following is a non-normative example of an HTTP
-              request for a specific Trust Mark ID and a specific Entity:
+              request for a Trust Mark with a specific Trust Mark ID and subject:
             </preamble>
             <name>
               Trust Mark Request
             </name>
             <artwork><![CDATA[
-GET /trust_mark?trust_mark_id=https%3A%2F%2Ftuber.cert.example.org%2Fnero%2Fpregiato%2Fnorcia HTTP/1.1
+GET /trust_mark?trust_mark_id=https%3A%2F%2Ftuber.cert.example.org%2Fnero%2Fpregiato%2Fnorcia&sub=https%3A%2F%2Ftartufo.example.it HTTP/1.1
 Host: tuber.cert.example.org
 ]]></artwork>
           </figure>
@@ -8487,6 +8492,10 @@ Host: op.umu.se
 	    Changed the HTTP method used at the Trust Mark Status Endpoint
 	    back to POST because of the potentially large size of the request.
 	  </t>
+      <t>
+        Fixed #2128: The federation_trust_mark_endpoint requires a sub request
+        parameter.
+      </t>
 	</list>
       </t>
 
