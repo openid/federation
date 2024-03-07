@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="1" month="March" year="2024"/>
+    <date day="5" month="March" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -1021,6 +1021,147 @@
 	  support use cases outside OpenID Connect and OAuth 2.0 federations.
 	</t>
 
+      <section anchor="federation_entity" title="Federation Entity">
+        <t>
+          The Entity Type Identifier is
+          <spanx style="verb">federation_entity</spanx>.
+        </t>
+        <t>
+          All Entities in a federation MAY use this Entity Type.
+          The Entities that provide federation API endpoints
+          MUST use this Entity Type.
+        </t>
+        <t>
+          The following Federation Entity properties are defined:
+          <list style="hanging">
+            <t hangText="federation_fetch_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The fetch endpoint described in
+              <xref target="fetch_endpoint"/>.
+              This URL MUST use the <spanx style="verb">https</spanx>
+              scheme and MAY contain port,
+              path, and query parameter components encoded in
+              <spanx style="verb">application/x-www-form-urlencoded</spanx>
+              format;
+              it MUST NOT contain a fragment component.
+              Intermediate Entities and
+              Trust Anchors MUST publish a
+              <spanx style="verb">federation_fetch_endpoint</spanx>.
+              Leaf Entities MUST NOT.
+            </t>
+            <t hangText="federation_resolve_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The resolve endpoint described in
+              <xref target="resolve"/>.
+              This URL MUST use the <spanx style="verb">https</spanx>
+              scheme and MAY contain port,
+              path, and query parameter components encoded in
+              <spanx style="verb">application/x-www-form-urlencoded</spanx>
+              format;
+              it MUST NOT contain a fragment component.
+              Any federation Entity MAY publish a
+              <spanx style="verb">federation_resolve_endpoint</spanx>.
+            </t>
+            <t hangText="federation_list_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The list endpoint described in
+              <xref target="entity_listing"/>.
+              This URL MUST use the <spanx style="verb">https</spanx>
+              scheme and MAY contain port,
+              path, and query parameter components encoded in
+              <spanx style="verb">application/x-www-form-urlencoded</spanx>
+              format;
+              it MUST NOT contain a fragment component.
+              Intermediate Entities and
+              Trust Anchors MUST publish a
+              <spanx style="verb">federation_list_endpoint</spanx>.
+              Leaf Entities MUST NOT.
+            </t>
+            <t hangText="federation_trust_mark_status_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The Trust Mark status endpoint described in
+              <xref target="status_endpoint"/>. Trust Mark issuers SHOULD
+              publish a
+              <spanx style="verb">federation_trust_mark_status_endpoint</spanx>.
+              This URL MUST use the <spanx style="verb">https</spanx>
+              scheme and MAY contain port,
+              path, and query parameter components encoded in
+              <spanx style="verb">application/x-www-form-urlencoded</spanx>
+              format;
+              it MUST NOT contain a fragment component.
+            </t>
+            <t hangText="federation_trust_mark_list_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The endpoint described in
+              <xref target="tm_listing"/>.
+              This URL MUST use the <spanx style="verb">https</spanx>
+              scheme and MAY contain port,
+              path, and query parameter components encoded in
+              <spanx style="verb">application/x-www-form-urlencoded</spanx>
+              format;
+              it MUST NOT contain a fragment component.
+              Trust Mark issuers MAY publish a
+              <spanx style="verb">federation_trust_mark_list_endpoint</spanx>.
+            </t>
+            <t hangText="federation_trust_mark_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The endpoint described in
+              <xref target="tm_endpoint"/>.
+              This URL MUST use the <spanx style="verb">https</spanx>
+              scheme and MAY contain port,
+              path, and query parameter components encoded in
+              <spanx style="verb">application/x-www-form-urlencoded</spanx>
+              format;
+              it MUST NOT contain a fragment component.
+              Trust Mark issuers MAY publish a
+              <spanx style="verb">federation_trust_mark_endpoint</spanx>.
+            </t>
+	    <t hangText="federation_historical_keys_endpoint">
+	      <vspace/>
+	      OPTIONAL.
+	      The endpoint described in <xref target="historical_keys"/>.
+	      This URL MUST use the <spanx style="verb">https</spanx>
+	      scheme and MAY contain port,
+	      path, and query parameter components encoded in
+	      <spanx style="verb">application/x-www-form-urlencoded</spanx> format;
+	      it MUST NOT contain a fragment component.
+	      All federation Entities MAY publish a historical keys endpoint.
+	    </t>
+          </list>
+        </t>
+	<t>
+	  It is RECOMMENDED that each Federation Entity contain
+	  an <spanx style="verb">organization_name</spanx> claim,
+	  as defined in <xref target="informational_metadata"/>.
+	</t>
+        <figure>
+	  <preamble>
+	    The following is a non-normative example of the <spanx style="verb">federation_entity</spanx> Entity Type:
+	  </preamble>
+          <name>
+            Example of <spanx style="verb">federation_entity</spanx> Entity Type
+          </name>
+          <artwork><![CDATA[
+"federation_entity": {
+  "federation_fetch_endpoint":
+    "https://amanita.caesarea.example.com/federation_fetch",
+  "federation_list_endpoint":
+    "https://amanita.caesarea.example.com/federation_list",
+  "federation_trust_mark_status_endpoint": "https://amanita.caesarea.example.com/status",
+  "federation_trust_mark_list_endpoint": "https://amanita.caesarea.example.com/trust_marked_list",
+  "organization_name": "Ovulo Mushroom",
+  "homepage_uri": "https://amanita.caesarea.example.com"
+}
+]]></artwork>
+        </figure>
+      </section>
+
       <section title="OpenID Connect Relying Party" anchor="RP_metadata">
         <t>
           The Entity Type Identifier is
@@ -1354,148 +1495,6 @@
 	  deployments MAY use the protected resource metadata parameters
 	  defined in <xref target="I-D.ietf-oauth-resource-metadata"/>.
         </t>
-      </section>
-
-      <section anchor="federation_entity" title="Federation Entity">
-        <t>
-          The Entity Type Identifier is
-          <spanx style="verb">federation_entity</spanx>.
-        </t>
-        <t>
-          All Entities in a federation MAY use this Entity Type.
-          The Entities that provide federation API endpoints
-          MUST use this Entity Type.
-        </t>
-        <t>
-          The following Federation Entity properties are defined:
-          <list style="hanging">
-            <t hangText="federation_fetch_endpoint">
-              <vspace/>
-              OPTIONAL.
-              The fetch endpoint described in
-              <xref target="fetch_endpoint"/>.
-              This URL MUST use the <spanx style="verb">https</spanx>
-              scheme and MAY contain port,
-              path, and query parameter components encoded in
-              <spanx style="verb">application/x-www-form-urlencoded</spanx>
-              format;
-              it MUST NOT contain a fragment component.
-              Intermediate Entities and
-              Trust Anchors MUST publish a
-              <spanx style="verb">federation_fetch_endpoint</spanx>.
-              Leaf Entities MUST NOT.
-            </t>
-            <t hangText="federation_list_endpoint">
-              <vspace/>
-              OPTIONAL.
-              The list endpoint described in
-              <xref target="entity_listing"/>.
-              This URL MUST use the <spanx style="verb">https</spanx>
-              scheme and MAY contain port,
-              path, and query parameter components encoded in
-              <spanx style="verb">application/x-www-form-urlencoded</spanx>
-              format;
-              it MUST NOT contain a fragment component.
-              Intermediate Entities and
-              Trust Anchors MUST publish a
-              <spanx style="verb">federation_list_endpoint</spanx>.
-              Leaf Entities MUST NOT.
-            </t>
-            <t hangText="federation_resolve_endpoint">
-              <vspace/>
-              OPTIONAL.
-              The resolve endpoint described in
-              <xref target="resolve"/>.
-              This URL MUST use the <spanx style="verb">https</spanx>
-              scheme and MAY contain port,
-              path, and query parameter components encoded in
-              <spanx style="verb">application/x-www-form-urlencoded</spanx>
-              format;
-              it MUST NOT contain a fragment component.
-              Any federation Entity MAY publish a
-              <spanx style="verb">federation_resolve_endpoint</spanx>.
-            </t>
-            <t hangText="federation_trust_mark_status_endpoint">
-              <vspace/>
-              OPTIONAL.
-              The Trust Mark status endpoint described in
-              <xref target="status_endpoint"/>. Trust Mark issuers SHOULD
-              publish a
-              <spanx style="verb">federation_trust_mark_status_endpoint</spanx>.
-              This URL MUST use the <spanx style="verb">https</spanx>
-              scheme and MAY contain port,
-              path, and query parameter components encoded in
-              <spanx style="verb">application/x-www-form-urlencoded</spanx>
-              format;
-              it MUST NOT contain a fragment component.
-            </t>
-            <t hangText="federation_trust_mark_list_endpoint">
-              <vspace/>
-              OPTIONAL.
-              The endpoint described in
-              <xref target="tm_listing"/>.
-              This URL MUST use the <spanx style="verb">https</spanx>
-              scheme and MAY contain port,
-              path, and query parameter components encoded in
-              <spanx style="verb">application/x-www-form-urlencoded</spanx>
-              format;
-              it MUST NOT contain a fragment component.
-              Trust Mark issuers MAY publish a
-              <spanx style="verb">federation_trust_mark_list_endpoint</spanx>.
-            </t>
-            <t hangText="federation_trust_mark_endpoint">
-              <vspace/>
-              OPTIONAL.
-              The endpoint described in
-              <xref target="tm_endpoint"/>.
-              This URL MUST use the <spanx style="verb">https</spanx>
-              scheme and MAY contain port,
-              path, and query parameter components encoded in
-              <spanx style="verb">application/x-www-form-urlencoded</spanx>
-              format;
-              it MUST NOT contain a fragment component.
-              Trust Mark issuers MAY publish a
-              <spanx style="verb">federation_trust_mark_endpoint</spanx>.
-            </t>
-            <t hangText="federation_historical_keys_endpoint">
-              <vspace/>
-              OPTIONAL.
-              The endpoint described in <xref target="historical_keys"/>.
-              This URL MUST use the <spanx style="verb">https</spanx>
-              scheme and MAY contain port,
-              path, and query parameter components encoded in
-              <spanx style="verb">application/x-www-form-urlencoded</spanx> format;
-              it MUST NOT contain a fragment component.
-              All Federation Entities MAY publish a
-              <spanx style="verb">federation_historical_keys_endpoint</spanx>.
-            </t>
-          </list>
-        </t>
-	<t>
-	  It is RECOMMENDED that each Federation Entity contain
-	  an <spanx style="verb">organization_name</spanx> claim,
-	  as defined in <xref target="informational_metadata"/>.
-	</t>
-        <figure>
-	  <preamble>
-	    The following is a non-normative example of the <spanx style="verb">federation_entity</spanx> Entity Type:
-	  </preamble>
-          <name>
-            Example of <spanx style="verb">federation_entity</spanx> Entity Type
-          </name>
-          <artwork><![CDATA[
-"federation_entity": {
-  "federation_fetch_endpoint":
-    "https://amanita.caesarea.example.com/federation_fetch",
-  "federation_list_endpoint":
-    "https://amanita.caesarea.example.com/federation_list",
-  "federation_trust_mark_status_endpoint": "https://amanita.caesarea.example.com/status",
-  "federation_trust_mark_list_endpoint": "https://amanita.caesarea.example.com/trust_marked_list",
-  "organization_name": "Ovulo Mushroom",
-  "homepage_uri": "https://amanita.caesarea.example.com"
-}
-]]></artwork>
-        </figure>
       </section>
 
       </section>
