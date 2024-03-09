@@ -3494,12 +3494,13 @@ Host: openid.sunet.se
         <t>
 	  The listing endpoint is exposed by Federation Entities
 	  acting as a Trust Anchor, Intermediate, or Trust Mark issuer.
-	  The endpoint lists the Subordinates about which
-          the Trust Anchor or Intermediate issues Entity Statements.
+	  The endpoint lists the Immediate Subordinates about which
+          the Trust Anchor, Intermediate, or Trust Mark Issuer
+	  issues Entity Statements.
         </t>
         <t>
 	  As a Trust Mark issuer,
-          the endpoint MAY list the Subordinates for which Trust Marks
+          the endpoint MAY list the Immediate Subordinates for which Trust Marks
           have been issued and are still valid, if the issuer
           exposing this endpoint supports Trust Mark filtering, as
           defined below.
@@ -3579,7 +3580,7 @@ Host: openid.sunet.se
               <t hangText="entity_type">
                 <vspace/>
                 OPTIONAL. The value of this parameter is an Entity Type Identifier.
-                If the responder knows the Entity Types of its Subordinates, the result MUST be
+                If the responder knows the Entity Types of its Immediate Subordinates, the result MUST be
                 filtered to include only those that include the specified Entity Type. When 
                 multiple <spanx style="verb">entity_type</spanx>
                 parameters are present, for example 
@@ -3601,7 +3602,7 @@ Host: openid.sunet.se
                 If the parameter
                 <spanx style="verb">trust_marked</spanx> is present and
                 set to <spanx style="verb">true</spanx>,
-                the result contains only the Subordinates for which
+                the result contains only the Immediate Subordinates for which
                 at least one Trust Mark have been issued and is still valid.
 
                 If the responder does not support this feature it MUST
@@ -3616,7 +3617,7 @@ Host: openid.sunet.se
 		If the responder has issued Trust Marks with the
                 specified Trust Mark identifier,
                 the list in the response is filtered to include only
-                the Subordinates for which that Trust Mark identifier has been
+                the Immediate Subordinates for which that Trust Mark identifier has been
                 issued and is still valid.
                 If the responder does not support this feature it MUST
                 use the HTTP status code 400 and set the content type to
@@ -3629,7 +3630,7 @@ Host: openid.sunet.se
                 OPTIONAL. Boolean. If the parameter
                 <spanx style="verb">intermediate</spanx> is present and set to
                 <spanx style="verb">true</spanx>, then if the responder knows
-                whether its Subordinates are Intermediates or not,
+                whether its Immediate Subordinates are Intermediates or not,
                 the result MUST be filtered accordingly.
                 If the responder does not support this feature it MUST
                 use the HTTP status code 400 and the content type
@@ -3647,7 +3648,7 @@ Host: openid.sunet.se
           <figure>
             <preamble>
               The following is a non-normative example of an HTTP GET
-              request for a list of Subordinates:
+              request for a list of Immediate Subordinates:
             </preamble>
             <name>
               Subordinate Listing Request
@@ -3675,7 +3676,7 @@ Host: openid.sunet.se
           <figure>
             <preamble>
               The following is a non-normative example of a response containing
-              the Subordinate Entities:
+              the Immediate Subordinate Entities:
             </preamble>
             <name>
               Subordinate Listing Response
