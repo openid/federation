@@ -2433,7 +2433,7 @@
 	  then it MUST be applied to the subject of the Subordinate Statement
 	  and all the subject's Subordinates.
 	</t>
-        <t>
+    <t>
 	  The following constraint parameters are defined:
 	</t>
         <t>
@@ -2451,12 +2451,12 @@
               Restrictions are defined in terms of permitted or excluded URI name
               subtrees.
             </t>
-            <t hangText="allowed_leaf_entity_types">
+            <t hangText="allowed_entity_types">
               <vspace/>
               OPTIONAL. Array of string Entity Type Identifiers.
               Entity Type Identifiers are defined in <xref target="entity_types"/>.
-              This constraint restricts the types of Leaf Entities that MAY appear
-	      as Entities subject to the constraints.
+              This constraint restricts the Entity Types and hence the metadata
+              that Entities subject to the constraint MAY have.
             </t>
           </list>
         </t>
@@ -2482,8 +2482,10 @@
     ]
   },
   "max_path_length": 2,
-  "allowed_leaf_entity_types":
-    ["openid_provider", "openid_relying_party"]
+  "allowed_entity_types": [
+    "openid_provider",
+    "openid_relying_party"
+  ]
 }
 ]]></artwork>
         </figure>
@@ -2591,13 +2593,19 @@
           </t>
         </section>
 
-        <section title="Leaf Entity Type Constraints"
-                 anchor="leaf_entity_type_constraints">
+        <section title="Entity Type Constraints"
+                 anchor="entity_type_constraints">
           <t>
-            The <spanx style="verb">allowed_leaf_entity_types</spanx> constraint
-            specifies what Entity Types are acceptable for Leaf Entities beneath an
-            Entity. If there is no <spanx style="verb">allowed_leaf_entity_types</spanx>
-            constraint, it means that any Entity Type is allowed.
+            The <spanx style="verb">allowed_entity_types</spanx> constraint
+            specifies the acceptable Entity Types. If there is no
+            <spanx style="verb">allowed_entity_types</spanx> constraint, it
+            means that any Entity Type is allowed. The
+            <spanx style="verb">federation_entity</spanx> Entity Type
+            Identifier, specified in <xref target="federation_entity"/>, is
+            always allowed and MUST NOT be included in the constraint. If the
+            constraint is the empty array <spanx style="verb">[]</spanx>, it
+            means that only the <spanx style="verb">federation_entity</spanx>
+            Entity Type is allowed.
           </t>
         </section>
       </section>
@@ -8480,6 +8488,12 @@ Host: op.umu.se
       <t>
 	-34
 	<list style="symbols">
+      <t>
+        Addressed #2124: Renames the allowed_leaf_entity_types constraint to
+        allowed_entity_types, changes its definition to also apply to
+        Subordinate Entities that are Intermediate Entities, not only
+        Subordinates that are Leaves.
+      </t>
 	  <t>
 	    Fixed #2119: Federation metadata_policy example figures and descriptions.
 	  </t>
