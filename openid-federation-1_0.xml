@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="11" month="March" year="2024"/>
+    <date day="13" month="March" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -246,7 +246,7 @@
             <t hangText="Subordinate Statement">
               <vspace/>
               An Entity Statement issued by a Superior Entity about
-	      an Entity that is immediately Subordinate to it.
+	      an Entity that is its Immediate Subordinate.
             </t>
             <t hangText="Entity Type">
               <vspace/>
@@ -277,16 +277,39 @@
 	      An Entity with no Subordinate Entities.
 	      Leaf Entities typically play a protocol role,
 	      such as an OpenID Connect Relying Party or OpenID Provider.
+	      The terms Leaf Entity and Leaf
+	      are used interchangeably in this specification.
             </t>
             <t hangText="Subordinate Entity">
               <vspace/>
-                An Entity that is a direct descendant of a Superior Entity
-                (a Trust Anchor or Intermediate).
+	      An Entity that is somewhere below a Superior Entity
+	      (a Trust Anchor or Intermediate) in the trust hierarchy,
+	      possibly with Intermediates between them.
+	      The terms Subordinate Entity and Subordinate
+	      are used interchangeably in this specification.
             </t>
             <t hangText="Superior Entity">
               <vspace/>
-                An Entity with one or more Entities that are Subordinate to it.
+	      An Entity that is somewhere above one or more Entities
+	      (a Leaf or Intermediate) in the trust hierarchy,
+	      possibly with Intermediates between them.
+	      The terms Superior Entity and Superior
+	      are used interchangeably in this specification.
             </t>
+	    <t hangText="Immediate Subordinate Entity">
+	      <vspace/>
+	      An Entity that is immediately below a Superior Entity
+	      in the trust hierarchy, with no Intermediates between them.
+	      The terms Immediate Subordinate Entity and Immediate Subordinate
+	      are used interchangeably in this specification.
+	    </t>
+	    <t hangText="Immediate Superior Entity">
+	      <vspace/>
+	      An Entity that is immediately above one or more Subordinate Entities
+	      in the trust hierarchy, with no Intermediates between them.
+	      The terms Immediate Superior Entity and Immediate Superior
+	      are used interchangeably in this specification.
+	    </t>
             <t hangText="Federation Entity Discovery">
               <vspace/>
               A process that starts with an Entity Identifier and collects
@@ -328,16 +351,16 @@
       </t>
       <t>
         The Entity Configuration of a Leaf Entity contains one or more
-        references to its Superiors, found in the
+        references to its Immediate Superiors, found in the
 	<spanx style="verb">authority_hints</spanx> parameter
 	described in <xref target="authority_hints"/>.
-        These references can be used to download the Entity Configuration of each Superior.
+        These references can be used to download the Entity Configuration of each Immediate Superior.
         One or more Entity Configurations are traversed during the Federation Entity Discovery
         until the Trust Anchor is reached.
       </t>
       <t>
         The Trust Anchor and its Intermediates issue Entity Statements
-        about their Subordinates called Subordinate Statements.
+        about their Immediate Subordinate Entities called Subordinate Statements.
 	The sequence of Entity Configurations
         and Subordinate Statements that validate the relationship between
         a Superior and a Subordinate, along a path towards the Trust Anchor,
@@ -403,7 +426,7 @@
           All Entities in a federation publish an Entity Statement about themselves
 	  called an Entity Configuration.
 	  Superior Entities in a federation publish Entity Statements about
-	  their immediate Subordinate Entities called Subordinate Statements.
+	  their Immediate Subordinate Entities called Subordinate Statements.
         </t>
         <t>
           Entity Statement JWTs MUST be explicitly typed, by setting the
@@ -461,7 +484,7 @@
               representing the public part of the subject's Federation Entity
               signing keys. The corresponding private key is
               used by the Entity to sign the Entity Configuration about itself,
-              and by Trust Anchors and Intermediate Entities to sign Subordinate Statements about their immediate Subordinates.
+              and by Trust Anchors and Intermediate Entities to sign Subordinate Statements about their Immediate Subordinates.
               The public keys are used to verify the signatures of the
               issued Entity Statements and Trust Marks and SHOULD NOT be used in other protocols.
 	      (Keys to be used in other protocols, such as OpenID Connect, are conveyed
@@ -503,8 +526,8 @@
 	      (The value might contain no entries when Superiors supply any needed metadata).
 	      <vspace blankLines="1" />
 
-	      In some cases, a Superior may want to be explicit about what metadata
-              should be used for a Subordinate. In that case
+	      In some cases, an Immediate Superior may want to be explicit about what metadata
+              should be used for an Immediate Subordinate. In that case
               <spanx style="verb">metadata</spanx> MAY be used in a Subordinate Statement.
               If <spanx style="verb">metadata</spanx> is used in a Subordinate Statement,
 	      it is only valid for the subject of the Subordinate Statement
@@ -783,7 +806,7 @@
         <t>
           A Trust Chain begins with a Leaf Entity Configuration,
           and has zero or more Subordinate Statements
-          issued by Intermediates about Subordinates,
+          issued by Intermediates about their Immediate Subordinates,
           and includes the Subordinate Statement issued by the
           Trust Anchor about the top-most Intermediate
           (if there are Intermediates) or the Leaf Entity
@@ -851,8 +874,8 @@
         <t>
 	  The Trust Anchor's public keys are used to verify the signatures on
 	  ES[i] (the Trust Anchor's Entity Configuration) and
-	  ES[i-1] (the Trust Anchor's Subordinate Statement about the Entity
-	  immediately Subordinate to it in the Trust Chain).
+	  ES[i-1] (the Trust Anchor's Subordinate Statement about its
+	  Immediate Subordinate in the Trust Chain).
 	  The Trust Anchor's public keys are distributed
 	  to Entities that need to verify a
           Trust Chain in some secure out-of-band way not described in this
@@ -867,9 +890,9 @@
 	    their Entity Configurations and their Subordinate Statements.
 	    The Subordinate Statements are obtained from the
             <spanx style="verb">federation_fetch_endpoint</spanx> of
-            the subject's Superior. The URL of the
+            the subject's Immediate Superior. The URL of the
             <spanx style="verb">federation_fetch_endpoint</spanx> is
-            discovered in the Superior's Entity Configuration.
+            discovered in the Immediate Superior's Entity Configuration.
             Note that the first member of the Trust Chain (the Leaf)
             is depicted at the bottom of the diagram and that the last
             member (the Trust Anchor) is depicted at the top.
@@ -1696,8 +1719,8 @@
       <section title="Metadata Policy" anchor="metadata_policy">
         <t>
           Trust Anchors and Intermediate Entities MAY publish Entity Type-specific
-	  policies that apply to the metadata of their immediate
-          Subordinates as well as any further Subordinates along the Trust Chain.
+	  policies that apply to the metadata of their Immediate Subordinates
+          as well as any further Subordinates along the Trust Chain.
         </t>
         <t>
           As described in <xref target="entity-statement"/>, the metadata
@@ -2035,7 +2058,7 @@
             Using the notation defined in <xref target="trust_chain"/>, policies are
             combined by starting with ES[i] and then adding the policies from ES[j]
             j=i-1,..,1. When for a given metadata parameter both the combined policy
-            at the current step and the Subordinate Entity specify a policy operator,
+            at the current step and the Immediate Subordinate Entity specify a policy operator,
             for example <spanx style="verb">subset_of</spanx>, the two operators are
             merged, as described in <xref target="merging_policy_operators"/>. After
             each combination step the policy for each parameter MUST adhere to the
@@ -3465,7 +3488,7 @@ Host: openid.sunet.se
             and its own capabilities.
             However, Entities may establish a kind of
             transistive trust in other Entities. For example, the
-            Trust Anchor states who its Subordinates are
+            Trust Anchor states who its Immediate Subordinates are
             and Entities may choose to trust them.
             If a party uses the resolve service of another Entity
             to obtain federation data, it is trusting
@@ -3479,12 +3502,13 @@ Host: openid.sunet.se
         <t>
 	  The listing endpoint is exposed by Federation Entities
 	  acting as a Trust Anchor, Intermediate, or Trust Mark issuer.
-	  The endpoint lists the Subordinates about which
-          the Trust Anchor or Intermediate issues Entity Statements.
+	  The endpoint lists the Immediate Subordinates about which
+          the Trust Anchor, Intermediate, or Trust Mark Issuer
+	  issues Entity Statements.
         </t>
         <t>
 	  As a Trust Mark issuer,
-          the endpoint MAY list the Subordinates for which Trust Marks
+          the endpoint MAY list the Immediate Subordinates for which Trust Marks
           have been issued and are still valid, if the issuer
           exposing this endpoint supports Trust Mark filtering, as
           defined below.
@@ -3564,7 +3588,7 @@ Host: openid.sunet.se
               <t hangText="entity_type">
                 <vspace/>
                 OPTIONAL. The value of this parameter is an Entity Type Identifier.
-                If the responder knows the Entity Types of its Subordinates, the result MUST be
+                If the responder knows the Entity Types of its Immediate Subordinates, the result MUST be
                 filtered to include only those that include the specified Entity Type. When 
                 multiple <spanx style="verb">entity_type</spanx>
                 parameters are present, for example 
@@ -3586,7 +3610,7 @@ Host: openid.sunet.se
                 If the parameter
                 <spanx style="verb">trust_marked</spanx> is present and
                 set to <spanx style="verb">true</spanx>,
-                the result contains only the Subordinates for which
+                the result contains only the Immediate Subordinates for which
                 at least one Trust Mark have been issued and is still valid.
 
                 If the responder does not support this feature it MUST
@@ -3601,7 +3625,7 @@ Host: openid.sunet.se
 		If the responder has issued Trust Marks with the
                 specified Trust Mark identifier,
                 the list in the response is filtered to include only
-                the Subordinates for which that Trust Mark identifier has been
+                the Immediate Subordinates for which that Trust Mark identifier has been
                 issued and is still valid.
                 If the responder does not support this feature it MUST
                 use the HTTP status code 400 and set the content type to
@@ -3614,7 +3638,7 @@ Host: openid.sunet.se
                 OPTIONAL. Boolean. If the parameter
                 <spanx style="verb">intermediate</spanx> is present and set to
                 <spanx style="verb">true</spanx>, then if the responder knows
-                whether its Subordinates are Intermediates or not,
+                whether its Immediate Subordinates are Intermediates or not,
                 the result MUST be filtered accordingly.
                 If the responder does not support this feature it MUST
                 use the HTTP status code 400 and the content type
@@ -3632,7 +3656,7 @@ Host: openid.sunet.se
           <figure>
             <preamble>
               The following is a non-normative example of an HTTP GET
-              request for a list of Subordinates:
+              request for a list of Immediate Subordinates:
             </preamble>
             <name>
               Subordinate Listing Request
@@ -3660,7 +3684,7 @@ Host: openid.sunet.se
           <figure>
             <preamble>
               The following is a non-normative example of a response containing
-              the Subordinate Entities:
+              the Immediate Subordinate Entities:
             </preamble>
             <name>
               Subordinate Listing Response
@@ -5429,7 +5453,7 @@ HTTP/1.1 302 Found
                   metadata and where the
                   <spanx style="verb">authority_hints</spanx>
                   included are picked by the process described above.
-                  From its immediate Superior authorities, the RP MUST select
+                  From its Immediate Superiors, the RP MUST select
                   one or more <spanx style="verb">authority_hints</spanx> so
                   that every hint, when used as the starting point for a Trust Chain
                   collection, leads to at least one of the Trust Anchors
@@ -5654,7 +5678,7 @@ HTTP/1.1 302 Found
                     claim of the Entity Statement to the Trust Anchor it
                     selected to process the request. The
                     <spanx style="verb">authority_hints</spanx> claim MUST be
-                    set to the OP's immediate Superior authority in the
+                    set to the OP's Immediate Superior in the
                     selected Trust Chain.
                     <vspace blankLine="1"/>
 
@@ -5750,7 +5774,7 @@ HTTP/1.1 302 Found
                     <vspace/>
                     REQUIRED.
                     It MUST be a single-element array, whose value references
-                    the immediate Superior authority of the OP in the Trust Chain
+                    the Immediate Superior of the OP in the Trust Chain
                     that the OP selected to process the request. See
                     <xref target="entity-statement"/> for the full
                     specification.
@@ -5796,7 +5820,7 @@ HTTP/1.1 302 Found
                     The RP MUST ensure the signing Federation Entity Key used
                     by the OP is present in the
                     <spanx style="verb">jwks</spanx> claim of the Subordinate Statement
-                    issued by the OP's immediate Superior authority
+                    issued by the OP's Immediate Superior
                     in a Trust Chain that the RP successfully resolved for the
                     OP when it prepared the Explicit Registration request.
                   </t>
@@ -7371,8 +7395,8 @@ HTTP/1.1 302 Found
           <xref target="federation_configuration"/>.
           What follows after that is this sequence of steps:
           <list style="numbers">
-            <t>Pick out the immediate Superior Entities using the authority
-              hints.
+            <t>
+	      Pick out the Immediate Superior Entities using the authority hints.
             </t>
             <t>
               Fetch the Entity Configuration for each such Entity. This uses the
@@ -7380,8 +7404,8 @@ HTTP/1.1 302 Found
               <xref target="federation_configuration"/>.
             </t>
             <t>
-              Use the fetch endpoint of each Superior to
-              obtain Subordinate Statements about the Subordinate Entity,
+              Use the fetch endpoint of each Immediate Superior to
+              obtain Subordinate Statements about the Immediate Subordinate Entity,
               per <xref target="fetch_statement"/>.
             </t>
           </list>
@@ -7394,7 +7418,7 @@ HTTP/1.1 302 Found
         </t>
         <t>
           When building the Trust Chain, the Subordinate Statements issued
-          by a Superior about its Subordinate are used together with the
+          by each Immediate Superior about their Immediate Subordinates are used together with the
           Entity Configuration issued by the Leaf.
         </t>
         <t>
@@ -7957,7 +7981,7 @@ Host: geant.org
 	    <preamble>
 	      Combining the metadata policies from the three Subordinate Statements we
 	      have by
-	      a Superior about its Subordinate and applying the combined policy
+	      Immediate Superiors about their Immediate Subordinates and applying the combined policy
 	      to the
 	      metadata statement that the Leaf Entity presented, we get:
 	    </preamble>
@@ -8512,6 +8536,10 @@ Host: op.umu.se
 	  <t>
 	    Changed the HTTP method used at the Trust Mark Status Endpoint
 	    back to POST because of the potentially large size of the request.
+	  </t>
+	  <t>
+	    Fixed #2120: Defined and consistently used the terms Subordinate,
+	    Immediate Subordinate, Superior, and Immediate Superior.
 	  </t>
 	  <t>
 	    Fixed #2089: Added section Resolving the Trust Chain and Metadata with a Resolver.
