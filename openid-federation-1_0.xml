@@ -690,14 +690,23 @@
   "sub": "https://ntnu.no",
   "iat": 1516239022,
   "exp": 1516298022,
-  "crit": ["jti"],
-  "jti": "7l2lncFdY6SlhNia",
-  "source_endpoint": "https://feide.no/federation_api/fetch",
-  "metadata_policy_crit": ["regexp"],
+  "jwks": {
+    "keys": [
+      {
+        "kty": "RSA",
+        "alg": "RS256",
+        "use": "sig",
+        "key_ops": ["verify"],
+        "kid": "NzbLsXh8uDCcd-6MNwXF4W_7noWXFZAfHkxZsRGC9Xs",
+        "n": "pnXBOusEANuug6ewezb9J_...",
+        "e": "AQAB"
+      }
+    ]
+  },
   "metadata": {
     "openid_provider": {
       "issuer": "https://ntnu.no",
-      "organization_name": "NTNU",
+      "organization_name": "NTNU"
     },
     "oauth_client": {
       "organization_name": "NTNU"
@@ -712,26 +721,18 @@
           "^https:\/\/[\\w-]+\\.example\\.com\/[\\w-]+\\.html"}
     },
     "oauth_client": {
-      "grant_types": {
-        "subset_of": ["authorization_code", "client_credentials"]
-      },
+      "grant_type": {
+        "one_of": ["authorization_code", "client_credentials"]
+      }
+    }
   },
   "constraints": {
     "max_path_length": 2
   },
-  "jwks": {
-    "keys": [
-      {
-        "alg": "RS256",
-        "e": "AQAB",
-        "key_ops": ["verify"],
-        "kid": "key1",
-        "kty": "RSA",
-        "n": "pnXBOusEANuug6ewezb9J_...",
-        "use": "sig"
-      }
-    ]
-  }
+  "crit": ["jti"],
+  "metadata_policy_crit": ["regexp"],
+  "source_endpoint": "https://feide.no/federation_api/fetch",
+  "jti": "7l2lncFdY6SlhNia"
 }
 ]]></artwork>
         </figure>
@@ -8559,6 +8560,9 @@ Host: op.umu.se
 	  <t>
 	    Fixed #2089: Added section Resolving the Trust Chain and Metadata with a Resolver.
 	  </t>
+      <t>
+        Fixed #2131: JSON in Entity Statement example in figure 2.
+      </t>
 	</list>
       </t>
 
