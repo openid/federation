@@ -5326,14 +5326,16 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                   </t>
                   <t hangText="tls_client_auth">
                     <vspace/>
-                    If mTLS is used and the certificate used is self-signed it MUST match 
-                    one in the JWKS or JWKS_URI that has a use value of sig.
+                    If mTLS is used and the certificate used is self-signed, it MUST match 
+                    one in the client's Entity Metadata JWK Set
+                    that has a <spanx style="verb">use</spanx> value of <spanx style="verb">sig</spanx>.
+                    <vspace blankLine="1"/>
                     If the certificate used is not self-signed, It must first be
                     validated as chaining to a trusted root. (The selection of trusted
                     roots is outside of this trust model)
-                    
+                    <vspace blankLine="1"/>
                     The subject of the certificate must be matched against the member 
-                    specified in the metadata from Section 2.1.2 of <xref target="RFC8705"/> 
+                    specified in the metadata from Section 2.1.2 of <xref target="RFC8705"/>.
                     The member needs to be present in the metadata to convey the 
                     subject value of the certificate that the server 
                     is required to match when authenticating the respective client.
