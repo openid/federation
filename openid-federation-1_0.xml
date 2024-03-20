@@ -234,7 +234,7 @@
               <vspace/>
               A signed JWT that contains the information needed
               for an Entity to participate in federation(s),
-              including metadata about itself
+              including Metadata about itself
               and policies that apply to other Entities that it is authoritative for.
             </t>
             <t hangText="Entity Configuration">
@@ -317,7 +317,7 @@
               From the collected Entity Statements, a Trust Chain
               is constructed and verified.
               The result of the Federation Entity Discovery is that the
-              Leaf Entity's metadata is constructed from the Trust Chain.
+              Leaf Entity's Metadata is constructed from the Trust Chain.
             </t>
             <t hangText="Trust Chain">
               <vspace/>
@@ -373,13 +373,13 @@
       </t>
       <t>
         With a verified Trust Chain, the federation policy is finally applied
-        and the metadata describing a Leaf Entity within the Federation is derived,
+        and the Metadata describing a Leaf Entity within the Federation is derived,
         as described in <xref target="federation_policy"/>.
       </t>
       <t>
         This specification deals with trust operations;
         it does not cover or touch protocol operations
-        other than metadata derivation and exchange.
+        other than Metadata derivation and exchange.
         In OpenID Connect terms, these are the protocol operations specified in
         <xref target="OpenID.Discovery">OpenID Connect Discovery 1.0</xref>
         and
@@ -488,7 +488,7 @@
               The public keys are used to verify the signatures of the
               issued Entity Statements and Trust Marks and SHOULD NOT be used in other protocols.
 	      (Keys to be used in other protocols, such as OpenID Connect, are conveyed
-              in the <spanx style="verb">metadata</spanx> elements of the respective Entity Statements.)
+              in the <spanx style="verb">Metadata</spanx> elements of the respective Entity Statements.)
               This claim is only OPTIONAL for the Entity Statement returned
               from an OP when the client is doing Explicit Registration.
               In all other cases, it is REQUIRED.
@@ -510,49 +510,49 @@
               of Trust Anchors with no Superiors.
 	      It MUST NOT be present in Subordinate Statements.
             </t>
-            <t hangText="metadata">
+            <t hangText="Metadata">
               <vspace/>
               OPTIONAL. JSON object with protocol-specific claims that represent the
-              Entity's Types within its federations and metadata for those Entity Types.
+              Entity's Types within its federations and Metadata for those Entity Types.
 	      Each member name of the JSON object is an Entity Type Identifier,
 	      and each value MUST be a JSON object representing
-	      metadata according to the metadata schema of that Entity Type.
+	      Metadata according to the Metadata schema of that Entity Type.
 	      When an Entity participates in a federation or federations
 	      with one or more Entity Types,
-	      its Entity Configuration MUST contain a <spanx style="verb">metadata</spanx> claim
+	      its Entity Configuration MUST contain a <spanx style="verb">Metadata</spanx> claim
 	      with entries for each of the corresponding Entity Type Identifiers,
 	      even if the values for those entries are
 	      the empty JSON object <spanx style="verb">{}</spanx>.
-	      (The value might contain no entries when Superiors supply any needed metadata).
+	      (The value might contain no entries when Superiors supply any needed Metadata).
 	      <vspace blankLines="1" />
 
-	      In some cases, an Immediate Superior may want to be explicit about what metadata
+	      In some cases, an Immediate Superior may want to be explicit about what Metadata
               should be used for an Immediate Subordinate. In that case
-              <spanx style="verb">metadata</spanx> MAY be used in a Subordinate Statement.
-              If <spanx style="verb">metadata</spanx> is used in a Subordinate Statement,
+              <spanx style="verb">Metadata</spanx> MAY be used in a Subordinate Statement.
+              If <spanx style="verb">Metadata</spanx> is used in a Subordinate Statement,
 	      it is only valid for the subject of the Subordinate Statement
 	      and has no impact on the subject's Subordinates.
-              If both <spanx style="verb">metadata</spanx> and
-              <spanx style="verb">metadata_policy</spanx> appear in a Subordinate Statement,
-              then <spanx style="verb">metadata</spanx> MUST be applied before
-              <spanx style="verb">metadata_policy</spanx>.
+              If both <spanx style="verb">Metadata</spanx> and
+              <spanx style="verb">Metadata_policy</spanx> appear in a Subordinate Statement,
+              then <spanx style="verb">Metadata</spanx> MUST be applied before
+              <spanx style="verb">Metadata_policy</spanx>.
             </t>
-            <t hangText="metadata_policy">
+            <t hangText="Metadata_policy">
               <vspace/>
-              OPTIONAL. JSON object that defines a metadata policy.
-              The metadata policy applies to the Entity that is the subject of this
+              OPTIONAL. JSON object that defines a Metadata policy.
+              The Metadata policy applies to the Entity that is the subject of this
               Subordinate Statement as well as to all Entities that are Subordinate to it.
               Applying to Subordinate Entities distinguishes
-              <spanx style="verb">metadata_policy</spanx> from
-              <spanx style="verb">metadata</spanx>, which only applies to the
+              <spanx style="verb">Metadata_policy</spanx> from
+              <spanx style="verb">Metadata</spanx>, which only applies to the
               subject itself.
 	      Each member name of the JSON object is an Entity Type Identifier,
 	      and each value MUST be a JSON object representing
-	      the metadata policy according to the metadata schema of that Entity Type.
+	      the Metadata policy according to the Metadata schema of that Entity Type.
 	      A Subordinate Statement MAY contain multiple
-	      sets of metadata policy statements, but only one for each Entity Type.
+	      sets of Metadata policy statements, but only one for each Entity Type.
               Entity Configurations MUST NOT contain a
-              <spanx style="verb">metadata_policy</spanx> claim.
+              <spanx style="verb">Metadata_policy</spanx> claim.
             </t>
             <t hangText="constraints">
               <vspace/>
@@ -568,10 +568,10 @@
 	      Claims specified for use in Entity Statements by this specification
 	      MUST NOT be included in the list.
             </t>
-            <t hangText="metadata_policy_crit">
+            <t hangText="Metadata_policy_crit">
               <vspace/>
               OPTIONAL.
-              Array of strings specifying critical metadata policy operators
+              Array of strings specifying critical Metadata policy operators
               other than the standard ones defined in <xref target="policy_operators"/>
               that MUST be understood and processed. Only Subordinate Statements
               MAY include this claim and when included its value MUST NOT be the
@@ -693,8 +693,8 @@
   "crit": ["jti"],
   "jti": "7l2lncFdY6SlhNia",
   "source_endpoint": "https://feide.no/federation_api/fetch",
-  "metadata_policy_crit": ["regexp"],
-  "metadata": {
+  "Metadata_policy_crit": ["regexp"],
+  "Metadata": {
     "openid_provider": {
       "issuer": "https://ntnu.no",
       "organization_name": "NTNU",
@@ -703,7 +703,7 @@
       "organization_name": "NTNU"
     }
   },
-  "metadata_policy": {
+  "Metadata_policy": {
     "openid_provider": {
       "id_token_signing_alg_values_supported":
         {"subset_of": ["RS256", "RS384", "RS512"]},
@@ -913,9 +913,9 @@
 | .------------. |  | .-----------------------. |         | .-----------------------. |
 | |            | |  | | Entity Configuration  | |         | | Entity Configuration  | |
 | |Trust Anchor+-+--+->                       +-+---------+->                       | |
-| |            | |  | | federation entity keys| |         | | federation entity keys| |
-| '-----.------' |  | | metadata              | |         | | metadata              | |
-|       |        |  | | trust mark issuers    | |         | | trust mark issuers    | |
+| |            | |  | | Federation Entity Keys| |         | | Federation Entity Keys| |
+| '-----.------' |  | | Metadata              | |         | | Metadata              | |
+|       |        |  | | Trust Mark Issuers    | |         | | Trust Mark Issuers    | |
 |       |        |  | | constraints           | |         | | constraints           | |
 |       |        |  | |                       | |         | |                       | |
 |       |        |  | '-----------------------' |         | '-----------------------' |
@@ -923,21 +923,21 @@
 |       |        |  |                           |Fetch    | .-----------------------. |
 |       |        |  |                           |endpoint | | Subordinate Statement | |
 |       +--------+--+---------------------------+---------+->                       | |
-|                |  |                           |         | | federation entity keys| |
-|                |  |                           |         | | metadata policy       | |
-|                |  |                           |         | | metadata              | |
+|                |  |                           |         | | Federation Entity Keys| |
+|                |  |                           |         | | Metadata policy       | |
+|                |  |                           |         | | Metadata              | |
 |                |  |                           |         | |                       | |
 |                |  |                           |         | '-----------.-----------' |
 | .------------. |  | .-----------------------. |         |             |             |
 | |            | |  | | Entity Configuration  | |         |             |             |
 | |Intermediate+-+--+->                       | |         |             |sub and key  |
-| |            | |  | | federation entity keys| |         |             | binding     |
-| '------.-----' |  | | metadata              | |         | .-----------v-----------. |
-|        |       |  | | trust marks           | |         | | Subordinate Statement | |
+| |            | |  | | Federation Entity Keys| |         |             | binding     |
+| '------.-----' |  | | Metadata              | |         | .-----------v-----------. |
+|        |       |  | | Trust Marks           | |         | | Subordinate Statement | |
 |        |       |  | |                       | |         | |                       | |
-|        |       |  | |                       | |         | | federation entity keys| |
-|        |       |  | '-----------------------' |Fetch    | | metadata policy       | |
-|        |       |  |                           |endpoint | | metadata              | |
+|        |       |  | |                       | |         | | Federation Entity Keys| |
+|        |       |  | '-----------------------' |Fetch    | | Metadata policy       | |
+|        |       |  |                           |endpoint | | Metadata              | |
 |        +-------+--+---------------------------+---------+->                       | |
 |                |  |                           |         | '-----------.-----------' |
 |                |  |                           |         |             |sub and key  |
@@ -945,9 +945,9 @@
 | .------------. |  | .-----------------------. |         | .-----------v-----------. |
 | |            | |  | | Entity Configuration  | |         | | Entity Configuration  | |
 | | Leaf       +-+--+->                       +-+---------+->                       | |
-| |            | |  | | federation entity keys| |         | | federation entity keys| |
-| '------------' |  | | metadata              | |         | | metadata              | |
-|                |  | | trust marks           | |         | | trust marks           | |
+| |            | |  | | Federation Entity Keys| |         | | Federation Entity Keys| |
+| '------------' |  | | Metadata              | |         | | Metadata              | |
+|                |  | | Trust Marks           | |         | | Trust Marks           | |
 |                |  | |                       | |         | |                       | |
 |                |  | |                       | |         | |                       | |
 |                |  | '-----------------------' |         | '-----------------------' |
@@ -1008,24 +1008,24 @@
 
       </section>
 
-    <section anchor="metadata" title="Metadata">
+    <section anchor="Metadata" title="Metadata">
       <t>
-	This section defines how to represent and use metadata about Entities.
-	It reuses existing OpenID Connect and OAuth 2.0 metadata standards
+	This section defines how to represent and use Metadata about Entities.
+	It reuses existing OpenID Connect and OAuth 2.0 Metadata standards
 	that are applicable to each Entity Type.
       </t>
       <t>
 	As described in <xref target="entity-statement"/>,
-	Entity metadata is located in the <spanx style="verb">metadata</spanx>
+	Entity Metadata is located in the <spanx style="verb">Metadata</spanx>
 	claim of an Entity Statement, whose value is a JSON object.
 	The member names of this object are Entity Type Identifiers,
 	as specified in <xref target="entity_types"/>.
-	The metadata data structure following each Entity Type Identifier is a JSON object;
+	The Metadata data structure following each Entity Type Identifier is a JSON object;
 	it MAY be the empty JSON object <spanx style="verb">{}</spanx>,
-	which may be the case when Superiors supply any needed metadata values.
+	which may be the case when Superiors supply any needed Metadata values.
       </t>
       <t>
-	Top-level JSON object members in the metadata data structures MAY use
+	Top-level JSON object members in the Metadata data structures MAY use
 	any JSON value other than <spanx style="verb">null</spanx>;
 	the use of <spanx style="verb">null</spanx> is prohibited to prevent likely
 	implementation errors caused by confusing members having
@@ -1035,7 +1035,7 @@
       <section anchor="entity_types" title="Entity Type Identifiers">
 	<t>
       The Entity Type Identifier uniquely identifies the Entity Type of a
-      federation participant and the metadata format for that Entity Type. This
+      federation participant and the Metadata format for that Entity Type. This
       section defines a <spanx style="verb">federation_entity</spanx> Entity
       Type Identifier as well as identifiers for OpenID Connect and OAuth 2.0
       Federation Entities.
@@ -1163,7 +1163,7 @@
 	<t>
 	  It is RECOMMENDED that each Federation Entity contain
 	  an <spanx style="verb">organization_name</spanx> claim,
-	  as defined in <xref target="informational_metadata"/>.
+	  as defined in <xref target="informational_Metadata"/>.
 	</t>
         <figure>
 	  <preamble>
@@ -1187,7 +1187,7 @@
         </figure>
       </section>
 
-      <section title="OpenID Connect Relying Party" anchor="RP_metadata">
+      <section title="OpenID Connect Relying Party" anchor="RP_Metadata">
         <t>
           The Entity Type Identifier is
           <spanx style="verb">openid_relying_party</spanx>.
@@ -1195,13 +1195,13 @@
         <t>
           All parameters defined in Section 2 of
           <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>
-          and <xref target="common_metadata"/> are applicable,
+          and <xref target="common_Metadata"/> are applicable,
 	  as well as additional parameters registered in the
 	  IANA "OAuth Dynamic Client Registration Metadata" registry
 	  <xref target="IANA.OAuth.Parameters"/>.
         </t>
         <t>
-          In addition, the following RP metadata parameter is defined:
+          In addition, the following RP Metadata parameter is defined:
           <list style="hanging">
             <t hangText="client_registration_types">
               <vspace/>
@@ -1226,7 +1226,7 @@
       "sub": "https://openid.sunet.se",
       "iat": 1516239022,
       "exp": 1516298022,
-      "metadata": {
+      "Metadata": {
         "openid_relying_party": {
           "application_type": "web",
           "redirect_uris": [
@@ -1267,7 +1267,7 @@
 	</figure>
       </section>
 
-      <section title="OpenID Provider" anchor="OP_metadata">
+      <section title="OpenID Provider" anchor="OP_Metadata">
         <t>
           The Entity Type Identifier is
           <spanx style="verb">openid_provider</spanx>.
@@ -1275,13 +1275,13 @@
         <t>
           All parameters defined in Section 3 of
           <xref target="OpenID.Discovery">OpenID Connect Discovery 1.0</xref>
-          and <xref target="common_metadata"/> are applicable,
+          and <xref target="common_Metadata"/> are applicable,
 	  as well as additional parameters registered in the
 	  IANA "OAuth Authorization Server Metadata" registry
 	  <xref target="IANA.OAuth.Parameters"/>.
         </t>
         <t>
-          In addition, the following OP metadata parameters are defined:
+          In addition, the following OP Metadata parameters are defined:
         </t>
         <t>
           <list style="hanging">
@@ -1314,7 +1314,7 @@
 	      that is a member of a federation that the OP is a member of.
 	      This is done via request authentication methods.
 	      These methods achieve this by proving that
-	      the RP is in possession of a key that appears in its metadata.
+	      the RP is in possession of a key that appears in its Metadata.
 	      This parameter declares the request authentication methods that the OP supports.
 	      <vspace blankLine="1"/>
 
@@ -1412,7 +1412,7 @@
    "sub":"https://op.umu.se",
    "exp":1568397247,
    "iat":1568310847,
-   "metadata":{
+   "Metadata":{
       "openid_provider":{
          "issuer":"https://op.umu.se/openid",
          "signed_jwks_uri":"https://op.umu.se/openid/signed_jwks.jose",
@@ -1489,7 +1489,7 @@
         <t>
           All parameters defined in Section 2 of
           <xref target="RFC8414"/>
-          and <xref target="common_metadata"/> are applicable,
+          and <xref target="common_Metadata"/> are applicable,
 	  as well as additional parameters registered in the
 	  IANA "OAuth Authorization Server Metadata" registry
 	  <xref target="IANA.OAuth.Parameters"/>.
@@ -1504,7 +1504,7 @@
         <t>
           All parameters defined in Section 2 of
           <xref target="RFC7591">OAuth 2.0 Dynamic Client Registration Protocol</xref>
-          and <xref target="common_metadata"/> are applicable,
+          and <xref target="common_Metadata"/> are applicable,
 	  as well as additional parameters registered in the
 	  IANA "OAuth Dynamic Client Registration Metadata" registry
 	  <xref target="IANA.OAuth.Parameters"/>.
@@ -1515,24 +1515,24 @@
         <t>
           The Entity Type Identifier is
           <spanx style="verb">oauth_resource</spanx>.
-	  The parameters defined in <xref target="common_metadata"/> are applicable.
+	  The parameters defined in <xref target="common_Metadata"/> are applicable.
 	  In addition, while it is not yet a standard,
-	  deployments MAY use the protected resource metadata parameters
-	  defined in <xref target="I-D.ietf-oauth-resource-metadata"/>.
+	  deployments MAY use the protected resource Metadata parameters
+	  defined in <xref target="I-D.ietf-oauth-resource-Metadata"/>.
         </t>
       </section>
 
       </section>
 
-      <section title="Metadata Extensions for OpenID Connect and OAuth 2.0" anchor="common_metadata">
+      <section title="Metadata Extensions for OpenID Connect and OAuth 2.0" anchor="common_Metadata">
         <t>
-        This section defines additional metadata properties
+        This section defines additional Metadata properties
         that MAY be used with all the Entity Types above.
         </t>
 
-	<section anchor="jwks_metadata" title="Metadata Extensions for JWK Sets">
+	<section anchor="jwks_Metadata" title="Metadata Extensions for JWK Sets">
 	  <t>
-	    The following metadata properties define ways of obtaining
+	    The following Metadata properties define ways of obtaining
 	    JWK Sets for an Entity Type of the Entity.
 	  </t>
 	  <t>
@@ -1657,7 +1657,7 @@
 	      use only one of
 	      <spanx style="verb">jwks</spanx>,
 	      <spanx style="verb">jwks_uri</spanx>, and
-	      <spanx style="verb">signed_jwks_uri</spanx> in its OpenID Connect or OAuth 2.0 metadata.
+	      <spanx style="verb">signed_jwks_uri</spanx> in its OpenID Connect or OAuth 2.0 Metadata.
 	      However, there may be circumstances in which is it desirable to use multiple
 	      JWK Set representations, such as when an Entity is in multiple federations and the
 	      federations have different policies about the JWK Set representation to be used.
@@ -1669,9 +1669,9 @@
 	  </section>
 	</section>
 
-	<section anchor="informational_metadata" title="Informational Metadata Extensions">
+	<section anchor="informational_Metadata" title="Informational Metadata Extensions">
 	  <t>
-	    The following metadata properties define ways of obtaining
+	    The following Metadata properties define ways of obtaining
 	    information about the Entity for an Entity Type.
 	  </t>
           <list style="hanging">
@@ -1707,46 +1707,46 @@
             </t>
 	  </list>
 	  <t>
-	    It is RECOMMENDED that, when present, these metadata properties occur in
-	    an Entity's <spanx style="verb">federation_entity</spanx> metadata section.
-	    They MAY also be present in the Entity's metadata for other Entity Types,
+	    It is RECOMMENDED that, when present, these Metadata properties occur in
+	    an Entity's <spanx style="verb">federation_entity</spanx> Metadata section.
+	    They MAY also be present in the Entity's Metadata for other Entity Types,
 	    particularly when the values for those Entity Types differ from
-	    those for the <spanx style="verb">federation_entity</spanx> metadata.
+	    those for the <spanx style="verb">federation_entity</spanx> Metadata.
 	  </t>
 	</section>
       </section>
 
     </section>
     <section title="Federation Policy" anchor="federation_policy">
-      <section title="Metadata Policy" anchor="metadata_policy">
+      <section title="Metadata Policy" anchor="Metadata_policy">
         <t>
           Trust Anchors and Intermediate Entities MAY publish Entity Type-specific
-	  policies that apply to the metadata of their Immediate Subordinates
+	  policies that apply to the Metadata of their Immediate Subordinates
           as well as any further Subordinates along the Trust Chain.
         </t>
         <t>
-          As described in <xref target="entity-statement"/>, the metadata
-          policy operators are located in the <spanx style="verb">metadata_policy</spanx>
+          As described in <xref target="entity-statement"/>, the Metadata
+          policy operators are located in the <spanx style="verb">Metadata_policy</spanx>
           claim of an Entity Statement, whose value is a JSON object.
         </t>
         <t>
-          Each member in this object is an Entity Type-specific metadata policy,
+          Each member in this object is an Entity Type-specific Metadata policy,
           whose member name is an Entity Type Identifier, as specified in
           <xref target="entity_types"/>, for example
           <spanx style="verb">openid_relying_party</spanx>. The member value is
-          a JSON object that represents metadata policies for the Entity Type
+          a JSON object that represents Metadata policies for the Entity Type
           and has the following structure:
           <list style="symbols">
             <t>
               It consists of one or more policy entries, each entry being
               represented by a JSON object.</t>
             <t>
-              A policy entry applies to a single metadata parameter, for
+              A policy entry applies to a single Metadata parameter, for
               example <spanx style="verb">id_token_signed_response_alg</spanx>.
             </t>
             <t>
               A policy entry is represented by a JSON object and consists of
-              one or more operators, to check or modify the metadata parameter,
+              one or more operators, to check or modify the Metadata parameter,
               as described in <xref target="policy_operators"/>.
             </t>
             <t>
@@ -1755,21 +1755,21 @@
           </list>
         </t>
         <t>
-          Note that metadata policies MUST regard any metadata parameter with
+          Note that Metadata policies MUST regard any Metadata parameter with
           a language tag in its name, as described in <xref target="ClaimsLanguagesAndScripts"/>,
-          as distinct from the same metadata parameter without a language tag.
+          as distinct from the same Metadata parameter without a language tag.
         </t>
           <t>
             <figure>
               <preamble>
                 The following is a non-normative example of a policy entry
-		providing metadata policy for an OpenID Connect RP:
+		providing Metadata policy for an OpenID Connect RP:
               </preamble>
 	      <name>
-		  Example <spanx style="verb">metadata_policy</spanx> Claim
+		  Example <spanx style="verb">Metadata_policy</spanx> Claim
 	      </name>
               <artwork><![CDATA[
-"metadata_policy" : {
+"Metadata_policy" : {
   "openid_relying_party": {
     "id_token_signed_response_alg": {
       "default": "ES256",
@@ -1782,27 +1782,27 @@
           </t>
         <section title="Operators" anchor="policy_operators">
           <t>
-            This specification defines the following metadata policy operators.
+            This specification defines the following Metadata policy operators.
           </t>
           <t>
             Metadata policy operators that modify values are:
             <list style="hanging">
               <t hangText="value">
                 <vspace/>
-                The metadata parameter MUST be assigned the value that is the
+                The Metadata parameter MUST be assigned the value that is the
                 value of this operator.
               </t>
               <t hangText="add">
                 <vspace/>
                 The value or values of this operator MUST be added to the
-                metadata parameter. If any of these values are already present
-                in the metadata parameter, they MUST NOT be added another time.
-                If the metadata parameter is absent, the parameter MUST be
+                Metadata parameter. If any of these values are already present
+                in the Metadata parameter, they MUST NOT be added another time.
+                If the Metadata parameter is absent, the parameter MUST be
                 initialized with the value of this operator.
               </t>
               <t hangText="default">
                 <vspace/>
-                If the metadata parameter is absent, it MUST be set to the
+                If the Metadata parameter is absent, it MUST be set to the
                 value of this operator.
               </t>
             </list>
@@ -1813,8 +1813,8 @@
               <t hangText="essential">
                 <vspace/>
                 If the value of this operator is <spanx style="verb">true</spanx>,
-                then the metadata parameter MUST be present.
-                If <spanx style="verb">false</spanx> the metadata parameter is
+                then the Metadata parameter MUST be present.
+                If <spanx style="verb">false</spanx> the Metadata parameter is
                 voluntary and may be absent.
                 If the <spanx style="verb">essential</spanx> operator is omitted,
                 this is equivalent to including it with a value of
@@ -1822,26 +1822,26 @@
               </t>
               <t hangText="one_of">
                 <vspace/>
-                If the metadata parameter is present its value MUST be one of
+                If the Metadata parameter is present its value MUST be one of
                 those listed in the operator value.
               </t>
               <t hangText="subset_of">
                 <vspace/>
-                If the metadata parameter is present this operator computes the
-                intersection between the values of the operator and the metadata
+                If the Metadata parameter is present this operator computes the
+                intersection between the values of the operator and the Metadata
                 parameter.
                 If the intersection is non-empty, the parameter is set to the
                 values in the intersection.
                 If the intersection is empty, the result is determined by the
                 <spanx style="verb">essential</spanx> operator: For an essential
-                metadata parameter, the result is an error; for a voluntary
-                metadata parameter, it MUST be removed from the metadata.
+                Metadata parameter, the result is an error; for a voluntary
+                Metadata parameter, it MUST be removed from the Metadata.
                 Note that this behavior makes <spanx style="verb">subset_of</spanx>
                 a potential value modifier in addition to it being a value check.
               </t>
               <t hangText="superset_of">
                 <vspace/>
-                If the metadata parameter is present its values MUST contain
+                If the Metadata parameter is present its values MUST contain
                 those specified in the operator. By mathematically defining
                 supersets, equality is included.
               </t>
@@ -1849,14 +1849,14 @@
           </t>
 
           <t>
-            Applications and protocols utilizing metadata policies MAY specify
+            Applications and protocols utilizing Metadata policies MAY specify
             and use additional policy operators.
           </t>
 
           <t>
-            All policy operators MUST consider it an error if a metadata
+            All policy operators MUST consider it an error if a Metadata
             parameter that is being operated on has a <spanx style="verb">null</spanx>
-            value. Policy operators MUST NOT output metadata parameters with a
+            value. Policy operators MUST NOT output Metadata parameters with a
             <spanx style="verb">null</spanx> value.
           </t>
 
@@ -1867,14 +1867,14 @@
             list values.
           </t>
           <t>
-            Note that when a metadata parameter is defined as a space-separated
+            Note that when a Metadata parameter is defined as a space-separated
             list of strings, like <spanx style="verb">scope</spanx> in
             <xref target="RFC7591"/>, the <spanx style="verb">subset_of</spanx>,
             <spanx style="verb">superset_of</spanx> and
             <spanx style="verb">default</spanx> operator values are still
             expressed as lists of strings.
             This language from <xref target="RFC6749"/> also applies to
-            metadata parameters for which values can be expressed as a
+            Metadata parameters for which values can be expressed as a
             space-separated lists of strings: "If the value contains multiple
             space-delimited strings, their order does not matter, and each
             string adds an additional access range to the requested scope."
@@ -1885,9 +1885,9 @@
               The following table is a map of the outputs produced by the
               combination of the <spanx style="verb">essential</spanx> and
               <spanx style="verb">subset_of</spanx> policy operators with
-              different input metadata parameter values.
+              different input Metadata parameter values.
               Note, the <spanx style="verb">subset_of</spanx> check is ignored
-              when the metadata parameter is absent and designated as voluntary,
+              when the Metadata parameter is absent and designated as voluntary,
               as shown in the last row.
           </preamble>
 	  <name>
@@ -2052,20 +2052,20 @@
         </section>
         <section title="Combining Policies" anchor="combining_policies">
           <t>
-            If there is more than one Entity Statement with metadata policy in a
+            If there is more than one Entity Statement with Metadata policy in a
             Trust Chain, then the policies MUST be combined before they are applied
-            to the metadata statement.
+            to the Metadata statement.
           </t>
           <t>
             Using the notation defined in <xref target="trust_chain"/>, policies are
             combined by starting with ES[i] and then adding the policies from ES[j]
-            j=i-1,..,1. When for a given metadata parameter both the combined policy
+            j=i-1,..,1. When for a given Metadata parameter both the combined policy
             at the current step and the Immediate Subordinate Entity specify a policy operator,
             for example <spanx style="verb">subset_of</spanx>, the two operators are
             merged, as described in <xref target="merging_policy_operators"/>. After
             each combination step the policy for each parameter MUST adhere to the
             rules in <xref target="policy_restr"/>. The final combined policy is then
-            applied to the Entity's metadata, as described in
+            applied to the Entity's Metadata, as described in
             <xref target="applying_policies"/>.
           </t>
           <t>
@@ -2077,7 +2077,7 @@
           <section title="Merging Operators" anchor="merging_policy_operators">
             <t>
               The policy operators (as defined in <xref target="policy_operators"/>)
-              for a metadata parameter MUST be merged as follows:
+              for a Metadata parameter MUST be merged as follows:
             </t>
             <t>
               <list style="hanging">
@@ -2136,13 +2136,13 @@
 
         <section title="Applying Policies" anchor="applying_policies">
           <t>
-            The policies that apply to the Entity's metadata are those that
+            The policies that apply to the Entity's Metadata are those that
             result from the combining of the policies from the Entity Statements
             that make up the Trust Chain, as specified in
             <xref target="combining_policies"/>.
           </t>
           <t>
-            For every Entity Type metadata parameter for which a policy entry
+            For every Entity Type Metadata parameter for which a policy entry
             is present, the policy operators MUST be applied in accordance to
             their definitions in <xref target="policy_operators"/> and in a
             sequence as follows:
@@ -2152,7 +2152,7 @@
               <t>
 		<spanx style="verb">value</spanx>:
                 If this policy operator is present, further policy operators on
-                the metadata parameter MUST NOT be applied.
+                the Metadata parameter MUST NOT be applied.
               </t>
               <t><spanx style="verb">add</spanx></t>
               <t><spanx style="verb">default</spanx></t>
@@ -2176,14 +2176,14 @@
         <section title="Policy Combination Example">
           <figure>
             <preamble>
-              We start with a federation's <spanx style="verb">metadata_policy</spanx>
+              We start with a federation's <spanx style="verb">Metadata_policy</spanx>
               for OAuth 2.0 clients:
             </preamble>
 	    <name>
 	      Example Federation's Metadata Policy for OAuth 2.0 Clients
 	    </name>
             <artwork><![CDATA[
-"metadata_policy": {
+"Metadata_policy": {
   "oauth_client": {
     "grant_types": {
       "subset_of": [
@@ -2216,14 +2216,14 @@
           </figure>
           <figure>
             <preamble>
-              Next, we have an organization's <spanx style="verb">metadata_policy</spanx>
+              Next, we have an organization's <spanx style="verb">Metadata_policy</spanx>
               for OAuth 2.0 clients:
             </preamble>
 	    <name>
 	      Example Organization's Metadata Policy for OAuth 2.0 Clients
 	    </name>
             <artwork><![CDATA[
-"metadata_policy": {
+"Metadata_policy": {
   "oauth_client": {
     "grant_types": {
       "subset_of": [
@@ -2253,13 +2253,13 @@
           </figure>
           <figure>
             <preamble>
-              The resulting combined <spanx style="verb">metadata_policy</spanx> is:
+              The resulting combined <spanx style="verb">Metadata_policy</spanx> is:
             </preamble>
 	    <name>
 	      The Combined Metadata Policies from the Previous Two Examples
 	    </name>
             <artwork><![CDATA[
-"metadata_policy": {
+"Metadata_policy": {
   "oauth_client": {
     "grant_types": {
       "subset_of": [
@@ -2294,16 +2294,16 @@
         </section>
         <section title="Enforcing Policy">
           <t>
-            If applying policies to a metadata statement results in incorrect
-            metadata, then such a metadata statement MUST
+            If applying policies to a Metadata statement results in incorrect
+            Metadata, then such a Metadata statement MUST
             be regarded as broken and MUST NOT be used.
           </t>
 	  <t>
-	    It is the responsibility of the implementation to verify that the metadata
+	    It is the responsibility of the implementation to verify that the Metadata
 	    resulting from applying the policies of a federation that it is using
 	    is supported by the implementation.
 	    For instance, the implementation needs to support any cryptographic algorithms
-	    required by the resulting metadata.
+	    required by the resulting Metadata.
 	    Implementations may need to reevaluate their compliance when policies change.
 	  </t>
         </section>
@@ -2314,29 +2314,29 @@
             software compliant with this specification
             encounters a keyword it does not understand,
             it MUST ignore it unless it is listed in a
-            <spanx style="verb">metadata_policy_crit</spanx> list,
+            <spanx style="verb">Metadata_policy_crit</spanx> list,
             as is done for JWS header parameters
             with the <spanx style="verb">crit</spanx> parameter.
             If the policy language extension keyword
-            is listed in the <spanx style="verb">metadata_policy_crit</spanx> list
-            and not understood, then the metadata MUST be rejected.
+            is listed in the <spanx style="verb">Metadata_policy_crit</spanx> list
+            and not understood, then the Metadata MUST be rejected.
           </t>
         </section>
         <section title="Example of Applying Policies">
           <t>
-            The following is a non-normative example of applying metadata policies
-            and metadata values to an RP's metadata.
+            The following is a non-normative example of applying Metadata policies
+            and Metadata values to an RP's Metadata.
           </t>
           <figure>
             <preamble>
-                The RP's <spanx style="verb">metadata</spanx> from its Entity
+                The RP's <spanx style="verb">Metadata</spanx> from its Entity
                 Configuration is:
             </preamble>
 	    <name>
 	      RP's Metadata from its Entity Configuration
 	    </name>
             <artwork><![CDATA[
-"metadata": {
+"Metadata": {
   "openid_relying_party": {
     "contacts": [
       "rp_admins@cs.example.com"
@@ -2353,14 +2353,14 @@
           </figure>
           <figure>
             <preamble>
-                The federation's <spanx style="verb">metadata_policy</spanx>
+                The federation's <spanx style="verb">Metadata_policy</spanx>
                 for RPs is:
             </preamble>
 	    <name>
 	      Federation's Metadata Policy for RPs
 	    </name>
             <artwork><![CDATA[
-"metadata_policy": {
+"Metadata_policy": {
   "openid_relying_party": {
     "id_token_signed_response_alg": {
       "one_of": [
@@ -2381,15 +2381,15 @@
           </figure>
           <figure>
             <preamble>
-              An organization's <spanx style="verb">metadata_policy</spanx>
-              and <spanx style="verb">metadata</spanx> values for RPs is:
+              An organization's <spanx style="verb">Metadata_policy</spanx>
+              and <spanx style="verb">Metadata</spanx> values for RPs is:
             </preamble>
 	    <name>
 	      Organization's Metadata Policy and Metadata Values for RPs
 	    </name>
             <artwork><![CDATA[
 {
-  "metadata_policy": {
+  "Metadata_policy": {
     "openid_relying_party": {
       "contacts": {
         "add": [
@@ -2405,7 +2405,7 @@
       }
     }
   },
-  "metadata": {
+  "Metadata": {
     "openid_relying_party": {
       "policy_uri": "https://example.com/policy.html",
       "tos_uri": "https://example.com/tos.html"
@@ -2416,15 +2416,15 @@
           </figure>
           <figure>
 	    <preamble>
-	      After applying the metadata policies and values above, the
-          <spanx style="verb">metadata</spanx> for the Entity in question
+	      After applying the Metadata policies and values above, the
+          <spanx style="verb">Metadata</spanx> for the Entity in question
           becomes:
 	    </preamble>
 	    <name>
 	      RP's Metadata After Application of Metadata Policies and Metadata Values
 	    </name>
             <artwork><![CDATA[
-"metadata": {
+"Metadata": {
   "openid_relying_party": {
     "contacts": [
       "rp_admins@cs.example.com",
@@ -2480,7 +2480,7 @@
               <vspace/>
               OPTIONAL. Array of string Entity Type Identifiers.
               Entity Type Identifiers are defined in <xref target="entity_types"/>.
-              This constraint restricts the Entity Types and hence the metadata
+              This constraint restricts the Entity Types and hence the Metadata
               that Entities subject to the constraint MAY have.
             </t>
           </list>
@@ -2932,7 +2932,7 @@
         gGYr6evM2_SgqwA0lQ9mB9yhw"
     }
   ],
-  "metadata": {
+  "Metadata": {
     "openid_relying_party": {
       "application_type": "web",
       "client_registration_types": ["automatic"],
@@ -3093,7 +3093,7 @@
 	</t>
 	<t>
 	  The fetch endpoint location is published in
-	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
+	  the Entity's <spanx style="verb">federation_entity</spanx> Metadata
 	  in the <spanx style="verb">federation_fetch_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
         </t>
@@ -3191,12 +3191,12 @@ Host: edugain.org
       }
     ]
   },
-  "metadata":{
+  "Metadata":{
     "federation_entity": {
         "organization_name":"SUNET"
     }
   }
-  "metadata_policy": {
+  "Metadata_policy": {
     "openid_provider": {
       "subject_types_supported": {
         "value": [
@@ -3226,13 +3226,13 @@ Host: edugain.org
       <section title="Resolve Entity Statement" anchor="resolve">
         <t>
           An Entity MAY use a resolve endpoint to fetch
-          resolved metadata and Trust Marks for an Entity.
+          resolved Metadata and Trust Marks for an Entity.
           The resolver fetches the subject's
           Entity Configuration, assembles a Trust Chain that starts
           with the subject's Entity Configuration and ends with the specified
           Trust Anchor's Entity Configuration, verifies the Trust Chain, and then applies all the
           policies present in the Trust Chain to the subject's
-          metadata.
+          Metadata.
 	</t>
 	<t>
 	  The resolver MUST verify that all present
@@ -3242,7 +3242,7 @@ Host: edugain.org
         </t>
 	<t>
 	  The resolve endpoint location is published in
-	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
+	  the Entity's <spanx style="verb">federation_entity</spanx> Metadata
 	  in the <spanx style="verb">federation_resolve_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
 	</t>
@@ -3265,7 +3265,7 @@ Host: edugain.org
               <t hangText="anchor">
                 <vspace/>
                 REQUIRED. The Trust Anchor that the resolve endpoint
-                MUST use when resolving the metadata.
+                MUST use when resolving the Metadata.
 		The value is an Entity identifier.
               </t>
               <t hangText="type">
@@ -3304,7 +3304,7 @@ Host: openid.sunet.se
             A successful response MUST use the HTTP status code 200
             with the content type
             <spanx style="verb">application/resolve-response+jwt</spanx>,
-            containing resolved metadata and
+            containing resolved Metadata and
             verified Trust Marks.
           </t>
           <t>
@@ -3375,11 +3375,11 @@ Host: openid.sunet.se
                 It MUST correspond to the <spanx style="verb">exp</spanx> value of
                 the Trust Chain from which the resolve response was derived.
               </t>
-              <t hangText="metadata">
+              <t hangText="Metadata">
                 <vspace/>
-                REQUIRED. JSON object containing the resolved subject metadata,
+                REQUIRED. JSON object containing the resolved subject Metadata,
                 according to the requested <spanx style="verb">type</spanx>
-                and expressed in the <spanx style="verb">metadata</spanx> format
+                and expressed in the <spanx style="verb">Metadata</spanx> format
                 defined in <xref target="entity-statement"/>.
               </t>
               <t hangText="trust_marks">
@@ -3423,7 +3423,7 @@ Host: openid.sunet.se
   "sub": "https://op.example.it/spid/",
   "iat": 1516239022,
   "exp": 1516298022,
-  "metadata": {
+  "Metadata": {
     "openid_provider": {
       "contacts": ["legal@example.it", "technical@example.it"],
       "logo_uri":
@@ -3495,7 +3495,7 @@ Host: openid.sunet.se
             If a party uses the resolve service of another Entity
             to obtain federation data, it is trusting
             the resolver to perform validation of the cryptographically
-            protected metadata correctly and to provide it with authentic results.
+            protected Metadata correctly and to provide it with authentic results.
           </t>
         </section>
       </section>
@@ -3521,7 +3521,7 @@ Host: openid.sunet.se
         </t>
 	<t>
 	  The list endpoint location is published in
-	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
+	  the Entity's <spanx style="verb">federation_entity</spanx> Metadata
 	  in the <spanx style="verb">federation_list_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
 	</t>
@@ -3712,7 +3712,7 @@ Content-Type: application/json
         </t>
 	<t>
 	  The Trust Mark status endpoint location is published in
-	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
+	  the Entity's <spanx style="verb">federation_entity</spanx> Metadata
 	  in the <spanx style="verb">federation_trust_mark_status_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
 	</t>
@@ -3834,7 +3834,7 @@ Content-Type: application/json
         </t>
 	<t>
 	  The Trust Marked Entities listing endpoint location is published in
-	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
+	  the Entity's <spanx style="verb">federation_entity</spanx> Metadata
 	  in the <spanx style="verb">federation_trust_mark_list_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
 	</t>
@@ -3928,7 +3928,7 @@ Content-Type: application/json
         </t>
 	<t>
 	  The Trust Mark endpoint location is published in
-	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
+	  the Entity's <spanx style="verb">federation_entity</spanx> Metadata
 	  in the <spanx style="verb">federation_trust_mark_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
 	</t>
@@ -4258,8 +4258,8 @@ Host: trust-anchor.example.com
             MAY also include the
             <spanx style="verb">jwks</spanx> claim for the Leaf's Entity Types,
 	    in its
-            <spanx style="verb">metadata</spanx> or
-            <spanx style="verb">metadata_policy</spanx> claims.
+            <spanx style="verb">Metadata</spanx> or
+            <spanx style="verb">Metadata_policy</spanx> claims.
 	  </t>
             <t>
               A simple example: In the following Trust Chain, the
@@ -4277,8 +4277,8 @@ Host: trust-anchor.example.com
                 <t>
                   a Subordinate Statement about the RP published by Organization A,
                   with the claim <spanx style="verb">jwks</spanx> contained in
-                  <spanx style="verb">metadata</spanx> or
-                  <spanx style="verb">metadata_policy</spanx> attesting the
+                  <spanx style="verb">Metadata</spanx> or
+                  <spanx style="verb">Metadata_policy</spanx> attesting the
                   Leaf's OpenID Connect RP <spanx style="verb">jwks</spanx>, and
                 </t>
                 <t>
@@ -4316,12 +4316,12 @@ Host: trust-anchor.example.com
 		 anchor="ClientAuthenticationMetadata">
 	  <t>
 	    Like other OAuth and OpenID endpoints supporting client authentication,
-	    this specification defines metadata parameters saying which
+	    this specification defines Metadata parameters saying which
 	    client authentication methods are supported.
 	    These largely parallel the
 	    <spanx style="verb">token_endpoint_auth_methods_supported</spanx> and
 	    <spanx style="verb">token_endpoint_auth_signing_alg_values_supported</spanx>
-	    metadata values defined in Section 3 of
+	    Metadata values defined in Section 3 of
 	    <xref target="OpenID.Discovery">OpenID Connect Discovery 1.0</xref>.
 	  </t>
 	  <t>
@@ -4337,14 +4337,14 @@ Host: trust-anchor.example.com
 	  </t>
 	  <t>
 	    The <spanx style="verb">*_auth_methods</spanx>
-	    metadata parameters list supported client authentication methods, just as
+	    Metadata parameters list supported client authentication methods, just as
 	    <spanx style="verb">token_endpoint_auth_methods_supported</spanx> does.
 	    In addition, the value <spanx style="verb">none</spanx> MAY be used
 	    to indicate that client authentication is not required at the endpoint.
 	  </t>
           <figure>
             <preamble>
-	      So, for instance, this metadata declaration states that
+	      So, for instance, this Metadata declaration states that
 	      requests authenticated with
 	      <spanx style="verb">private_key_jwt</spanx>
 	      are REQUIRED at the
@@ -4364,7 +4364,7 @@ Host: trust-anchor.example.com
 	  </t>
 	  <t>
 	    The <spanx style="verb">*_auth_signing_algs</spanx>
-	    metadata parameters list supported client authentication
+	    Metadata parameters list supported client authentication
 	    signing algorithms supported, just as
 	    <spanx style="verb">token_endpoint_auth_signing_alg_values_supported</spanx> does.
 	    If omitted and <spanx style="verb">private_key_jwt</spanx> is supported,
@@ -4532,7 +4532,7 @@ Content-Type: application/json
         <t>The response is an Entity Configuration, as described in
           <xref target="entity-statement"/>.
           If the Entity is an Intermediate Entity or a Trust Anchor, the
-          response MUST contain metadata for a federation Entity
+          response MUST contain Metadata for a federation Entity
           (<spanx style="verb">federation_entity</spanx>).
         </t>
         <t>
@@ -4559,7 +4559,7 @@ Content-Type: application/json
   "sub": "https://openid.sunet.se",
   "iat": 1516239022,
   "exp": 1516298022,
-  "metadata": {
+  "Metadata": {
     "federation_entity": {
       "contacts": ["ops@sunet.se"],
       "federation_fetch_endpoint": "https://sunet.se/openid/fedapi",
@@ -4862,7 +4862,7 @@ Content-Type: application/json
 
     <section title="Updating Metadata, Key Rollover, and Revocation">
       <t>
-        This specification facilitates smoothly updating metadata
+        This specification facilitates smoothly updating Metadata
         and public keys.
       </t>
       <t>
@@ -4876,7 +4876,7 @@ Content-Type: application/json
 
       <section title="Protocol Key Rollover">
         <t>
-          If a Leaf Entity publishes its public keys in its metadata
+          If a Leaf Entity publishes its public keys in its Metadata
           using <spanx style="verb">jwks</spanx>, the expiration time of
           its Entity Configuration
 	  can be used to control how often the receiving Entity
@@ -4986,7 +4986,7 @@ Content-Type: application/json
             </t>
             <t>
               The OP MUST publish that it supports one or more request authentication
-              methods using the <spanx style="verb">openid_provider</spanx> metadata parameter
+              methods using the <spanx style="verb">openid_provider</spanx> Metadata parameter
               <spanx style="verb">request_authentication_methods_supported</spanx>.
             </t>
           </list>
@@ -4995,7 +4995,7 @@ Content-Type: application/json
           An OP that supports Automatic Registration MUST include the
           <spanx style="verb">automatic</spanx> keyword in its
           <spanx style="verb">client_registration_types_supported</spanx>
-          metadata parameter.
+          Metadata parameter.
 	</t>
 
         <section title="Authentication Request">
@@ -5205,19 +5205,19 @@ GET /authorize?
                 or the OP does not support this feature, it then MUST
                 validate the possible Trust Chains, starting with the RP's Entity Configuration,
                 as described in <xref target="fetching-es"/>,
-                and resolve the RP metadata with Entity Type
+                and resolve the RP Metadata with Entity Type
                 <spanx style="verb">openid_relying_party</spanx>.
               </t>
               <t>
-                The OP SHOULD furthermore verify that the resolved metadata of the RP
-                complies with the client metadata specification
+                The OP SHOULD furthermore verify that the resolved Metadata of the RP
+                complies with the client Metadata specification
                 <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>.
               </t>
               <t>
-                Once the OP has the RP's metadata, it MUST verify that the client
+                Once the OP has the RP's Metadata, it MUST verify that the client
                 was actually the one sending the Authentication Request by
                 verifying the signature of the Request Object using the key
-                material the client published in its metadata for the
+                material the client published in its Metadata for the
                 <spanx style="verb">openid_relying_party</spanx> Entity Type.
 		If the signature does not verify, the OP MUST reject the request.
               </t>
@@ -5308,7 +5308,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                 also apply to <xref target="RFC9126">Pushed Authorization Requests</xref>.
               </t>
               <t>
-                Once the OP has the RP's metadata, it MUST verify the client
+                Once the OP has the RP's Metadata, it MUST verify the client
 		using the keys published for the
 		<spanx style="verb">openid_relying_party</spanx>
 		Entity Type Identifier.
@@ -5321,7 +5321,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                     <vspace/>
                     If this method is used, then the OP verifies the
                     signature of the signed JWT using the key material published
-                    by the RP in its metadata. If the authentication is
+                    by the RP in its Metadata. If the authentication is
                     successful, then the registration is valid.
                   </t>
                   <t hangText="tls_client_auth">
@@ -5404,7 +5404,7 @@ HTTP/1.1 302 Found
         <t>
           Using this method, the RP establishes its client registration with the
           OP by means of a dedicated registration request, similar to
-          <xref target="OpenID.Registration"/>, but instead of its metadata, the
+          <xref target="OpenID.Registration"/>, but instead of its Metadata, the
           RP submits its Entity Configuration or an entire Trust Chain. When
           the Explicit Registration is completed, the RP can proceed to
           make regular OpenID authentication requests to the OP.
@@ -5414,8 +5414,8 @@ HTTP/1.1 302 Found
           An OP that supports Explicit Registration MUST include the
           <spanx style="verb">explicit</spanx> keyword in its
           <spanx style="verb">client_registration_types_supported</spanx>
-          metadata parameter and set the
-          <spanx style="verb">federation_registration_endpoint</spanx> metadata
+          Metadata parameter and set the
+          <spanx style="verb">federation_registration_endpoint</spanx> Metadata
           parameter to the URL at which it receives Explicit Registration requests.
         </t>
 
@@ -5424,7 +5424,7 @@ HTTP/1.1 302 Found
           <xref target="OpenID.Registration">OpenID Connect Dynamic Client
           Registration 1.0</xref> endpoint of an OP deployment. In contrast to
           Automatic Registration, it enables an OP to provision a Client ID, a
-          client secret and metadata parameters.
+          client secret and Metadata parameters.
         </t>
 
         <t>An example of an Explicit Registration is provided in
@@ -5442,7 +5442,7 @@ HTTP/1.1 302 Found
                   Once the RP has determined a set of Trust Anchors it has in common with the OP,
                   it chooses the subset it wants to proceed with. This
                   may be a single Trust Anchor, or it can also be more than one.
-                  The RP MUST perform a Trust Chain and metadata resolution for
+                  The RP MUST perform a Trust Chain and Metadata resolution for
                   the OP, as specified in <xref target="resolving_trust"/>. If
                   the resolution is not successful the RP MUST abort the
                   request.
@@ -5460,8 +5460,8 @@ HTTP/1.1 302 Found
                 </t>
                 <t>
                   The RP will then construct its Entity Configuration,
-                  where the metadata statement chosen is influenced by the OP's
-                  metadata and where the
+                  where the Metadata statement chosen is influenced by the OP's
+                  Metadata and where the
                   <spanx style="verb">authority_hints</spanx>
                   included are picked by the process described above.
                   From its Immediate Superiors, the RP MUST select
@@ -5479,14 +5479,14 @@ HTTP/1.1 302 Found
                   between the RP that is making the request and the
                   selected Trust Anchor.
                   The RP MUST include its
-                  metadata in its Entity Configuration and use the
+                  Metadata in its Entity Configuration and use the
                   <spanx style="verb">authority_hints</spanx> selected above.
                   <vspace blankLine="1"/>
 
-                  The RP SHOULD select its metadata parameters to comply with
-                  the resolved OP metadata and thus ensure a successful
+                  The RP SHOULD select its Metadata parameters to comply with
+                  the resolved OP Metadata and thus ensure a successful
                   registration with the OP. Note that if the submitted RP
-                  metadata is not compliant with the metadata of the OP, the
+                  Metadata is not compliant with the Metadata of the OP, the
                   OP may choose to modify it in order to make it compliant
                   rather than reject the request with an error response.
                 </t>
@@ -5552,10 +5552,10 @@ HTTP/1.1 302 Found
                   <vspace/>
                   REQUIRED.
                 </t>
-                <t hangText="metadata">
+                <t hangText="Metadata">
                   <vspace/>
                   REQUIRED.
-                  It MUST contain the RP metadata under the
+                  It MUST contain the RP Metadata under the
 		  <spanx style="verb">openid_relying_party</spanx>
 		  Entity Type Identifier.
                 </t>
@@ -5632,8 +5632,8 @@ HTTP/1.1 302 Found
                     past RP data.
                   </t>
                   <t>
-                    The OP will now use the RP metadata to create a client
-                    registration compliant with its own OP metadata and other
+                    The OP will now use the RP Metadata to create a client
+                    registration compliant with its own OP Metadata and other
                     applicable policies.
                     <vspace blankLine="1"/>
 
@@ -5659,18 +5659,18 @@ HTTP/1.1 302 Found
                     request. If the RP is provisioned with a
                     <spanx style="verb">registration_access_token</spanx> for
                     some purpose, for example to let it independently check its
-                    registered metadata, the token MUST NOT allow modification
+                    registered Metadata, the token MUST NOT allow modification
                     of the registration.
                     <vspace blankLine="1"/>
 
-                    The OP MAY modify the received RP metadata, for example by
+                    The OP MAY modify the received RP Metadata, for example by
                     substituting an invalid or unsupported parameter, in order
-                    to make it compliant with its own OP metadata and other
-                    policies. If the OP does not accept the RP metadata or is
+                    to make it compliant with its own OP Metadata and other
+                    policies. If the OP does not accept the RP Metadata or is
                     unwilling to modify it in order to make it compliant, it
                     MUST return a client registration error response, with an
                     appropriate error, such as
-                    <spanx style="verb">invalid_client_metadata</spanx> or
+                    <spanx style="verb">invalid_client_Metadata</spanx> or
                     <spanx style="verb">invalid_redirect_uri</spanx>, as
                     specified in Section 3.3 of
                     <xref target="OpenID.Registration"/>.
@@ -5700,8 +5700,8 @@ HTTP/1.1 302 Found
                     <vspace blankLine="1"/>
 
                     The OP MUST express the client registration it created for
-                    the RP by means of the <spanx style="verb">metadata</spanx>
-                    claim, by placing the metadata parameters under the
+                    the RP by means of the <spanx style="verb">Metadata</spanx>
+                    claim, by placing the Metadata parameters under the
 		    <spanx style="verb">openid_relying_party</spanx>
 		    Entity Type Identifier.
 		    The parameters MUST include the
@@ -5711,7 +5711,7 @@ HTTP/1.1 302 Found
                     these MUST be included as well.
                     <vspace blankLine="1"/>
 
-                    The OP SHOULD include metadata parameters that have a
+                    The OP SHOULD include Metadata parameters that have a
                     default value, for example
                     <spanx style="verb">token_endpoint_auth_method</spanx>
                     which has a default value of
@@ -5761,7 +5761,7 @@ HTTP/1.1 302 Found
                     REQUIRED.
                     It MUST be a verbatim copy of the <spanx style="verb">jwks</spanx>
                     of the received RP Entity Configuration. This MUST not be confused
-                    with the identically named RP metadata parameter. See
+                    with the identically named RP Metadata parameter. See
                     <xref target="entity-statement"/> for the full
                     specification.
                   </t>
@@ -5790,10 +5790,10 @@ HTTP/1.1 302 Found
                     <xref target="entity-statement"/> for the full
                     specification.
                   </t>
-                  <t hangText="metadata">
+                  <t hangText="Metadata">
                     <vspace/>
                     REQUIRED.
-                    It MUST contain the registered RP metadata under the
+                    It MUST contain the registered RP Metadata under the
                     <spanx style="verb">openid_relying_party</spanx>
 		    Entity Type Identifier.
 		    See <xref target="entity-statement"/> for the
@@ -5848,14 +5848,14 @@ HTTP/1.1 302 Found
                     <spanx style="verb">trust_anchor_id</spanx> claim.
                   </t>
                   <t>
-                    The RP MUST ensure that the metadata it was registered with
+                    The RP MUST ensure that the Metadata it was registered with
                     at the OP complies with the Trust Chain
                     <spanx style="verb">openid_relying_party</spanx> policies,
                     which Trust Chain is resolved using the
                     <spanx style="verb">trust_anchor_id</spanx> and
                     <spanx style="verb">authority_hints</spanx> claims of the
                     received registration Entity Statement. The RP SHOULD perform this check
-                    by applying the resolved policies to the metadata as
+                    by applying the resolved policies to the Metadata as
                     specified in <xref target="applying_policies"/>, or utilize
                     another equivalent method.
                   </t>
@@ -5864,8 +5864,8 @@ HTTP/1.1 302 Found
                     checks, the RP MUST reject it. The RP MAY choose to retry
                     the Explicit Registration request in order to work around a
                     transient exception, for example due to a recent change of
-                    Entity metadata or metadata policy causing temporary
-                    misalignment of metadata.
+                    Entity Metadata or Metadata policy causing temporary
+                    misalignment of Metadata.
                   </t>
                 </list>
               </t>
@@ -5951,15 +5951,15 @@ HTTP/1.1 302 Found
           <list style="symbols">
 
           <t>
-            It solves the problem of OPs using RP metadata that has become stale.
-            This stale data may occur when the OP uses cached RP metadata from a Trust Chain
+            It solves the problem of OPs using RP Metadata that has become stale.
+            This stale data may occur when the OP uses cached RP Metadata from a Trust Chain
             that has not reached its expiration time yet.
             The RP MAY notify the OP that a change has taken place by including
             the <spanx style="verb">trust_chain</spanx> header parameter
             or the <spanx style="verb">trust_chain</spanx> request parameter
 	    in the request,
             thus letting the OP update its Client Registration
-	    and preventing potential temporary faults due to stale metadata.
+	    and preventing potential temporary faults due to stale Metadata.
           </t>
 
           <t>
@@ -6074,9 +6074,9 @@ HTTP/1.1 302 Found
       <t>
 	Language tags can be used in any data structures
 	containing or referencing human-readable values,
-	including metadata parameters and Trust Mark parameters.
+	including Metadata parameters and Trust Mark parameters.
 	For instance, both <spanx style="verb">organization_name</spanx> and
-	<spanx style="verb">organization_name#de</spanx> might occur together in metadata.
+	<spanx style="verb">organization_name#de</spanx> might occur together in Metadata.
       </t>
     </section>
 
@@ -6168,7 +6168,7 @@ HTTP/1.1 302 Found
 
       <section anchor="MetadataRegistry" title="OAuth Authorization Server Metadata Registration">
         <t>
-          This specification registers the following metadata entries in the
+          This specification registers the following Metadata entries in the
           IANA "OAuth Authorization Server Metadata" registry <xref target="IANA.OAuth.Parameters"/>
           established by <xref target="RFC8414"/>.
         </t>
@@ -6188,7 +6188,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="OP_metadata"/> of this specification
+                Specification Document(s): <xref target="OP_Metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6205,7 +6205,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="OP_metadata"/> of this specification
+                Specification Document(s): <xref target="OP_Metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6222,7 +6222,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="OP_metadata"/> of this specification
+                Specification Document(s): <xref target="OP_Metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6241,7 +6241,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="OP_metadata"/> of this specification
+                Specification Document(s): <xref target="OP_Metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6258,7 +6258,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="jwks_metadata"/> of this specification
+                Specification Document(s): <xref target="jwks_Metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6275,7 +6275,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="jwks_metadata"/> of this specification
+                Specification Document(s): <xref target="jwks_Metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6292,7 +6292,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="informational_metadata"/> of this specification
+                Specification Document(s): <xref target="informational_Metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6309,7 +6309,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="informational_metadata"/> of this specification
+                Specification Document(s): <xref target="informational_Metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6326,7 +6326,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="informational_metadata"/> of this specification
+                Specification Document(s): <xref target="informational_Metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6343,7 +6343,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="informational_metadata"/> of this specification
+                Specification Document(s): <xref target="informational_Metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6354,7 +6354,7 @@ HTTP/1.1 302 Found
 
       <section anchor="DynRegRegistrations" title="OAuth Dynamic Client Registration Metadata Registration">
         <t>
-          This specification registers the following client metadata entries
+          This specification registers the following client Metadata entries
           in the IANA "OAuth Dynamic Client Registration Metadata" registry
           <xref target="IANA.OAuth.Parameters"/>
           established by <xref target="RFC7591"/>.
@@ -6374,7 +6374,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="RP_metadata"/> of this specification
+                Specification Document(s): <xref target="RP_Metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6391,7 +6391,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="jwks_metadata"/> of this specification
+                Specification Document(s): <xref target="jwks_Metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6408,7 +6408,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="informational_metadata"/> of this specification
+                Specification Document(s): <xref target="informational_Metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6425,7 +6425,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="informational_metadata"/> of this specification
+                Specification Document(s): <xref target="informational_Metadata"/> of this specification
               </t>
             </list>
           </t>
@@ -6911,7 +6911,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): Section <xref target="common_metadata"/> of this specification
+		Specification Document(s): Section <xref target="common_Metadata"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -7209,7 +7209,7 @@ HTTP/1.1 302 Found
         </front>
       </reference>
 
-      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-01.xml" />
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-Metadata-01.xml" />
 
     </references>
 
@@ -7340,8 +7340,8 @@ HTTP/1.1 302 Found
       <t>
         Once the RP part of the Wiki knows which OP it SHOULD talk to, it has
         to find out a couple of things about the OP. All of those things
-        can be found in the metadata. But finding the metadata is not enough;
-        the RP also has to trust the metadata.
+        can be found in the Metadata. But finding the Metadata is not enough;
+        the RP also has to trust the Metadata.
       </t>
       <t>
         Let us make a detour and start with what it takes to build a federation.
@@ -7424,7 +7424,7 @@ HTTP/1.1 302 Found
         <t>
           How many times this has to be repeated depends on the depth of the
           federation. What follows below is the result of each step the RP
-          has to take to find the OP's metadata using the federation setup
+          has to take to find the OP's Metadata using the federation setup
           described above.
         </t>
         <t>
@@ -7467,7 +7467,7 @@ HTTP/1.1 302 Found
       }
     ]
   },
-  "metadata": {
+  "Metadata": {
     "openid_provider": {
       "issuer": "https://op.umu.se/openid",
       "signed_jwks_uri": "https://op.umu.se/openid/jwks.jose",
@@ -7566,7 +7566,7 @@ Host: umu.se
       }
     ]
   },
-  "metadata": {
+  "Metadata": {
     "federation_entity": {
       "contacts": ["ops@umu.se"],
       "federation_fetch_endpoint": "https://umu.se/oidc/fedapi",
@@ -7630,7 +7630,7 @@ Host: umu.se
       }
     ]
   },
-  "metadata_policy": {
+  "Metadata_policy": {
     "openid_provider": {
       "contacts": {
         "add": [
@@ -7710,7 +7710,7 @@ Host: swamid.se
       }
     ]
   },
-  "metadata": {
+  "Metadata": {
     "federation_entity": {
       "contacts": ["ops@swamid.se"],
       "federation_fetch_endpoint":
@@ -7777,7 +7777,7 @@ Host: swamid.se
       }
     ]
   },
-  "metadata_policy": {
+  "Metadata_policy": {
     "openid_provider": {
       "id_token_signing_alg_values_supported": {
         "subset_of": [
@@ -7855,7 +7855,7 @@ Host: edugain.geant.org
       }
     ]
   },
-  "metadata": {
+  "Metadata": {
     "federation_entity": {
       "federation_fetch_endpoint": "https://geant.org/edugain/api"
     }
@@ -7919,7 +7919,7 @@ Host: geant.org
       }
     ]
   },
-  "metadata_policy": {
+  "Metadata_policy": {
     "openid_provider": {
       "contacts": {
         "add": "ops@edugain.geant.org"
@@ -7990,11 +7990,11 @@ Host: geant.org
           </t>
           <figure>
 	    <preamble>
-	      Combining the metadata policies from the three Subordinate Statements we
+	      Combining the Metadata policies from the three Subordinate Statements we
 	      have by
 	      Immediate Superiors about their Immediate Subordinates and applying the combined policy
 	      to the
-	      metadata statement that the Leaf Entity presented, we get:
+	      Metadata statement that the Leaf Entity presented, we get:
 	    </preamble>
 	    <name>
 	      Final Metadata Derived from Trust Chain by Applying Metadata Policies
@@ -8066,15 +8066,15 @@ Host: geant.org
               <vspace/>
               No negotiation between the RP and the OP is made regarding
               what features the client SHOULD use in future communication are
-              done. The RP's published metadata filtered by the chosen Trust Chain's
-              metadata policies defines the metadata that is to be used.
+              done. The RP's published Metadata filtered by the chosen Trust Chain's
+              Metadata policies defines the Metadata that is to be used.
             </t>
             <t hangText="Explicit">
               <vspace/>
               The RP will access the
               <spanx style="verb">federation_registration_endpoint</spanx>,
-              which provides the RP's metadata. The OP MAY return a
-              metadata policy that adds restrictions over and above what the
+              which provides the RP's Metadata. The OP MAY return a
+              Metadata policy that adds restrictions over and above what the
               Trust Chain already has defined.
             </t>
           </list>
@@ -8137,7 +8137,7 @@ Host: op.umu.se
               </list>
             </t>
             <t>
-              The OP starts to resolve metadata for the Client Identifier
+              The OP starts to resolve Metadata for the Client Identifier
               https://wiki.ligo.org by fetching the Entity Configuration
               using
               the process described in <xref target="federation_configuration"/>.
@@ -8161,7 +8161,7 @@ Host: op.umu.se
           </section>
 
           <section title="OP Evaluates the RP Metadata"
-                   anchor="rp_metadata_eval">
+                   anchor="rp_Metadata_eval">
             <t>
               Using the public keys of the Trust Anchor that the LIGO Wiki RP
               has
@@ -8173,9 +8173,9 @@ Host: op.umu.se
             </t>
             <t>
               We will not list the complete Entity Statements but only the
-              <spanx style="verb">metadata</spanx>
-              and <spanx style="verb">metadata_policy</spanx> parts.
-              There are two metadata policies:
+              <spanx style="verb">Metadata</spanx>
+              and <spanx style="verb">Metadata_policy</spanx> parts.
+              There are two Metadata policies:
               <list style="hanging">
                 <t hangText="edugain.geant.org:">
                   <figure>
@@ -8183,7 +8183,7 @@ Host: op.umu.se
 		      Metadata Policies Related to Multiple Metadata Types
 		    </name>
                     <artwork><![CDATA[
-"metadata_policy": {
+"Metadata_policy": {
   "openid_provider": {
     "contacts": {
       "add": "ops@edugain.geant.org"
@@ -8208,7 +8208,7 @@ Host: op.umu.se
 		      Metadata Policy Related to the RP
 		    </name>
                     <artwork><![CDATA[
-"metadata_policy": {
+"Metadata_policy": {
   "openid_relying_party": {
     "application_type": {
       "one_of": [
@@ -8234,13 +8234,13 @@ Host: op.umu.se
             </t>
             <figure>
 	      <preamble>
-		Next, combine these and apply them to the metadata for wiki.ligo.org:
+		Next, combine these and apply them to the Metadata for wiki.ligo.org:
 	      </preamble>
 	      <name>
 		Combined Metadata with Metadata Policy yet to be applied
 	      </name>
               <artwork><![CDATA[
-"metadata": {
+"Metadata": {
   "openid_relying_party": {
     "application_type": "web",
     "client_name": "LIGO Wiki",
@@ -8272,7 +8272,7 @@ Host: op.umu.se
 		Final Metadata After Metadata Policy has been Applied
 	      </name>
               <artwork><![CDATA[
-"metadata": {
+"Metadata": {
   "openid_relying_party": {
     "application_type": "web",
     "client_name": "LIGO Wiki",
@@ -8299,7 +8299,7 @@ Host: op.umu.se
 ]]></artwork>
             </figure>
             <t>
-              Once the Trust Chain and the final Relying Party metadata
+              Once the Trust Chain and the final Relying Party Metadata
               have been obtained, the OpenID Provider has
               everything needed to validate the signature of the
               Request Object in the Authentication Request, using the
@@ -8329,7 +8329,7 @@ Host: op.umu.se
   "iat": 1676045527,
   "exp": 1676063610,
   "aud": "https://op.umu.se",
-  "metadata": {
+  "Metadata": {
     "openid_relying_party": {
       "application_type": "web",
       "client_name": "LIGO Wiki",
@@ -8366,17 +8366,17 @@ Host: op.umu.se
             sequence of steps laid out in <xref target="op_discovery"/>.
           </t>
           <t>
-            The OP successfully resolves the same RP metadata described in
-            <xref target="rp_metadata_eval"/>. It then registers the RP in
-            compliance with its own OP metadata and returns the result in a
+            The OP successfully resolves the same RP Metadata described in
+            <xref target="rp_Metadata_eval"/>. It then registers the RP in
+            compliance with its own OP Metadata and returns the result in a
             registration Entity Statement.
           </t>
           <t>
             Assuming the OP does not support refresh tokens it will register
             the RP for the <spanx style="verb">authorization_code</spanx> grant
-            type only. This is reflected in the metadata returned to the RP.
+            type only. This is reflected in the Metadata returned to the RP.
           </t>
-          <t>The returned metadata also includes the
+          <t>The returned Metadata also includes the
             <spanx style="verb">client_id</spanx>, the
             <spanx style="verb">client_secret</spanx> and other parameters that
             the OP provisioned for the RP.
@@ -8397,7 +8397,7 @@ Host: op.umu.se
   "iat": 1601457619,
   "exp": 1601544019,
   "trust_anchor_id": "https://edugain.geant.org",
-  "metadata": {
+  "Metadata": {
     "openid_relying_party": {
       "client_id": "m3GyHw",
       "client_secret_expires_at": 1604049619,
@@ -8542,7 +8542,7 @@ Host: op.umu.se
         Subordinates that are Leaves.
       </t>
 	  <t>
-	    Fixed #2119: Federation metadata_policy example figures and descriptions.
+	    Fixed #2119: Federation Metadata_policy example figures and descriptions.
 	  </t>
 	  <t>
 	    Changed the HTTP method used at the Trust Mark Status Endpoint
@@ -8566,7 +8566,7 @@ Host: op.umu.se
 	-33
         <list style="symbols">
       <t>
-        Addressed #2111: The metadata_policy_crit claim MAY only appear in Subordinate Statements and its values apply to all metadata_policies found in the Trust Chain.
+        Addressed #2111: The Metadata_policy_crit claim MAY only appear in Subordinate Statements and its values apply to all Metadata_policies found in the Trust Chain.
       </t>
 	  <t>
 	    Fixed #2096: Authorization Signed Request Object may contain <spanx style="verb">trust_chain</spanx> in its payload and should not in its JWS header parameters.
@@ -8632,7 +8632,7 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Renamed <spanx style="verb">policy_language_crit</spanx>
-	    to <spanx style="verb">metadata_policy_crit</spanx>.
+	    to <spanx style="verb">Metadata_policy_crit</spanx>.
 	  </t>
 	  <t>
 	    Fixed #2093: Numbered the list defining the order policy operators are applied in.
@@ -8647,7 +8647,7 @@ Host: op.umu.se
             Fixed #2068: Clarifications that authority_hints must only appear in Leaf and Intermediate Entity Configurations.
           </t>
 	  <t>
-	    Fixed #2062: Verified that metadata examples are consistent with the specification.
+	    Fixed #2062: Verified that Metadata examples are consistent with the specification.
 	  </t>
 	  <t>
 	    Fixed #1724: Numbered figures by adding captions to them.
@@ -8659,16 +8659,16 @@ Host: op.umu.se
 	    Fixed #1659: Described use of the <spanx style="verb">trust_chain</spanx> header parameter in resolve responses.
 	  </t>
           <t>
-            Addressed #2060: A concrete order must be specified for the application of all metadata policy operators.
+            Addressed #2060: A concrete order must be specified for the application of all Metadata policy operators.
           </t>
           <t>
-            Addressed #2069: Metadata parameters with null value must be treated as error when applying metadata policies.
+            Addressed #2069: Metadata parameters with null value must be treated as error when applying Metadata policies.
           </t>
         <t>
             Fixed #2034: Other use cases of Federation Automatic Registration, FAPI included.
           </t>
 	  <t>
-	    Moved the definitions of <spanx style="verb">organization_name</spanx>, <spanx style="verb">contacts</spanx>, <spanx style="verb">logo_uri</spanx>, <spanx style="verb">policy_uri</spanx>, and <spanx style="verb">homepage_uri</spanx> from the <spanx style="verb">federation_entity</spanx> Entity Type definition to the set of metadata parameters applicable to all Entity Types.
+	    Moved the definitions of <spanx style="verb">organization_name</spanx>, <spanx style="verb">contacts</spanx>, <spanx style="verb">logo_uri</spanx>, <spanx style="verb">policy_uri</spanx>, and <spanx style="verb">homepage_uri</spanx> from the <spanx style="verb">federation_entity</spanx> Entity Type definition to the set of Metadata parameters applicable to all Entity Types.
 	  </t>
 	  <t>
 	    Clarified the role of the Trust Anchor's Entity Configuration in Trust Chains.
@@ -8686,7 +8686,7 @@ Host: op.umu.se
 	    Tightened descriptions of Federation Endpoints.
 	  </t>
 	  <t>
-	    Fixed #2080: Defined <spanx style="verb">federation_historical_keys_endpoint</spanx> metadata parameter.
+	    Fixed #2080: Defined <spanx style="verb">federation_historical_keys_endpoint</spanx> Metadata parameter.
 	  </t>
 	  <t>
 	    Fixed #2081: Renamed
@@ -8708,7 +8708,7 @@ Host: op.umu.se
 	-30
 	<list style="symbols">
       <t>
-        Clarifies that when the metadata policy combination process encounters an
+        Clarifies that when the Metadata policy combination process encounters an
         error, such as being unable to merge two operators, the policy combination
         MUST be considered invalid.
       </t>
@@ -8727,13 +8727,13 @@ Host: op.umu.se
       </t>
       <t>
         Addressed #1655: Explicit Registration: Simplifies the expression of
-        the registered RP metadata - the metadata policy mechanism is no longer
+        the registered RP Metadata - the Metadata policy mechanism is no longer
         used.
       </t>
       <t>
         Addressed #1655: Explicit Registration: An RP MUST always verify the
-        metadata it was registered with. The standard Trust Chain resolution
-        and application of <spanx style="verb">metadata_policy</spanx> is the
+        Metadata it was registered with. The standard Trust Chain resolution
+        and application of <spanx style="verb">Metadata_policy</spanx> is the
         SHOULD method, but RPs are free to utilize other methods yielding the
         same result, e.g. by calling a helper web endpoint provided by the
         Trust Anchor.
@@ -8779,7 +8779,7 @@ Host: op.umu.se
             Fixed #2041: Added normative language mandating the https scheme and any optional port and path, for all the Entity Identifiers and the federation endpoints.
         </t>
 	  <t>
-	    Cite draft-ietf-oauth-resource-metadata.
+	    Cite draft-ietf-oauth-resource-Metadata.
 	  </t>
          <t>
             Fixed #2002: Added sequence diagrams and representations of the general architecture and the Trust Chain.
@@ -8788,10 +8788,10 @@ Host: op.umu.se
 	    Fixed #2061: Clarified that the <spanx style="verb">constraints</spanx> claim may only appear in statements issued by authorities.
 	  </t>
 	  <t>
-	    Fixed #2062: Require metadata statements for all Entity Type Identifiers that apply to an Entity.
+	    Fixed #2062: Require Metadata statements for all Entity Type Identifiers that apply to an Entity.
 	  </t>
 	  <t>
-	    Replaced duplicative term "metadata type" with "Entity Type" and
+	    Replaced duplicative term "Metadata type" with "Entity Type" and
 	    defined the term "Entity Type Identifier".
 	  </t>
 	  <t>
@@ -8799,7 +8799,7 @@ Host: op.umu.se
 	    Entity Type Identifiers from Metadata Extensions.
 	  </t>
 	  <t>
-	    Fixed #2064: Prohibited the use of <spanx style="verb">null</spanx> as a metadata value.
+	    Fixed #2064: Prohibited the use of <spanx style="verb">null</spanx> as a Metadata value.
 	  </t>
 	  <t>
 	    Rewrote <spanx style="verb">request_authentication_methods_supported</spanx> description.
@@ -8822,7 +8822,7 @@ Host: op.umu.se
             Fixed #1921: brand new JWS Header parameter, <spanx style="verb">trust_chain</spanx>.
           </t>
           <t>
-            Fixed #1879, #1881, #1883, #1885: introductionary text, metadata section, editorials.
+            Fixed #1879, #1881, #1883, #1885: introductionary text, Metadata section, editorials.
           </t>
         </list>
       </t>
@@ -8853,7 +8853,7 @@ Host: op.umu.se
             of an explicit registration response is single-valued.
           </t>
           <t>
-            Added text about the usage of metadata besides metadata_policy.
+            Added text about the usage of Metadata besides Metadata_policy.
           </t>
           <t>
             Fixed #1745 #1746: Non-normative example of Trust Mark status endpoint.
@@ -8875,7 +8875,7 @@ Host: op.umu.se
             Fixed #1779: Entity Type as defined term.
           </t>
           <t>
-            Added Sequence Diagram representing a Federation Entity Discovery and metadata evaluation.
+            Added Sequence Diagram representing a Federation Entity Discovery and Metadata evaluation.
           </t>
           <t>
             Fixed #1757: Federation Historical Keys endpoint support for revocation status. Endpoint enabled for all the Federation Entities.
@@ -8890,16 +8890,16 @@ Host: op.umu.se
 	    Fixed #1660: Clarified that Explicit Registration uses no parameters and added Explicit Registration example.
 	  </t>
 	  <t>
-	    Fixed #1782: Reference protected resource metadata draft.
+	    Fixed #1782: Reference protected resource Metadata draft.
 	  </t>
 	  <t>
 	    Fixed #1809: Replaced use of "trust issuers" terminology.
 	  </t>
 	  <t>
-	    Fixed #1661: Tightened descriptions of metadata standards used.
+	    Fixed #1661: Tightened descriptions of Metadata standards used.
 	  </t>
 	  <t>
-	    Fixed #1801: Better described function of "essential" metadata operator.
+	    Fixed #1801: Better described function of "essential" Metadata operator.
 	  </t>
         </list>
       </t>
@@ -8938,7 +8938,7 @@ Host: op.umu.se
             Fixed #1712: federation_entity claims: organization_name is recommended, logo_uri is added.
           </t>
           <t>
-            Fixed #1702: removal of metadata type trust_mark_issuer, federation_status_endpoint moved in the federation_entity metadata and renamed to federation_trust_mark_status_endpoint.
+            Fixed #1702: removal of Metadata type trust_mark_issuer, federation_status_endpoint moved in the federation_entity Metadata and renamed to federation_trust_mark_status_endpoint.
           </t>
           <t>
             Fixed #1716: Clarified how to retrieve the RP's Entity Configuration when using Automatic Registration.
@@ -9004,7 +9004,7 @@ Host: op.umu.se
             Fixed #1633: Explaination text about who signs the Trust Mark and how.
           </t>
           <t>
-            Fixed #1650: typo in signed_jws_uri and jwks metadata claims.
+            Fixed #1650: typo in signed_jws_uri and jwks Metadata claims.
           </t>
         </list>
       </t>
@@ -9013,16 +9013,16 @@ Host: op.umu.se
         -22
         <list style="symbols">
           <t>
-            Rewritten text about metadata processing when doing Explicit Client Registration.
+            Rewritten text about Metadata processing when doing Explicit Client Registration.
           </t>
           <t>
-            Fixed #1581: OP metadata claims enabled for AS.
+            Fixed #1581: OP Metadata claims enabled for AS.
           </t>
           <t>
             Fixed #1594: self-issued trust_chain in the Authorization Request.
           </t>
           <t>
-            Fixed #1583: metadata policy one_of operator, explanatory text for multiple values.
+            Fixed #1583: Metadata policy one_of operator, explanatory text for multiple values.
           </t>
           <t>
             Fixed #1584: Stated that domain name constraints are as specified in Section 4.2.1.10 of <xref target="RFC5280"/>.
@@ -9070,7 +9070,7 @@ Host: op.umu.se
             Resolve endpoint: Removed iss paramenter in the request and specified the usage of the aud claim in the response.
           </t>
           <t>
-            Fixed #1513: request_authentication_methods_supported according to IANA OAuth 2.0 AS metadata registered names.
+            Fixed #1513: request_authentication_methods_supported according to IANA OAuth 2.0 AS Metadata registered names.
           </t>
           <t>
             Fixed #1527: Defined the Trust Mark term and added non-normative examples.
@@ -9119,7 +9119,7 @@ Host: op.umu.se
             <spanx style="verb">jwks_uri</spanx> and <spanx style="verb">jwks</spanx>.
           </t>
           <t>
-            Fixed #1514 - Corrected RP metadata examples to use <spanx style="verb">id_token_signed_response_alg</spanx>.
+            Fixed #1514 - Corrected RP Metadata examples to use <spanx style="verb">id_token_signed_response_alg</spanx>.
           </t>
           <t>
             Fixed #1512 - Registered the error codes <spanx style="verb">missing_trust_anchor</spanx>
@@ -9166,19 +9166,19 @@ Host: op.umu.se
         -19
         <list style="symbols">
           <t>
-            Fixed #1497 - Removed <spanx style="verb">trust_mark</spanx> claim from federation entity metadata.
+            Fixed #1497 - Removed <spanx style="verb">trust_mark</spanx> claim from federation entity Metadata.
           </t>
           <t>
             Fixed #1446 - Added <spanx style="verb">trust_chain</spanx> and removed <spanx style="verb">is_leaf</spanx>.
           </t>
           <t>
-            Fixed #1479 - Added <spanx style="verb">jwks</spanx> claim in OP metadata.
+            Fixed #1479 - Added <spanx style="verb">jwks</spanx> claim in OP Metadata.
           </t>
           <t>
             Fixed #1477 - Added <spanx style="verb">request_authentication_methods_supported</spanx>.
           </t>
           <t>
-            Fixed #1474 - Added the <spanx style="verb">request_authentication_signing_alg_values_supported</spanx> OP metadata parameter.
+            Fixed #1474 - Added the <spanx style="verb">request_authentication_signing_alg_values_supported</spanx> OP Metadata parameter.
           </t>
           <t>
             Rewrote <spanx style="verb">trust_marks</spanx> definition.
@@ -9201,7 +9201,7 @@ Host: op.umu.se
           <t>
             Registered the <spanx style="verb">client_registration_types_supported</spanx> and
             <spanx style="verb">federation_registration_endpoint</spanx>
-            authorization server metadata parameters.
+            authorization server Metadata parameters.
           </t>
           <t>
             Registered the <spanx style="verb">client_registration_type</spanx>
@@ -9408,12 +9408,12 @@ Host: op.umu.se
           </t>
           <t>
             Added <spanx style="verb">client_registration_type</spanx> RP registration
-            metadata value
+            Metadata value
             and <spanx style="verb">client_registration_types_supported</spanx> OP
-            metadata value.
+            Metadata value.
           </t>
           <t>
-            Deleted <spanx style="verb">openid_discovery</spanx> metadata type
+            Deleted <spanx style="verb">openid_discovery</spanx> Metadata type
             identifier
             since its purpose is already served by
             <spanx style="verb">openid_provider</spanx>.
@@ -9471,7 +9471,7 @@ Host: op.umu.se
         -07
         <list style="symbols">
           <t>
-            Split metadata into metadata and metadata_policy
+            Split Metadata into Metadata and Metadata_policy
           </t>
           <t>
             Updated example
@@ -9501,7 +9501,7 @@ Host: op.umu.se
         -04
         <list style="symbols">
           <t>
-            Changed client metadata names
+            Changed client Metadata names
             <spanx style="verb">scopes</spanx>
             to <spanx style="verb">rp_scopes</spanx> and
             <spanx style="verb">claims</spanx>
