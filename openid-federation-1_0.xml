@@ -539,20 +539,13 @@
             </t>
             <t hangText="metadata_policy">
               <vspace/>
-              OPTIONAL. JSON object that defines a metadata policy.
-              The metadata policy applies to the Entity that is the subject of this
-              Subordinate Statement as well as to all Entities that are Subordinate to it.
-              Applying to Subordinate Entities distinguishes
-              <spanx style="verb">metadata_policy</spanx> from
-              <spanx style="verb">metadata</spanx>, which only applies to the
-              subject itself.
-	      Each member name of the JSON object is an Entity Type Identifier,
-	      and each value MUST be a JSON object representing
-	      the metadata policy according to the metadata schema of that Entity Type.
-	      A Subordinate Statement MAY contain multiple
-	      sets of metadata policy statements, but only one for each Entity Type.
-              Entity Configurations MUST NOT contain a
-              <spanx style="verb">metadata_policy</spanx> claim.
+              OPTIONAL. JSON object that defines a metadata policy, as described
+              in <xref target="metadata_policy"/>. Only Subordinate Statements
+              MAY include this claim. The metadata policy applies to the Entity
+              that is the subject of this Subordinate Statement as well as to
+              all Entities that are Subordinate to it. Applying to Subordinate
+              Entities distinguishes <spanx style="verb">metadata_policy</spanx>
+              from metadata, which only applies to the subject itself.
             </t>
             <t hangText="constraints">
               <vspace/>
@@ -1720,54 +1713,182 @@
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
         <t>
-          Trust Anchors and Intermediate Entities MAY publish Entity Type-specific
-	  policies that apply to the metadata of their Immediate Subordinates
-          as well as any further Subordinates along the Trust Chain.
+          Trust Anchors and Intermediate Entities MAY define policies that apply
+          to the metadata of their Subordinates.
         </t>
         <t>
-          As described in <xref target="entity-statement"/>, the metadata
-          policy operators are located in the <spanx style="verb">metadata_policy</spanx>
-          claim of an Entity Statement, whose value is a JSON object.
+          A federation may utilize metadata policies to achieve specific
+          objectives. For example, in a federation of
+          <xref target="OpenID.Core">OpenID Connect</xref> Entities, one
+          objective may be to ensure the metadata published by Providers and
+          Relying Parties are interoperable with one another. Another objective
+          may be to ensure the Entity metadata complies with a security profile,
+          for example <xref target="FAPI">FAPI</xref>.
         </t>
-        <t>
-          Each member in this object is an Entity Type-specific metadata policy,
-          whose member name is an Entity Type Identifier, as specified in
-          <xref target="entity_types"/>, for example
-          <spanx style="verb">openid_relying_party</spanx>. The member value is
-          a JSON object that represents metadata policies for the Entity Type
-          and has the following structure:
-          <list style="symbols">
+
+
+        <section title="Principles" anchor="metadata_policy_principles">
+          <t>
+            OpenID Federation enables the definition of metadata policies with
+            the following properties:
+          </t>
+
+          <section title="Hierarchy">
             <t>
-              It consists of one or more policy entries, each entry being
-              represented by a JSON object.</t>
-            <t>
-              A policy entry applies to a single metadata parameter, for
-              example <spanx style="verb">id_token_signed_response_alg</spanx>.
+              Once applied to a metadata parameter, a metadata policy cannot be
+              repealed or made more permissive by Intermediate Entities that are
+              subordinate in the Trust Chain.
             </t>
             <t>
-              A policy entry is represented by a JSON object and consists of
-              one or more operators, to check or modify the metadata parameter,
-              as described in <xref target="policy_operators"/>.
+              The hierarchy of policies is preserved in nested federations where
+              a Trust Anchor in one federation acts as an Intermediate Entity in
+              another federation.
+            </t>
+          </section>
+
+          <section title="Specificity">
+            <t>
+              Just like metadata, a metadata policy is bound to a specific
+              Entity Type. This ensures policies for different Entity Types are
+              independent and isolated from one another.
             </t>
             <t>
-              A policy entry MAY include at most one operator of each kind.
+              When a Trust Anchor or an Intermediate Entity defines a metadata
+              policy for an Entity Type, it applies to the metadata of all
+              Subordinate Entities of that type in the Trust Chain.
             </t>
-          </list>
-        </t>
-        <t>
-          Note that metadata policies MUST regard any metadata parameter with
-          a language tag in its name, as described in <xref target="ClaimsLanguagesAndScripts"/>,
-          as distinct from the same metadata parameter without a language tag.
-        </t>
+            <t>
+              Because the place to define a policy is the Subordinate Statement
+              and every Entity Statement is issued for a specific subject, a
+              federation authority can choose to define a common Entity Type
+              metadata policy for all its Subordinates, or specific Entity Type
+              metadata policies for specific Subordinates.
+            </t>
+          </section>
+
+          <section title="Granularity">
+            <t>
+              Policies are expressed at the level of individual metadata
+              parameters. The policies for a given Entity Type metadata
+              parameter are thus independent and isolated from those for other
+              parameters.
+            </t>
+          </section>
+
+          <section title="Operation">
+            <t>
+              A policy operates by performing a check, a modification, or both
+              on a given metadata parameter.
+            </t>
+            <t>
+              This specification defines a set of standard operators, described
+              in <xref target="standard_metadata_policy_operators"/>.
+            </t>
+            <t>
+              A federation MAY specify and use additional operators, provided
+              they comply with the principles laid out in this section and with
+              <xref target="metadata_policy_operators"/> and
+              <xref target="additional_metadata_policy_operators"/>.
+            </t>
+          </section>
+
+          <section title="Integral Metadata Enforcement">
+            <t>
+              The resolution and application of metadata policies is an integral
+              part of the Trust Chain resolution process, as described in
+              <xref target="resolving_trust"/>.
+            </t>
+            <t>
+              This means:
+            </t>
+            <t>
+              <list style="symbols">
+                <t>
+                  A Trust Chain for which the metadata policy resolution fails
+                  due to an error, for example due to an Intermediate Entity’s
+                  policy conflicting with a Superior’s policy, is deemed invalid.
+                </t>
+                <t>
+                  A Trust Chain with Entity metadata that does not comply with
+                  the resolved metadata policies is deemed invalid.
+                </t>
+              </list>
+            </t>
+          </section>
+
+          <section title="Determinism">
+            <t>
+              The resolution and application of metadata policies in a Trust
+              Chain is deterministic. Trust Anchors and Intermediate Entities
+              are thus able to formulate policies that exhibit predictable and
+              reproducible outcomes.
+            </t>
+          </section>
+
+          <t>
+            Note that the <spanx style="verb">metadata_policy</spanx> is not
+            intended to check and validate the JSON value types of metadata
+            parameters. Such checks SHOULD be performed at the application
+            layer, after obtaining the Entity metadata from a successfully
+            resolved Trust Chain.
+          </t>
+
+        </section>
+
+        <section title="Structure" anchor="metadata_policy_structure">
+
+          <t>
+            As described in <xref target="entity-statement"/>, metadata policies
+            are expressed in the <spanx style="verb">metadata_policy</spanx>
+            claim of a Subordinate Statement.
+          </t>
+
+          <t>
+            The metadata_policy claim value is a JSON object. Each member in
+            this object is an Entity Type-specific metadata policy, whose member
+            name is an Entity Type Identifier, as specified in
+            <xref target="entity_types"/> , for example
+            <spanx style="verb">openid_relying_party</spanx>. Duplicate member
+            names MUST NOT be present. The member value is a JSON object that
+            has the following structure:
+          </t>
+
+          <t>
+            <list style="symbols">
+              <t>
+                Each member name represents a metadata parameter name, for
+                example <spanx style="verb">id_token_signed_response_alg</spanx>.
+                The name MAY include a language tag, as described in
+                <xref target="ClaimsLanguagesAndScripts"/>, in which case the
+                metadata parameter policy applies only to the metadata parameter
+                with the specified language tag.
+              </t>
+              <t>
+                Each member value is a JSON object that represents a metadata
+                parameter policy. It consists of one or more operators that
+                check or modify the metadata parameter, as described in
+                <xref target="metadata_policy_operators"/>. A metadata parameter
+                policy MUST include only operators that are allowed to be
+                combined with one another, as described in the specification for
+                each operator. It MUST NOT include more than one operator of a
+                given kind.
+              </t>
+            </list>
+          </t>
+
           <t>
             <figure>
               <preamble>
-                The following is a non-normative example of a policy entry
-		providing metadata policy for an OpenID Connect RP:
+                The following is a non-normative example of a metadata policy
+                for an OpenID Relying Party that consists of a single policy for
+                the <spanx style="verb">id_token_signed_response_alg</spanx>
+                metadata parameter and uses two operators,
+                <spanx style="verb">default</spanx> and
+                <spanx style="verb">one_of</spanx>:
               </preamble>
-	      <name>
-		  Example <spanx style="verb">metadata_policy</spanx> Claim
-	      </name>
+              <name>
+                Example <spanx style="verb">metadata_policy</spanx> Claim
+              </name>
               <artwork><![CDATA[
 "metadata_policy" : {
   "openid_relying_party": {
@@ -1780,430 +1901,870 @@
 ]]></artwork>
             </figure>
           </t>
-        <section title="Operators" anchor="policy_operators">
-          <t>
-            This specification defines the following metadata policy operators.
-          </t>
-          <t>
-            Metadata policy operators that modify values are:
-            <list style="hanging">
-              <t hangText="value">
-                <vspace/>
-                The metadata parameter MUST be assigned the value that is the
-                value of this operator.
-              </t>
-              <t hangText="add">
-                <vspace/>
-                The value or values of this operator MUST be added to the
-                metadata parameter. If any of these values are already present
-                in the metadata parameter, they MUST NOT be added another time.
-                If the metadata parameter is absent, the parameter MUST be
-                initialized with the value of this operator.
-              </t>
-              <t hangText="default">
-                <vspace/>
-                If the metadata parameter is absent, it MUST be set to the
-                value of this operator.
-              </t>
-            </list>
-          </t>
-          <t>
-            Metadata policy operators that check values are:
-            <list style="hanging">
-              <t hangText="essential">
-                <vspace/>
-                If the value of this operator is <spanx style="verb">true</spanx>,
-                then the metadata parameter MUST be present.
-                If <spanx style="verb">false</spanx> the metadata parameter is
-                voluntary and may be absent.
-                If the <spanx style="verb">essential</spanx> operator is omitted,
-                this is equivalent to including it with a value of
-                <spanx style="verb">false</spanx>.
-              </t>
-              <t hangText="one_of">
-                <vspace/>
-                If the metadata parameter is present its value MUST be one of
-                those listed in the operator value.
-              </t>
-              <t hangText="subset_of">
-                <vspace/>
-                If the metadata parameter is present this operator computes the
-                intersection between the values of the operator and the metadata
-                parameter.
-                If the intersection is non-empty, the parameter is set to the
-                values in the intersection.
-                If the intersection is empty, the result is determined by the
-                <spanx style="verb">essential</spanx> operator: For an essential
-                metadata parameter, the result is an error; for a voluntary
-                metadata parameter, it MUST be removed from the metadata.
-                Note that this behavior makes <spanx style="verb">subset_of</spanx>
-                a potential value modifier in addition to it being a value check.
-              </t>
-              <t hangText="superset_of">
-                <vspace/>
-                If the metadata parameter is present its values MUST contain
-                those specified in the operator. By mathematically defining
-                supersets, equality is included.
-              </t>
-            </list>
-          </t>
-
-          <t>
-            Applications and protocols utilizing metadata policies MAY specify
-            and use additional policy operators.
-          </t>
-
-          <t>
-            All policy operators MUST consider it an error if a metadata
-            parameter that is being operated on has a <spanx style="verb">null</spanx>
-            value. Policy operators MUST NOT output metadata parameters with a
-            <spanx style="verb">null</spanx> value.
-          </t>
-
-          <t>
-            A "set equals" value check can be expressed by combining a
-            <spanx style="verb">subset_of</spanx> and a
-            <spanx style="verb">superset_of</spanx> with identical string
-            list values.
-          </t>
-          <t>
-            Note that when a metadata parameter is defined as a space-separated
-            list of strings, like <spanx style="verb">scope</spanx> in
-            <xref target="RFC7591"/>, the <spanx style="verb">subset_of</spanx>,
-            <spanx style="verb">superset_of</spanx> and
-            <spanx style="verb">default</spanx> operator values are still
-            expressed as lists of strings.
-            This language from <xref target="RFC6749"/> also applies to
-            metadata parameters for which values can be expressed as a
-            space-separated lists of strings: "If the value contains multiple
-            space-delimited strings, their order does not matter, and each
-            string adds an additional access range to the requested scope."
-          </t>
-
-        <table>
-          <preamble>
-              The following table is a map of the outputs produced by the
-              combination of the <spanx style="verb">essential</spanx> and
-              <spanx style="verb">subset_of</spanx> policy operators with
-              different input metadata parameter values.
-              Note, the <spanx style="verb">subset_of</spanx> check is ignored
-              when the metadata parameter is absent and designated as voluntary,
-              as shown in the last row.
-          </preamble>
-	  <name>
-	    Examples of outputs with Combinations of <spanx style="verb">essential</spanx>
-        and <spanx style="verb">subset_of</spanx> inputs
-	  </name>
-          <thead>
-            <tr>
-              <td colspan="2">Policy</td>
-              <td colspan="2">Metadata Parameter</td>
-            </tr>
-            <tr>
-              <td colspan="">essential</td>
-              <td colspan="">subset_of</td>
-              <td colspan="">input</td>
-              <td colspan="">output</td>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>true</td>
-              <td>[a,b,c]</td>
-              <td>[a,e]</td>
-              <td>[a]</td>
-            </tr>
-
-            <tr>
-              <td>false</td>
-              <td>[a,b,c]</td>
-              <td>[a,e]</td>
-              <td>[a]</td>
-            </tr>
-
-            <tr>
-              <td>true</td>
-              <td>[a,b,c]</td>
-              <td>[d,e]</td>
-              <td>error</td>
-            </tr>
-
-            <tr>
-              <td>false</td>
-              <td>[a,b,c]</td>
-              <td>[d,e]</td>
-              <td>no parameter</td>
-            </tr>
-
-            <tr>
-              <td>true</td>
-              <td>[a,b,c]</td>
-              <td>no parameter</td>
-              <td>error</td>
-            </tr>
-
-            <tr>
-              <td>false</td>
-              <td>[a,b,c]</td>
-              <td>no parameter</td>
-              <td>no parameter</td>
-            </tr>
-          </tbody>
-        </table>
-
         </section>
-        <section title="Restrictions on Policy Entries" anchor="policy_restr">
+
+        <section title="Operators" anchor="metadata_policy_operators">
           <t>
-            As stated, a policy entry can contain one or more operators.
-            Not all operators are allowed to appear together in a policy entry.
-          </t>
-          <t>
-            <list style="hanging">
-              <t hangText="subset_of/superset_of and one_of">
-                <vspace/>
-                <spanx style="verb">subset_of</spanx>
-                and
-                <spanx style="verb">superset_of</spanx>
-                apply to parameters
-                that can have more than
-                one value (for instance, <spanx style="verb">contacts</spanx>),
-                while <spanx style="verb">one_of</spanx> applies to
-                parameters that can only have one value (for instance,
-                <spanx style="verb">id_token_signed_response_alg</spanx>).
-                Therefore, <spanx style="verb">one_of</spanx> cannot
-                appear beside
-                <spanx style="verb">subset_of</spanx>/
-                <spanx style="verb">superset_of</spanx>
-                in a policy entry.
-              </t>
-              <t hangText="value">
-                <vspace/>
-                <spanx style="verb">value</spanx>
-                overrides everything else.
-                So having <spanx style="verb">value</spanx> together with any
-                other operator (except for
-                <spanx style="verb">essential</spanx>) does not make sense.
-              </t>
-            </list>
-          </t>
-          <t>
-            Other restrictions are:
+            A metadata policy operator:
           </t>
           <t>
             <list style="symbols">
               <t>
-                If <spanx style="verb">subset_of</spanx> and
-                <spanx style="verb">superset_of</spanx>
-                both appear as operators, then the
-                list of values in
-                <spanx style="verb">subset_of</spanx>
-                MUST be a superset of the values in
-                <spanx style="verb">superset_of</spanx>.
+                Is identified by a unique case sensitive name.
               </t>
               <t>
-                If <spanx style="verb">add</spanx> appears in a policy entry
-                together with
-                <spanx style="verb">subset_of</spanx>
-                then the value/values of <spanx style="verb">add</spanx> MUST
-                be a subset of <spanx style="verb">subset_of</spanx>.
+                Acts on a single metadata parameter. The operator MUST specify
+                the metadata parameter JSON value types that are mandatory to
+                support and MAY also specify JSON value types that are optional
+                to support. When the metadata parameter has a JSON value type
+                that isn’t supported, the operator MUST produce a policy error.
               </t>
               <t>
-                If <spanx style="verb">add</spanx> appears in a policy entry
-                together with
-                <spanx style="verb">superset_of</spanx>
-                then
-                the values of <spanx style="verb">add</spanx> MUST be a
-                superset of <spanx style="verb">superset_of</spanx>.
+                The type of action on the metadata parameter can be a value
+                check, a value modification, or both. When the operator’s action
+                is a value modification, it MAY remove the metadata parameter.
               </t>
               <t>
-                If <spanx style="verb">default</spanx> appears in a policy
-                entry together with
-                <spanx style="verb">subset_of</spanx>
-                then
-                the values of <spanx style="verb">default</spanx> MUST be a
-                subset of <spanx style="verb">subset_of</spanx>.
+                The action of the operator is configured by a JSON value. The
+                operator MUST specify the JSON value types that are mandatory to
+                support and MAY also specify JSON value types that are optional
+                to support. When the operator is configured with a JSON value
+                type that isn’t supported, the operator MUST produce a policy
+                error.
               </t>
               <t>
-                If <spanx style="verb">default</spanx> appears in a policy entry
-                together with
-                <spanx style="verb">superset_of</spanx>
-                then the values of <spanx style="verb">default</spanx> MUST be a
-                superset of
-                <spanx style="verb">superset_of</spanx>.
+                MUST declare what other operators it may be combined within a
+                metadata parameter policy. Combinations that are not allowed
+                MUST result in a policy error.
               </t>
               <t>
-                If <spanx style="verb">add</spanx> appears in a policy entry
-                together with <spanx style="verb">one_of</spanx> then
-                the
-                value of <spanx style="verb">add</spanx> MUST be a member
-                of <spanx style="verb">one_of</spanx>.
+                MUST declare in what order it is to be applied to a metadata
+                parameter, absolute or relative to other operators in the
+                metadata parameter policy. Value check operators SHOULD
+                generally be applied after operators that perform value
+                modifications.
               </t>
               <t>
-                If <spanx style="verb">default</spanx> appears in a policy entry
-                together with
-                <spanx style="verb">one_of</spanx>
-                then the
-                value <spanx style="verb">default</spanx> MUST be a member
-                of <spanx style="verb">one_of</spanx>.
+                MUST specify, when more than one Subordinate Statement in a
+                Trust Chain has a policy for a Entity Type metadata parameter
+                that uses the same operator, whether the operator values are
+                allowed to be merged to produce an identical or more restrictive
+                policy, and if so under what conditions. If the operator does
+                not allow such a merge, it MUST produce a policy error.
               </t>
+              <t>
+                An operator MUST NOT output a metadata parameter with the
+                <spanx style="verb">null</spanx> value.
+              </t>
+
             </list>
           </t>
-        </section>
-        <section title="Combining Policies" anchor="combining_policies">
-          <t>
-            If there is more than one Entity Statement with metadata policy in a
-            Trust Chain, then the policies MUST be combined before they are applied
-            to the metadata statement.
-          </t>
-          <t>
-            Using the notation defined in <xref target="trust_chain"/>, policies are
-            combined by starting with ES[i] and then adding the policies from ES[j]
-            j=i-1,..,1. When for a given metadata parameter both the combined policy
-            at the current step and the Immediate Subordinate Entity specify a policy operator,
-            for example <spanx style="verb">subset_of</spanx>, the two operators are
-            merged, as described in <xref target="merging_policy_operators"/>. After
-            each combination step the policy for each parameter MUST adhere to the
-            rules in <xref target="policy_restr"/>. The final combined policy is then
-            applied to the Entity's metadata, as described in
-            <xref target="applying_policies"/>.
-          </t>
-          <t>
-            If during the combination process an operator merge rule or a policy
-            restriction is violated or otherwise an error is produced, the process
-            MUST stop and the policy combination MUST be considered invalid.
-          </t>
 
-          <section title="Merging Operators" anchor="merging_policy_operators">
+          <section title="Standard Operators" anchor="standard_metadata_policy_operators">
+
+            <t>This specification defines the following metadata policy
+              operators.</t>
+
+            <section title="value" anchor="value_operator">
+              <t>
+                Name: <spanx style="verb">value</spanx>
+              </t>
+              <t>
+                Action: The metadata parameter MUST be assigned the value of the
+                operator. When the value of the operator is
+                <spanx style="verb">null</spanx> the metadata parameter MUST be
+                removed.
+              </t>
+              <t>
+                Metadata parameter JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: string, number, boolean, object, array
+                  </t>
+                </list>
+              </t>
+              <t>
+                Operator JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: string, number, boolean, object,
+                    array, null
+                  </t>
+                </list>
+              </t>
+              <t>
+                Combination with other operators in a metadata parameter policy:
+                <list style="symbols">
+                  <t>
+                    MAY be combined with <spanx style="verb">essential</spanx>.
+                  </t>
+                </list>
+              </t>
+              <t>
+                Order of processing: First
+              </t>
+              <t>
+                Operator value merge: Allowed only when the operator values are
+                equal. If not, this MUST result in a policy error.
+              </t>
+            </section>
+
+            <section title="add" anchor="add_operator">
+              <t>
+                Name: <spanx style="verb">add</spanx>
+              </t>
+              <t>
+                Action: The value or values of this operator MUST be added to
+                the metadata parameter. Values that are already present in the
+                metadata parameter MUST NOT be added another time. If the
+                metadata parameter is absent, it MUST be initialized with the
+                value of this operator.
+              </t>
+              <t>
+                Metadata parameter JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: array of strings
+                  </t>
+                  <t>
+                    Optional to support: array of objects, array of numbers
+                  </t>
+                </list>
+              </t>
+              <t>
+                Operator JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: array of strings
+                  </t>
+                  <t>
+                    Optional to support: array of objects, array of numbers
+                  </t>
+                </list>
+              </t>
+              <t>
+                Combination with other operators in a metadata parameter policy:
+                <list style="symbols">
+                  <t>
+                    MAY be combined with <spanx style="verb">default</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">subset_of</spanx>,
+                    in which case the values of <spanx style="verb">add</spanx>
+                    MUST be a subset of the values of
+                    <spanx style="verb">subset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">superset_of</spanx>,
+                    in which case the values of <spanx style="verb">add</spanx>
+                    MUST be a superset of the values of
+                    <spanx style="verb">superset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">essential</spanx>.
+                  </t>
+                </list>
+              </t>
+              <t>
+                Order of processing: After <spanx style="verb">value</spanx>.
+              </t>
+              <t>
+                Operator value merge: The result of merging the values of two
+                <spanx style="verb">add</spanx> operators is the union of the
+                values.
+              </t>
+            </section>
+
+            <section title="default" anchor="default_operator">
+              <t>
+                Name: <spanx style="verb">default</spanx>
+              </t>
+              <t>
+                Action: If the metadata parameter is absent, it MUST be set to
+                the value of the operator.
+              </t>
+              <t>
+                Metadata parameter JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: string, number, boolean, object, array
+                  </t>
+                </list>
+              </t>
+              <t>
+                Operator JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: string, number, boolean, object, array
+                  </t>
+                </list>
+              </t>
+              <t>
+                Combination with other operators in a metadata parameter policy:
+                <list style="symbols">
+                  <t>
+                    MAY be combined with <spanx style="verb">add</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">one_of</spanx>, in
+                    which case the <spanx style="verb">default</spanx> value
+                    MUST be among the <spanx style="verb">one_of</spanx> values.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">subset_of</spanx>,
+                    in which case the <spanx style="verb">default</spanx> values
+                    MUST be a subset of the <spanx style="verb">subset_of</spanx>
+                    values.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">superset_of</spanx>,
+                    in which case the <spanx style="verb">default</spanx> values
+                    MUST be a superset of the
+                    <spanx style="verb">superset_of</spanx> values.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">essential</spanx>.
+                  </t>
+                </list>
+              </t>
+              <t>
+                Order of processing: After <spanx style="verb">add</spanx>.
+              </t>
+              <t>
+                Operator value merge: The operator values MUST be equal. If the
+                values are not equal this MUST result in a policy error.
+              </t>
+            </section>
+
+            <section title="one_of" anchor="one_of_operator">
+              <t>
+                Name: <spanx style="verb">one_of</spanx>
+              </t>
+              <t>
+                Action: If the metadata parameter is present, its value MUST be
+                one of those listed in the operator value.
+              </t>
+              <t>
+                Metadata parameter JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: string
+                  </t>
+                  <t>
+                    Optional to support: object, number
+                  </t>
+                </list>
+              </t>
+              <t>
+                Operator JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: array of strings
+                  </t>
+                  <t>
+                    Optional to support: array of objects, array of numbers
+                  </t>
+                </list>
+              </t>
+              <t>
+                Combination with other operators in a metadata parameter policy:
+                <list style="symbols">
+                  <t>
+                    MAY be combined with <spanx style="verb">default</spanx>,
+                    in which case the value of default MUST be among the
+                    <spanx style="verb">one_of</spanx> values.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">essential</spanx>.
+                  </t>
+                </list>
+              </t>
+              <t>
+                Order of processing: After <spanx style="verb">default</spanx>.
+              </t>
+              <t>
+                Operator value merge: The result of merging the values of two
+                <spanx style="verb">one_of</spanx> operators is the intersection
+                of the operator values. If the intersection is empty, this MUST
+                result in a policy error.
+              </t>
+            </section>
+
+            <section title="subset_of" anchor="subset_of_operator">
+              <t>
+                Name: <spanx style="verb">subset_of</spanx>
+              </t>
+              <t>
+                Action: If the metadata parameter is present, this operator
+                computes the intersection between the values of the operator and
+                the metadata parameter. If the intersection is non-empty, the
+                metadata parameter is set to the values in the intersection. If
+                the intersection is empty, the metadata parameter MUST be
+                removed. Note that this behavior makes
+                <spanx style="verb">subset_of</spanx> a potential value modifier
+                in addition to it being a value check.
+              </t>
+              <t>
+                Metadata parameter JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: array of strings
+                  </t>
+                  <t>
+                    Optional to support: array of objects, array of numbers
+                  </t>
+                </list>
+              </t>
+              <t>
+                Operator JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: array of strings
+                  </t>
+                  <t>
+                    Optional to support: array of objects, array of numbers
+                  </t>
+                </list>
+              </t>
+              <t>
+                Combination with other operators in a metadata parameter policy:
+                <list style="symbols">
+                  <t>
+                    MAY be combined with <spanx style="verb">add</spanx>, in
+                    which case the values of <spanx style="verb">add</spanx>
+                    MUST be a subset of the values of
+                    <spanx style="verb">subset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">default</spanx>, in
+                    which case the values of <spanx style="verb">default</spanx>
+                    MUST be a subset of the values of
+                    <spanx style="verb">subset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">superset_of</spanx>,
+                    in which case the values of
+                    <spanx style="verb">subset_of</spanx> MUST be a superset of
+                    the values of <spanx style="verb">superset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">essential</spanx>.
+                  </t>
+                </list>
+              </t>
+              <t>
+                Order of processing: After <spanx style="verb">one_of</spanx>.
+              </t>
+              <t>
+                Operator value merge: The result of merging the values of two
+                <spanx style="verb">subset_of</spanx> operators is the
+                intersection of the operator values. If the intersection is
+                empty, this MUST result in a policy error.
+              </t>
+            </section>
+
+            <section title="superset_of" anchor="superset_of_operator">
+              <t>
+                Name: <spanx style="verb">superset_of</spanx>
+              </t>
+              <t>
+                Action: If the metadata parameter is present, its values MUST
+                contain those specified in the operator value. By mathematically
+                defining supersets, equality is included.
+              </t>
+              <t>
+                Metadata parameter JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: array of strings
+                  </t>
+                  <t>
+                    Optional to support: array of objects, array of numbers
+                  </t>
+                </list>
+              </t>
+              <t>
+                Operator JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: array of strings
+                  </t>
+                  <t>
+                    Optional to support: array of objects, array of numbers
+                  </t>
+                </list>
+              </t>
+              <t>
+                Combination with other operators in a metadata parameter policy:
+                <list style="symbols">
+                  <t>
+                    MAY be combined with <spanx style="verb">add</spanx>, in
+                    which case the values of <spanx style="verb">add</spanx>
+                    MUST be a superset of the values of
+                    <spanx style="verb">superset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">default</spanx>, in
+                    which case the values of <spanx style="verb">default</spanx>
+                    MUST be a superset of the values of
+                    <spanx style="verb">superset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">subset_of</spanx>,
+                    in which case the values of
+                    <spanx style="verb">subset_of</spanx> MUST be a superset of
+                    the values of <spanx style="verb">superset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">essential</spanx>.
+                  </t>
+                </list>
+              </t>
+              <t>
+                Order of processing: After <spanx style="verb">subset_of</spanx>.
+              </t>
+              <t>
+                Operator value merge: The result of merging the values of two
+                <spanx style="verb">superset_of</spanx> operators is the union
+                of the operator values.
+              </t>
+            </section>
+
+            <section title="essential" anchor="essential_operator">
+              <t>
+                Name: <spanx style="verb">essential</spanx>
+              </t>
+              <t>
+                Action: If the value of this operator is
+                <spanx style="verb">true</spanx>, then the metadata parameter
+                MUST be present. If <spanx style="verb">false</spanx>, the
+                metadata parameter is voluntary and may be absent. If the
+                <spanx style="verb">essential</spanx> operator is omitted, this
+                is equivalent to including it with a value of
+                <spanx style="verb">false</spanx>.
+              </t>
+              <t>
+                Metadata parameter JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: string, number, boolean, object, array
+                  </t>
+                </list>
+              </t>
+              <t>
+                Operator JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: boolean
+                  </t>
+                </list>
+              </t>
+              <t>
+                Combination with other operators in a metadata parameter policy:
+                <list style="symbols">
+                  <t>
+                    MAY be combined with any other operator.
+                  </t>
+                </list>
+              </t>
+              <t>
+                Order of processing: Last
+              </t>
+              <t>
+                Operator value merge: If a Superior has specified
+                <spanx style="verb">essential=true</spanx>, then a Subordinate
+                MUST NOT change that. If a Superior has specified
+                <spanx style="verb">essential=false</spanx>, then a Subordinate
+                is allowed to change that to
+                <spanx style="verb">essential=true</spanx>. If a Superior has
+                not specified <spanx style="verb">essential</spanx>, then a
+                Subordinate can set <spanx style="verb">essential</spanx> to
+                <spanx style="verb">true</spanx> or
+                <spanx style="verb">false</spanx>. If those conditions are not
+                met, this MUST result in a policy error.
+              </t>
+            </section>
+
             <t>
-              The policy operators (as defined in <xref target="policy_operators"/>)
-              for a metadata parameter MUST be merged as follows:
+              A "set equals" metadata parameter policy can be expressed by
+              combining the operators <spanx style="verb">subset_of</spanx> and
+              <spanx style="verb">superset_of</spanx> with identical array
+              values.
             </t>
+
             <t>
-              <list style="hanging">
-                <t hangText="subset_of">
-                  <vspace/>
-                  The result of merging the values of two
-                  <spanx style="verb">subset_of</spanx> operators is the
-                  intersection of the operator values.
-                </t>
-                <t hangText="one_of">
-                  <vspace/>
-                  The result of merging the values of two
-                  <spanx style="verb">one_of</spanx> operators is the
-                  intersection of the operator values.
-                </t>
-                <t hangText="superset_of">
-                  <vspace/>
-                  The result of merging the values of two
-                  <spanx style="verb">superset_of</spanx> operators is the
-                  union of the operator values.
-                </t>
-                <t hangText="add">
-                  <vspace/>
-                  The result of merging the values of two
-                  <spanx style="verb">add</spanx>
-                  operators is the union of the values.
-                </t>
-                <t hangText="value">
-                  <vspace/>
-                  Merging two <spanx style="verb">value</spanx> operators
-                  requires the two operator values to be equal. If the values
-                  are not equal this MUST be treated as error.
-                </t>
-                <t hangText="default">
-                  <vspace/>
-                  Merging two <spanx style="verb">default</spanx> operators
-                  requires the two operator values to be equal. If the values
-                  are not equal this MUST be treated as error.
-                </t>
-                <t hangText="essential">
-                  <vspace/>
-                  If a Superior has specified <spanx style="verb">essential=true</spanx>,
-                  then a Subordinate cannot change that.
-                  If a Superior has specified <spanx style="verb">essential=false</spanx>,
-                  then a Subordinate is allowed to change that to
-                  <spanx style="verb">essential=true</spanx>.
-                  If a Superior has not specified <spanx style="verb">essential</spanx>,
-                  then a Subordinate can set <spanx style="verb">essential</spanx> to
-                  <spanx style="verb">true</spanx> or <spanx style="verb">false</spanx>.
-                  If those rules are not met this MUST be treated as error.
-                </t>
-              </list>
+              The <spanx style="verb">scope</spanx> OAuth 2.0 client metadata
+              parameter, defined in <xref target="RFC7591"/> and represented by
+              a string of space-separated string values, is to be regarded and
+              processed as a string array by policy operators, such as the
+              operators <spanx style="verb">default</spanx>,
+              <spanx style="verb">subset_of</spanx> and
+              <spanx style="verb">superset_of</spanx>.
             </t>
+
+            <table>
+              <preamble>
+                The following table is a map of the outputs produced by
+                combinations of the <spanx style="verb">essential</spanx> and
+                <spanx style="verb">subset_of</spanx> policy operators with
+                different input metadata parameter values.
+                Note, the <spanx style="verb">subset_of</spanx> check is skipped
+                when the metadata parameter is absent and designated as
+                voluntary, as shown in the last row.
+              </preamble>
+              <name>
+                Examples of Outputs with Combinations of
+                <spanx style="verb">essential</spanx> and
+                <spanx style="verb">subset_of</spanx> for Different Inputs
+              </name>
+              <thead>
+                <tr>
+                  <td colspan="2">Policy</td>
+                  <td colspan="2">Metadata Parameter</td>
+                </tr>
+                <tr>
+                  <td colspan="">essential</td>
+                  <td colspan="">subset_of</td>
+                  <td colspan="">input</td>
+                  <td colspan="">output</td>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>true</td>
+                  <td>[a,b,c]</td>
+                  <td>[a,e]</td>
+                  <td>[a]</td>
+                </tr>
+
+                <tr>
+                  <td>false</td>
+                  <td>[a,b,c]</td>
+                  <td>[a,e]</td>
+                  <td>[a]</td>
+                </tr>
+
+                <tr>
+                  <td>true</td>
+                  <td>[a,b,c]</td>
+                  <td>[d,e]</td>
+                  <td>error</td>
+                </tr>
+
+                <tr>
+                  <td>false</td>
+                  <td>[a,b,c]</td>
+                  <td>[d,e]</td>
+                  <td>no parameter</td>
+                </tr>
+
+                <tr>
+                  <td>true</td>
+                  <td>[a,b,c]</td>
+                  <td>no parameter</td>
+                  <td>error</td>
+                </tr>
+
+                <tr>
+                  <td>false</td>
+                  <td>[a,b,c]</td>
+                  <td>no parameter</td>
+                  <td>no parameter</td>
+                </tr>
+              </tbody>
+            </table>
+
           </section>
+
+          <section title="Additional Operators" anchor="additional_metadata_policy_operators">
+
+            <t>
+              Federations MAY specify and use additional metadata policy
+              operators that conform with the principles in
+              <xref target="metadata_policy_principles"/> and in
+              <xref target="metadata_policy_operators"/>.
+            </t>
+
+            <t>
+              Implementations MUST ignore additional operators that are not
+              understood, unless the operator name is included in the
+              <spanx style="verb">metadata_policy_crit</spanx> Subordinate
+              Statement claim, in which case the operator MUST be understood
+              and processed. If an additional operator listed in
+              <spanx style="verb">metadata_policy_crit</spanx> is not understood
+              or cannot be processed, then this MUST result in a policy error
+              and the Trust Chain MUST be considered invalid.
+            </t>
+
+          </section>
+
+          <section title="Enforcement" anchor="metadata_policy_enforcement">
+
+            <t>
+              This section describes the resolution of the metadata policy for a
+              Trust Chain and its application to the metadata of the Federation
+              Entity that is the Trust Chain subject.
+            </t>
+
+            <t>
+              If a policy error or another error is encountered during the
+              metadata policy resolution or its application, the Trust Chain
+              MUST be considered invalid.
+            </t>
+
+            <section title="Resolution" anchor="metadata_policy_resolution">
+
+              <t>
+                The metadata policy for a Trust Chain is determined by the
+                sequence of the present <spanx style="verb">metadata_policy</spanx>
+                claims of the Subordinate Statements that make up the chain.
+              </t>
+
+              <t>
+                The resolution process MUST first gather the names of all policy
+                operators other than the standard ones defined in
+                <xref target="standard_metadata_policy_operators"/> which are
+                declared as critical. This is done by checking each Subordinate
+                Statement in the Trust Chain for the optional
+                <spanx style="verb">metadata_policy_crit</spanx> claim,
+                described in <xref target="entity-statement"/>, and collecting
+                any operator names that are found in it.
+              </t>
+
+              <t>
+                The resolution process proceeds by performing a second iteration
+                through the Subordinate Statements. The sequence of this
+                iteration is crucial - it MUST begin with the Subordinate
+                Statement issued by the most Superior Entity and end with the
+                Subordinate Statement issued by the Immediate Superior of the
+                Trust Chain subject.
+              </t>
+
+              <t>
+                An important procedure during the iteration is the
+                <spanx style="verb">metadata_policy</spanx> validation. It MUST
+                ensure the data structure is compliant and that every metadata
+                parameter policy contains only allowed operator combinations, as
+                described in <xref target="metadata_policy_operators"/> and in
+                accordance with the specifications of the operators. It MUST be
+                also ensured the <spanx style="verb">metadata_policy</spanx>
+                contains no operators that cannot be understood and processed
+                whose names are among the collected
+                <spanx style="verb">metadata_policy_crit</spanx> values. An
+                unsuccessful validation MUST result in a policy error.
+              </t>
+
+              <t>
+                At each iteration step the Subordinate Statement MUST be checked
+                for the presence of a <spanx style="verb">metadata_policy</spanx>
+                claim. The first encountered
+                <spanx style="verb">metadata_policy</spanx> MUST be validated as
+                described above, after which it becomes the current metadata
+                policy to proceed with.
+              </t>
+
+              <t>
+                If the iteration yields a next subordinate
+                <spanx style="verb">metadata_policy</spanx> claim, it MUST be
+                validated as described above, then merged into the current
+                metadata policy.
+              </t>
+
+              <t>
+                The merge is performed at these three data structure levels,
+                according to the <spanx style="verb">metadata_policy</spanx>
+                structure described in <xref target="metadata_policy_structure"/>,
+                by starting from the top level:
+                <t>
+                  <list style="numbers">
+                    <t>
+                      Entity Type-specific metadata policies.
+                    </t>
+                    <t>
+                      Metadata parameter policies.
+                    </t>
+                    <t>
+                      Operators.
+                    </t>
+                  </list>
+                </t>
+              </t>
+
+              <t>
+                At the level of Entity Type-specific metadata policies the merge
+                proceeds as follows:
+                <t>
+                  <list style="symbols">
+                    <t>
+                      If the next subordinate
+                      <spanx style="verb">metadata_policy</spanx> claim contains
+                      a metadata policy for an Entity Type that is already
+                      present in the current metadata policy, it MUST be merged
+                      according to the rules of the next lower level.
+                    </t>
+                    <t>
+                      Entity Type-specific metadata policies in the next
+                      subordinate <spanx style="verb">metadata_policy</spanx>
+                      claim that are not present in the current metadata policy
+                      MUST be copied to it.
+                    </t>
+                  </list>
+                </t>
+              </t>
+
+              <t>
+                At the level of metadata parameter policies the merge proceeds
+                as follows:
+                <t>
+                  <list style="symbols">
+                    <t>
+                      If a metadata parameter policy is already present in the
+                      current Entity Type-specific metadata policy, it MUST be
+                      merged according to the rules of the next lower level. If
+                      the resulting metadata parameter contains operator
+                      combinations that are not allowed, as described in
+                      <xref target="metadata_policy_operators"/> and in
+                      accordance with the specifications of the operators, this
+                      MUST result in a policy error.
+                    </t>
+                    <t>
+                      Subordinate metadata parameter policies that are not
+                      present in the current Entity Type-specific metadata
+                      policy MUST be copied to it.
+                    </t>
+                  </list>
+                </t>
+              </t>
+
+              <t>
+                At the level of operators the merge proceeds as follows:
+                <t>
+                  <list style="symbols">
+                    <t>
+                      If an operator is already present in the current metadata
+                      parameter, the values of the subordinate operator MUST be
+                      merged, as described in
+                      <xref target="metadata_policy_operators"/> and in
+                      accordance with the operator specification. If an operator
+                      value merge is not allowed or otherwise unsuccessful this
+                      MUST result in a policy error.
+                    </t>
+                    <t>
+                      Subordinate operators that are not present in the current
+                      metadata parameter policy MUST be copied to it.
+                    </t>
+                  </list>
+                </t>
+              </t>
+
+              <t>
+                If no further Subordinate Statements with a
+                <spanx style="verb">metadata_policy</spanx> claim are found, the
+                current metadata policy becomes the resolved one for the Trust
+                Chain.
+              </t>
+
+            </section>
+
+            <section title="Application" anchor="metadata_policy_application">
+
+              <t>
+                If the Subordinate Statement about the Trust Chain subject
+                contains a <spanx style="verb">metadata</spanx> claim, this MUST
+                first be applied, as described in the claim definition in
+                <xref target="entity-statement"/>, and only then proceeded with
+                applying the resolved metadata policy.
+              </t>
+
+              <t>
+                If the process described in
+                <xref target="metadata_policy_resolution"/> found no Subordinate
+                Statements in the Trust Chain with a
+                <spanx style="verb">metadata_policy</spanx> claim, the metadata
+                of the Trust Chain subject resolves simply to the
+                <spanx style="verb">metadata</spanx> found in its Entity
+                Configuration, with any <spanx style="verb">metadata</spanx>
+                parameters asserted by the Immediate Superior applied to it.
+              </t>
+
+              <t>
+                If a metadata policy was resolved for the Trust Chain, for every
+                Entity Type metadata and metadata parameter for which a
+                corresponding metadata parameter policy is present, the included
+                policy operators MUST be applied as described in
+                <xref target="metadata_policy_operators"/> and in accordance with
+                the specifications of the operators. The operators MUST be
+                applied to the metadata parameter in a sequence that is
+                determined by the absolute or relative order specified for each
+                operator.
+              </t>
+
+              <t>
+                If the application of metadata policies results in illegal or
+                otherwise incorrect metadata, then the metadata MUST be regarded
+                as broken and MUST NOT be used.
+              </t>
+
+              <t>
+                The Trust Chain subject is responsible to verify that it is
+                able to support and comply with the metadata that results from
+                the application of federation metadata policies. For instance,
+                this may involve a check that cryptographic algorithms required
+                by the resulting metadata can be handled. When metadata policies
+                change, Trust Chain subjects may need to reevaluate their
+                support and compliance.
+              </t>
+
+            </section>
+
+          </section>
+
         </section>
 
-        <section title="Applying Policies" anchor="applying_policies">
+        <section title="Metadata Policy Example">
           <t>
-            The policies that apply to the Entity's metadata are those that
-            result from the combining of the policies from the Entity Statements
-            that make up the Trust Chain, as specified in
-            <xref target="combining_policies"/>.
+            The following is a non-normative example of resolving and applying
+            Trust Chain metadata policies for an OpenID relying party.
           </t>
-          <t>
-            For every Entity Type metadata parameter for which a policy entry
-            is present, the policy operators MUST be applied in accordance to
-            their definitions in <xref target="policy_operators"/> and in a
-            sequence as follows:
-          </t>
-          <t>
-            <list style="numbers">
-              <t>
-		<spanx style="verb">value</spanx>:
-                If this policy operator is present, further policy operators on
-                the metadata parameter MUST NOT be applied.
-              </t>
-              <t><spanx style="verb">add</spanx></t>
-              <t><spanx style="verb">default</spanx></t>
-              <t>
-		<spanx style="verb">essential</spanx>:
-                If this parameter value is <spanx style="verb">false</spanx> or
-                it is absent, then any subsequent policy operators that
-                represent a value check MUST be skipped.
-              </t>
-              <t><spanx style="verb">one_of</spanx></t>
-              <t><spanx style="verb">subset_of</spanx></t>
-              <t><spanx style="verb">superset_of</spanx></t>
-            </list>
-          </t>
-          <t>
-            Applications and protocols that specify additional policy operators
-            MUST define their order relative to the above sequence of operator
-            application.
-          </t>
-        </section>
-        <section title="Policy Combination Example">
           <figure>
             <preamble>
-              We start with a federation's <spanx style="verb">metadata_policy</spanx>
-              for OAuth 2.0 clients:
+              We start with a federation's Trust Anchor
+              <spanx style="verb">metadata_policy</spanx> for RPs:
             </preamble>
-	    <name>
-	      Example Federation's Metadata Policy for OAuth 2.0 Clients
-	    </name>
+            <name>
+              Example Metadata Policy of a Trust Anchor for RPs
+            </name>
             <artwork><![CDATA[
 "metadata_policy": {
-  "oauth_client": {
+  "openid_relying_party": {
     "grant_types": {
+       "default": [
+        "authorization_code"
+      ],
       "subset_of": [
         "authorization_code",
-        "implicit",
         "refresh_token"
       ],
       "superset_of": [
         "authorization_code"
-      ],
-      "default": [
-        "authorization_code",
-        "refresh_token"
       ]
     },
     "token_endpoint_auth_method": {
       "one_of": [
-        "client_secret_post",
-        "client_secret_basic"
+        "private_key_jwt",
+        "self_signed_tls_client_auth"
+      ],
+      "essential": true
+    },
+    "token_endpoint_auth_signing_alg" : {
+      "one_of": [
+        "PS256",
+        "ES256"
       ]
+    },
+    "subject_type": {
+      "value": "pairwise"
     },
     "contacts": {
       "add": [
@@ -2216,231 +2777,147 @@
           </figure>
           <figure>
             <preamble>
-              Next, we have an organization's <spanx style="verb">metadata_policy</spanx>
-              for OAuth 2.0 clients:
+              Next, we have an Intermediate organization's
+              <spanx style="verb">metadata_policy</spanx> for Subordinate RPs
+              together with <spanx style="verb">metadata</spanx> values for its
+              Immediate Subordinate RPs:
             </preamble>
-	    <name>
-	      Example Organization's Metadata Policy for OAuth 2.0 Clients
-	    </name>
-            <artwork><![CDATA[
-"metadata_policy": {
-  "oauth_client": {
-    "grant_types": {
-      "subset_of": [
-        "authorization_code",
-        "refresh_token"
-      ],
-      "default": [
-        "authorization_code",
-        "refresh_token"
-      ]
-    },
-    "token_endpoint_auth_method": {
-      "one_of": [
-        "client_secret_post",
-        "client_secret_basic"
-      ],
-      "default": "client_secret_basic"
-    },
-    "contacts": {
-      "add": [
-        "helpdesk@org.example.org"
-      ]
-    }
-  }
-}
-]]></artwork>
-          </figure>
-          <figure>
-            <preamble>
-              The resulting combined <spanx style="verb">metadata_policy</spanx> is:
-            </preamble>
-	    <name>
-	      The Combined Metadata Policies from the Previous Two Examples
-	    </name>
-            <artwork><![CDATA[
-"metadata_policy": {
-  "oauth_client": {
-    "grant_types": {
-      "subset_of": [
-        "authorization_code",
-        "refresh_token"
-      ],
-      "superset_of": [
-        "authorization_code"
-      ],
-      "default": [
-        "authorization_code",
-        "refresh_token"
-      ]
-    },
-    "token_endpoint_auth_method": {
-      "one_of": [
-	    "client_secret_post",
-	    "client_secret_basic"
-      ],
-      "default": "client_secret_basic"
-    },
-    "contacts": {
-      "add": [
-	    "helpdesk@federation.example.org",
-	    "helpdesk@org.example.org"
-      ]
-    }
-  }
-}
-]]></artwork>
-          </figure>
-        </section>
-        <section title="Enforcing Policy">
-          <t>
-            If applying policies to a metadata statement results in incorrect
-            metadata, then such a metadata statement MUST
-            be regarded as broken and MUST NOT be used.
-          </t>
-	  <t>
-	    It is the responsibility of the implementation to verify that the metadata
-	    resulting from applying the policies of a federation that it is using
-	    is supported by the implementation.
-	    For instance, the implementation needs to support any cryptographic algorithms
-	    required by the resulting metadata.
-	    Implementations may need to reevaluate their compliance when policies change.
-	  </t>
-        </section>
-        <section title="Extending the Policy Language">
-          <t>
-            There might be parties that want to extend the policy language
-            defined here. If that happens, then the rule is that if
-            software compliant with this specification
-            encounters a keyword it does not understand,
-            it MUST ignore it unless it is listed in a
-            <spanx style="verb">metadata_policy_crit</spanx> list,
-            as is done for JWS header parameters
-            with the <spanx style="verb">crit</spanx> parameter.
-            If the policy language extension keyword
-            is listed in the <spanx style="verb">metadata_policy_crit</spanx> list
-            and not understood, then the metadata MUST be rejected.
-          </t>
-        </section>
-        <section title="Example of Applying Policies">
-          <t>
-            The following is a non-normative example of applying metadata policies
-            and metadata values to an RP's metadata.
-          </t>
-          <figure>
-            <preamble>
-                The RP's <spanx style="verb">metadata</spanx> from its Entity
-                Configuration is:
-            </preamble>
-	    <name>
-	      RP's Metadata from its Entity Configuration
-	    </name>
-            <artwork><![CDATA[
-"metadata": {
-  "openid_relying_party": {
-    "contacts": [
-      "rp_admins@cs.example.com"
-    ],
-    "redirect_uris": [
-      "https://cs.example.com/rp1"
-    ],
-    "response_types": [
-      "code"
-    ]
-  }
-}
-]]></artwork>
-          </figure>
-          <figure>
-            <preamble>
-                The federation's <spanx style="verb">metadata_policy</spanx>
-                for RPs is:
-            </preamble>
-	    <name>
-	      Federation's Metadata Policy for RPs
-	    </name>
-            <artwork><![CDATA[
-"metadata_policy": {
-  "openid_relying_party": {
-    "id_token_signed_response_alg": {
-      "one_of": [
-        "ES256",
-        "ES384"
-      ],
-      "default": "ES256"
-    },
-    "response_types": {
-      "subset_of": [
-        "code",
-        "code id_token"
-      ]
-    }
-  }
-}
-]]></artwork>
-          </figure>
-          <figure>
-            <preamble>
-              An organization's <spanx style="verb">metadata_policy</spanx>
-              and <spanx style="verb">metadata</spanx> values for RPs is:
-            </preamble>
-	    <name>
-	      Organization's Metadata Policy and Metadata Values for RPs
-	    </name>
+            <name>
+              Example Metadata Policy and Metadata Values of an Intermediate
+              Entity for RPs
+            </name>
             <artwork><![CDATA[
 {
   "metadata_policy": {
     "openid_relying_party": {
-      "contacts": {
-        "add": [
-          "helpdesk@example.com"
+      "grant_types": {
+        "subset_of": [
+          "authorization_code"
         ]
       },
-      "logo_uri": {
+      "token_endpoint_auth_method": {
         "one_of": [
-          "https://example.com/logo_small.svg",
-          "https://example.com/logo_big.svg"
-        ],
-        "default": "https://example.com/logo_small.svg"
+          "self_signed_tls_client_auth"
+        ]
+      },
+      "contacts": {
+        "add": [
+          "helpdesk@org.example.org"
+        ]
       }
     }
   },
   "metadata": {
     "openid_relying_party": {
-      "policy_uri": "https://example.com/policy.html",
-      "tos_uri": "https://example.com/tos.html"
+      "sector_identifier_uri": "https://org.example.org/sector-ids.json",
+      "policy_uri": "https://org.example.org/policy.html"
     }
   }
 }
 ]]></artwork>
           </figure>
           <figure>
-	    <preamble>
-	      After applying the metadata policies and values above, the
-          <spanx style="verb">metadata</spanx> for the Entity in question
-          becomes:
-	    </preamble>
-	    <name>
-	      RP's Metadata After Application of Metadata Policies and Metadata Values
-	    </name>
+            <preamble>
+              Merging the example RP metadata policy of the Intermediate Entity
+              into the RP metadata policy of the Trust Anchor produces the
+              following policy for the Trust Chain:
+            </preamble>
+            <name>
+              Example Merged Metadata Policy for RPs
+            </name>
+            <artwork><![CDATA[
+{
+  "grant_types": {
+    "default": [
+      "authorization_code"
+    ],
+    "superset_of": [
+      "authorization_code"
+    ],
+    "subset_of": [
+      "authorization_code"
+    ]
+  },
+  "token_endpoint_auth_method": {
+    "one_of": [
+      "self_signed_tls_client_auth"
+    ],
+    "essential": true
+  },
+  "token_endpoint_auth_signing_alg": {
+    "one_of": [
+      "PS256",
+      "ES256"
+    ]
+  },
+  "subject_type": {
+    "value": "pairwise"
+  },
+  "contacts": {
+    "add": [
+      "helpdesk@federation.example.org",
+      "helpdesk@org.example.org"
+    ]
+  }
+}
+]]></artwork>
+          </figure>
+          <figure>
+            <preamble>
+              The Trust Chain subject is a Leaf Entity which publishes the
+              following RP metadata in its Entity Configuration:
+            </preamble>
+            <name>
+              Example Entity Configuration RP Metadata
+            </name>
             <artwork><![CDATA[
 "metadata": {
   "openid_relying_party": {
-    "contacts": [
-      "rp_admins@cs.example.com",
-      "helpdesk@example.com"
+    "redirect_uris": [
+      "https://rp.example.org/callback"
     ],
-    "logo_uri": "https://example.com/logo_small.svg",
-    "policy_uri": "https://example.com/policy.html",
-    "tos_uri": "https://example.com/tos.html",
-    "id_token_signed_response_alg": "ES256",
     "response_types": [
       "code"
     ],
-    "redirect_uris": [
-      "https://cs.example.com/rp1"
+    "token_endpoint_auth_method": "self_signed_tls_client_auth",
+    "contacts": [
+      "rp_admins@rp.example.org"
     ]
   }
+}
+]]></artwork>
+          </figure>
+          <figure>
+            <preamble>
+              The <spanx style="verb">metadata</spanx> values specified by the
+              Intermediate Entity for its Immediate Subordinates are applied to
+              the Trust Chain subject <spanx style="verb">metadata</spanx>.
+              After that, the merged metadata policy is applied, to produce the
+              following RP metadata:
+            </preamble>
+            <name>
+              The Resulting RP Metadata for the Trust Chain Subject
+            </name>
+            <artwork><![CDATA[
+{
+  "redirect_uris": [
+    "https://rp.example.org/callback"
+  ],
+  "grant_types": [
+    "authorization_code"
+  ],
+  "response_types": [
+    "code id_token"
+  ],
+  "token_endpoint_auth_method": "self_signed_tls_client_auth",
+  "subject_type": "pairwise",
+  "sector_identifier_uri": "https://org.example.org/sector-ids.json",
+  "policy_uri": "https://org.example.org/policy.html",
+  "contacts": [
+    "rp_admins@rp.example.org",
+    "helpdesk@federation.example.org",
+    "helpdesk@org.example.org"
+  ]
 }
 ]]></artwork>
           </figure>
@@ -8535,6 +9012,41 @@ Host: op.umu.se
       <t>
 	-34
 	<list style="symbols">
+      <t>
+        Addressed #2090: Metadata policy: Clarified the order in which the
+        standard policy operators must be applied, the merge process when
+        multiple Subordinate Statements contain metadata_policy claims for a
+        given Entity Type, and that asserted metadata must be applied before the
+        merged metadata policy.
+      </t>
+      <t>
+        Addressed #2078: Metadata policy: Specified mandatory and optional to
+        support JSON types for each standard policy operator.
+      </t>
+      <t>
+        Addressed #2087: Metadata policy: Added an explicit description of the
+        principles governing the metadata_policy and common requirements for all
+        policy operators, standard as well as additional operators that maybe
+        defined in future specifications that rely on OpenID Federation 1.0. In
+        particular, stated the principles in regard to the 1) hierarchy of
+        Entities in Trust Chains, 2) the specificity of policies, 3) the
+        granularity of policies, 4) the action types of operators, 5) that
+        metadata policy enforcement is integral to the trust chain, 6) the
+        determinism of the metadata policy specification.
+      </t>
+      <t>
+        Addressed #2116: Metadata policy: Clarified that the metadata_policy is
+        not intended to JSON type check metadata parameters.
+      </t>
+      <t>
+        Addressed #2135: Metadata policy: The space-separated list of strings
+        exception should apply only to the "scope" oauth_client metadata
+        parameter.
+      </t>
+      <t>
+        Addressed #2136: Metadata policy: Merges the two metadata policy
+        examples, expands the example to include all standard policy operators
+      </t>
       <t>
         Addressed #2124: Renames the allowed_leaf_entity_types constraint to
         allowed_entity_types, changes its definition to also apply to
