@@ -565,13 +565,14 @@
               <vspace/>
               OPTIONAL.
               Array of strings specifying critical metadata policy operators
-              other than the standard ones defined in <xref target="policy_operators"/>
-              that MUST be understood and processed. Only Subordinate Statements
-              MAY include this claim and when included its value MUST NOT be the
-              empty array <spanx style="verb">[]</spanx>. If any of the listed
-              policy operators are not understood and supported, then the
-              Subordinate Statement and thus the Trust Chain that includes it
-              MUST be considered invalid.
+              other than the standard ones defined in
+              <xref target="standard_metadata_policy_operators"/> that MUST be
+              understood and processed. Only Subordinate Statements MAY include
+              this claim and when included its value MUST NOT be the empty array
+              <spanx style="verb">[]</spanx>. If any of the listed policy
+              operators are not understood and supported, then the Subordinate
+              Statement and thus the Trust Chain that includes it MUST be
+              considered invalid.
             </t>
             <t hangText="trust_marks">
               <vspace/>
@@ -1726,6 +1727,13 @@
           for example <xref target="FAPI">FAPI</xref>.
         </t>
 
+        <t>
+          Note that the <spanx style="verb">metadata_policy</spanx> is not
+          intended to check and validate the JSON value types of metadata
+          parameters. Such checks SHOULD be performed at the application
+          layer, after obtaining the Entity metadata from a successfully
+          resolved Trust Chain.
+        </t>
 
         <section title="Principles" anchor="metadata_policy_principles">
           <t>
@@ -1824,14 +1832,6 @@
               reproducible outcomes.
             </t>
           </section>
-
-          <t>
-            Note that the <spanx style="verb">metadata_policy</spanx> is not
-            intended to check and validate the JSON value types of metadata
-            parameters. Such checks SHOULD be performed at the application
-            layer, after obtaining the Entity metadata from a successfully
-            resolved Trust Chain.
-          </t>
 
         </section>
 
@@ -2385,95 +2385,98 @@
               </t>
             </section>
 
-            <t>
-              A "set equals" metadata parameter policy can be expressed by
-              combining the operators <spanx style="verb">subset_of</spanx> and
-              <spanx style="verb">superset_of</spanx> with identical array
-              values.
-            </t>
+            <section title="Notes" anchor="standard_metadata_policy_operators_notes">
 
-            <t>
-              The <spanx style="verb">scope</spanx> OAuth 2.0 client metadata
-              parameter, defined in <xref target="RFC7591"/> and represented by
-              a string of space-separated string values, is to be regarded and
-              processed as a string array by policy operators, such as the
-              operators <spanx style="verb">default</spanx>,
-              <spanx style="verb">subset_of</spanx> and
-              <spanx style="verb">superset_of</spanx>.
-            </t>
+              <t>
+                A "set equals" metadata parameter policy can be expressed by
+                combining the operators <spanx style="verb">subset_of</spanx> and
+                <spanx style="verb">superset_of</spanx> with identical array
+                values.
+              </t>
 
-            <table>
-              <preamble>
-                The following table is a map of the outputs produced by
-                combinations of the <spanx style="verb">essential</spanx> and
-                <spanx style="verb">subset_of</spanx> policy operators with
-                different input metadata parameter values.
-                Note, the <spanx style="verb">subset_of</spanx> check is skipped
-                when the metadata parameter is absent and designated as
-                voluntary, as shown in the last row.
-              </preamble>
-              <name>
-                Examples of Outputs with Combinations of
-                <spanx style="verb">essential</spanx> and
-                <spanx style="verb">subset_of</spanx> for Different Inputs
-              </name>
-              <thead>
-                <tr>
-                  <td colspan="2">Policy</td>
-                  <td colspan="2">Metadata Parameter</td>
-                </tr>
-                <tr>
-                  <td colspan="">essential</td>
-                  <td colspan="">subset_of</td>
-                  <td colspan="">input</td>
-                  <td colspan="">output</td>
-                </tr>
-              </thead>
+              <t>
+                The <spanx style="verb">scope</spanx> OAuth 2.0 client metadata
+                parameter, defined in <xref target="RFC7591"/> and represented by
+                a string of space-separated string values, is to be regarded and
+                processed as a string array by policy operators, such as the
+                operators <spanx style="verb">default</spanx>,
+                <spanx style="verb">subset_of</spanx> and
+                <spanx style="verb">superset_of</spanx>.
+              </t>
 
-              <tbody>
-                <tr>
-                  <td>true</td>
-                  <td>[a,b,c]</td>
-                  <td>[a,e]</td>
-                  <td>[a]</td>
-                </tr>
+              <table>
+                <preamble>
+                  The following table is a map of the outputs produced by
+                  combinations of the <spanx style="verb">essential</spanx> and
+                  <spanx style="verb">subset_of</spanx> policy operators with
+                  different input metadata parameter values.
+                  Note, the <spanx style="verb">subset_of</spanx> check is skipped
+                  when the metadata parameter is absent and designated as
+                  voluntary, as shown in the last row.
+                </preamble>
+                <name>
+                  Examples of Outputs with Combinations of
+                  <spanx style="verb">essential</spanx> and
+                  <spanx style="verb">subset_of</spanx> for Different Inputs
+                </name>
+                <thead>
+                  <tr>
+                    <td colspan="2">Policy</td>
+                    <td colspan="2">Metadata Parameter</td>
+                  </tr>
+                  <tr>
+                    <td colspan="">essential</td>
+                    <td colspan="">subset_of</td>
+                    <td colspan="">input</td>
+                    <td colspan="">output</td>
+                  </tr>
+                </thead>
 
-                <tr>
-                  <td>false</td>
-                  <td>[a,b,c]</td>
-                  <td>[a,e]</td>
-                  <td>[a]</td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td>true</td>
+                    <td>[a,b,c]</td>
+                    <td>[a,e]</td>
+                    <td>[a]</td>
+                  </tr>
 
-                <tr>
-                  <td>true</td>
-                  <td>[a,b,c]</td>
-                  <td>[d,e]</td>
-                  <td>error</td>
-                </tr>
+                  <tr>
+                    <td>false</td>
+                    <td>[a,b,c]</td>
+                    <td>[a,e]</td>
+                    <td>[a]</td>
+                  </tr>
 
-                <tr>
-                  <td>false</td>
-                  <td>[a,b,c]</td>
-                  <td>[d,e]</td>
-                  <td>no parameter</td>
-                </tr>
+                  <tr>
+                    <td>true</td>
+                    <td>[a,b,c]</td>
+                    <td>[d,e]</td>
+                    <td>error</td>
+                  </tr>
 
-                <tr>
-                  <td>true</td>
-                  <td>[a,b,c]</td>
-                  <td>no parameter</td>
-                  <td>error</td>
-                </tr>
+                  <tr>
+                    <td>false</td>
+                    <td>[a,b,c]</td>
+                    <td>[d,e]</td>
+                    <td>no parameter</td>
+                  </tr>
 
-                <tr>
-                  <td>false</td>
-                  <td>[a,b,c]</td>
-                  <td>no parameter</td>
-                  <td>no parameter</td>
-                </tr>
-              </tbody>
-            </table>
+                  <tr>
+                    <td>true</td>
+                    <td>[a,b,c]</td>
+                    <td>no parameter</td>
+                    <td>error</td>
+                  </tr>
+
+                  <tr>
+                    <td>false</td>
+                    <td>[a,b,c]</td>
+                    <td>no parameter</td>
+                    <td>no parameter</td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
 
           </section>
 
@@ -6333,8 +6336,8 @@ HTTP/1.1 302 Found
                     <spanx style="verb">authority_hints</spanx> claims of the
                     received registration Entity Statement. The RP SHOULD perform this check
                     by applying the resolved policies to the metadata as
-                    specified in <xref target="applying_policies"/>, or utilize
-                    another equivalent method.
+                    specified in <xref target="metadata_policy_resolution"/>, or
+                    utilize another equivalent method.
                   </t>
                   <t>
                     If the received registration Entity Statement does not pass the above
