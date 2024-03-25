@@ -1739,99 +1739,87 @@
           <t>
             OpenID Federation enables the definition of metadata policies with
             the following properties:
+
+            <list style="hanging">
+              <t hangText="Hierarchy">
+                <vspace/>
+                Once applied to a metadata parameter, a metadata policy cannot be
+                repealed or made more permissive by Intermediate Entities that are
+                subordinate in the Trust Chain.
+                <vspace/>
+                The hierarchy of policies is preserved in nested federations where
+                a Trust Anchor in one federation acts as an Intermediate Entity in
+                another federation.
+              </t>
+
+              <t hangText="Specificity">
+                <vspace/>
+                Just like metadata, a metadata policy is bound to a specific
+                Entity Type. This ensures policies for different Entity Types are
+                independent and isolated from one another.
+                <vspace/>
+                When a Trust Anchor or an Intermediate Entity defines a metadata
+                policy for an Entity Type, it applies to the metadata of all
+                Subordinate Entities of that type in the Trust Chain.
+                <vspace/>
+                Because the place to define a policy is the Subordinate Statement
+                and every Entity Statement is issued for a specific subject, a
+                federation authority can choose to define a common Entity Type
+                metadata policy for all its Subordinates, or specific Entity Type
+                metadata policies for specific Subordinates.
+              </t>
+
+              <t hangText="Granularity">
+                <vspace/>
+                Policies are expressed at the level of individual metadata
+                parameters. The policies for a given Entity Type metadata
+                parameter are thus independent and isolated from those for other
+                parameters.
+              </t>
+
+              <t hangText="Operation">
+                <vspace/>
+                A policy operates by performing a check, a modification, or both
+                on a given metadata parameter. This specification defines a set
+                of standard operators, described in
+                <xref target="standard_metadata_policy_operators"/>. A
+                federation MAY specify and use additional operators, provided
+                they comply with the principles laid out in this section and with
+                <xref target="metadata_policy_operators"/> and
+                <xref target="additional_metadata_policy_operators"/>.
+              </t>
+
+              <t hangText="Integral Metadata Enforcement">
+                <vspace/>
+                The resolution and application of metadata policies is an integral
+                part of the Trust Chain resolution process, as described in
+                <xref target="resolving_trust"/>.
+                <vspace/>
+                This means:
+                <list style="symbols">
+                  <t>
+                    A Trust Chain for which the metadata policy resolution fails
+                    due to an error, for example due to an Intermediate Entity’s
+                    policy conflicting with a Superior’s policy, is deemed invalid.
+                  </t>
+                  <t>
+                    A Trust Chain with Entity metadata that does not comply with
+                    the resolved metadata policies is deemed invalid.
+                  </t>
+                </list>
+              </t>
+
+              <t hangText="Determinism">
+                <vspace/>
+                The resolution and application of metadata policies in a Trust
+                Chain is deterministic. Trust Anchors and Intermediate Entities
+                are thus able to formulate policies that exhibit predictable and
+                reproducible outcomes.
+              </t>
+
+            </list>
+
           </t>
-
-          <section title="Hierarchy">
-            <t>
-              Once applied to a metadata parameter, a metadata policy cannot be
-              repealed or made more permissive by Intermediate Entities that are
-              subordinate in the Trust Chain.
-            </t>
-            <t>
-              The hierarchy of policies is preserved in nested federations where
-              a Trust Anchor in one federation acts as an Intermediate Entity in
-              another federation.
-            </t>
-          </section>
-
-          <section title="Specificity">
-            <t>
-              Just like metadata, a metadata policy is bound to a specific
-              Entity Type. This ensures policies for different Entity Types are
-              independent and isolated from one another.
-            </t>
-            <t>
-              When a Trust Anchor or an Intermediate Entity defines a metadata
-              policy for an Entity Type, it applies to the metadata of all
-              Subordinate Entities of that type in the Trust Chain.
-            </t>
-            <t>
-              Because the place to define a policy is the Subordinate Statement
-              and every Entity Statement is issued for a specific subject, a
-              federation authority can choose to define a common Entity Type
-              metadata policy for all its Subordinates, or specific Entity Type
-              metadata policies for specific Subordinates.
-            </t>
-          </section>
-
-          <section title="Granularity">
-            <t>
-              Policies are expressed at the level of individual metadata
-              parameters. The policies for a given Entity Type metadata
-              parameter are thus independent and isolated from those for other
-              parameters.
-            </t>
-          </section>
-
-          <section title="Operation">
-            <t>
-              A policy operates by performing a check, a modification, or both
-              on a given metadata parameter.
-            </t>
-            <t>
-              This specification defines a set of standard operators, described
-              in <xref target="standard_metadata_policy_operators"/>.
-            </t>
-            <t>
-              A federation MAY specify and use additional operators, provided
-              they comply with the principles laid out in this section and with
-              <xref target="metadata_policy_operators"/> and
-              <xref target="additional_metadata_policy_operators"/>.
-            </t>
-          </section>
-
-          <section title="Integral Metadata Enforcement">
-            <t>
-              The resolution and application of metadata policies is an integral
-              part of the Trust Chain resolution process, as described in
-              <xref target="resolving_trust"/>.
-            </t>
-            <t>
-              This means:
-            </t>
-            <t>
-              <list style="symbols">
-                <t>
-                  A Trust Chain for which the metadata policy resolution fails
-                  due to an error, for example due to an Intermediate Entity’s
-                  policy conflicting with a Superior’s policy, is deemed invalid.
-                </t>
-                <t>
-                  A Trust Chain with Entity metadata that does not comply with
-                  the resolved metadata policies is deemed invalid.
-                </t>
-              </list>
-            </t>
-          </section>
-
-          <section title="Determinism">
-            <t>
-              The resolution and application of metadata policies in a Trust
-              Chain is deterministic. Trust Anchors and Intermediate Entities
-              are thus able to formulate policies that exhibit predictable and
-              reproducible outcomes.
-            </t>
-          </section>
 
         </section>
 
