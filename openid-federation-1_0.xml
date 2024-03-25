@@ -4102,8 +4102,8 @@ Host: trust-anchor.example.com
                 containing the signing keys for the Entity in JWK format.
 
                 <t>
-                  Every JWK in the <spanx style="verb">keys</spanx>
-                  claim includes the following claims:
+                  JWKs in the <spanx style="verb">keys</spanx>
+                  claim use the following parameters:
                 </t>
 
                 <t>
@@ -4173,6 +4173,28 @@ Host: trust-anchor.example.com
             </list>
           </t>
 
+	  <t>
+	    JWKs in the <spanx style="verb">keys</spanx> claim MAY also contain the
+	    <spanx style="verb">nbf</spanx> parameter.  For use in Historical Keys,
+	    <spanx style="verb">iat</spanx> and <spanx style="verb">exp</spanx>
+	    are sufficient to establish the key lifetime,
+	    making <spanx style="verb">nbf</spanx> typically superfluous;
+	    however, it is registered for use by profiles that may choose to
+	    issue keys that do not immediately become valid at the time of issuance.
+	    Its definition is:
+	  </t>
+          <t>
+            <list style="hanging">
+              <t hangText="nbf">
+                <vspace/>
+		OPTIONAL. Time before which the key is not valid,
+		using the time format defined for the
+		<spanx style="verb">nbf</spanx> claim in
+		<xref target="RFC7519"/>.
+	      </t>
+	    </list>
+	  </t>
+
           <figure>
             <preamble>
               The following is a non-normative example of the JWT Claims Set for a historical keys response:
@@ -4200,7 +4222,7 @@ Host: trust-anchor.example.com
                 "e":"AQAB",
                 "kid":"8KnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMJJr",
                 "iat": 123972394872,
-                "exp": 123974394972
+                "exp": 123974394972,
                 "revoked": {
                   "revoked_at": 123972495172,
                   "reason": "keyCompromise",
@@ -7032,6 +7054,28 @@ HTTP/1.1 302 Found
 	  <t>
 	    <list style='symbols'>
 	      <t>
+		Parameter Name: <spanx style="verb">nbf</spanx>
+	      </t>
+	      <t>
+		Parameter Description: Not Before, as defined in RFC 7519
+	      </t>
+	      <t>
+		Used with "kty" Value(s): *
+	      </t>
+	      <t>
+		Parameter Information Class: Public
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="HistKeysResp" /> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style='symbols'>
+	      <t>
 		Parameter Name: <spanx style="verb">exp</spanx>
 	      </t>
 	      <t>
@@ -8558,6 +8602,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #2089: Added section Resolving the Trust Chain and Metadata with a Resolver.
+	  </t>
+	  <t>
+	    Registered <spanx style="verb">nbf</spanx> JWK parameter.
 	  </t>
 	</list>
       </t>
