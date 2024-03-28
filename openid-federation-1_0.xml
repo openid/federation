@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="15" month="March" year="2024"/>
+    <date day="27" month="March" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -5330,15 +5330,17 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                   </t>
                   <t hangText="tls_client_auth">
                     <vspace/>
-                    If the certificate used is not self-signed, It must first be
-                    validated as chaining to a trusted root. (The selection of trusted
-                    roots is outside of this trust model)
+                    If the certificate used is not self-signed, it MUST first be
+                    validated as chaining to a trusted root.
+		    (The selection of trusted roots is outside of this trust model.)
                     <vspace blankLine="1"/>
-                    The RP metadata MUST contain exactly one of the 5 members listed in 
+                    The RP metadata MUST contain exactly one of the five members listed in
                     Section 2.1.2 of <xref target="RFC8705"/>.
-                    eg. if the tls_client_auth_san_dns member is specified with a value of
-                    host.example.com, the certificate would only match for authentication 
-                    if that DNS name is present in the Subject Alternative Names (SAN) 
+                    For example, if the
+		    <spanx style="verb">tls_client_auth_san_dns</spanx> member
+		    is specified with a value of <spanx style="verb">host.example.com</spanx>,
+		    the certificate would only match for authentication
+                    if that DNS name is present in the Subject Alternative Name (SAN)
                     of the certificate.
                   </t>
                   <t hangText="self_signed_tls_client_auth">
@@ -8572,6 +8574,9 @@ Host: op.umu.se
       <t>
         Fixed #2131: JSON in Entity Statement example in figure 2.
       </t>
+	  <t>
+	    Fixed #2088: Clarified tls_client_auth rules.
+	  </t>
 	  <t>
 	    Fixed #2130: Clarified wording describing common metadata parameters.
 	  </t>
