@@ -4954,7 +4954,7 @@ Content-Type: application/json
       </t>
       <t>
         There are two alternative approaches to establish trust between an
-        RP and an OP, which we call Automatic and Explicit Registration.
+        RP and an OP, which we call Automatic Registration and Explicit Registration.
         Members of a federation or a community
         SHOULD agree upon which one to use. While implementations should
         support both methods, deployments MAY choose to use one or the other of them.
@@ -4964,6 +4964,18 @@ Content-Type: application/json
         the way that the RP learns about the OP is the same:
         It uses the procedure
         described in <xref target="resolving_trust"/>.
+      </t>
+      <t>
+	Note that both Automatic Registration and Explicit Registration
+	can also be used for OAuth 2.0 profiles other than OpenID Connect.
+	To do so, rather than using the Entity Type Identifiers
+	<spanx style="verb">openid_relying_party</spanx> and
+	<spanx style="verb">openid_provider</spanx>,
+	one would instead use the Entity Type Identifiers
+	<spanx style="verb">oauth_client</spanx> and
+	<spanx style="verb">oauth_authorization_server</spanx>,
+	or possibly other Entity Type Identifiers defined for the specific
+	OAuth 2.0 profile being used.
       </t>
 
       <section title="Automatic Registration" anchor="automatic">
@@ -8584,6 +8596,10 @@ Host: op.umu.se
 	    Fixed #2133: Made treatment of
 	    <spanx style="verb">jwks</spanx> Entity Statement claim
 	    consistent when doing Explicit Registration.
+	  </t>
+	  <t>
+	    Fixed #2132: Stated that Automatic Registration and Explicit Registration
+	    can also be used for OAuth 2.0 profiles other than OpenID Connect.
 	  </t>
 	</list>
       </t>
