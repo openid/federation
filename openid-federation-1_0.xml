@@ -193,7 +193,7 @@
         </artwork>
       </figure>
 
-      <section title="Requirements Language">
+      <section anchor="requirements-language" title="Requirements Language">
         <t>
           The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
           "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -431,11 +431,11 @@
         <t>
           Entity Statement JWTs MUST be explicitly typed, by setting the
           <spanx style="verb">typ</spanx> header parameter to
-          <spanx style="verb">entity-statement+jwt</spanx>. This
-          prevents cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+          <spanx style="verb">entity-statement+jwt</spanx> to prevent
+          cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
         </t>
         <t>
-          The Entity Statement is signed using the private key of the issuer
+          The Entity Statement is signed using one of the private keys of the issuer
           Entity in the form of a <xref target="RFC7515">JSON Web Signature
           (JWS)</xref>.
           Implementations SHOULD support signature verification with
@@ -444,8 +444,13 @@
           value of <spanx style="verb">RS256</spanx>).
           Federations MAY also specify different mandatory-to-implement algorithms.
         </t>
+	<t>
+	  Entity Statement JWTs MUST include the
+	  <spanx style="verb">kid</spanx> (Key ID) header parameter
+	  with its value being the Key ID of the signing key used.
+	</t>
         <t>
-          An Entity Statement is composed of the following claims:
+          The claims in an Entity Statement are:
         </t>
         <t>
           <list style="hanging">
@@ -1482,7 +1487,7 @@
         </figure>
 
       </section>
-      <section title="OAuth Authorization Server">
+      <section anchor="oauth-as" title="OAuth Authorization Server">
         <t>
           The Entity Type Identifier is
           <spanx style="verb">oauth_authorization_server</spanx>.
@@ -1497,7 +1502,7 @@
         </t>
       </section>
 
-      <section title="OAuth Client">
+      <section anchor="oauth-client" title="OAuth Client">
         <t>
           The Entity Type Identifier is
           <spanx style="verb">oauth_client</spanx>.
@@ -1512,7 +1517,7 @@
         </t>
       </section>
 
-      <section title="OAuth Protected Resource">
+      <section anchor="oauth-resource" title="OAuth Protected Resource">
         <t>
           The Entity Type Identifier is
           <spanx style="verb">oauth_resource</spanx>.
@@ -2667,8 +2672,13 @@
         <t>
           The key used by the Trust Mark
           issuer to sign its Trust Marks MUST be one of the private keys
-          related to its
+          in its set of
           <spanx style="verb">Federation Entity Keys</spanx>.
+	</t>
+	<t>
+	  Trust Mark JWTs MUST include the
+	  <spanx style="verb">kid</spanx> (Key ID) header parameter
+	  with its value being the Key ID of the signing key used.
         </t>
         <t>
           Note that a federation MAY allow an Entity to self-sign
@@ -2677,7 +2687,7 @@
         <t>
           Trust Mark JWTs MUST be explicitly typed by setting the
           <spanx style="verb">typ</spanx> header parameter to
-          <spanx style="verb">trust-mark+jwt</spanx>. This is done to prevent
+          <spanx style="verb">trust-mark+jwt</spanx> to prevent
           cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
         </t>
 
@@ -2712,7 +2722,7 @@
 
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
           <t>
-	    These claims are used in Trust Marks:
+	    The claims in a Trust Mark are:
 	  </t>
           <t>
             <list style="hanging">
@@ -2785,15 +2795,21 @@
             <xref target="OpenID.Core">OpenID Connect Core 1.0</xref> apply.
           </t>
         </section>
-        <section title="Trust Mark Delegation Claims" anchor="delegation_claim">
+
+        <section title="Trust Mark Delegation JWT" anchor="delegation_jwt">
           <t>
             Trust Mark delegation JWTs MUST be explicitly typed, by setting the
             <spanx style="verb">typ</spanx> header parameter to
-            trust-mark-delegation+jwt. This prevents
+            <spanx style="verb">trust-mark-delegation+jwt</spanx> to prevent
             cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
           </t>
+	  <t>
+	    Trust Mark delegation JWTs MUST include the
+	    <spanx style="verb">kid</spanx> (Key ID) header parameter
+	    with its value being the Key ID of the signing key used.
+	  </t>
           <t>
-            The delegation claims:
+            The claims in a Trust Mark delegation JWT are:
           </t>
           <t>
             <list style="hanging">
@@ -3160,7 +3176,7 @@ Host: edugain.org
           </figure>
         </section>
 
-        <section title="Fetch Entity Statement Response">
+        <section anchor="fetch-response" title="Fetch Entity Statement Response">
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type
@@ -3251,7 +3267,7 @@ Host: edugain.org
 	  defined in <xref target="federation_entity"/>.
 	</t>
 
-        <section title="Resolve Request">
+        <section anchor="resolve-request" title="Resolve Request">
           <t>
 	    When client authentication is not used,
             the request MUST be an HTTP request using the GET method
@@ -3303,7 +3319,7 @@ Host: openid.sunet.se
           </figure>
         </section>
 
-        <section title="Resolve Response">
+        <section anchor="resolve-response" title="Resolve Response">
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type
@@ -3312,12 +3328,16 @@ Host: openid.sunet.se
             verified Trust Marks.
           </t>
           <t>
-            The response is a signed JWT, explicitly typed by setting the
+            The response is a signed JWT that is explicitly typed by setting the
             <spanx style="verb">typ</spanx> header parameter to
-            <spanx style="verb">resolve-response+jwt</spanx>.
-            This is done to prevent
+            <spanx style="verb">resolve-response+jwt</spanx> to prevent
             cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
           </t>
+	  <t>
+	    The resolve response JWT MUST include the
+	    <spanx style="verb">kid</spanx> (Key ID) header parameter
+	    with its value being the Key ID of the signing key used.
+	  </t>
           <t>
             The resolve response JWT MAY return the Trust Chain
 	    from the subject to the Trust Anchor
@@ -3350,8 +3370,9 @@ Host: openid.sunet.se
             <spanx style="verb">aud</spanx> claim only
             if the requesting client is authenticated.
           </t>
-
-          <t>These are the resolve response Claims:</t>
+          <t>
+	    The claims in a resolve response are:
+	  </t>
           <t>
             <list style="hanging">
               <t hangText="iss">
@@ -3487,7 +3508,7 @@ Host: openid.sunet.se
           </figure>
         </section>
 
-        <section title="Trust Considerations">
+        <section anchor="trust-considerations" title="Trust Considerations">
           <t>
             The basic assumption of this specification is that an Entity
             should have direct trust in noone except the Trust Anchor
@@ -3581,7 +3602,7 @@ Host: openid.sunet.se
 
         </t>
 
-        <section title="Subordinate Listing Request">
+        <section anchor="subordinate-request" title="Subordinate Listing Request">
           <t>
 	    When client authentication is not used,
             the request MUST be an HTTP request using the GET method
@@ -3674,7 +3695,7 @@ Host: openid.sunet.se
           </figure>
         </section>
 
-        <section title="Subordinate Listing Response">
+        <section anchor="subordinate-response" title="Subordinate Listing Response">
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type <spanx style="verb">application/json</spanx>,
@@ -3721,7 +3742,7 @@ Content-Type: application/json
 	  defined in <xref target="federation_entity"/>.
 	</t>
 
-        <section title="Trust Mark Status Request">
+        <section anchor="tm-status-request" title="Trust Mark Status Request">
           <t>
             The request MUST be an HTTP request using the POST method
             to a Trust Mark status endpoint
@@ -3785,7 +3806,7 @@ sub=https%3A%2F%2Fopenid.sunet.se%2FRP
             </figure>
         </section>
 
-        <section title="Trust Mark Status Response">
+        <section anchor="tm-status-response" title="Trust Mark Status Response">
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type
@@ -3843,7 +3864,7 @@ Content-Type: application/json
 	  defined in <xref target="federation_entity"/>.
 	</t>
 
-        <section title="Trust Marked Entities Listing Request">
+        <section anchor="tm-listing-request" title="Trust Marked Entities Listing Request">
           <t>
 	    When client authentication is not used,
             the request MUST be an HTTP request using the GET method
@@ -3890,7 +3911,7 @@ Host: trust-mark-issuer.example.org
           </figure>
         </section>
 
-        <section title="Trust Marked Entities Listing Response">
+        <section anchor="tm-listing-response" title="Trust Marked Entities Listing Response">
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type <spanx style="verb">application/json</spanx>,
@@ -3937,7 +3958,7 @@ Content-Type: application/json
 	  defined in <xref target="federation_entity"/>.
 	</t>
 
-        <section title="Trust Mark Request">
+        <section anchor="tm-request" title="Trust Mark Request">
           <t>
 	    When client authentication is not used,
             the request MUST be an HTTP request using the GET method
@@ -3981,7 +4002,7 @@ Host: tuber.cert.example.org
           </figure>
         </section>
 
-        <section title="Trust Mark Response">
+        <section anchor="tm-response" title="Trust Mark Response">
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type
@@ -4047,7 +4068,7 @@ NjK15h2rrJRN4e_8favIJNTNO8fhK7bjyUFJlVGYmLUpfCuJmxBv-EMhiAkeoDtk71Tc6ou6
           for a security reason.
         </t>
 
-        <section title="Federation Historical Keys Request">
+        <section anchor="hist-keys-request" title="Federation Historical Keys Request">
           <t>
 	    When client authentication is not used,
             the request MUST be an HTTP request using the GET method to
@@ -4079,13 +4100,22 @@ Host: trust-anchor.example.com
             with the content type
             <spanx style="verb">application/jwk-set+jwt</spanx>.
             The response is a signed JWT with the <xref target="RFC7517">JWK Set</xref>
-            as its payload. The JWT is explicitly typed by setting the
+            as its payload.
+	  </t>
+	  <t>
+	    Historical keys JWTs are explicitly typed by setting the
             <spanx style="verb">typ</spanx> header parameter to
-            <spanx style="verb">jwk-set+jwt</spanx>. This is done to prevent
+            <spanx style="verb">jwk-set+jwt</spanx> to prevent
             cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
-            The response JWT contains the following claims:
+	  </t>
+	  <t>
+	    Historical keys JWTs MUST include the
+	    <spanx style="verb">kid</spanx> (Key ID) header parameter
+	    with its value being the Key ID of the signing key used.
+	  </t>
+	  <t>
+            The claims in a historical keys JWT are:
           </t>
-
           <t>
             <list style="hanging">
               <t hangText="iss">
@@ -4218,7 +4248,7 @@ Host: trust-anchor.example.com
 
         </section>
 
-        <section  title="Rationale for the Federation Historical Keys Endpoint">
+        <section anchor="hist-keys-rationale" title="Rationale for the Federation Historical Keys Endpoint">
           <!--
             introduce the problem
           -->
@@ -4510,7 +4540,8 @@ Content-Type: application/json
         Since it posts the Entity Configuration to the OP during client
         registration, the OP has everything it needs from the RP.
       </t>
-      <section title="Federation Entity Configuration Request">
+
+      <section anchor="ec-request" title="Federation Entity Configuration Request">
         <t>
           An Entity Configuration document MUST be queried using an
           HTTP GET request at the previously specified path.
@@ -4532,7 +4563,8 @@ Content-Type: application/json
           </figure>
         </t>
       </section>
-      <section title="Federation Entity Configuration Response">
+
+      <section anchor="ec-response" title="Federation Entity Configuration Response">
         <t>The response is an Entity Configuration, as described in
           <xref target="entity-statement"/>.
           If the Entity is an Intermediate Entity or a Trust Anchor, the
@@ -4822,7 +4854,7 @@ Content-Type: application/json
         </t>
       </section>
 
-      <section title="Choosing One of the Valid Trust Chains">
+      <section anchor="choosing-chain" title="Choosing One of the Valid Trust Chains">
         <t>
           If multiple valid Trust Chains are found, Party A will
           need to decide on which one to use.
@@ -4864,7 +4896,7 @@ Content-Type: application/json
 
     </section>
 
-    <section title="Updating Metadata, Key Rollover, and Revocation">
+    <section anchor="updating-metadata" title="Updating Metadata, Key Rollover, and Revocation">
       <t>
         This specification facilitates smoothly updating metadata
         and public keys.
@@ -4878,7 +4910,7 @@ Content-Type: application/json
         how quickly it wants to find out that something has changed.
       </t>
 
-      <section title="Protocol Key Rollover">
+      <section anchor="key-rollover" title="Protocol Key Rollover">
         <t>
           If a Leaf Entity publishes its public keys in its metadata
           using <spanx style="verb">jwks</spanx>, the expiration time of
@@ -4936,7 +4968,7 @@ Content-Type: application/json
         </t>
       </section>
 
-      <section title="Revocation">
+      <section anchor="revocation" title="Revocation">
         <t>
           Since the participants in federations are expected to check the Trust Chain on a regular
           frequent basis, this specification does not define a
@@ -5002,7 +5034,7 @@ Content-Type: application/json
           metadata parameter.
 	</t>
 
-        <section title="Authentication Request">
+        <section anchor="authn-request" title="Authentication Request">
           <t>
             The Authentication Request is performed by passing a
             Request Object by value as described in Section 6.1 of
@@ -5228,7 +5260,7 @@ GET /authorize?
             </section>
           </section>
 
-          <section title="Using Pushed Authorization">
+          <section anchor="using-par" title="Using Pushed Authorization">
             <t>
               <xref target="RFC9126">Pushed Authorization Requests</xref>
               provide an
@@ -5305,7 +5337,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
 ]]></artwork>
             </figure>
 
-            <section title="Processing the Authentication Request">
+            <section anchor="par-processing" title="Processing the Pushed Authentication Request">
               <t>
                 The requirements specified in
                 <xref target="AuthzRequestProcessing"/>
@@ -6519,7 +6551,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: this specification
+                Published specification: <xref target="entity-statement"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -6588,7 +6620,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: this specification
+                Published specification: <xref target="trust_marks"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -6657,7 +6689,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: this specification
+                Published specification: <xref target="resolve-response"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -6727,7 +6759,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: this specification
+                Published specification: <xref target="Cliregreq"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -6767,7 +6799,7 @@ HTTP/1.1 302 Found
             <?rfc subcompact="no"?>
           </t>
 
-                    <t>
+          <t>
             <?rfc subcompact="yes"?>
             <list style="symbols">
               <t>
@@ -6796,7 +6828,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: this specification
+                Published specification: <xref target="delegation_jwt"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -6825,6 +6857,75 @@ HTTP/1.1 302 Found
               </t>
               <t>
                 Author: Roland Hedberg, roland@catalogix.se
+              </t>
+              <t>
+                Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Provisional registration? No
+              </t>
+            </list>
+            <?rfc subcompact="no"?>
+          </t>
+
+          <t>
+            <?rfc subcompact="yes"?>
+            <list style="symbols">
+              <t>
+                Type name: application
+              </t>
+              <t>
+                Subtype name: jwk-set+jwt
+              </t>
+              <t>
+                Required parameters: n/a
+              </t>
+              <t>
+                Optional parameters: n/a
+              </t>
+              <t>
+                Encoding considerations: binary;
+                A signed JWK Set is a signed JWT;
+                JWT values are encoded as a
+                series of base64url-encoded values (some of which may be the
+                empty string) separated by period ('.') characters.
+              </t>
+              <t>
+                Security considerations: See <xref target="Security"/> of this specification
+              </t>
+              <t>
+                Interoperability considerations: n/a
+              </t>
+              <t>
+                Published specification: <xref target="HistKeysResp"/> of this specification
+              </t>
+              <t>
+                Applications that use this media type:
+                Applications that use this specification
+              </t>
+              <t>
+                Fragment identifier considerations: n/a
+              </t>
+              <t>
+                Additional information:<list style="empty">
+                <t>Magic number(s): n/a</t>
+                <t>File extension(s): n/a</t>
+                <t>Macintosh file type code(s): n/a </t></list>
+                <vspace/>
+              </t>
+              <t>
+                Person &amp; email address to contact for further information:
+                <vspace/>
+                Michael B. Jones, michael_b_jones@hotmail.com
+              </t>
+              <t>
+                Intended usage: COMMON
+              </t>
+              <t>
+                Restrictions on usage: none
+              </t>
+              <t>
+                Author: Michael B. Jones, michael_b_jones@hotmail.com
               </t>
               <t>
                 Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
@@ -7449,7 +7550,7 @@ HTTP/1.1 302 Found
           part of the Trust Chain.
         </t>
 
-        <section title="Entity Configuration for https://op.umu.se">
+        <section anchor="ec-for-op" title="Entity Configuration for https://op.umu.se">
           <t>The LIGO WIKI RP fetches the Entity Configuration from the
             OP (op.umu.se)
             using the process defined in <xref
@@ -7535,7 +7636,7 @@ HTTP/1.1 302 Found
           </t>
         </section>
 
-        <section title="Entity Configuration for https://umu.se">
+        <section anchor="ec-for-umu" title="Entity Configuration for https://umu.se">
           <t>The LIGO RP fetches the Entity Configuration from
             https://umu.se using the process defined in
             <xref target="federation_configuration"/>.
@@ -7597,7 +7698,7 @@ Host: umu.se
           </t>
         </section>
 
-        <section
+        <section anchor="ss-about-op"
                 title="Subordinate Statement Published by https://umu.se about https://op.umu.se">
           <t>
             The RP uses the fetch endpoint provided by https://umu.se,
@@ -7679,7 +7780,7 @@ Host: umu.se
           </t>
         </section>
 
-        <section title="Entity Configuration for https://swamid.se">
+        <section anchor="ec-for-swamid" title="Entity Configuration for https://swamid.se">
           <t>The LIGO Wiki RP fetches the Entity Configuration from
             https://swamid.se using the process defined in
             <xref target="federation_configuration"/>.
@@ -7742,7 +7843,7 @@ Host: swamid.se
           </t>
         </section>
 
-        <section
+        <section anchor="ss-about-umu"
                 title="Subordinate Statement Published by https://swamid.se about https://umu.se">
           <t>
             The LIGO Wiki RP uses the fetch endpoint provided by
@@ -7827,7 +7928,7 @@ Host: swamid.se
           </t>
         </section>
 
-        <section title="Entity Configuration for https://edugain.geant.org">
+        <section anchor="ec-for-edugain" title="Entity Configuration for https://edugain.geant.org">
           <t>The RP fetches the Entity Configuration from
             https://edugain.geant.org using the process defined in
             <xref target="federation_configuration"/>.
@@ -7886,7 +7987,7 @@ Host: edugain.geant.org
           </t>
         </section>
 
-        <section title="Subordinate Statement Published by https://edugain.geant.org about https://swamid.se">
+        <section anchor="ss-about-swamid" title="Subordinate Statement Published by https://edugain.geant.org about https://swamid.se">
           <t>
             The LIGO Wiki RP uses the fetch endpoint of
             https://edugain.geant.org as
@@ -7996,7 +8097,7 @@ Host: geant.org
           </t>
         </section>
 
-        <section title="Verified Metadata for https://op.umu.se">
+        <section anchor="metadata-for-op" title="Verified Metadata for https://op.umu.se">
           <t>Having verified the chain, the LIGO Wiki RP can proceed with the
             next step.
           </t>
@@ -8137,7 +8238,7 @@ Host: op.umu.se
             establish trust with the RP.
           </t>
 
-          <section title="OP Fetches Entity Statements">
+          <section anchor="op-fetches-ess" title="OP Fetches Entity Statements">
             <t>
               The OP needs to establish a Trust Chain for the RP
               (wiki.ligo.org).
@@ -8584,6 +8685,13 @@ Host: op.umu.se
 	    Fixed #2133: Made treatment of
 	    <spanx style="verb">jwks</spanx> Entity Statement claim
 	    consistent when doing Explicit Registration.
+	  </t>
+	  <t>
+	    Fixed #2138: Required <spanx style="verb">kid</spanx> (Key ID)
+	    header parameter in JWTs.
+	  </t>
+	  <t>
+	    Registered <spanx style="verb">application/jwk-set+jwt</spanx> media type.
 	  </t>
 	</list>
       </t>
