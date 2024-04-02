@@ -1721,10 +1721,10 @@
           A federation may utilize metadata policies to achieve specific
           objectives. For example, in a federation of
           <xref target="OpenID.Core">OpenID Connect</xref> Entities, one
-          objective may be to ensure the metadata published by Providers and
-          Relying Parties are interoperable with one another. Another objective
-          may be to ensure the Entity metadata complies with a security profile,
-          for example <xref target="FAPI">FAPI</xref>.
+          objective may be to ensure the metadata published by OpenID Providers
+          and Relying Parties are interoperable with one another. Another
+          objective may be to ensure the Entity metadata complies with a
+          security profile, for example, <xref target="FAPI">FAPI</xref>.
         </t>
 
         <t>
@@ -1752,11 +1752,16 @@
                 another federation.
               </t>
 
-              <t hangText="Specificity">
+              <t hangText="Specificity and Granularity">
                 <vspace/>
                 Just like metadata, a metadata policy is bound to a specific
                 Entity Type. This ensures policies for different Entity Types are
                 independent and isolated from one another.
+                <vspace/>
+                Policies are expressed at the level of individual metadata
+                parameters. The policies for a given Entity Type metadata
+                parameter are thus independent and isolated from those for other
+                parameters.
                 <vspace/>
                 When a Trust Anchor or an Intermediate Entity defines a metadata
                 policy for an Entity Type, it applies to the metadata of all
@@ -1767,14 +1772,6 @@
                 federation authority can choose to define a common Entity Type
                 metadata policy for all its Subordinates, or specific Entity Type
                 metadata policies for specific Subordinates.
-              </t>
-
-              <t hangText="Granularity">
-                <vspace/>
-                Policies are expressed at the level of individual metadata
-                parameters. The policies for a given Entity Type metadata
-                parameter are thus independent and isolated from those for other
-                parameters.
               </t>
 
               <t hangText="Operation">
@@ -1799,7 +1796,7 @@
                 <list style="symbols">
                   <t>
                     A Trust Chain for which the metadata policy resolution fails
-                    due to an error, for example due to an Intermediate Entity’s
+                    due to an error, for example, due to an Intermediate Entity’s
                     policy conflicting with a Superior’s policy, is deemed invalid.
                   </t>
                   <t>
@@ -1832,10 +1829,10 @@
           </t>
 
           <t>
-            The metadata_policy claim value is a JSON object. Each member in
-            this object is an Entity Type-specific metadata policy, whose member
-            name is an Entity Type Identifier, as specified in
-            <xref target="entity_types"/> , for example
+            The <spanx style="verb">metadata_policy</spanx> claim value is a
+            JSON object. Each member in this object is an Entity Type-specific
+            metadata policy. Its member name is an Entity Type Identifier, as
+            specified in <xref target="entity_types"/>, for example,
             <spanx style="verb">openid_relying_party</spanx>. Duplicate member
             names MUST NOT be present. The member value is a JSON object that
             has the following structure:
@@ -1898,27 +1895,28 @@
           <t>
             <list style="symbols">
               <t>
-                Is identified by a unique case sensitive name.
+                Is identified by a unique case-sensitive name.
               </t>
               <t>
-                Acts on a single metadata parameter. The operator MUST specify
-                the metadata parameter JSON value types that are mandatory to
-                support and MAY also specify JSON value types that are optional
-                to support. When the metadata parameter has a JSON value type
-                that isn’t supported, the operator MUST produce a policy error.
+                Acts on a single metadata parameter. The operator definition
+                MUST specify the metadata parameter JSON value types that are
+                mandatory to support and MAY also specify JSON value types that
+                are optional to support. When the metadata parameter has a JSON
+                value type that is not supported, the operator MUST produce a
+                policy error.
               </t>
               <t>
-                The type of action on the metadata parameter can be a value
-                check, a value modification, or both. When the operator’s action
-                is a value modification, it MAY remove the metadata parameter.
+                The action on the metadata parameter can be a value check, a
+                value modification, or both. When the operator’s action is a
+                value modification, it MAY remove the metadata parameter.
               </t>
               <t>
                 The action of the operator is configured by a JSON value. The
-                operator MUST specify the JSON value types that are mandatory to
-                support and MAY also specify JSON value types that are optional
-                to support. When the operator is configured with a JSON value
-                type that isn’t supported, the operator MUST produce a policy
-                error.
+                operator definition MUST specify the JSON value types that are
+                mandatory to support and MAY also specify JSON value types that
+                are optional to support. When the operator is configured with a
+                JSON value type that isn’t supported, the operator MUST produce
+                a policy error.
               </t>
               <t>
                 MUST declare what other operators it may be combined within a
@@ -1937,7 +1935,7 @@
                 Trust Chain has a policy for an Entity Type metadata parameter
                 that uses the same operator, whether the operator values are
                 allowed to be merged to produce an identical or more restrictive
-                policy, and if so under what conditions. If the operator does
+                policy, and if so, under what conditions. If the operator does
                 not allow such a merge, it MUST produce a policy error.
               </t>
               <t>
@@ -1951,7 +1949,7 @@
           <section title="Standard Operators" anchor="standard_metadata_policy_operators">
 
             <t>This specification defines the following metadata policy
-              operators.</t>
+              operators:</t>
 
             <section title="value" anchor="value_operator">
               <t>
@@ -1960,7 +1958,7 @@
               <t>
                 Action: The metadata parameter MUST be assigned the value of the
                 operator. When the value of the operator is
-                <spanx style="verb">null</spanx> the metadata parameter MUST be
+                <spanx style="verb">null</spanx>, the metadata parameter MUST be
                 removed.
               </t>
               <t>
@@ -2069,7 +2067,8 @@
               </t>
               <t>
                 Action: If the metadata parameter is absent, it MUST be set to
-                the value of the operator.
+                the value of the operator. If the metadata parameter is present,
+                this operator has no effect.
               </t>
               <t>
                 Metadata parameter JSON values:
@@ -2373,7 +2372,7 @@
               </t>
             </section>
 
-            <section title="Notes" anchor="standard_metadata_policy_operators_notes">
+            <section title="Notes on Operators" anchor="standard_metadata_policy_operators_notes">
 
               <t>
                 A "set equals" metadata parameter policy can be expressed by
@@ -2389,7 +2388,12 @@
                 processed as a string array by policy operators, such as the
                 operators <spanx style="verb">default</spanx>,
                 <spanx style="verb">subset_of</spanx> and
-                <spanx style="verb">superset_of</spanx>.
+                <spanx style="verb">superset_of</spanx>. The resulting
+                <spanx style="verb">scope</spanx> metadata parameter is a
+                space-separated string of individual scope values, where the
+                scope values present are taken from the array of values produced
+                by applying the metadata operators to the
+                <spanx style="verb">scope</spanx> parameter.
               </t>
 
               <table>
@@ -2517,7 +2521,7 @@
               <t>
                 The resolution process MUST first gather the names of all policy
                 operators other than the standard ones defined in
-                <xref target="standard_metadata_policy_operators"/> which are
+                <xref target="standard_metadata_policy_operators"/> that are
                 declared as critical. This is done by checking each Subordinate
                 Statement in the Trust Chain for the optional
                 <spanx style="verb">metadata_policy_crit</spanx> claim,
@@ -2526,12 +2530,11 @@
               </t>
 
               <t>
-                The resolution process proceeds by performing a second iteration
-                through the Subordinate Statements. The sequence of this
-                iteration is crucial - it MUST begin with the Subordinate
-                Statement issued by the most Superior Entity and end with the
-                Subordinate Statement issued by the Immediate Superior of the
-                Trust Chain subject.
+                The resolution process proceeds by iterating through the
+                Subordinate Statements. The sequence of this iteration is
+                crucial - it MUST begin with the Subordinate Statement issued by
+                the most Superior Entity and end with the Subordinate Statement
+                issued by the Immediate Superior of the Trust Chain subject.
               </t>
 
               <t>
@@ -2539,7 +2542,7 @@
                 <spanx style="verb">metadata_policy</spanx> validation. It MUST
                 ensure the data structure is compliant and that every metadata
                 parameter policy contains only allowed operator combinations, as
-                described in <xref target="metadata_policy_operators"/> and in
+                described in <xref target="metadata_policy_operators"/>, and in
                 accordance with the specifications of the operators. It MUST be
                 also ensured the <spanx style="verb">metadata_policy</spanx>
                 contains no operators that cannot be understood and processed
@@ -2549,7 +2552,7 @@
               </t>
 
               <t>
-                At each iteration step the Subordinate Statement MUST be checked
+                At each iteration step, the Subordinate Statement MUST be checked
                 for the presence of a <spanx style="verb">metadata_policy</spanx>
                 claim. The first encountered
                 <spanx style="verb">metadata_policy</spanx> MUST be validated as
@@ -2566,26 +2569,27 @@
 
               <t>
                 The merge is performed at these three data structure levels,
-                according to the <spanx style="verb">metadata_policy</spanx>
+                following the <spanx style="verb">metadata_policy</spanx>
                 structure described in <xref target="metadata_policy_structure"/>,
                 by starting from the top level:
                 <t>
                   <list style="numbers">
                     <t>
-                      Entity Type-specific metadata policies.
+                      The metadata policies for Entity Types.
                     </t>
                     <t>
-                      Metadata parameter policies.
+                      The metadata parameter policies for an Entity Type.
                     </t>
                     <t>
-                      Operators.
+                      The operators for a metadata parameter policy for an
+                      Entity Type.
                     </t>
                   </list>
                 </t>
               </t>
 
               <t>
-                At the level of Entity Type-specific metadata policies the merge
+                At the level of Entity Type-specific metadata policies, the merge
                 proceeds as follows:
                 <t>
                   <list style="symbols">
@@ -2607,7 +2611,7 @@
               </t>
 
               <t>
-                At the level of metadata parameter policies the merge proceeds
+                At the level of metadata parameter policies, the merge proceeds
                 as follows:
                 <t>
                   <list style="symbols">
@@ -2631,7 +2635,7 @@
               </t>
 
               <t>
-                At the level of operators the merge proceeds as follows:
+                At the level of operators, the merge proceeds as follows:
                 <t>
                   <list style="symbols">
                     <t>
@@ -2666,8 +2670,8 @@
                 If the Subordinate Statement about the Trust Chain subject
                 contains a <spanx style="verb">metadata</spanx> claim, this MUST
                 first be applied, as described in the claim definition in
-                <xref target="entity-statement"/>, and only then proceeded with
-                applying the resolved metadata policy.
+                <xref target="entity-statement"/>, and only then it can be
+                proceeded with applying the resolved metadata policy.
               </t>
 
               <t>
@@ -2704,7 +2708,7 @@
                 able to support and comply with the metadata that results from
                 the application of federation metadata policies. For instance,
                 this may involve a check that cryptographic algorithms required
-                by the resulting metadata can be handled. When metadata policies
+                by the resulting metadata are supported. When metadata policies
                 change, Trust Chain subjects may need to reevaluate their
                 support and compliance.
               </t>
@@ -2713,14 +2717,14 @@
 
           </section>
 
-        <section title="Metadata Policy Example">
+        <section title="Metadata Policy Example" anchor="metadata-policy-example">
           <t>
             The following is a non-normative example of resolving and applying
             Trust Chain metadata policies for an OpenID relying party.
           </t>
           <figure>
             <preamble>
-              We start with a federation's Trust Anchor
+              We start with a federation Trust Anchor's
               <spanx style="verb">metadata_policy</spanx> for RPs:
             </preamble>
             <name>
@@ -2855,7 +2859,7 @@
           </figure>
           <figure>
             <preamble>
-              The Trust Chain subject is a Leaf Entity which publishes the
+              The Trust Chain subject is a Leaf Entity, which publishes the
               following RP metadata in its Entity Configuration:
             </preamble>
             <name>
@@ -2884,7 +2888,7 @@
               Intermediate Entity for its Immediate Subordinates are applied to
               the Trust Chain subject <spanx style="verb">metadata</spanx>.
               After that, the merged metadata policy is applied, to produce the
-              following RP metadata:
+              following resulting RP metadata:
             </preamble>
             <name>
               The Resulting RP Metadata for the Trust Chain Subject
@@ -9036,7 +9040,7 @@ Host: op.umu.se
       </t>
       <t>
         Addressed #2136: Metadata policy: Merges the two metadata policy
-        examples, expands the example to include all standard policy operators
+        examples and expands the example to include all standard policy operators
       </t>
       <t>
         Addressed #2124: Renames the allowed_leaf_entity_types constraint to
