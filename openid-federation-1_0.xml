@@ -2669,7 +2669,7 @@
           The key used by the Trust Mark
           issuer to sign its Trust Marks MUST be one of the private keys
           in its set of
-          <spanx style="verb">Federation Entity Keys</spanx>.
+          Federation Entity Keys.
 	</t>
 	<t>
 	  Trust Mark JWTs MUST include the
@@ -2792,10 +2792,11 @@
 
         <section title="Trust Mark Delegation JWT" anchor="delegation_jwt">
           <t>
-            Trust Mark delegation JWTs MUST be explicitly typed, by setting the
+            A Trust Mark delegation JWT MUST be explicitly typed, by setting the
             <spanx style="verb">typ</spanx> header parameter to
             <spanx style="verb">trust-mark-delegation+jwt</spanx> to prevent
             cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+	    It is signed with a Federation Entity Key.
           </t>
 	  <t>
 	    Trust Mark delegation JWTs MUST include the
@@ -3329,6 +3330,7 @@ Host: openid.sunet.se
             <spanx style="verb">typ</spanx> header parameter to
             <spanx style="verb">resolve-response+jwt</spanx> to prevent
             cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
+	    It is signed with a Federation Entity Key.
           </t>
 	  <t>
 	    The resolve response JWT MUST include the
@@ -3340,8 +3342,6 @@ Host: openid.sunet.se
 	    from the subject to the Trust Anchor
 	    in its <spanx style="verb">trust_chain</spanx> parameter,
             sorted as shown in <xref target="trust_chain"/>.
-            The key used by the resolver to sign the response MUST be one of its
-            Federation Entity Keys.
 	  </t>
           <t>
             The resolve response MAY also return the Trust Chain
@@ -4095,6 +4095,7 @@ Host: trust-anchor.example.com
             <spanx style="verb">application/jwk-set+jwt</spanx>.
             The response is a signed JWT with the <xref target="RFC7517">JWK Set</xref>
             as its payload.
+	    It is signed with a Federation Entity Key.
 	  </t>
 	  <t>
 	    Historical keys JWTs are explicitly typed by setting the
