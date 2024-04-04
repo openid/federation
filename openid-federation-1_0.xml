@@ -1823,42 +1823,57 @@
         <section title="Structure" anchor="metadata_policy_structure">
 
           <t>
-            As described in <xref target="entity-statement"/>, metadata policies
-            are expressed in the <spanx style="verb">metadata_policy</spanx>
-            claim of a Subordinate Statement.
+            Metadata policies are expressed in the
+            <spanx style="verb">metadata_policy</spanx> claim of a Subordinate
+            Statement, as described in <xref target="entity-statement"/>. The
+            claim value is a JSON object that has a data structure consisting of
+            three levels:
           </t>
 
           <t>
-            The <spanx style="verb">metadata_policy</spanx> claim value is a
-            JSON object. Each member in this object is an Entity Type-specific
-            metadata policy. Its member name is an Entity Type Identifier, as
-            specified in <xref target="entity_types"/>, for example,
-            <spanx style="verb">openid_relying_party</spanx>. Duplicate member
-            names MUST NOT be present. The member value is a JSON object that
-            has the following structure:
-          </t>
-
-          <t>
-            <list style="symbols">
+            <list style="numbers">
               <t>
-                Each member name represents a metadata parameter name, for
-                example <spanx style="verb">id_token_signed_response_alg</spanx>.
-                The name MAY include a language tag, as described in
+                Metadata policies for Entity Types.
+                <vspace/>
+                The top level contains one or more members, each representing
+                the metadata policy for an Entity Type. Each member name is an
+                Entity Type Identifier, as specified in
+                <xref target="entity_types"/>, for example,
+                <spanx style="verb">openid_relying_party</spanx>. The member
+                value is a JSON object that contains metadata parameter
+                policies.
+              </t>
+              <t>
+                Metadata parameter policies for the Entity Type.
+                <vspace/>
+                The second level contains one or more members, each representing
+                a policy for a metadata parameter for the Entity Type. Each
+                member name is a metadata parameter name, for example
+                <spanx style="verb">id_token_signed_response_alg</spanx>. The
+                name MAY include a language tag, as described in
                 <xref target="ClaimsLanguagesAndScripts"/>, in which case the
                 metadata parameter policy applies only to the metadata parameter
-                with the specified language tag.
+                with the specified language tag. The member value is a JSON
+                object that contains policy operators.
               </t>
               <t>
-                Each member value is a JSON object that represents a metadata
-                parameter policy. It consists of one or more operators that
-                check or modify the metadata parameter, as described in
-                <xref target="metadata_policy_operators"/>. A metadata parameter
-                policy MUST include only operators that are allowed to be
-                combined with one another, as described in the specification for
-                each operator. It MUST NOT include more than one operator of a
-                given kind.
+                Operators for the metadata parameter policy for the Entity
+                Type.
+                <vspace/>
+                The third level contains one or more members, each representing
+                an operator that checks or modifies the metadata parameter, as
+                described in <xref target="metadata_policy_operators"/>. Only
+                operators that are allowed to be combined with one another MUST
+                be included, as described in the specification for each
+                operator.
               </t>
             </list>
+          </t>
+
+          <t>
+            Duplicate JSON object member names MUST NOT be present at any of
+            the three levels of the <spanx style="verb">metadata_policy</spanx>
+            claim data structure.
           </t>
 
           <t>
@@ -2557,7 +2572,7 @@
                 claim. The first encountered
                 <spanx style="verb">metadata_policy</spanx> MUST be validated as
                 described above, after which it becomes the current metadata
-                policy to proceed with.
+                policy.
               </t>
 
               <t>
@@ -2568,10 +2583,10 @@
               </t>
 
               <t>
-                The merge is performed at these three data structure levels,
-                following the <spanx style="verb">metadata_policy</spanx>
-                structure described in <xref target="metadata_policy_structure"/>,
-                by starting from the top level:
+                The merge is performed at all three levels of the
+                <spanx style="verb">metadata_policy</spanx> data structure
+                described in <xref target="metadata_policy_structure"/>, by
+                starting from the top level:
                 <t>
                   <list style="numbers">
                     <t>
@@ -2589,7 +2604,7 @@
               </t>
 
               <t>
-                At the level of Entity Type-specific metadata policies, the merge
+                At the level of metadata policies for Entity Types, the merge
                 proceeds as follows:
                 <t>
                   <list style="symbols">
@@ -2598,13 +2613,14 @@
                       <spanx style="verb">metadata_policy</spanx> claim contains
                       a metadata policy for an Entity Type that is already
                       present in the current metadata policy, it MUST be merged
-                      according to the rules of the next lower level.
+                      according to the rules of the next lower level (the
+                      metadata parameter policies).
                     </t>
                     <t>
-                      Entity Type-specific metadata policies in the next
-                      subordinate <spanx style="verb">metadata_policy</spanx>
-                      claim that are not present in the current metadata policy
-                      MUST be copied to it.
+                      Entity Type metadata policies in the next subordinate
+                      <spanx style="verb">metadata_policy</spanx> claim that are
+                      not present in the current metadata policy MUST be copied
+                      to it.
                     </t>
                   </list>
                 </t>
@@ -2617,18 +2633,19 @@
                   <list style="symbols">
                     <t>
                       If a metadata parameter policy is already present in the
-                      current Entity Type-specific metadata policy, it MUST be
-                      merged according to the rules of the next lower level. If
-                      the resulting metadata parameter contains operator
-                      combinations that are not allowed, as described in
+                      current Entity Type metadata policy, it MUST be merged
+                      according to the rules of the next lower level (the
+                      operators for the metadata parameter policy). If the
+                      resulting metadata parameter policy contains combinations
+                      that are not allowed, as described in
                       <xref target="metadata_policy_operators"/> and in
                       accordance with the specifications of the operators, this
                       MUST result in a policy error.
                     </t>
                     <t>
                       Subordinate metadata parameter policies that are not
-                      present in the current Entity Type-specific metadata
-                      policy MUST be copied to it.
+                      present in the current Entity Type metadata policy MUST be
+                      copied to it.
                     </t>
                   </list>
                 </t>
@@ -2640,8 +2657,8 @@
                   <list style="symbols">
                     <t>
                       If an operator is already present in the current metadata
-                      parameter, the values of the subordinate operator MUST be
-                      merged, as described in
+                      parameter policy, the values of the subordinate operator
+                      MUST be merged, as described in
                       <xref target="metadata_policy_operators"/> and in
                       accordance with the operator specification. If an operator
                       value merge is not allowed or otherwise unsuccessful this
