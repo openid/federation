@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Federation">OpenID Federation 1.0 -
-      draft 34
+      draft 35
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="15" month="March" year="2024"/>
+    <date day="8" month="April" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -193,7 +193,7 @@
         </artwork>
       </figure>
 
-      <section title="Requirements Language">
+      <section anchor="requirements-language" title="Requirements Language">
         <t>
           The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
           "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this
@@ -431,11 +431,11 @@
         <t>
           Entity Statement JWTs MUST be explicitly typed, by setting the
           <spanx style="verb">typ</spanx> header parameter to
-          <spanx style="verb">entity-statement+jwt</spanx>. This
-          prevents cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+          <spanx style="verb">entity-statement+jwt</spanx> to prevent
+          cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
         </t>
         <t>
-          The Entity Statement is signed using the private key of the issuer
+          The Entity Statement is signed using one of the private keys of the issuer
           Entity in the form of a <xref target="RFC7515">JSON Web Signature
           (JWS)</xref>.
           Implementations SHOULD support signature verification with
@@ -444,8 +444,13 @@
           value of <spanx style="verb">RS256</spanx>).
           Federations MAY also specify different mandatory-to-implement algorithms.
         </t>
+	<t>
+	  Entity Statement JWTs MUST include the
+	  <spanx style="verb">kid</spanx> (Key ID) header parameter
+	  with its value being the Key ID of the signing key used.
+	</t>
         <t>
-          An Entity Statement is composed of the following claims:
+          The claims in an Entity Statement are:
         </t>
         <t>
           <list style="hanging">
@@ -539,20 +544,13 @@
             </t>
             <t hangText="metadata_policy">
               <vspace/>
-              OPTIONAL. JSON object that defines a metadata policy.
-              The metadata policy applies to the Entity that is the subject of this
-              Subordinate Statement as well as to all Entities that are Subordinate to it.
-              Applying to Subordinate Entities distinguishes
-              <spanx style="verb">metadata_policy</spanx> from
-              <spanx style="verb">metadata</spanx>, which only applies to the
-              subject itself.
-	      Each member name of the JSON object is an Entity Type Identifier,
-	      and each value MUST be a JSON object representing
-	      the metadata policy according to the metadata schema of that Entity Type.
-	      A Subordinate Statement MAY contain multiple
-	      sets of metadata policy statements, but only one for each Entity Type.
-              Entity Configurations MUST NOT contain a
-              <spanx style="verb">metadata_policy</spanx> claim.
+              OPTIONAL. JSON object that defines a metadata policy, as described
+              in <xref target="metadata_policy"/>. Only Subordinate Statements
+              MAY include this claim. The metadata policy applies to the Entity
+              that is the subject of this Subordinate Statement as well as to
+              all Entities that are Subordinate to it. Applying to Subordinate
+              Entities distinguishes <spanx style="verb">metadata_policy</spanx>
+              from metadata, which only applies to the subject itself.
             </t>
             <t hangText="constraints">
               <vspace/>
@@ -572,13 +570,14 @@
               <vspace/>
               OPTIONAL.
               Array of strings specifying critical metadata policy operators
-              other than the standard ones defined in <xref target="policy_operators"/>
-              that MUST be understood and processed. Only Subordinate Statements
-              MAY include this claim and when included its value MUST NOT be the
-              empty array <spanx style="verb">[]</spanx>. If any of the listed
-              policy operators are not understood and supported, then the
-              Subordinate Statement and thus the Trust Chain that includes it
-              MUST be considered invalid.
+              other than the standard ones defined in
+              <xref target="standard_metadata_policy_operators"/> that MUST be
+              understood and processed. Only Subordinate Statements MAY include
+              this claim and when included its value MUST NOT be the empty array
+              <spanx style="verb">[]</spanx>. If any of the listed policy
+              operators are not understood and supported, then the Subordinate
+              Statement and thus the Trust Chain that includes it MUST be
+              considered invalid.
             </t>
             <t hangText="trust_marks">
               <vspace/>
@@ -690,14 +689,22 @@
   "sub": "https://ntnu.no",
   "iat": 1516239022,
   "exp": 1516298022,
-  "crit": ["jti"],
-  "jti": "7l2lncFdY6SlhNia",
-  "source_endpoint": "https://feide.no/federation_api/fetch",
-  "metadata_policy_crit": ["regexp"],
+  "jwks": {
+    "keys": [
+      {
+        "kty": "RSA",
+        "alg": "RS256",
+        "use": "sig",
+        "kid": "NzbLsXh8uDCcd-6MNwXF4W_7noWXFZAfHkxZsRGC9Xs",
+        "n": "pnXBOusEANuug6ewezb9J_...",
+        "e": "AQAB"
+      }
+    ]
+  },
   "metadata": {
     "openid_provider": {
       "issuer": "https://ntnu.no",
-      "organization_name": "NTNU",
+      "organization_name": "NTNU"
     },
     "oauth_client": {
       "organization_name": "NTNU"
@@ -713,25 +720,17 @@
     },
     "oauth_client": {
       "grant_types": {
-        "subset_of": ["authorization_code", "client_credentials"]
-      },
+        "one_of": ["authorization_code", "client_credentials"]
+      }
+    }
   },
   "constraints": {
     "max_path_length": 2
   },
-  "jwks": {
-    "keys": [
-      {
-        "alg": "RS256",
-        "e": "AQAB",
-        "key_ops": ["verify"],
-        "kid": "key1",
-        "kty": "RSA",
-        "n": "pnXBOusEANuug6ewezb9J_...",
-        "use": "sig"
-      }
-    ]
-  }
+  "crit": ["jti"],
+  "metadata_policy_crit": ["regexp"],
+  "source_endpoint": "https://feide.no/federation_api/fetch",
+  "jti": "7l2lncFdY6SlhNia"
 }
 ]]></artwork>
         </figure>
@@ -913,9 +912,9 @@
 | .------------. |  | .-----------------------. |         | .-----------------------. |
 | |            | |  | | Entity Configuration  | |         | | Entity Configuration  | |
 | |Trust Anchor+-+--+->                       +-+---------+->                       | |
-| |            | |  | | federation entity keys| |         | | federation entity keys| |
-| '-----.------' |  | | metadata              | |         | | metadata              | |
-|       |        |  | | trust mark issuers    | |         | | trust mark issuers    | |
+| |            | |  | | Federation Entity Keys| |         | | Federation Entity Keys| |
+| '-----.------' |  | | Metadata              | |         | | Metadata              | |
+|       |        |  | | Trust Mark Issuers    | |         | | Trust Mark Issuers    | |
 |       |        |  | | constraints           | |         | | constraints           | |
 |       |        |  | |                       | |         | |                       | |
 |       |        |  | '-----------------------' |         | '-----------------------' |
@@ -923,21 +922,21 @@
 |       |        |  |                           |Fetch    | .-----------------------. |
 |       |        |  |                           |endpoint | | Subordinate Statement | |
 |       +--------+--+---------------------------+---------+->                       | |
-|                |  |                           |         | | federation entity keys| |
-|                |  |                           |         | | metadata policy       | |
-|                |  |                           |         | | metadata              | |
+|                |  |                           |         | | Federation Entity Keys| |
+|                |  |                           |         | | Metadata Policy       | |
+|                |  |                           |         | | Metadata              | |
 |                |  |                           |         | |                       | |
 |                |  |                           |         | '-----------.-----------' |
 | .------------. |  | .-----------------------. |         |             |             |
 | |            | |  | | Entity Configuration  | |         |             |             |
 | |Intermediate+-+--+->                       | |         |             |sub and key  |
-| |            | |  | | federation entity keys| |         |             | binding     |
-| '------.-----' |  | | metadata              | |         | .-----------v-----------. |
-|        |       |  | | trust marks           | |         | | Subordinate Statement | |
+| |            | |  | | Federation Entity Keys| |         |             | binding     |
+| '------.-----' |  | | Metadata              | |         | .-----------v-----------. |
+|        |       |  | | Trust Marks           | |         | | Subordinate Statement | |
 |        |       |  | |                       | |         | |                       | |
-|        |       |  | |                       | |         | | federation entity keys| |
-|        |       |  | '-----------------------' |Fetch    | | metadata policy       | |
-|        |       |  |                           |endpoint | | metadata              | |
+|        |       |  | |                       | |         | | Federation Entity Keys| |
+|        |       |  | '-----------------------' |Fetch    | | Metadata Policy       | |
+|        |       |  |                           |endpoint | | Metadata              | |
 |        +-------+--+---------------------------+---------+->                       | |
 |                |  |                           |         | '-----------.-----------' |
 |                |  |                           |         |             |sub and key  |
@@ -945,9 +944,9 @@
 | .------------. |  | .-----------------------. |         | .-----------v-----------. |
 | |            | |  | | Entity Configuration  | |         | | Entity Configuration  | |
 | | Leaf       +-+--+->                       +-+---------+->                       | |
-| |            | |  | | federation entity keys| |         | | federation entity keys| |
-| '------------' |  | | metadata              | |         | | metadata              | |
-|                |  | | trust marks           | |         | | trust marks           | |
+| |            | |  | | Federation Entity Keys| |         | | Federation Entity Keys| |
+| '------------' |  | | Metadata              | |         | | Metadata              | |
+|                |  | | Trust Marks           | |         | | Trust Marks           | |
 |                |  | |                       | |         | |                       | |
 |                |  | |                       | |         | |                       | |
 |                |  | '-----------------------' |         | '-----------------------' |
@@ -1248,9 +1247,6 @@
           {
             "alg": "RS256",
             "e": "AQAB",
-            "key_ops": [
-              "verify"
-            ],
             "kid": "key1",
             "kty": "RSA",
             "n": "pnXBOusEANuug6ewezb9J_...",
@@ -1481,7 +1477,7 @@
         </figure>
 
       </section>
-      <section title="OAuth Authorization Server">
+      <section anchor="oauth-as" title="OAuth Authorization Server">
         <t>
           The Entity Type Identifier is
           <spanx style="verb">oauth_authorization_server</spanx>.
@@ -1496,7 +1492,7 @@
         </t>
       </section>
 
-      <section title="OAuth Client">
+      <section anchor="oauth-client" title="OAuth Client">
         <t>
           The Entity Type Identifier is
           <spanx style="verb">oauth_client</spanx>.
@@ -1511,7 +1507,7 @@
         </t>
       </section>
 
-      <section title="OAuth Protected Resource">
+      <section anchor="oauth-resource" title="OAuth Protected Resource">
         <t>
           The Entity Type Identifier is
           <spanx style="verb">oauth_resource</spanx>.
@@ -1524,16 +1520,19 @@
 
       </section>
 
-      <section title="Metadata Extensions for OpenID Connect and OAuth 2.0" anchor="common_metadata">
+      <section title="Common Metadata Parameters" anchor="common_metadata">
         <t>
-        This section defines additional metadata properties
+        This section defines additional metadata parameters
         that MAY be used with all the Entity Types above.
         </t>
 
-	<section anchor="jwks_metadata" title="Metadata Extensions for JWK Sets">
+	<section anchor="jwks_metadata"
+		 title="Extensions for JWK Sets in Entity Metadata">
 	  <t>
-	    The following metadata properties define ways of obtaining
+	    The following metadata parameters define ways of obtaining
 	    JWK Sets for an Entity Type of the Entity.
+	    Note that these keys are distinct from the Federaton Entity Keys
+	    used to sign Entity Statements.
 	  </t>
 	  <t>
 	    <list style="hanging">
@@ -1651,7 +1650,7 @@
 	    </list>
 	  </t>
 
-	  <section title="Usage of jwks, jwks_uri, and signed_jwks_uri" anchor="jwks_usage">
+	  <section title="Usage of jwks, jwks_uri, and signed_jwks_uri in Entity Metadata" anchor="jwks_usage">
 	    <t>
 	      It is RECOMMENDED that an Entity Configuration
 	      use only one of
@@ -1671,7 +1670,7 @@
 
 	<section anchor="informational_metadata" title="Informational Metadata Extensions">
 	  <t>
-	    The following metadata properties define ways of obtaining
+	    The following metadata parameters define ways of obtaining
 	    information about the Entity for an Entity Type.
 	  </t>
           <list style="hanging">
@@ -1707,7 +1706,7 @@
             </t>
 	  </list>
 	  <t>
-	    It is RECOMMENDED that, when present, these metadata properties occur in
+	    It is RECOMMENDED that, when present, these metadata parameters occur in
 	    an Entity's <spanx style="verb">federation_entity</spanx> metadata section.
 	    They MAY also be present in the Entity's metadata for other Entity Types,
 	    particularly when the values for those Entity Types differ from
@@ -1720,490 +1719,1069 @@
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
         <t>
-          Trust Anchors and Intermediate Entities MAY publish Entity Type-specific
-	  policies that apply to the metadata of their Immediate Subordinates
-          as well as any further Subordinates along the Trust Chain.
+          Trust Anchors and Intermediate Entities MAY define policies that apply
+          to the metadata of their Subordinates.
         </t>
         <t>
-          As described in <xref target="entity-statement"/>, the metadata
-          policy operators are located in the <spanx style="verb">metadata_policy</spanx>
-          claim of an Entity Statement, whose value is a JSON object.
+          A federation may utilize metadata policies to achieve specific
+          objectives. For example, in a federation of
+          <xref target="OpenID.Core">OpenID Connect</xref> Entities, one
+          objective may be to ensure the metadata published by OpenID Providers
+          and Relying Parties are interoperable with one another. Another
+          objective may be to ensure the Entity metadata complies with a
+          security profile, for example, <xref target="FAPI">FAPI</xref>.
         </t>
+
         <t>
-          Each member in this object is an Entity Type-specific metadata policy,
-          whose member name is an Entity Type Identifier, as specified in
-          <xref target="entity_types"/>, for example
-          <spanx style="verb">openid_relying_party</spanx>. The member value is
-          a JSON object that represents metadata policies for the Entity Type
-          and has the following structure:
-          <list style="symbols">
-            <t>
-              It consists of one or more policy entries, each entry being
-              represented by a JSON object.</t>
-            <t>
-              A policy entry applies to a single metadata parameter, for
-              example <spanx style="verb">id_token_signed_response_alg</spanx>.
-            </t>
-            <t>
-              A policy entry is represented by a JSON object and consists of
-              one or more operators, to check or modify the metadata parameter,
-              as described in <xref target="policy_operators"/>.
-            </t>
-            <t>
-              A policy entry MAY include at most one operator of each kind.
-            </t>
-          </list>
+          Note that the <spanx style="verb">metadata_policy</spanx> is not
+          intended to check and validate the JSON value types of metadata
+          parameters. Such checks SHOULD be performed at the application
+          layer, after obtaining the Entity metadata from a successfully
+          resolved Trust Chain.
         </t>
-        <t>
-          Note that metadata policies MUST regard any metadata parameter with
-          a language tag in its name, as described in <xref target="ClaimsLanguagesAndScripts"/>,
-          as distinct from the same metadata parameter without a language tag.
-        </t>
+
+        <section title="Principles" anchor="metadata_policy_principles">
+          <t>
+            OpenID Federation enables the definition of metadata policies with
+            the following properties:
+
+            <list style="hanging">
+              <t hangText="Hierarchy">
+                <vspace/>
+                Once applied to a metadata parameter, a metadata policy cannot be
+                repealed or made more permissive by Intermediate Entities that are
+                subordinate in the Trust Chain.
+                <vspace/>
+                The hierarchy of policies is preserved in nested federations where
+                a Trust Anchor in one federation acts as an Intermediate Entity in
+                another federation.
+              </t>
+
+              <t hangText="Specificity and Granularity">
+                <vspace/>
+                Just like metadata, a metadata policy is bound to a specific
+                Entity Type. This ensures policies for different Entity Types are
+                independent and isolated from one another.
+                <vspace/>
+                Policies are expressed at the level of individual metadata
+                parameters. The policies for a given Entity Type metadata
+                parameter are thus independent and isolated from those for other
+                parameters.
+                <vspace/>
+                When a Trust Anchor or an Intermediate Entity defines a metadata
+                policy for an Entity Type, it applies to the metadata of all
+                Subordinate Entities of that type in the Trust Chain.
+                <vspace/>
+                Because the place to define a policy is the Subordinate Statement
+                and every Entity Statement is issued for a specific subject, a
+                federation authority can choose to define a common Entity Type
+                metadata policy for all its Subordinates, or specific Entity Type
+                metadata policies for specific Subordinates.
+              </t>
+
+              <t hangText="Operation">
+                <vspace/>
+                A policy operates by performing a check, a modification, or both
+                on a given metadata parameter. This specification defines a set
+                of standard operators, described in
+                <xref target="standard_metadata_policy_operators"/>. A
+                federation MAY specify and use additional operators, provided
+                they comply with the principles laid out in this section and with
+                <xref target="metadata_policy_operators"/> and
+                <xref target="additional_metadata_policy_operators"/>.
+              </t>
+
+              <t hangText="Integral Metadata Enforcement">
+                <vspace/>
+                The resolution and application of metadata policies is an integral
+                part of the Trust Chain resolution process, as described in
+                <xref target="resolving_trust"/>.
+                <vspace/>
+                This means:
+                <list style="symbols">
+                  <t>
+                    A Trust Chain for which the metadata policy resolution fails
+                    due to an error, for example, due to an Intermediate Entity’s
+                    policy conflicting with a Superior’s policy, is deemed invalid.
+                  </t>
+                  <t>
+                    A Trust Chain with Entity metadata that does not comply with
+                    the resolved metadata policies is deemed invalid.
+                  </t>
+                </list>
+              </t>
+
+              <t hangText="Determinism">
+                <vspace/>
+                The resolution and application of metadata policies in a Trust
+                Chain is deterministic. Trust Anchors and Intermediate Entities
+                are thus able to formulate policies that exhibit predictable and
+                reproducible outcomes.
+              </t>
+
+            </list>
+
+          </t>
+
+        </section>
+
+        <section title="Structure" anchor="metadata_policy_structure">
+
+          <t>
+            Metadata policies are expressed in the
+            <spanx style="verb">metadata_policy</spanx> claim of a Subordinate
+            Statement, as described in <xref target="entity-statement"/>. The
+            claim value is a JSON object that has a data structure consisting of
+            three levels:
+          </t>
+
+          <t>
+            <list style="numbers">
+              <t>
+                Metadata policies for Entity Types.
+                <vspace/>
+                The top level contains one or more members, each representing
+                the metadata policy for an Entity Type. Each member name is an
+                Entity Type Identifier, as specified in
+                <xref target="entity_types"/>, for example,
+                <spanx style="verb">openid_relying_party</spanx>. The member
+                value is a JSON object that contains metadata parameter
+                policies.
+              </t>
+              <t>
+                Metadata parameter policies for the Entity Type.
+                <vspace/>
+                The second level contains one or more members, each representing
+                a policy for a metadata parameter for the Entity Type. Each
+                member name is a metadata parameter name, for example
+                <spanx style="verb">id_token_signed_response_alg</spanx>. The
+                name MAY include a language tag, as described in
+                <xref target="ClaimsLanguagesAndScripts"/>, in which case the
+                metadata parameter policy applies only to the metadata parameter
+                with the specified language tag. The member value is a JSON
+                object that contains policy operators.
+              </t>
+              <t>
+                Operators for the metadata parameter policy for the Entity
+                Type.
+                <vspace/>
+                The third level contains one or more members, each representing
+                an operator that checks or modifies the metadata parameter, as
+                described in <xref target="metadata_policy_operators"/>. Only
+                operators that are allowed to be combined with one another MUST
+                be included, as described in the specification for each
+                operator.
+              </t>
+            </list>
+          </t>
+
+          <t>
+            Duplicate JSON object member names MUST NOT be present at any of
+            the three levels of the <spanx style="verb">metadata_policy</spanx>
+            claim data structure.
+          </t>
+
           <t>
             <figure>
               <preamble>
-                The following is a non-normative example of a policy entry
-		providing metadata policy for an OpenID Connect RP:
+                The following is a non-normative example of a metadata policy
+                for an OpenID Relying Party that consists of a single policy for
+                the <spanx style="verb">id_token_signed_response_alg</spanx>
+                metadata parameter and uses two operators,
+                <spanx style="verb">default</spanx> and
+                <spanx style="verb">one_of</spanx>:
               </preamble>
-	      <name>
-		  Example <spanx style="verb">metadata_policy</spanx> Claim
-	      </name>
+              <name>
+                Example <spanx style="verb">metadata_policy</spanx> Claim
+              </name>
               <artwork><![CDATA[
 "metadata_policy" : {
   "openid_relying_party": {
     "id_token_signed_response_alg": {
       "default": "ES256",
-      "one_of" : ["ES256", "ES384", "ES512"]
+      "one_of": ["ES256", "ES384", "ES512"]
     }
   }
 }
 ]]></artwork>
             </figure>
           </t>
-        <section title="Operators" anchor="policy_operators">
-          <t>
-            This specification defines the following metadata policy operators.
-          </t>
-          <t>
-            Metadata policy operators that modify values are:
-            <list style="hanging">
-              <t hangText="value">
-                <vspace/>
-                The metadata parameter MUST be assigned the value that is the
-                value of this operator.
-              </t>
-              <t hangText="add">
-                <vspace/>
-                The value or values of this operator MUST be added to the
-                metadata parameter. If any of these values are already present
-                in the metadata parameter, they MUST NOT be added another time.
-                If the metadata parameter is absent, the parameter MUST be
-                initialized with the value of this operator.
-              </t>
-              <t hangText="default">
-                <vspace/>
-                If the metadata parameter is absent, it MUST be set to the
-                value of this operator.
-              </t>
-            </list>
-          </t>
-          <t>
-            Metadata policy operators that check values are:
-            <list style="hanging">
-              <t hangText="essential">
-                <vspace/>
-                If the value of this operator is <spanx style="verb">true</spanx>,
-                then the metadata parameter MUST be present.
-                If <spanx style="verb">false</spanx> the metadata parameter is
-                voluntary and may be absent.
-                If the <spanx style="verb">essential</spanx> operator is omitted,
-                this is equivalent to including it with a value of
-                <spanx style="verb">false</spanx>.
-              </t>
-              <t hangText="one_of">
-                <vspace/>
-                If the metadata parameter is present its value MUST be one of
-                those listed in the operator value.
-              </t>
-              <t hangText="subset_of">
-                <vspace/>
-                If the metadata parameter is present this operator computes the
-                intersection between the values of the operator and the metadata
-                parameter.
-                If the intersection is non-empty, the parameter is set to the
-                values in the intersection.
-                If the intersection is empty, the result is determined by the
-                <spanx style="verb">essential</spanx> operator: For an essential
-                metadata parameter, the result is an error; for a voluntary
-                metadata parameter, it MUST be removed from the metadata.
-                Note that this behavior makes <spanx style="verb">subset_of</spanx>
-                a potential value modifier in addition to it being a value check.
-              </t>
-              <t hangText="superset_of">
-                <vspace/>
-                If the metadata parameter is present its values MUST contain
-                those specified in the operator. By mathematically defining
-                supersets, equality is included.
-              </t>
-            </list>
-          </t>
-
-          <t>
-            Applications and protocols utilizing metadata policies MAY specify
-            and use additional policy operators.
-          </t>
-
-          <t>
-            All policy operators MUST consider it an error if a metadata
-            parameter that is being operated on has a <spanx style="verb">null</spanx>
-            value. Policy operators MUST NOT output metadata parameters with a
-            <spanx style="verb">null</spanx> value.
-          </t>
-
-          <t>
-            A "set equals" value check can be expressed by combining a
-            <spanx style="verb">subset_of</spanx> and a
-            <spanx style="verb">superset_of</spanx> with identical string
-            list values.
-          </t>
-          <t>
-            Note that when a metadata parameter is defined as a space-separated
-            list of strings, like <spanx style="verb">scope</spanx> in
-            <xref target="RFC7591"/>, the <spanx style="verb">subset_of</spanx>,
-            <spanx style="verb">superset_of</spanx> and
-            <spanx style="verb">default</spanx> operator values are still
-            expressed as lists of strings.
-            This language from <xref target="RFC6749"/> also applies to
-            metadata parameters for which values can be expressed as a
-            space-separated lists of strings: "If the value contains multiple
-            space-delimited strings, their order does not matter, and each
-            string adds an additional access range to the requested scope."
-          </t>
-
-        <table>
-          <preamble>
-              The following table is a map of the outputs produced by the
-              combination of the <spanx style="verb">essential</spanx> and
-              <spanx style="verb">subset_of</spanx> policy operators with
-              different input metadata parameter values.
-              Note, the <spanx style="verb">subset_of</spanx> check is ignored
-              when the metadata parameter is absent and designated as voluntary,
-              as shown in the last row.
-          </preamble>
-	  <name>
-	    Examples of outputs with Combinations of <spanx style="verb">essential</spanx>
-        and <spanx style="verb">subset_of</spanx> inputs
-	  </name>
-          <thead>
-            <tr>
-              <td colspan="2">Policy</td>
-              <td colspan="2">Metadata Parameter</td>
-            </tr>
-            <tr>
-              <td colspan="">essential</td>
-              <td colspan="">subset_of</td>
-              <td colspan="">input</td>
-              <td colspan="">output</td>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>true</td>
-              <td>[a,b,c]</td>
-              <td>[a,e]</td>
-              <td>[a]</td>
-            </tr>
-
-            <tr>
-              <td>false</td>
-              <td>[a,b,c]</td>
-              <td>[a,e]</td>
-              <td>[a]</td>
-            </tr>
-
-            <tr>
-              <td>true</td>
-              <td>[a,b,c]</td>
-              <td>[d,e]</td>
-              <td>error</td>
-            </tr>
-
-            <tr>
-              <td>false</td>
-              <td>[a,b,c]</td>
-              <td>[d,e]</td>
-              <td>no parameter</td>
-            </tr>
-
-            <tr>
-              <td>true</td>
-              <td>[a,b,c]</td>
-              <td>no parameter</td>
-              <td>error</td>
-            </tr>
-
-            <tr>
-              <td>false</td>
-              <td>[a,b,c]</td>
-              <td>no parameter</td>
-              <td>no parameter</td>
-            </tr>
-          </tbody>
-        </table>
-
         </section>
-        <section title="Restrictions on Policy Entries" anchor="policy_restr">
+
+        <section title="Operators" anchor="metadata_policy_operators">
           <t>
-            As stated, a policy entry can contain one or more operators.
-            Not all operators are allowed to appear together in a policy entry.
-          </t>
-          <t>
-            <list style="hanging">
-              <t hangText="subset_of/superset_of and one_of">
-                <vspace/>
-                <spanx style="verb">subset_of</spanx>
-                and
-                <spanx style="verb">superset_of</spanx>
-                apply to parameters
-                that can have more than
-                one value (for instance, <spanx style="verb">contacts</spanx>),
-                while <spanx style="verb">one_of</spanx> applies to
-                parameters that can only have one value (for instance,
-                <spanx style="verb">id_token_signed_response_alg</spanx>).
-                Therefore, <spanx style="verb">one_of</spanx> cannot
-                appear beside
-                <spanx style="verb">subset_of</spanx>/
-                <spanx style="verb">superset_of</spanx>
-                in a policy entry.
-              </t>
-              <t hangText="value">
-                <vspace/>
-                <spanx style="verb">value</spanx>
-                overrides everything else.
-                So having <spanx style="verb">value</spanx> together with any
-                other operator (except for
-                <spanx style="verb">essential</spanx>) does not make sense.
-              </t>
-            </list>
-          </t>
-          <t>
-            Other restrictions are:
+            A metadata policy operator:
           </t>
           <t>
             <list style="symbols">
               <t>
-                If <spanx style="verb">subset_of</spanx> and
-                <spanx style="verb">superset_of</spanx>
-                both appear as operators, then the
-                list of values in
-                <spanx style="verb">subset_of</spanx>
-                MUST be a superset of the values in
-                <spanx style="verb">superset_of</spanx>.
+                Is identified by a unique case-sensitive name.
               </t>
               <t>
-                If <spanx style="verb">add</spanx> appears in a policy entry
-                together with
-                <spanx style="verb">subset_of</spanx>
-                then the value/values of <spanx style="verb">add</spanx> MUST
-                be a subset of <spanx style="verb">subset_of</spanx>.
+                Acts on a single metadata parameter. The operator definition
+                MUST specify the metadata parameter JSON value types that are
+                mandatory to support and MAY also specify JSON value types that
+                are optional to support. When the metadata parameter has a JSON
+                value type that is not supported, the operator MUST produce a
+                policy error.
               </t>
               <t>
-                If <spanx style="verb">add</spanx> appears in a policy entry
-                together with
-                <spanx style="verb">superset_of</spanx>
-                then
-                the values of <spanx style="verb">add</spanx> MUST be a
-                superset of <spanx style="verb">superset_of</spanx>.
+                The action on the metadata parameter can be a value check, a
+                value modification, or both. When the operator’s action is a
+                value modification, it MAY remove the metadata parameter.
               </t>
               <t>
-                If <spanx style="verb">default</spanx> appears in a policy
-                entry together with
-                <spanx style="verb">subset_of</spanx>
-                then
-                the values of <spanx style="verb">default</spanx> MUST be a
-                subset of <spanx style="verb">subset_of</spanx>.
+                The action of the operator is configured by a JSON value. The
+                operator definition MUST specify the JSON value types that are
+                mandatory to support and MAY also specify JSON value types that
+                are optional to support. When the operator is configured with a
+                JSON value type that isn’t supported, the operator MUST produce
+                a policy error.
               </t>
               <t>
-                If <spanx style="verb">default</spanx> appears in a policy entry
-                together with
-                <spanx style="verb">superset_of</spanx>
-                then the values of <spanx style="verb">default</spanx> MUST be a
-                superset of
-                <spanx style="verb">superset_of</spanx>.
+                MUST declare what other operators it may be combined within a
+                metadata parameter policy. Combinations that are not allowed
+                MUST result in a policy error.
               </t>
               <t>
-                If <spanx style="verb">add</spanx> appears in a policy entry
-                together with <spanx style="verb">one_of</spanx> then
-                the
-                value of <spanx style="verb">add</spanx> MUST be a member
-                of <spanx style="verb">one_of</spanx>.
+                MUST declare in what order it is to be applied to a metadata
+                parameter, absolute or relative to other operators in the
+                metadata parameter policy. Value check operators SHOULD
+                generally be applied after operators that perform value
+                modifications.
               </t>
               <t>
-                If <spanx style="verb">default</spanx> appears in a policy entry
-                together with
-                <spanx style="verb">one_of</spanx>
-                then the
-                value <spanx style="verb">default</spanx> MUST be a member
-                of <spanx style="verb">one_of</spanx>.
+                MUST specify, when more than one Subordinate Statement in a
+                Trust Chain has a policy for an Entity Type metadata parameter
+                that uses the same operator, whether the operator values are
+                allowed to be merged to produce an identical or more restrictive
+                policy, and if so, under what conditions. If the operator does
+                not allow such a merge, it MUST produce a policy error.
               </t>
+              <t>
+                An operator MUST NOT output a metadata parameter with the
+                <spanx style="verb">null</spanx> value.
+              </t>
+
             </list>
           </t>
-        </section>
-        <section title="Combining Policies" anchor="combining_policies">
-          <t>
-            If there is more than one Entity Statement with metadata policy in a
-            Trust Chain, then the policies MUST be combined before they are applied
-            to the metadata statement.
-          </t>
-          <t>
-            Using the notation defined in <xref target="trust_chain"/>, policies are
-            combined by starting with ES[i] and then adding the policies from ES[j]
-            j=i-1,..,1. When for a given metadata parameter both the combined policy
-            at the current step and the Immediate Subordinate Entity specify a policy operator,
-            for example <spanx style="verb">subset_of</spanx>, the two operators are
-            merged, as described in <xref target="merging_policy_operators"/>. After
-            each combination step the policy for each parameter MUST adhere to the
-            rules in <xref target="policy_restr"/>. The final combined policy is then
-            applied to the Entity's metadata, as described in
-            <xref target="applying_policies"/>.
-          </t>
-          <t>
-            If during the combination process an operator merge rule or a policy
-            restriction is violated or otherwise an error is produced, the process
-            MUST stop and the policy combination MUST be considered invalid.
-          </t>
 
-          <section title="Merging Operators" anchor="merging_policy_operators">
-            <t>
-              The policy operators (as defined in <xref target="policy_operators"/>)
-              for a metadata parameter MUST be merged as follows:
-            </t>
-            <t>
-              <list style="hanging">
-                <t hangText="subset_of">
-                  <vspace/>
-                  The result of merging the values of two
-                  <spanx style="verb">subset_of</spanx> operators is the
-                  intersection of the operator values.
-                </t>
-                <t hangText="one_of">
-                  <vspace/>
-                  The result of merging the values of two
-                  <spanx style="verb">one_of</spanx> operators is the
-                  intersection of the operator values.
-                </t>
-                <t hangText="superset_of">
-                  <vspace/>
-                  The result of merging the values of two
-                  <spanx style="verb">superset_of</spanx> operators is the
-                  union of the operator values.
-                </t>
-                <t hangText="add">
-                  <vspace/>
-                  The result of merging the values of two
-                  <spanx style="verb">add</spanx>
-                  operators is the union of the values.
-                </t>
-                <t hangText="value">
-                  <vspace/>
-                  Merging two <spanx style="verb">value</spanx> operators
-                  requires the two operator values to be equal. If the values
-                  are not equal this MUST be treated as error.
-                </t>
-                <t hangText="default">
-                  <vspace/>
-                  Merging two <spanx style="verb">default</spanx> operators
-                  requires the two operator values to be equal. If the values
-                  are not equal this MUST be treated as error.
-                </t>
-                <t hangText="essential">
-                  <vspace/>
-                  If a Superior has specified <spanx style="verb">essential=true</spanx>,
-                  then a Subordinate cannot change that.
-                  If a Superior has specified <spanx style="verb">essential=false</spanx>,
-                  then a Subordinate is allowed to change that to
-                  <spanx style="verb">essential=true</spanx>.
-                  If a Superior has not specified <spanx style="verb">essential</spanx>,
-                  then a Subordinate can set <spanx style="verb">essential</spanx> to
-                  <spanx style="verb">true</spanx> or <spanx style="verb">false</spanx>.
-                  If those rules are not met this MUST be treated as error.
-                </t>
-              </list>
-            </t>
+          <section title="Standard Operators" anchor="standard_metadata_policy_operators">
+
+            <t>This specification defines the following metadata policy
+              operators:</t>
+
+            <section title="value" anchor="value_operator">
+              <t>
+                Name: <spanx style="verb">value</spanx>
+              </t>
+              <t>
+                Action: The metadata parameter MUST be assigned the value of the
+                operator. When the value of the operator is
+                <spanx style="verb">null</spanx>, the metadata parameter MUST be
+                removed.
+              </t>
+              <t>
+                Metadata parameter JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: string, number, boolean, object, array
+                  </t>
+                </list>
+              </t>
+              <t>
+                Operator JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: string, number, boolean, object,
+                    array, null
+                  </t>
+                </list>
+              </t>
+              <t>
+                Combination with other operators in a metadata parameter policy:
+                <list style="symbols">
+                  <t>
+                    MAY be combined with <spanx style="verb">essential</spanx>.
+                  </t>
+                </list>
+              </t>
+              <t>
+                Order of processing: First
+              </t>
+              <t>
+                Operator value merge: Allowed only when the operator values are
+                equal. If not, this MUST result in a policy error.
+              </t>
+            </section>
+
+            <section title="add" anchor="add_operator">
+              <t>
+                Name: <spanx style="verb">add</spanx>
+              </t>
+              <t>
+                Action: The value or values of this operator MUST be added to
+                the metadata parameter. Values that are already present in the
+                metadata parameter MUST NOT be added another time. If the
+                metadata parameter is absent, it MUST be initialized with the
+                value of this operator.
+              </t>
+              <t>
+                Metadata parameter JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: array of strings
+                  </t>
+                  <t>
+                    Optional to support: array of objects, array of numbers
+                  </t>
+                </list>
+              </t>
+              <t>
+                Operator JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: array of strings
+                  </t>
+                  <t>
+                    Optional to support: array of objects, array of numbers
+                  </t>
+                </list>
+              </t>
+              <t>
+                Combination with other operators in a metadata parameter policy:
+                <list style="symbols">
+                  <t>
+                    MAY be combined with <spanx style="verb">default</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">subset_of</spanx>,
+                    in which case the values of <spanx style="verb">add</spanx>
+                    MUST be a subset of the values of
+                    <spanx style="verb">subset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">superset_of</spanx>,
+                    in which case the values of <spanx style="verb">add</spanx>
+                    MUST be a superset of the values of
+                    <spanx style="verb">superset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">essential</spanx>.
+                  </t>
+                </list>
+              </t>
+              <t>
+                Order of processing: After <spanx style="verb">value</spanx>.
+              </t>
+              <t>
+                Operator value merge: The result of merging the values of two
+                <spanx style="verb">add</spanx> operators is the union of the
+                values.
+              </t>
+            </section>
+
+            <section title="default" anchor="default_operator">
+              <t>
+                Name: <spanx style="verb">default</spanx>
+              </t>
+              <t>
+                Action: If the metadata parameter is absent, it MUST be set to
+                the value of the operator. If the metadata parameter is present,
+                this operator has no effect.
+              </t>
+              <t>
+                Metadata parameter JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: string, number, boolean, object, array
+                  </t>
+                </list>
+              </t>
+              <t>
+                Operator JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: string, number, boolean, object, array
+                  </t>
+                </list>
+              </t>
+              <t>
+                Combination with other operators in a metadata parameter policy:
+                <list style="symbols">
+                  <t>
+                    MAY be combined with <spanx style="verb">add</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">one_of</spanx>, in
+                    which case the <spanx style="verb">default</spanx> value
+                    MUST be among the <spanx style="verb">one_of</spanx> values.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">subset_of</spanx>,
+                    in which case the <spanx style="verb">default</spanx> values
+                    MUST be a subset of the <spanx style="verb">subset_of</spanx>
+                    values.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">superset_of</spanx>,
+                    in which case the <spanx style="verb">default</spanx> values
+                    MUST be a superset of the
+                    <spanx style="verb">superset_of</spanx> values.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">essential</spanx>.
+                  </t>
+                </list>
+              </t>
+              <t>
+                Order of processing: After <spanx style="verb">add</spanx>.
+              </t>
+              <t>
+                Operator value merge: The operator values MUST be equal. If the
+                values are not equal this MUST result in a policy error.
+              </t>
+            </section>
+
+            <section title="one_of" anchor="one_of_operator">
+              <t>
+                Name: <spanx style="verb">one_of</spanx>
+              </t>
+              <t>
+                Action: If the metadata parameter is present, its value MUST be
+                one of those listed in the operator value.
+              </t>
+              <t>
+                Metadata parameter JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: string
+                  </t>
+                  <t>
+                    Optional to support: object, number
+                  </t>
+                </list>
+              </t>
+              <t>
+                Operator JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: array of strings
+                  </t>
+                  <t>
+                    Optional to support: array of objects, array of numbers
+                  </t>
+                </list>
+              </t>
+              <t>
+                Combination with other operators in a metadata parameter policy:
+                <list style="symbols">
+                  <t>
+                    MAY be combined with <spanx style="verb">default</spanx>,
+                    in which case the value of default MUST be among the
+                    <spanx style="verb">one_of</spanx> values.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">essential</spanx>.
+                  </t>
+                </list>
+              </t>
+              <t>
+                Order of processing: After <spanx style="verb">default</spanx>.
+              </t>
+              <t>
+                Operator value merge: The result of merging the values of two
+                <spanx style="verb">one_of</spanx> operators is the intersection
+                of the operator values. If the intersection is empty, this MUST
+                result in a policy error.
+              </t>
+            </section>
+
+            <section title="subset_of" anchor="subset_of_operator">
+              <t>
+                Name: <spanx style="verb">subset_of</spanx>
+              </t>
+              <t>
+                Action: If the metadata parameter is present, this operator
+                computes the intersection between the values of the operator and
+                the metadata parameter. If the intersection is non-empty, the
+                metadata parameter is set to the values in the intersection. If
+                the intersection is empty, the metadata parameter MUST be
+                removed. Note that this behavior makes
+                <spanx style="verb">subset_of</spanx> a potential value modifier
+                in addition to it being a value check.
+              </t>
+              <t>
+                Metadata parameter JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: array of strings
+                  </t>
+                  <t>
+                    Optional to support: array of objects, array of numbers
+                  </t>
+                </list>
+              </t>
+              <t>
+                Operator JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: array of strings
+                  </t>
+                  <t>
+                    Optional to support: array of objects, array of numbers
+                  </t>
+                </list>
+              </t>
+              <t>
+                Combination with other operators in a metadata parameter policy:
+                <list style="symbols">
+                  <t>
+                    MAY be combined with <spanx style="verb">add</spanx>, in
+                    which case the values of <spanx style="verb">add</spanx>
+                    MUST be a subset of the values of
+                    <spanx style="verb">subset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">default</spanx>, in
+                    which case the values of <spanx style="verb">default</spanx>
+                    MUST be a subset of the values of
+                    <spanx style="verb">subset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">superset_of</spanx>,
+                    in which case the values of
+                    <spanx style="verb">subset_of</spanx> MUST be a superset of
+                    the values of <spanx style="verb">superset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">essential</spanx>.
+                  </t>
+                </list>
+              </t>
+              <t>
+                Order of processing: After <spanx style="verb">one_of</spanx>.
+              </t>
+              <t>
+                Operator value merge: The result of merging the values of two
+                <spanx style="verb">subset_of</spanx> operators is the
+                intersection of the operator values. If the intersection is
+                empty, this MUST result in a policy error.
+              </t>
+            </section>
+
+            <section title="superset_of" anchor="superset_of_operator">
+              <t>
+                Name: <spanx style="verb">superset_of</spanx>
+              </t>
+              <t>
+                Action: If the metadata parameter is present, its values MUST
+                contain those specified in the operator value. By mathematically
+                defining supersets, equality is included.
+              </t>
+              <t>
+                Metadata parameter JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: array of strings
+                  </t>
+                  <t>
+                    Optional to support: array of objects, array of numbers
+                  </t>
+                </list>
+              </t>
+              <t>
+                Operator JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: array of strings
+                  </t>
+                  <t>
+                    Optional to support: array of objects, array of numbers
+                  </t>
+                </list>
+              </t>
+              <t>
+                Combination with other operators in a metadata parameter policy:
+                <list style="symbols">
+                  <t>
+                    MAY be combined with <spanx style="verb">add</spanx>, in
+                    which case the values of <spanx style="verb">add</spanx>
+                    MUST be a superset of the values of
+                    <spanx style="verb">superset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">default</spanx>, in
+                    which case the values of <spanx style="verb">default</spanx>
+                    MUST be a superset of the values of
+                    <spanx style="verb">superset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">subset_of</spanx>,
+                    in which case the values of
+                    <spanx style="verb">subset_of</spanx> MUST be a superset of
+                    the values of <spanx style="verb">superset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">essential</spanx>.
+                  </t>
+                </list>
+              </t>
+              <t>
+                Order of processing: After <spanx style="verb">subset_of</spanx>.
+              </t>
+              <t>
+                Operator value merge: The result of merging the values of two
+                <spanx style="verb">superset_of</spanx> operators is the union
+                of the operator values.
+              </t>
+            </section>
+
+            <section title="essential" anchor="essential_operator">
+              <t>
+                Name: <spanx style="verb">essential</spanx>
+              </t>
+              <t>
+                Action: If the value of this operator is
+                <spanx style="verb">true</spanx>, then the metadata parameter
+                MUST be present. If <spanx style="verb">false</spanx>, the
+                metadata parameter is voluntary and may be absent. If the
+                <spanx style="verb">essential</spanx> operator is omitted, this
+                is equivalent to including it with a value of
+                <spanx style="verb">false</spanx>.
+              </t>
+              <t>
+                Metadata parameter JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: string, number, boolean, object, array
+                  </t>
+                </list>
+              </t>
+              <t>
+                Operator JSON values:
+                <list style="symbols">
+                  <t>
+                    Mandatory to support: boolean
+                  </t>
+                </list>
+              </t>
+              <t>
+                Combination with other operators in a metadata parameter policy:
+                <list style="symbols">
+                  <t>
+                    MAY be combined with any other operator.
+                  </t>
+                </list>
+              </t>
+              <t>
+                Order of processing: Last
+              </t>
+              <t>
+                Operator value merge: If a Superior has specified
+                <spanx style="verb">essential=true</spanx>, then a Subordinate
+                MUST NOT change that. If a Superior has specified
+                <spanx style="verb">essential=false</spanx>, then a Subordinate
+                is allowed to change that to
+                <spanx style="verb">essential=true</spanx>. If a Superior has
+                not specified <spanx style="verb">essential</spanx>, then a
+                Subordinate can set <spanx style="verb">essential</spanx> to
+                <spanx style="verb">true</spanx> or
+                <spanx style="verb">false</spanx>. If those conditions are not
+                met, this MUST result in a policy error.
+              </t>
+            </section>
+
+            <section title="Notes on Operators" anchor="standard_metadata_policy_operators_notes">
+
+              <t>
+                A "set equals" metadata parameter policy can be expressed by
+                combining the operators <spanx style="verb">subset_of</spanx> and
+                <spanx style="verb">superset_of</spanx> with identical array
+                values.
+              </t>
+
+              <t>
+                The <spanx style="verb">scope</spanx> OAuth 2.0 client metadata
+                parameter, defined in <xref target="RFC7591"/> and represented by
+                a string of space-separated string values, is to be regarded and
+                processed as a string array by policy operators, such as the
+                operators <spanx style="verb">default</spanx>,
+                <spanx style="verb">subset_of</spanx> and
+                <spanx style="verb">superset_of</spanx>. The resulting
+                <spanx style="verb">scope</spanx> metadata parameter is a
+                space-separated string of individual scope values, where the
+                scope values present are taken from the array of values produced
+                by applying the metadata operators to the
+                <spanx style="verb">scope</spanx> parameter.
+              </t>
+
+              <table>
+                <preamble>
+                  The following table is a map of the outputs produced by
+                  combinations of the <spanx style="verb">essential</spanx> and
+                  <spanx style="verb">subset_of</spanx> policy operators with
+                  different input metadata parameter values.
+                  Note, the <spanx style="verb">subset_of</spanx> check is skipped
+                  when the metadata parameter is absent and designated as
+                  voluntary, as shown in the last row.
+                </preamble>
+                <name>
+                  Examples of Outputs with Combinations of
+                  <spanx style="verb">essential</spanx> and
+                  <spanx style="verb">subset_of</spanx> for Different Inputs
+                </name>
+                <thead>
+                  <tr>
+                    <td colspan="2">Policy</td>
+                    <td colspan="2">Metadata Parameter</td>
+                  </tr>
+                  <tr>
+                    <td colspan="">essential</td>
+                    <td colspan="">subset_of</td>
+                    <td colspan="">input</td>
+                    <td colspan="">output</td>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    <td>true</td>
+                    <td>[a,b,c]</td>
+                    <td>[a,e]</td>
+                    <td>[a]</td>
+                  </tr>
+
+                  <tr>
+                    <td>false</td>
+                    <td>[a,b,c]</td>
+                    <td>[a,e]</td>
+                    <td>[a]</td>
+                  </tr>
+
+                  <tr>
+                    <td>true</td>
+                    <td>[a,b,c]</td>
+                    <td>[d,e]</td>
+                    <td>error</td>
+                  </tr>
+
+                  <tr>
+                    <td>false</td>
+                    <td>[a,b,c]</td>
+                    <td>[d,e]</td>
+                    <td>no parameter</td>
+                  </tr>
+
+                  <tr>
+                    <td>true</td>
+                    <td>[a,b,c]</td>
+                    <td>no parameter</td>
+                    <td>error</td>
+                  </tr>
+
+                  <tr>
+                    <td>false</td>
+                    <td>[a,b,c]</td>
+                    <td>no parameter</td>
+                    <td>no parameter</td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+
           </section>
+
+          <section title="Additional Operators" anchor="additional_metadata_policy_operators">
+
+            <t>
+              Federations MAY specify and use additional metadata policy
+              operators that conform with the principles in
+              <xref target="metadata_policy_principles"/> and in
+              <xref target="metadata_policy_operators"/>.
+            </t>
+
+            <t>
+              Implementations MUST ignore additional operators that are not
+              understood, unless the operator name is included in the
+              <spanx style="verb">metadata_policy_crit</spanx> Subordinate
+              Statement claim, in which case the operator MUST be understood
+              and processed. If an additional operator listed in
+              <spanx style="verb">metadata_policy_crit</spanx> is not understood
+              or cannot be processed, then this MUST result in a policy error
+              and the Trust Chain MUST be considered invalid.
+            </t>
+
+          </section>
+
         </section>
 
-        <section title="Applying Policies" anchor="applying_policies">
-          <t>
-            The policies that apply to the Entity's metadata are those that
-            result from the combining of the policies from the Entity Statements
-            that make up the Trust Chain, as specified in
-            <xref target="combining_policies"/>.
-          </t>
-          <t>
-            For every Entity Type metadata parameter for which a policy entry
-            is present, the policy operators MUST be applied in accordance to
-            their definitions in <xref target="policy_operators"/> and in a
-            sequence as follows:
-          </t>
-          <t>
-            <list style="numbers">
+        <section title="Enforcement" anchor="metadata_policy_enforcement">
+
+            <t>
+              This section describes the resolution of the metadata policy for a
+              Trust Chain and its application to the metadata of the Federation
+              Entity that is the Trust Chain subject.
+            </t>
+
+            <t>
+              If a policy error or another error is encountered during the
+              metadata policy resolution or its application, the Trust Chain
+              MUST be considered invalid.
+            </t>
+
+            <section title="Resolution" anchor="metadata_policy_resolution">
+
               <t>
-		<spanx style="verb">value</spanx>:
-                If this policy operator is present, further policy operators on
-                the metadata parameter MUST NOT be applied.
+                The metadata policy for a Trust Chain is determined by the
+                sequence of the present <spanx style="verb">metadata_policy</spanx>
+                claims of the Subordinate Statements that make up the chain.
               </t>
-              <t><spanx style="verb">add</spanx></t>
-              <t><spanx style="verb">default</spanx></t>
+
               <t>
-		<spanx style="verb">essential</spanx>:
-                If this parameter value is <spanx style="verb">false</spanx> or
-                it is absent, then any subsequent policy operators that
-                represent a value check MUST be skipped.
+                The resolution process MUST first gather the names of all policy
+                operators other than the standard ones defined in
+                <xref target="standard_metadata_policy_operators"/> that are
+                declared as critical. This is done by checking each Subordinate
+                Statement in the Trust Chain for the optional
+                <spanx style="verb">metadata_policy_crit</spanx> claim,
+                described in <xref target="entity-statement"/>, and collecting
+                any operator names that are found in it.
               </t>
-              <t><spanx style="verb">one_of</spanx></t>
-              <t><spanx style="verb">subset_of</spanx></t>
-              <t><spanx style="verb">superset_of</spanx></t>
-            </list>
-          </t>
+
+              <t>
+                The resolution process proceeds by iterating through the
+                Subordinate Statements. The sequence of this iteration is
+                crucial - it MUST begin with the Subordinate Statement issued by
+                the most Superior Entity and end with the Subordinate Statement
+                issued by the Immediate Superior of the Trust Chain subject.
+              </t>
+
+              <t>
+                An important procedure during the iteration is the
+                <spanx style="verb">metadata_policy</spanx> validation. It MUST
+                ensure the data structure is compliant and that every metadata
+                parameter policy contains only allowed operator combinations, as
+                described in <xref target="metadata_policy_operators"/>, and in
+                accordance with the specifications of the operators. It MUST be
+                also ensured the <spanx style="verb">metadata_policy</spanx>
+                contains no operators that cannot be understood and processed
+                whose names are among the collected
+                <spanx style="verb">metadata_policy_crit</spanx> values. An
+                unsuccessful validation MUST result in a policy error.
+              </t>
+
+              <t>
+                At each iteration step, the Subordinate Statement MUST be checked
+                for the presence of a <spanx style="verb">metadata_policy</spanx>
+                claim. The first encountered
+                <spanx style="verb">metadata_policy</spanx> MUST be validated as
+                described above, after which it becomes the current metadata
+                policy.
+              </t>
+
+              <t>
+                If the iteration yields a next subordinate
+                <spanx style="verb">metadata_policy</spanx> claim, it MUST be
+                validated as described above, then merged into the current
+                metadata policy.
+              </t>
+
+              <t>
+                The merge is performed at all three levels of the
+                <spanx style="verb">metadata_policy</spanx> data structure
+                described in <xref target="metadata_policy_structure"/>, by
+                starting from the top level:
+                <t>
+                  <list style="numbers">
+                    <t>
+                      The metadata policies for Entity Types.
+                    </t>
+                    <t>
+                      The metadata parameter policies for an Entity Type.
+                    </t>
+                    <t>
+                      The operators for a metadata parameter policy for an
+                      Entity Type.
+                    </t>
+                  </list>
+                </t>
+              </t>
+
+              <t>
+                At the level of metadata policies for Entity Types, the merge
+                proceeds as follows:
+                <t>
+                  <list style="symbols">
+                    <t>
+                      If the next subordinate
+                      <spanx style="verb">metadata_policy</spanx> claim contains
+                      a metadata policy for an Entity Type that is already
+                      present in the current metadata policy, it MUST be merged
+                      according to the rules of the next lower level (the
+                      metadata parameter policies).
+                    </t>
+                    <t>
+                      Entity Type metadata policies in the next subordinate
+                      <spanx style="verb">metadata_policy</spanx> claim that are
+                      not present in the current metadata policy MUST be copied
+                      to it.
+                    </t>
+                  </list>
+                </t>
+              </t>
+
+              <t>
+                At the level of metadata parameter policies, the merge proceeds
+                as follows:
+                <t>
+                  <list style="symbols">
+                    <t>
+                      If a metadata parameter policy is already present in the
+                      current Entity Type metadata policy, it MUST be merged
+                      according to the rules of the next lower level (the
+                      operators for the metadata parameter policy). If the
+                      resulting metadata parameter policy contains combinations
+                      that are not allowed, as described in
+                      <xref target="metadata_policy_operators"/> and in
+                      accordance with the specifications of the operators, this
+                      MUST result in a policy error.
+                    </t>
+                    <t>
+                      Subordinate metadata parameter policies that are not
+                      present in the current Entity Type metadata policy MUST be
+                      copied to it.
+                    </t>
+                  </list>
+                </t>
+              </t>
+
+              <t>
+                At the level of operators, the merge proceeds as follows:
+                <t>
+                  <list style="symbols">
+                    <t>
+                      If an operator is already present in the current metadata
+                      parameter policy, the values of the subordinate operator
+                      MUST be merged, as described in
+                      <xref target="metadata_policy_operators"/> and in
+                      accordance with the operator specification. If an operator
+                      value merge is not allowed or otherwise unsuccessful this
+                      MUST result in a policy error.
+                    </t>
+                    <t>
+                      Subordinate operators that are not present in the current
+                      metadata parameter policy MUST be copied to it.
+                    </t>
+                  </list>
+                </t>
+              </t>
+
+              <t>
+                If no further Subordinate Statements with a
+                <spanx style="verb">metadata_policy</spanx> claim are found, the
+                current metadata policy becomes the resolved one for the Trust
+                Chain.
+              </t>
+
+            </section>
+
+            <section title="Application" anchor="metadata_policy_application">
+
+              <t>
+                If the Subordinate Statement about the Trust Chain subject
+                contains a <spanx style="verb">metadata</spanx> claim, this MUST
+                first be applied, as described in the claim definition in
+                <xref target="entity-statement"/>, and only then it can be
+                proceeded with applying the resolved metadata policy.
+              </t>
+
+              <t>
+                If the process described in
+                <xref target="metadata_policy_resolution"/> found no Subordinate
+                Statements in the Trust Chain with a
+                <spanx style="verb">metadata_policy</spanx> claim, the metadata
+                of the Trust Chain subject resolves simply to the
+                <spanx style="verb">metadata</spanx> found in its Entity
+                Configuration, with any <spanx style="verb">metadata</spanx>
+                parameters asserted by the Immediate Superior applied to it.
+              </t>
+
+              <t>
+                If a metadata policy was resolved for the Trust Chain, for every
+                Entity Type metadata and metadata parameter for which a
+                corresponding metadata parameter policy is present, the included
+                policy operators MUST be applied as described in
+                <xref target="metadata_policy_operators"/> and in accordance with
+                the specifications of the operators. The operators MUST be
+                applied to the metadata parameter in a sequence that is
+                determined by the absolute or relative order specified for each
+                operator.
+              </t>
+
+              <t>
+                If the application of metadata policies results in illegal or
+                otherwise incorrect metadata, then the metadata MUST be regarded
+                as broken and MUST NOT be used.
+              </t>
+
+              <t>
+                The Trust Chain subject is responsible to verify that it is
+                able to support and comply with the metadata that results from
+                the application of federation metadata policies. For instance,
+                this may involve a check that cryptographic algorithms required
+                by the resulting metadata are supported. When metadata policies
+                change, Trust Chain subjects may need to reevaluate their
+                support and compliance.
+              </t>
+
+            </section>
+
+          </section>
+
+        <section title="Metadata Policy Example" anchor="metadata-policy-example">
           <t>
-            Applications and protocols that specify additional policy operators
-            MUST define their order relative to the above sequence of operator
-            application.
+            The following is a non-normative example of resolving and applying
+            Trust Chain metadata policies for an OpenID relying party.
           </t>
-        </section>
-        <section title="Policy Combination Example">
           <figure>
             <preamble>
-              We start with a federation's <spanx style="verb">metadata_policy</spanx>
-              for OAuth 2.0 clients:
+              We start with a federation Trust Anchor's
+              <spanx style="verb">metadata_policy</spanx> for RPs:
             </preamble>
-	    <name>
-	      Example Federation's Metadata Policy for OAuth 2.0 Clients
-	    </name>
+            <name>
+              Example Metadata Policy of a Trust Anchor for RPs
+            </name>
             <artwork><![CDATA[
 "metadata_policy": {
-  "oauth_client": {
+  "openid_relying_party": {
     "grant_types": {
+       "default": [
+        "authorization_code"
+      ],
       "subset_of": [
         "authorization_code",
-        "implicit",
         "refresh_token"
       ],
       "superset_of": [
         "authorization_code"
-      ],
-      "default": [
-        "authorization_code",
-        "refresh_token"
       ]
     },
     "token_endpoint_auth_method": {
       "one_of": [
-        "client_secret_post",
-        "client_secret_basic"
+        "private_key_jwt",
+        "self_signed_tls_client_auth"
+      ],
+      "essential": true
+    },
+    "token_endpoint_auth_signing_alg" : {
+      "one_of": [
+        "PS256",
+        "ES256"
       ]
+    },
+    "subject_type": {
+      "value": "pairwise"
     },
     "contacts": {
       "add": [
@@ -2216,231 +2794,147 @@
           </figure>
           <figure>
             <preamble>
-              Next, we have an organization's <spanx style="verb">metadata_policy</spanx>
-              for OAuth 2.0 clients:
+              Next, we have an Intermediate organization's
+              <spanx style="verb">metadata_policy</spanx> for Subordinate RPs
+              together with <spanx style="verb">metadata</spanx> values for its
+              Immediate Subordinate RPs:
             </preamble>
-	    <name>
-	      Example Organization's Metadata Policy for OAuth 2.0 Clients
-	    </name>
-            <artwork><![CDATA[
-"metadata_policy": {
-  "oauth_client": {
-    "grant_types": {
-      "subset_of": [
-        "authorization_code",
-        "refresh_token"
-      ],
-      "default": [
-        "authorization_code",
-        "refresh_token"
-      ]
-    },
-    "token_endpoint_auth_method": {
-      "one_of": [
-        "client_secret_post",
-        "client_secret_basic"
-      ],
-      "default": "client_secret_basic"
-    },
-    "contacts": {
-      "add": [
-        "helpdesk@org.example.org"
-      ]
-    }
-  }
-}
-]]></artwork>
-          </figure>
-          <figure>
-            <preamble>
-              The resulting combined <spanx style="verb">metadata_policy</spanx> is:
-            </preamble>
-	    <name>
-	      The Combined Metadata Policies from the Previous Two Examples
-	    </name>
-            <artwork><![CDATA[
-"metadata_policy": {
-  "oauth_client": {
-    "grant_types": {
-      "subset_of": [
-        "authorization_code",
-        "refresh_token"
-      ],
-      "superset_of": [
-        "authorization_code"
-      ],
-      "default": [
-        "authorization_code",
-        "refresh_token"
-      ]
-    },
-    "token_endpoint_auth_method": {
-      "one_of": [
-	    "client_secret_post",
-	    "client_secret_basic"
-      ],
-      "default": "client_secret_basic"
-    },
-    "contacts": {
-      "add": [
-	    "helpdesk@federation.example.org",
-	    "helpdesk@org.example.org"
-      ]
-    }
-  }
-}
-]]></artwork>
-          </figure>
-        </section>
-        <section title="Enforcing Policy">
-          <t>
-            If applying policies to a metadata statement results in incorrect
-            metadata, then such a metadata statement MUST
-            be regarded as broken and MUST NOT be used.
-          </t>
-	  <t>
-	    It is the responsibility of the implementation to verify that the metadata
-	    resulting from applying the policies of a federation that it is using
-	    is supported by the implementation.
-	    For instance, the implementation needs to support any cryptographic algorithms
-	    required by the resulting metadata.
-	    Implementations may need to reevaluate their compliance when policies change.
-	  </t>
-        </section>
-        <section title="Extending the Policy Language">
-          <t>
-            There might be parties that want to extend the policy language
-            defined here. If that happens, then the rule is that if
-            software compliant with this specification
-            encounters a keyword it does not understand,
-            it MUST ignore it unless it is listed in a
-            <spanx style="verb">metadata_policy_crit</spanx> list,
-            as is done for JWS header parameters
-            with the <spanx style="verb">crit</spanx> parameter.
-            If the policy language extension keyword
-            is listed in the <spanx style="verb">metadata_policy_crit</spanx> list
-            and not understood, then the metadata MUST be rejected.
-          </t>
-        </section>
-        <section title="Example of Applying Policies">
-          <t>
-            The following is a non-normative example of applying metadata policies
-            and metadata values to an RP's metadata.
-          </t>
-          <figure>
-            <preamble>
-                The RP's <spanx style="verb">metadata</spanx> from its Entity
-                Configuration is:
-            </preamble>
-	    <name>
-	      RP's Metadata from its Entity Configuration
-	    </name>
-            <artwork><![CDATA[
-"metadata": {
-  "openid_relying_party": {
-    "contacts": [
-      "rp_admins@cs.example.com"
-    ],
-    "redirect_uris": [
-      "https://cs.example.com/rp1"
-    ],
-    "response_types": [
-      "code"
-    ]
-  }
-}
-]]></artwork>
-          </figure>
-          <figure>
-            <preamble>
-                The federation's <spanx style="verb">metadata_policy</spanx>
-                for RPs is:
-            </preamble>
-	    <name>
-	      Federation's Metadata Policy for RPs
-	    </name>
-            <artwork><![CDATA[
-"metadata_policy": {
-  "openid_relying_party": {
-    "id_token_signed_response_alg": {
-      "one_of": [
-        "ES256",
-        "ES384"
-      ],
-      "default": "ES256"
-    },
-    "response_types": {
-      "subset_of": [
-        "code",
-        "code id_token"
-      ]
-    }
-  }
-}
-]]></artwork>
-          </figure>
-          <figure>
-            <preamble>
-              An organization's <spanx style="verb">metadata_policy</spanx>
-              and <spanx style="verb">metadata</spanx> values for RPs is:
-            </preamble>
-	    <name>
-	      Organization's Metadata Policy and Metadata Values for RPs
-	    </name>
+            <name>
+              Example Metadata Policy and Metadata Values of an Intermediate
+              Entity for RPs
+            </name>
             <artwork><![CDATA[
 {
   "metadata_policy": {
     "openid_relying_party": {
-      "contacts": {
-        "add": [
-          "helpdesk@example.com"
+      "grant_types": {
+        "subset_of": [
+          "authorization_code"
         ]
       },
-      "logo_uri": {
+      "token_endpoint_auth_method": {
         "one_of": [
-          "https://example.com/logo_small.svg",
-          "https://example.com/logo_big.svg"
-        ],
-        "default": "https://example.com/logo_small.svg"
+          "self_signed_tls_client_auth"
+        ]
+      },
+      "contacts": {
+        "add": [
+          "helpdesk@org.example.org"
+        ]
       }
     }
   },
   "metadata": {
     "openid_relying_party": {
-      "policy_uri": "https://example.com/policy.html",
-      "tos_uri": "https://example.com/tos.html"
+      "sector_identifier_uri": "https://org.example.org/sector-ids.json",
+      "policy_uri": "https://org.example.org/policy.html"
     }
   }
 }
 ]]></artwork>
           </figure>
           <figure>
-	    <preamble>
-	      After applying the metadata policies and values above, the
-          <spanx style="verb">metadata</spanx> for the Entity in question
-          becomes:
-	    </preamble>
-	    <name>
-	      RP's Metadata After Application of Metadata Policies and Metadata Values
-	    </name>
+            <preamble>
+              Merging the example RP metadata policy of the Intermediate Entity
+              into the RP metadata policy of the Trust Anchor produces the
+              following policy for the Trust Chain:
+            </preamble>
+            <name>
+              Example Merged Metadata Policy for RPs
+            </name>
+            <artwork><![CDATA[
+{
+  "grant_types": {
+    "default": [
+      "authorization_code"
+    ],
+    "superset_of": [
+      "authorization_code"
+    ],
+    "subset_of": [
+      "authorization_code"
+    ]
+  },
+  "token_endpoint_auth_method": {
+    "one_of": [
+      "self_signed_tls_client_auth"
+    ],
+    "essential": true
+  },
+  "token_endpoint_auth_signing_alg": {
+    "one_of": [
+      "PS256",
+      "ES256"
+    ]
+  },
+  "subject_type": {
+    "value": "pairwise"
+  },
+  "contacts": {
+    "add": [
+      "helpdesk@federation.example.org",
+      "helpdesk@org.example.org"
+    ]
+  }
+}
+]]></artwork>
+          </figure>
+          <figure>
+            <preamble>
+              The Trust Chain subject is a Leaf Entity, which publishes the
+              following RP metadata in its Entity Configuration:
+            </preamble>
+            <name>
+              Example Entity Configuration RP Metadata
+            </name>
             <artwork><![CDATA[
 "metadata": {
   "openid_relying_party": {
-    "contacts": [
-      "rp_admins@cs.example.com",
-      "helpdesk@example.com"
+    "redirect_uris": [
+      "https://rp.example.org/callback"
     ],
-    "logo_uri": "https://example.com/logo_small.svg",
-    "policy_uri": "https://example.com/policy.html",
-    "tos_uri": "https://example.com/tos.html",
-    "id_token_signed_response_alg": "ES256",
     "response_types": [
       "code"
     ],
-    "redirect_uris": [
-      "https://cs.example.com/rp1"
+    "token_endpoint_auth_method": "self_signed_tls_client_auth",
+    "contacts": [
+      "rp_admins@rp.example.org"
     ]
   }
+}
+]]></artwork>
+          </figure>
+          <figure>
+            <preamble>
+              The <spanx style="verb">metadata</spanx> values specified by the
+              Intermediate Entity for its Immediate Subordinates are applied to
+              the Trust Chain subject <spanx style="verb">metadata</spanx>.
+              After that, the merged metadata policy is applied, to produce the
+              following resulting RP metadata:
+            </preamble>
+            <name>
+              The Resulting RP Metadata for the Trust Chain Subject
+            </name>
+            <artwork><![CDATA[
+{
+  "redirect_uris": [
+    "https://rp.example.org/callback"
+  ],
+  "grant_types": [
+    "authorization_code"
+  ],
+  "response_types": [
+    "code"
+  ],
+  "token_endpoint_auth_method": "self_signed_tls_client_auth",
+  "subject_type": "pairwise",
+  "sector_identifier_uri": "https://org.example.org/sector-ids.json",
+  "policy_uri": "https://org.example.org/policy.html",
+  "contacts": [
+    "rp_admins@rp.example.org",
+    "helpdesk@federation.example.org",
+    "helpdesk@org.example.org"
+  ]
 }
 ]]></artwork>
           </figure>
@@ -2663,8 +3157,13 @@
         <t>
           The key used by the Trust Mark
           issuer to sign its Trust Marks MUST be one of the private keys
-          related to its
-          <spanx style="verb">Federation Entity Keys</spanx>.
+          in its set of
+          Federation Entity Keys.
+	</t>
+	<t>
+	  Trust Mark JWTs MUST include the
+	  <spanx style="verb">kid</spanx> (Key ID) header parameter
+	  with its value being the Key ID of the signing key used.
         </t>
         <t>
           Note that a federation MAY allow an Entity to self-sign
@@ -2673,7 +3172,7 @@
         <t>
           Trust Mark JWTs MUST be explicitly typed by setting the
           <spanx style="verb">typ</spanx> header parameter to
-          <spanx style="verb">trust-mark+jwt</spanx>. This is done to prevent
+          <spanx style="verb">trust-mark+jwt</spanx> to prevent
           cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
         </t>
 
@@ -2708,7 +3207,7 @@
 
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
           <t>
-	    These claims are used in Trust Marks:
+	    The claims in a Trust Mark are:
 	  </t>
           <t>
             <list style="hanging">
@@ -2776,20 +3275,25 @@
             </list>
           </t>
           <t>
-            Other claims MAY be defined and used in conjunction with the claims above.
-            The recommendations for claim naming in Section 5.1.2 of
-            <xref target="OpenID.Core">OpenID Connect Core 1.0</xref> apply.
+            Additional claims MAY be defined and used in conjunction with the claims above.
           </t>
         </section>
-        <section title="Trust Mark Delegation Claims" anchor="delegation_claim">
+
+        <section title="Trust Mark Delegation JWT" anchor="delegation_jwt">
           <t>
-            Trust Mark delegation JWTs MUST be explicitly typed, by setting the
+            A Trust Mark delegation JWT MUST be explicitly typed, by setting the
             <spanx style="verb">typ</spanx> header parameter to
-            trust-mark-delegation+jwt. This prevents
+            <spanx style="verb">trust-mark-delegation+jwt</spanx> to prevent
             cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+	    It is signed with a Federation Entity Key.
           </t>
+	  <t>
+	    Trust Mark delegation JWTs MUST include the
+	    <spanx style="verb">kid</spanx> (Key ID) header parameter
+	    with its value being the Key ID of the signing key used.
+	  </t>
           <t>
-            The delegation claims:
+            The claims in a Trust Mark delegation JWT are:
           </t>
           <t>
             <list style="hanging">
@@ -2824,6 +3328,9 @@
               </t>
             </list>
           </t>
+	  <t>
+	    Additional claims MAY be defined and used in conjunction with the claims above.
+	  </t>
         </section>
         <section title="Validating a Trust Mark" anchor="trust_valid">
           <t>
@@ -3156,7 +3663,7 @@ Host: edugain.org
           </figure>
         </section>
 
-        <section title="Fetch Entity Statement Response">
+        <section anchor="fetch-response" title="Fetch Entity Statement Response">
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type
@@ -3247,7 +3754,7 @@ Host: edugain.org
 	  defined in <xref target="federation_entity"/>.
 	</t>
 
-        <section title="Resolve Request">
+        <section anchor="resolve-request" title="Resolve Request">
           <t>
 	    When client authentication is not used,
             the request MUST be an HTTP request using the GET method
@@ -3299,7 +3806,7 @@ Host: openid.sunet.se
           </figure>
         </section>
 
-        <section title="Resolve Response">
+        <section anchor="resolve-response" title="Resolve Response">
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type
@@ -3308,19 +3815,22 @@ Host: openid.sunet.se
             verified Trust Marks.
           </t>
           <t>
-            The response is a signed JWT, explicitly typed by setting the
+            The response is a signed JWT that is explicitly typed by setting the
             <spanx style="verb">typ</spanx> header parameter to
-            <spanx style="verb">resolve-response+jwt</spanx>.
-            This is done to prevent
+            <spanx style="verb">resolve-response+jwt</spanx> to prevent
             cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
+	    It is signed with a Federation Entity Key.
           </t>
+	  <t>
+	    The resolve response JWT MUST include the
+	    <spanx style="verb">kid</spanx> (Key ID) header parameter
+	    with its value being the Key ID of the signing key used.
+	  </t>
           <t>
             The resolve response JWT MAY return the Trust Chain
 	    from the subject to the Trust Anchor
 	    in its <spanx style="verb">trust_chain</spanx> parameter,
             sorted as shown in <xref target="trust_chain"/>.
-            The key used by the resolver to sign the response MUST be one of its
-            Federation Entity Keys.
 	  </t>
           <t>
             The resolve response MAY also return the Trust Chain
@@ -3346,8 +3856,9 @@ Host: openid.sunet.se
             <spanx style="verb">aud</spanx> claim only
             if the requesting client is authenticated.
           </t>
-
-          <t>These are the resolve response Claims:</t>
+          <t>
+	    The claims in a resolve response are:
+	  </t>
           <t>
             <list style="hanging">
               <t hangText="iss">
@@ -3399,11 +3910,8 @@ Host: openid.sunet.se
           </t>
 
           <t>
-            Other claims MAY be used in conjunction with the claims outlined above.
-            The claim naming recommendations outlined in Section 5.1.2 of
-            <xref target="OpenID.Core">OpenID Connect Core 1.0</xref> apply.
+            Additional claims MAY be defined and used in conjunction with the claims above.
           </t>
-
           <t>
             If the response is negative, the response
             is as defined in
@@ -3483,7 +3991,7 @@ Host: openid.sunet.se
           </figure>
         </section>
 
-        <section title="Trust Considerations">
+        <section anchor="trust-considerations" title="Trust Considerations">
           <t>
             The basic assumption of this specification is that an Entity
             should have direct trust in noone except the Trust Anchor
@@ -3577,7 +4085,7 @@ Host: openid.sunet.se
 
         </t>
 
-        <section title="Subordinate Listing Request">
+        <section anchor="subordinate-request" title="Subordinate Listing Request">
           <t>
 	    When client authentication is not used,
             the request MUST be an HTTP request using the GET method
@@ -3670,7 +4178,7 @@ Host: openid.sunet.se
           </figure>
         </section>
 
-        <section title="Subordinate Listing Response">
+        <section anchor="subordinate-response" title="Subordinate Listing Response">
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type <spanx style="verb">application/json</spanx>,
@@ -3717,7 +4225,7 @@ Content-Type: application/json
 	  defined in <xref target="federation_entity"/>.
 	</t>
 
-        <section title="Trust Mark Status Request">
+        <section anchor="tm-status-request" title="Trust Mark Status Request">
           <t>
             The request MUST be an HTTP request using the POST method
             to a Trust Mark status endpoint
@@ -3781,7 +4289,7 @@ sub=https%3A%2F%2Fopenid.sunet.se%2FRP
             </figure>
         </section>
 
-        <section title="Trust Mark Status Response">
+        <section anchor="tm-status-response" title="Trust Mark Status Response">
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type
@@ -3839,7 +4347,7 @@ Content-Type: application/json
 	  defined in <xref target="federation_entity"/>.
 	</t>
 
-        <section title="Trust Marked Entities Listing Request">
+        <section anchor="tm-listing-request" title="Trust Marked Entities Listing Request">
           <t>
 	    When client authentication is not used,
             the request MUST be an HTTP request using the GET method
@@ -3886,7 +4394,7 @@ Host: trust-mark-issuer.example.org
           </figure>
         </section>
 
-        <section title="Trust Marked Entities Listing Response">
+        <section anchor="tm-listing-response" title="Trust Marked Entities Listing Response">
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type <spanx style="verb">application/json</spanx>,
@@ -3933,7 +4441,7 @@ Content-Type: application/json
 	  defined in <xref target="federation_entity"/>.
 	</t>
 
-        <section title="Trust Mark Request">
+        <section anchor="tm-request" title="Trust Mark Request">
           <t>
 	    When client authentication is not used,
             the request MUST be an HTTP request using the GET method
@@ -3977,7 +4485,7 @@ Host: tuber.cert.example.org
           </figure>
         </section>
 
-        <section title="Trust Mark Response">
+        <section anchor="tm-response" title="Trust Mark Response">
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type
@@ -4043,7 +4551,7 @@ NjK15h2rrJRN4e_8favIJNTNO8fhK7bjyUFJlVGYmLUpfCuJmxBv-EMhiAkeoDtk71Tc6ou6
           for a security reason.
         </t>
 
-        <section title="Federation Historical Keys Request">
+        <section anchor="hist-keys-request" title="Federation Historical Keys Request">
           <t>
 	    When client authentication is not used,
             the request MUST be an HTTP request using the GET method to
@@ -4075,13 +4583,23 @@ Host: trust-anchor.example.com
             with the content type
             <spanx style="verb">application/jwk-set+jwt</spanx>.
             The response is a signed JWT with the <xref target="RFC7517">JWK Set</xref>
-            as its payload. The JWT is explicitly typed by setting the
+            as its payload.
+	    It is signed with a Federation Entity Key.
+	  </t>
+	  <t>
+	    Historical keys JWTs are explicitly typed by setting the
             <spanx style="verb">typ</spanx> header parameter to
-            <spanx style="verb">jwk-set+jwt</spanx>. This is done to prevent
+            <spanx style="verb">jwk-set+jwt</spanx> to prevent
             cross-JWT confusion (see <xref target="RFC8725"/>, section 3.11).
-            The response JWT contains the following claims:
+	  </t>
+	  <t>
+	    Historical keys JWTs MUST include the
+	    <spanx style="verb">kid</spanx> (Key ID) header parameter
+	    with its value being the Key ID of the signing key used.
+	  </t>
+	  <t>
+            The claims in a historical keys JWT are:
           </t>
-
           <t>
             <list style="hanging">
               <t hangText="iss">
@@ -4102,8 +4620,8 @@ Host: trust-anchor.example.com
                 containing the signing keys for the Entity in JWK format.
 
                 <t>
-                  Every JWK in the <spanx style="verb">keys</spanx>
-                  claim includes the following claims:
+                  JWKs in the <spanx style="verb">keys</spanx>
+                  claim use the following parameters:
                 </t>
 
                 <t>
@@ -4172,6 +4690,31 @@ Host: trust-anchor.example.com
               </t>
             </list>
           </t>
+	  <t>
+	    Additional claims MAY be defined and used in conjunction with the claims above.
+	  </t>
+
+	  <t>
+	    JWKs in the <spanx style="verb">keys</spanx> claim MAY also contain the
+	    <spanx style="verb">nbf</spanx> parameter.  For use in Historical Keys,
+	    <spanx style="verb">iat</spanx> and <spanx style="verb">exp</spanx>
+	    are sufficient to establish the key lifetime,
+	    making <spanx style="verb">nbf</spanx> typically superfluous;
+	    however, it is registered for use by profiles that may choose to
+	    issue keys that do not immediately become valid at the time of issuance.
+	    Its definition is:
+	  </t>
+          <t>
+            <list style="hanging">
+              <t hangText="nbf">
+                <vspace/>
+		OPTIONAL. Time before which the key is not valid,
+		using the time format defined for the
+		<spanx style="verb">nbf</spanx> claim in
+		<xref target="RFC7519"/>.
+	      </t>
+	    </list>
+	  </t>
 
           <figure>
             <preamble>
@@ -4200,7 +4743,7 @@ Host: trust-anchor.example.com
                 "e":"AQAB",
                 "kid":"8KnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMJJr",
                 "iat": 123972394872,
-                "exp": 123974394972
+                "exp": 123974394972,
                 "revoked": {
                   "revoked_at": 123972495172,
                   "reason": "keyCompromise",
@@ -4214,7 +4757,7 @@ Host: trust-anchor.example.com
 
         </section>
 
-        <section  title="Rationale for the Federation Historical Keys Endpoint">
+        <section anchor="hist-keys-rationale" title="Rationale for the Federation Historical Keys Endpoint">
           <!--
             introduce the problem
           -->
@@ -4506,7 +5049,8 @@ Content-Type: application/json
         Since it posts the Entity Configuration to the OP during client
         registration, the OP has everything it needs from the RP.
       </t>
-      <section title="Federation Entity Configuration Request">
+
+      <section anchor="ec-request" title="Federation Entity Configuration Request">
         <t>
           An Entity Configuration document MUST be queried using an
           HTTP GET request at the previously specified path.
@@ -4528,7 +5072,8 @@ Content-Type: application/json
           </figure>
         </t>
       </section>
-      <section title="Federation Entity Configuration Response">
+
+      <section anchor="ec-response" title="Federation Entity Configuration Response">
         <t>The response is an Entity Configuration, as described in
           <xref target="entity-statement"/>.
           If the Entity is an Intermediate Entity or a Trust Anchor, the
@@ -4606,9 +5151,6 @@ Content-Type: application/json
       {
         "alg": "RS256",
         "e": "AQAB",
-        "key_ops": [
-          "verify"
-        ],
         "kid": "key1",
         "kty": "RSA",
         "n": "pnXBOusEANuug6ewezb9J_...",
@@ -4818,7 +5360,7 @@ Content-Type: application/json
         </t>
       </section>
 
-      <section title="Choosing One of the Valid Trust Chains">
+      <section anchor="choosing-chain" title="Choosing One of the Valid Trust Chains">
         <t>
           If multiple valid Trust Chains are found, Party A will
           need to decide on which one to use.
@@ -4860,7 +5402,7 @@ Content-Type: application/json
 
     </section>
 
-    <section title="Updating Metadata, Key Rollover, and Revocation">
+    <section anchor="updating-metadata" title="Updating Metadata, Key Rollover, and Revocation">
       <t>
         This specification facilitates smoothly updating metadata
         and public keys.
@@ -4874,7 +5416,7 @@ Content-Type: application/json
         how quickly it wants to find out that something has changed.
       </t>
 
-      <section title="Protocol Key Rollover">
+      <section anchor="key-rollover" title="Protocol Key Rollover">
         <t>
           If a Leaf Entity publishes its public keys in its metadata
           using <spanx style="verb">jwks</spanx>, the expiration time of
@@ -4932,7 +5474,7 @@ Content-Type: application/json
         </t>
       </section>
 
-      <section title="Revocation">
+      <section anchor="revocation" title="Revocation">
         <t>
           Since the participants in federations are expected to check the Trust Chain on a regular
           frequent basis, this specification does not define a
@@ -4950,7 +5492,7 @@ Content-Type: application/json
       </t>
       <t>
         There are two alternative approaches to establish trust between an
-        RP and an OP, which we call Automatic and Explicit Registration.
+        RP and an OP, which we call Automatic Registration and Explicit Registration.
         Members of a federation or a community
         SHOULD agree upon which one to use. While implementations should
         support both methods, deployments MAY choose to use one or the other of them.
@@ -4960,6 +5502,18 @@ Content-Type: application/json
         the way that the RP learns about the OP is the same:
         It uses the procedure
         described in <xref target="resolving_trust"/>.
+      </t>
+      <t>
+	Note that both Automatic Registration and Explicit Registration
+	can also be used for OAuth 2.0 profiles other than OpenID Connect.
+	To do so, rather than using the Entity Type Identifiers
+	<spanx style="verb">openid_relying_party</spanx> and
+	<spanx style="verb">openid_provider</spanx>,
+	one would instead use the Entity Type Identifiers
+	<spanx style="verb">oauth_client</spanx> and
+	<spanx style="verb">oauth_authorization_server</spanx>,
+	or possibly other Entity Type Identifiers defined for the specific
+	OAuth 2.0 profile being used.
       </t>
 
       <section title="Automatic Registration" anchor="automatic">
@@ -4998,7 +5552,7 @@ Content-Type: application/json
           metadata parameter.
 	</t>
 
-        <section title="Authentication Request">
+        <section anchor="authn-request" title="Authentication Request">
           <t>
             The Authentication Request is performed by passing a
             Request Object by value as described in Section 6.1 of
@@ -5224,7 +5778,7 @@ GET /authorize?
             </section>
           </section>
 
-          <section title="Using Pushed Authorization">
+          <section anchor="using-par" title="Using Pushed Authorization">
             <t>
               <xref target="RFC9126">Pushed Authorization Requests</xref>
               provide an
@@ -5301,7 +5855,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
 ]]></artwork>
             </figure>
 
-            <section title="Processing the Authentication Request">
+            <section anchor="par-processing" title="Processing the Pushed Authentication Request">
               <t>
                 The requirements specified in
                 <xref target="AuthzRequestProcessing"/>
@@ -5326,10 +5880,18 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                   </t>
                   <t hangText="tls_client_auth">
                     <vspace/>
-                    If mTLS is used and the certificate used was not
-                    self-signed, then the Subject Alternative Name of the
-                    certificate
-                    MUST match the Entity Identifier of the RP.
+                    If the certificate used is not self-signed, it MUST first be
+                    validated as chaining to a trusted root.
+		    (The selection of trusted roots is outside of this trust model.)
+                    <vspace blankLine="1"/>
+                    The RP metadata MUST contain exactly one of the five members listed in
+                    Section 2.1.2 of <xref target="RFC8705"/>.
+                    For example, if the
+		    <spanx style="verb">tls_client_auth_san_dns</spanx> member
+		    is specified with a value of <spanx style="verb">host.example.com</spanx>,
+		    the certificate would only match for authentication
+                    if that DNS name is present in the Subject Alternative Name (SAN)
+                    of the certificate.
                   </t>
                   <t hangText="self_signed_tls_client_auth">
                     <vspace/>
@@ -5758,12 +6320,12 @@ HTTP/1.1 302 Found
                   </t>
                   <t hangText="jwks">
                     <vspace/>
-                    REQUIRED.
-                    It MUST be a verbatim copy of the <spanx style="verb">jwks</spanx>
-                    of the received RP Entity Configuration. This MUST not be confused
-                    with the identically named RP metadata parameter. See
-                    <xref target="entity-statement"/> for the full
-                    specification.
+                    OPTIONAL.
+		    If present, it MUST be a verbatim copy of the
+		    <spanx style="verb">jwks</spanx> Entity Statement claim
+                    from the received Entity Configuration of the RP.
+		    This claim is defined at <xref target="entity-statement"/>.
+		    Note that this is distinct from the identically named RP metadata parameter.
                   </t>
                   <t hangText="aud">
                     <vspace/>
@@ -5856,8 +6418,8 @@ HTTP/1.1 302 Found
                     <spanx style="verb">authority_hints</spanx> claims of the
                     received registration Entity Statement. The RP SHOULD perform this check
                     by applying the resolved policies to the metadata as
-                    specified in <xref target="applying_policies"/>, or utilize
-                    another equivalent method.
+                    specified in <xref target="metadata_policy_resolution"/>, or
+                    utilize another equivalent method.
                   </t>
                   <t>
                     If the received registration Entity Statement does not pass the above
@@ -6507,7 +7069,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: this specification
+                Published specification: <xref target="entity-statement"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -6576,7 +7138,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: this specification
+                Published specification: <xref target="trust_marks"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -6645,7 +7207,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: this specification
+                Published specification: <xref target="resolve-response"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -6715,7 +7277,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: this specification
+                Published specification: <xref target="Cliregreq"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -6755,7 +7317,7 @@ HTTP/1.1 302 Found
             <?rfc subcompact="no"?>
           </t>
 
-                    <t>
+          <t>
             <?rfc subcompact="yes"?>
             <list style="symbols">
               <t>
@@ -6784,7 +7346,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: this specification
+                Published specification: <xref target="delegation_jwt"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -6813,6 +7375,75 @@ HTTP/1.1 302 Found
               </t>
               <t>
                 Author: Roland Hedberg, roland@catalogix.se
+              </t>
+              <t>
+                Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Provisional registration? No
+              </t>
+            </list>
+            <?rfc subcompact="no"?>
+          </t>
+
+          <t>
+            <?rfc subcompact="yes"?>
+            <list style="symbols">
+              <t>
+                Type name: application
+              </t>
+              <t>
+                Subtype name: jwk-set+jwt
+              </t>
+              <t>
+                Required parameters: n/a
+              </t>
+              <t>
+                Optional parameters: n/a
+              </t>
+              <t>
+                Encoding considerations: binary;
+                A signed JWK Set is a signed JWT;
+                JWT values are encoded as a
+                series of base64url-encoded values (some of which may be the
+                empty string) separated by period ('.') characters.
+              </t>
+              <t>
+                Security considerations: See <xref target="Security"/> of this specification
+              </t>
+              <t>
+                Interoperability considerations: n/a
+              </t>
+              <t>
+                Published specification: <xref target="HistKeysResp"/> of this specification
+              </t>
+              <t>
+                Applications that use this media type:
+                Applications that use this specification
+              </t>
+              <t>
+                Fragment identifier considerations: n/a
+              </t>
+              <t>
+                Additional information:<list style="empty">
+                <t>Magic number(s): n/a</t>
+                <t>File extension(s): n/a</t>
+                <t>Macintosh file type code(s): n/a </t></list>
+                <vspace/>
+              </t>
+              <t>
+                Person &amp; email address to contact for further information:
+                <vspace/>
+                Michael B. Jones, michael_b_jones@hotmail.com
+              </t>
+              <t>
+                Intended usage: COMMON
+              </t>
+              <t>
+                Restrictions on usage: none
+              </t>
+              <t>
+                Author: Michael B. Jones, michael_b_jones@hotmail.com
               </t>
               <t>
                 Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
@@ -7028,6 +7659,28 @@ HTTP/1.1 302 Found
 	      Specification Document(s): <xref target="HistKeysResp" /> of this specification
 	    </t>
 	  </list>
+	  </t>
+	  <t>
+	    <list style='symbols'>
+	      <t>
+		Parameter Name: <spanx style="verb">nbf</spanx>
+	      </t>
+	      <t>
+		Parameter Description: Not Before, as defined in RFC 7519
+	      </t>
+	      <t>
+		Used with "kty" Value(s): *
+	      </t>
+	      <t>
+		Parameter Information Class: Public
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="HistKeysResp" /> of this specification
+	      </t>
+	    </list>
 	  </t>
 	  <t>
 	    <list style='symbols'>
@@ -7437,7 +8090,7 @@ HTTP/1.1 302 Found
           part of the Trust Chain.
         </t>
 
-        <section title="Entity Configuration for https://op.umu.se">
+        <section anchor="ec-for-op" title="Entity Configuration for https://op.umu.se">
           <t>The LIGO WIKI RP fetches the Entity Configuration from the
             OP (op.umu.se)
             using the process defined in <xref
@@ -7523,7 +8176,7 @@ HTTP/1.1 302 Found
           </t>
         </section>
 
-        <section title="Entity Configuration for https://umu.se">
+        <section anchor="ec-for-umu" title="Entity Configuration for https://umu.se">
           <t>The LIGO RP fetches the Entity Configuration from
             https://umu.se using the process defined in
             <xref target="federation_configuration"/>.
@@ -7585,7 +8238,7 @@ Host: umu.se
           </t>
         </section>
 
-        <section
+        <section anchor="ss-about-op"
                 title="Subordinate Statement Published by https://umu.se about https://op.umu.se">
           <t>
             The RP uses the fetch endpoint provided by https://umu.se,
@@ -7667,7 +8320,7 @@ Host: umu.se
           </t>
         </section>
 
-        <section title="Entity Configuration for https://swamid.se">
+        <section anchor="ec-for-swamid" title="Entity Configuration for https://swamid.se">
           <t>The LIGO Wiki RP fetches the Entity Configuration from
             https://swamid.se using the process defined in
             <xref target="federation_configuration"/>.
@@ -7730,7 +8383,7 @@ Host: swamid.se
           </t>
         </section>
 
-        <section
+        <section anchor="ss-about-umu"
                 title="Subordinate Statement Published by https://swamid.se about https://umu.se">
           <t>
             The LIGO Wiki RP uses the fetch endpoint provided by
@@ -7815,7 +8468,7 @@ Host: swamid.se
           </t>
         </section>
 
-        <section title="Entity Configuration for https://edugain.geant.org">
+        <section anchor="ec-for-edugain" title="Entity Configuration for https://edugain.geant.org">
           <t>The RP fetches the Entity Configuration from
             https://edugain.geant.org using the process defined in
             <xref target="federation_configuration"/>.
@@ -7874,7 +8527,7 @@ Host: edugain.geant.org
           </t>
         </section>
 
-        <section title="Subordinate Statement Published by https://edugain.geant.org about https://swamid.se">
+        <section anchor="ss-about-swamid" title="Subordinate Statement Published by https://edugain.geant.org about https://swamid.se">
           <t>
             The LIGO Wiki RP uses the fetch endpoint of
             https://edugain.geant.org as
@@ -7984,7 +8637,7 @@ Host: geant.org
           </t>
         </section>
 
-        <section title="Verified Metadata for https://op.umu.se">
+        <section anchor="metadata-for-op" title="Verified Metadata for https://op.umu.se">
           <t>Having verified the chain, the LIGO Wiki RP can proceed with the
             next step.
           </t>
@@ -8125,7 +8778,7 @@ Host: op.umu.se
             establish trust with the RP.
           </t>
 
-          <section title="OP Fetches Entity Statements">
+          <section anchor="op-fetches-ess" title="OP Fetches Entity Statements">
             <t>
               The OP needs to establish a Trust Chain for the RP
               (wiki.ligo.org).
@@ -8533,8 +9186,52 @@ Host: op.umu.se
       <t>[[ To be removed from the final specification ]]</t>
 
       <t>
+	-35
+	<list style="symbols">
+	  <t>
+	    TBD
+	  </t>
+	</list>
+      </t>
+
+      <t>
 	-34
 	<list style="symbols">
+      <t>
+        Addressed #2090: Metadata policy: Clarified the order in which the
+        standard policy operators must be applied, the merge process when
+        multiple Subordinate Statements contain metadata_policy claims for a
+        given Entity Type, and that asserted metadata must be applied before the
+        merged metadata policy.
+      </t>
+      <t>
+        Addressed #2078: Metadata policy: Specified mandatory and optional to
+        support JSON types for each standard policy operator.
+      </t>
+      <t>
+        Addressed #2087: Metadata policy: Added an explicit description of the
+        principles governing the metadata_policy and common requirements for all
+        policy operators, standard as well as additional operators that maybe
+        defined in future specifications that rely on OpenID Federation 1.0. In
+        particular, stated the principles in regard to the 1) hierarchy of
+        Entities in Trust Chains, 2) the specificity of policies, 3) the
+        granularity of policies, 4) the action types of operators, 5) that
+        metadata policy enforcement is integral to the trust chain, 6) the
+        determinism of the metadata policy specification.
+      </t>
+      <t>
+        Addressed #2116: Metadata policy: Clarified that the metadata_policy is
+        not intended to JSON type check metadata parameters.
+      </t>
+      <t>
+        Addressed #2135: Metadata policy: The space-separated list of strings
+        exception should apply only to the "scope" oauth_client metadata
+        parameter.
+      </t>
+      <t>
+        Addressed #2136: Metadata policy: Merges the two metadata policy
+        examples and expands the example to include all standard policy operators
+      </t>
       <t>
         Addressed #2124: Renames the allowed_leaf_entity_types constraint to
         allowed_entity_types, changes its definition to also apply to
@@ -8558,6 +9255,34 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #2089: Added section Resolving the Trust Chain and Metadata with a Resolver.
+	  </t>
+	  <t>
+	    Fixed #2131: JSON in Entity Statement example in figure 2.
+	  </t>
+	  <t>
+	    Fixed #2088: Clarified tls_client_auth rules.
+	  </t>
+	  <t>
+	    Fixed #2130: Clarified wording describing common metadata parameters.
+	  </t>
+	  <t>
+	    Fixed #2133: Made treatment of
+	    <spanx style="verb">jwks</spanx> Entity Statement claim
+	    consistent when doing Explicit Registration.
+	  </t>
+	  <t>
+	    Registered <spanx style="verb">application/jwk-set+jwt</spanx> media type.
+	  </t>
+	  <t>
+	    Registered <spanx style="verb">nbf</spanx> JWK parameter.
+	  </t>
+	  <t>
+	    Fixed #2132: Stated that Automatic Registration and Explicit Registration
+	    can also be used for OAuth 2.0 profiles other than OpenID Connect.
+	  </t>
+	  <t>
+	    Fixed #2138: Required <spanx style="verb">kid</spanx> (Key ID)
+	    header parameter in JWTs.
 	  </t>
 	</list>
       </t>
