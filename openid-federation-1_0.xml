@@ -1944,9 +1944,9 @@
                 MUST result in a policy error.
               </t>
               <t>
-                MUST declare in what order it is to be applied to a metadata
-                parameter, absolute or relative to other operators in the
-                metadata parameter policy. Value check operators SHOULD
+                MUST declare in what order it is to be processed and applied to
+                a metadata parameter, absolute or relative to other operators in
+                the metadata parameter policy. Value check operators SHOULD
                 generally be applied after operators that perform value
                 modifications.
               </t>
@@ -2499,6 +2499,25 @@
               operators that conform with the principles in
               <xref target="metadata_policy_principles"/> and in
               <xref target="metadata_policy_operators"/>.
+            </t>
+
+            <t>
+              Additional operators MUST observe the following rules in regard to
+              the order of their processing relative to the standard operators
+              defined in <xref target="standard_metadata_policy_operators"/>:
+                <list style="symbols">
+                  <t>
+                    Additional operators that modify metadata parameters MUST be
+                    applied after the <spanx style="verb">value</spanx> operator
+                    that is specified in <xref target="value_operator"/>.
+                  </t>
+                  <t>
+                    Additional operators that check metadata parameters MUST be
+                    applied before the <spanx style="verb">essential</spanx>
+                    operator that is specified in
+                    <xref target="essential_operator"/>.
+                  </t>
+                </list>
             </t>
 
             <t>
@@ -9189,7 +9208,10 @@ Host: op.umu.se
 	-35
 	<list style="symbols">
 	  <t>
-	    TBD
+	    Addressed #2143: Additional policy operators that modify metadata
+        parameters must be applied after the value operator. Additional policy
+        operators that check metadata parameters must be applied before the
+        essential operator.
 	  </t>
 	</list>
       </t>
