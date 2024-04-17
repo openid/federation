@@ -517,30 +517,36 @@
             </t>
             <t hangText="metadata">
               <vspace/>
-              OPTIONAL. JSON object with protocol-specific claims that represent the
-              Entity's Types within its federations and metadata for those Entity Types.
-	      Each member name of the JSON object is an Entity Type Identifier,
-	      and each value MUST be a JSON object representing
-	      metadata according to the metadata schema of that Entity Type.
-	      When an Entity participates in a federation or federations
-	      with one or more Entity Types,
-	      its Entity Configuration MUST contain a <spanx style="verb">metadata</spanx> claim
-	      with entries for each of the corresponding Entity Type Identifiers,
-	      even if the values for those entries are
-	      the empty JSON object <spanx style="verb">{}</spanx>.
-	      (The value might contain no entries when Superiors supply any needed metadata).
-	      <vspace blankLines="1" />
-
-	      In some cases, an Immediate Superior may want to be explicit about what metadata
-              should be used for an Immediate Subordinate. In that case
-              <spanx style="verb">metadata</spanx> MAY be used in a Subordinate Statement.
-              If <spanx style="verb">metadata</spanx> is used in a Subordinate Statement,
-	      it is only valid for the subject of the Subordinate Statement
-	      and has no impact on the subject's Subordinates.
-              If both <spanx style="verb">metadata</spanx> and
-              <spanx style="verb">metadata_policy</spanx> appear in a Subordinate Statement,
-              then <spanx style="verb">metadata</spanx> MUST be applied before
-              <spanx style="verb">metadata_policy</spanx>.
+              OPTIONAL. JSON object that represents the Entity's Types and the
+              metadata for those Entity Types. Each member name of the JSON
+              object is an Entity Type Identifier, and each value MUST be a JSON
+              object containing metadata parameters according to the metadata
+              schema of the Entity Type.
+              <vspace blankLines="1" />
+              When an Entity participates in a federation or federations with
+              one or more Entity Types, its Entity Configuration MUST contain a
+              <spanx style="verb">metadata</spanx> claim with JSON object values
+              for each of the corresponding Entity Type Identifiers, even if the
+              values are the empty JSON object <spanx style="verb">{}</spanx>.
+              The empty JSON object value is suitable when the Entity Type has
+              no metadata schema, or when the Entity Type metadata is supplied
+              by an Immediate Superior, as described in the following paragraph.
+              <vspace blankLines="1"/>
+              An Immediate Superior MAY state selected or all metadata
+              parameters for an Immediate Subordinate, by using the
+              <spanx style="verb">metadata</spanx> claim in a Subordinate
+              Statement. When the <spanx style="verb">metadata</spanx> is used
+              in a Subordinate Statement, it applies only to the subject of the
+              Subordinate Statement and has no effect on the subject's
+              Subordinates. Metadata parameters in a Subordinate Statement have
+              precedence and override identically named parameters under the
+              same Entity Type in the subject's Entity Configuration. If both
+              <spanx style="verb">metadata</spanx> and
+              <spanx style="verb">metadata_policy</spanx> appear in a
+              Subordinate Statement, then the stated
+              <spanx style="verb">metadata</spanx> MUST be applied before the
+              <spanx style="verb">metadata_policy</spanx>, as described in
+              <xref target="metadata_policy_application"/>.
             </t>
             <t hangText="metadata_policy">
               <vspace/>
@@ -549,8 +555,10 @@
               MAY include this claim. The metadata policy applies to the Entity
               that is the subject of this Subordinate Statement as well as to
               all Entities that are Subordinate to it. Applying to Subordinate
-              Entities distinguishes <spanx style="verb">metadata_policy</spanx>
-              from metadata, which only applies to the subject itself.
+              Entities distinguishes the
+              <spanx style="verb">metadata_policy</spanx> from
+              <spanx style="verb">metadata</spanx>, which only applies to the
+              subject itself.
             </t>
             <t hangText="constraints">
               <vspace/>
@@ -2704,7 +2712,7 @@
                 of the Trust Chain subject resolves simply to the
                 <spanx style="verb">metadata</spanx> found in its Entity
                 Configuration, with any <spanx style="verb">metadata</spanx>
-                parameters asserted by the Immediate Superior applied to it.
+                parameters stated by the Immediate Superior applied to it.
               </t>
 
               <t>
@@ -9189,7 +9197,7 @@ Host: op.umu.se
 	-35
 	<list style="symbols">
 	  <t>
-	    TBD
+	    Addresses #2139: Clarifies metadata statements (vs metadata policies).
 	  </t>
 	</list>
       </t>
