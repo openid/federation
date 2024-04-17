@@ -4671,16 +4671,9 @@ Host: trust-anchor.example.com
                           <xref target="hist-keys-reasons"/>.
                         </t>
 
-                        <t hangText="reason_code">
-                          <vspace/>
-                          REQUIRED. Integer that identifies the reason
-                          for the key revocation, as defined in
-                          <xref target="hist-keys-reasons"/>.
-                        </t>
-
                       </list>
-		      Other members of the <spanx style="verb">revoked</spanx>
-		      object MAY be defined and used.
+                        Other members of the <spanx style="verb">revoked</spanx>
+                        object MAY be defined and used.
                       </t>
 
                     </t>
@@ -4746,8 +4739,7 @@ Host: trust-anchor.example.com
                 "exp": 123974394972,
                 "revoked": {
                   "revoked_at": 123972495172,
-                  "reason": "keyCompromise",
-                  "reason_code": 1
+                  "reason": "key_compromise",
                 }
             }
         ]
@@ -4761,74 +4753,62 @@ Host: trust-anchor.example.com
 
           <t>
             Federation Entities are strongly encouraged to include meaningful
-            <spanx style="verb">reason_code</spanx> when indicating the revocation reason
+            <spanx style="verb">reason</spanx> value when indicating the revocation reason
             of their Federation Entity Keys. However,
-            the <spanx style="verb">reason_code</spanx> SHOULD be omitted
+            the <spanx style="verb">reason</spanx> MAY be omitted
             instead of using the <spanx style="verb">unspecified</spanx> value.
           </t>
 
           <t>
-            The <spanx style="verb">reactivated</spanx> reason, using the code 
-            value number 8, may only appear in updates to the Federation Entity Key
+            The <spanx style="verb">reactivated</spanx> reason
+            may only appear in updates to the Federation Entity Key
             and indicates that the JWK is to be updated to active because
             the JWK were removed from suspension.
-            All other reason codes indicate
+            All other reason values indicate
             that the specified JWK is considered revoked or suspended.
           </t>
 
           <t>
-            Below is the mapping of the reason values with their respective reason codes,
-            where the error code defined in <xref target="RFC5280"/> was reused as much as
-            possible to maintain consistency and interoperability with existing standards.
-            This approach ensures that entities familiar with RFC5280 can easily
-            understand and apply these reason codes within the context of OpenID Federation.
+            Below is the mapping of the reason values.
           </t>
 
           <table>
           <preamble>
-            The following table maps Federation Historical Keys revocation codes,
-            including the corresponding human-readable reason for each.
+            The following table maps Federation Historical Keys revocation reasons.
           </preamble>
           <name>
-            Mapping of Federation Historical Keys Revocation Codes and human-readable Reasons.
+            Mapping of Federation Historical Keys Revocation Reasons.
           </name>
           <thead>
             <tr>
               <td>Reason</td>
-              <td>Code</td>
               <td>Description</td>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>unspecified</td>
-              <td>0</td>
               <td>General or unspecified reason for status change.</td>
             </tr>
             <tr>
               <td>key_compromise</td>
-              <td>1</td>
               <td>Indicates that the Federation Entity's private key is
               believed to have been compromised.</td>
             </tr>
             <tr>
               <td>superseded</td>
-              <td>4</td>
               <td>Entity's JWK have been replaced.</td>
             </tr>
             <tr>
               <td>cessation_of_operation</td>
-              <td>5</td>
               <td>JWK is no longer active.</td>
             </tr>
             <tr>
               <td>suspended</td>
-              <td>6</td>
               <td>JWK is temporarily suspended, possibly pending investigation.</td>
             </tr>
             <tr>
               <td>reactivated</td>
-              <td>8</td>
               <td>JWK is reactivated after being previously suspended or expired.</td>              
             </tr>
           </tbody>
