@@ -4665,7 +4665,7 @@ Host: trust-anchor.example.com
 
                         <t hangText="reason">
                           <vspace/>
-                          REQUIRED. Human-readable value
+                          REQUIRED. String
                           that identifies the reason
                           for the key revocation, as defined in
                           <xref target="hist-keys-reasons"/>.
@@ -4752,33 +4752,33 @@ Host: trust-anchor.example.com
         <section anchor="hist-keys-reasons" title="Federation Historical Keys Revocation Reasons">
 
           <t>
-            Federation Entities are strongly encouraged to include meaningful
+            Federation Entities are strongly encouraged to use a meaningful
             <spanx style="verb">reason</spanx> value when indicating the revocation reason
-            of their Federation Entity Keys. However,
-            the <spanx style="verb">reason</spanx> MAY be omitted
+            for a Federation Entity Key. The <spanx style="verb">reason</spanx>
+            MAY be omitted
             instead of using the <spanx style="verb">unspecified</spanx> value.
           </t>
 
           <t>
             The <spanx style="verb">reactivated</spanx> reason
-            may only appear in updates to the Federation Entity Key
-            and indicates that the JWK is to be updated to active because
-            the JWK were removed from suspension.
-            All other reason values indicate
-            that the specified JWK is considered revoked or suspended.
+            may only be used when the JWK status is changed 
+            to active after being in a
+            <spanx style="verb">suspended</spanx> state.
+            All other reason values indicate that the JWK is 
+            considered revoked and MUST NOT be used.
           </t>
 
           <t>
-            Below is the mapping of the reason values.
+            Below is the definition of the reason values.
           </t>
 
           <table>
           <preamble>
-            The following table defines Federation Historical Keys revocation reasons.
-            These reason descriptions are inspired by the reason descriptions in Section 5.3.1 of <xref target="RFC5280"/>.
+            The following table defines Federation Entity Keys revocation reasons.
+            These reasons are inspired by Section 5.3.1 of <xref target="RFC5280"/>.
           </preamble>
           <name>
-            Mapping of Federation Historical Keys Revocation Reasons.
+            Federation Entity Keys Revocation Reasons.
           </name>
           <thead>
             <tr>
@@ -4789,24 +4789,23 @@ Host: trust-anchor.example.com
           <tbody>
             <tr>
               <td>unspecified</td>
-              <td>General or unspecified reason for status change.</td>
+              <td>General or unspecified reason for the JWK status change.</td>
             </tr>
             <tr>
-              <td>key_compromise</td>
-              <td>Indicates that the Federation Entity's private key is
-              believed to have been compromised.</td>
+              <td>compromised</td>
+              <td>The private key is believed to have been compromised.</td>
             </tr>
             <tr>
-              <td>cessation_of_operation</td>
-              <td>JWK is no longer active.</td>
+              <td>disused</td>
+              <td>The JWK is no longer active.</td>
             </tr>
             <tr>
               <td>suspended</td>
-              <td>JWK is temporarily suspended, possibly pending investigation.</td>
+              <td>The JWK is temporarily suspended, possibly pending investigation.</td>
             </tr>
             <tr>
               <td>reactivated</td>
-              <td>JWK is reactivated after being previously suspended or expired.</td>              
+              <td>The JWK is reactivated after being previously suspended or expired.</td>              
             </tr>
           </tbody>
         </table>
