@@ -2007,7 +2007,7 @@
                 </list>
               </t>
               <t>
-                Order of processing: First
+                Order of application: First
               </t>
               <t>
                 Operator value merge: Allowed only when the operator values are
@@ -2072,7 +2072,7 @@
                 </list>
               </t>
               <t>
-                Order of processing: After <spanx style="verb">value</spanx>.
+                Order of application: After <spanx style="verb">value</spanx>.
               </t>
               <t>
                 Operator value merge: The result of merging the values of two
@@ -2135,7 +2135,7 @@
                 </list>
               </t>
               <t>
-                Order of processing: After <spanx style="verb">add</spanx>.
+                Order of application: After <spanx style="verb">add</spanx>.
               </t>
               <t>
                 Operator value merge: The operator values MUST be equal. If the
@@ -2187,7 +2187,7 @@
                 </list>
               </t>
               <t>
-                Order of processing: After <spanx style="verb">default</spanx>.
+                Order of application: After <spanx style="verb">default</spanx>.
               </t>
               <t>
                 Operator value merge: The result of merging the values of two
@@ -2260,7 +2260,7 @@
                 </list>
               </t>
               <t>
-                Order of processing: After <spanx style="verb">one_of</spanx>.
+                Order of application: After <spanx style="verb">one_of</spanx>.
               </t>
               <t>
                 Operator value merge: The result of merging the values of two
@@ -2328,7 +2328,7 @@
                 </list>
               </t>
               <t>
-                Order of processing: After <spanx style="verb">subset_of</spanx>.
+                Order of application: After <spanx style="verb">subset_of</spanx>.
               </t>
               <t>
                 Operator value merge: The result of merging the values of two
@@ -2375,7 +2375,7 @@
                 </list>
               </t>
               <t>
-                Order of processing: Last
+                Order of application: Last
               </t>
               <t>
                 Operator value merge: If a Superior has specified
@@ -2499,6 +2499,25 @@
               operators that conform with the principles in
               <xref target="metadata_policy_principles"/> and in
               <xref target="metadata_policy_operators"/>.
+            </t>
+
+            <t>
+              Additional operators MUST observe the following rules in regard to
+              the order of their application relative to the standard operators
+              defined in <xref target="standard_metadata_policy_operators"/>:
+                <list style="symbols">
+                  <t>
+                    Additional operators that modify metadata parameters MUST be
+                    applied after the <spanx style="verb">value</spanx> operator
+                    that is specified in <xref target="value_operator"/>.
+                  </t>
+                  <t>
+                    Additional operators that check metadata parameters MUST be
+                    applied before the <spanx style="verb">essential</spanx>
+                    operator that is specified in
+                    <xref target="essential_operator"/>.
+                  </t>
+                </list>
             </t>
 
             <t>
@@ -4760,15 +4779,6 @@ Host: trust-anchor.example.com
           </t>
 
           <t>
-            The <spanx style="verb">reactivated</spanx> reason
-            may only be used when the JWK status is changed 
-            to active after being in a
-            <spanx style="verb">suspended</spanx> state.
-            All other reason values indicate that the JWK is 
-            considered revoked and MUST NOT be used.
-          </t>
-
-          <t>
             Below is the definition of the reason values.
           </t>
 
@@ -4798,14 +4808,6 @@ Host: trust-anchor.example.com
             <tr>
               <td>disused</td>
               <td>The JWK is no longer active.</td>
-            </tr>
-            <tr>
-              <td>suspended</td>
-              <td>The JWK is temporarily suspended, possibly pending investigation.</td>
-            </tr>
-            <tr>
-              <td>reactivated</td>
-              <td>The JWK is reactivated after being previously suspended or expired.</td>              
             </tr>
           </tbody>
         </table>
@@ -9243,10 +9245,16 @@ Host: op.umu.se
       <t>
 	-35
 	<list style="symbols">
+      <t>
+	    Addressed #2143: Additional policy operators that modify metadata
+        parameters must be applied after the value operator. Additional policy
+        operators that check metadata parameters must be applied before the
+        essential operator.
+	  </t>
 	  <t>
 	    Addressed #2140: The historical keys response JWT uses reason values without
         referencing the ones defined in the X.509 CRL spec [RFC 5280].
-	  </t>
+      </t>      
 	</list>
       </t>
 
