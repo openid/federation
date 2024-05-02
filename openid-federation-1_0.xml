@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="8" month="April" year="2024"/>
+    <date day="1" month="May" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -149,8 +149,8 @@
 	  Below is an example of two federations rooted at two different
 	  Trust Anchors with some members in common.
 
-	  Every Leaf Entity is able to establish mutual trust with any
-	  other Leaf Entity by means of having at least one
+	  Every Entity is able to establish mutual trust with any
+	  other Entity by means of having at least one
 	  common Trust Anchor between them.
 	</preamble>
 	<name>
@@ -268,7 +268,8 @@
               <vspace/>
               An Entity that issues
               an Entity Statement appearing somewhere in between those
-              issued by the Trust Anchor and the Leaf Entity in a Trust Chain.
+              issued by the Trust Anchor and the subject of a Trust Chain
+	      (which is typically a Leaf Entity).
               The terms Intermediate Entity and Intermediate are used
               interchangeably in this specification.
             </t>
@@ -312,17 +313,19 @@
 	    </t>
             <t hangText="Federation Entity Discovery">
               <vspace/>
-              A process that starts with an Entity Identifier and collects
+              A process that starts with the Entity Identifier
+	      for the subject of the Trust Chain and collects
               a number of Entity Statements until the chosen Trust Anchor is reached.
               From the collected Entity Statements, a Trust Chain
               is constructed and verified.
               The result of the Federation Entity Discovery is that the
-              Leaf Entity's metadata is constructed from the Trust Chain.
+              metadata for the Trust Chain subject is constructed from the Trust Chain.
             </t>
             <t hangText="Trust Chain">
               <vspace/>
               A sequence of Entity Statements that represents a chain
-              starting at a Leaf Entity and ending in a Trust Anchor.
+              starting at an Entity Configuration that is the subject of the chain
+	      (typically of a Leaf Entity) and ending in a Trust Anchor.
             </t>
             <t hangText="Trust Mark">
               Statement of conformance to a
@@ -344,14 +347,15 @@
       <t>
         The basic component is the Entity Statement, which is a cryptographically
         signed <xref target="RFC7519">JSON Web Token (JWT)</xref>.
-        A set of Entity Statements can form a path from a Leaf Entity to
+        A set of Entity Statements can form a path from an Entity
+	(typically a Leaf Entity) to
         a Trust Anchor. Entity Configurations
         issued by Entities about themselves control the Trust Chain
         resolution process.
       </t>
       <t>
-        The Entity Configuration of a Leaf Entity contains one or more
-        references to its Immediate Superiors, found in the
+        The Entity Configuration of a Leaf or Intermediate Entity contains one or more
+        references to its Immediate Superiors in the
 	<spanx style="verb">authority_hints</spanx> parameter
 	described in <xref target="authority_hints"/>.
         These references can be used to download the Entity Configuration of each Immediate Superior.
@@ -364,7 +368,8 @@
 	The sequence of Entity Configurations
         and Subordinate Statements that validate the relationship between
         a Superior and a Subordinate, along a path towards the Trust Anchor,
-        forms the proof that a Leaf Entity is a member of
+        forms the proof that the subject of Trust Chain
+	(typically a Leaf Entity) is a member of
         the federation rooted at the Trust Anchor.
       </t>
       <t>
@@ -372,8 +377,9 @@
         the signature of each statement, as described in <xref target="trust_chain"/>.
       </t>
       <t>
-        With a verified Trust Chain, the federation policy is finally applied
-        and the metadata describing a Leaf Entity within the Federation is derived,
+        Once there is a verified Trust Chain, the federation policy is applied
+        and the metadata for the Trust Chain subject
+	within the Federation is derived,
         as described in <xref target="federation_policy"/>.
       </t>
       <t>
@@ -811,12 +817,14 @@
           </list>
         </t>
         <t>
-          A Trust Chain begins with a Leaf Entity Configuration,
-          and has zero or more Subordinate Statements
+          A Trust Chain begins with an Entity Configuration
+	  that is the subject of the Trust Chain,
+	  which is typically a Leaf Entity.
+          The Trust Chain has zero or more Subordinate Statements
           issued by Intermediates about their Immediate Subordinates,
           and includes the Subordinate Statement issued by the
           Trust Anchor about the top-most Intermediate
-          (if there are Intermediates) or the Leaf Entity
+          (if there are Intermediates) or the Trust Chain subject
           (if there are no Intermediates).
           The Trust Chain logically always ends with the
           Entity Configuration of the Trust Anchor,
@@ -825,7 +833,7 @@
         </t>
         <t>
 	  The Trust Chain contains the configuration of the federation
-	  as it applies to the Leaf
+	  as it applies to the Trust Chain subject
           at the time of the evaluation of the chain.
         </t>
         <t>
@@ -855,7 +863,7 @@
 	  Then:
           <list style="symbols">
 	    <t>
-	      ES[0] (the Leaf's Entity Configuration in the Trust Chain)
+	      ES[0] (the Entity Configuration of the Trust Chain subject)
 	      is signed using a key in ES[0]["jwks"].
 	    </t>
             <t>
@@ -888,6 +896,42 @@
           Trust Chain in some secure out-of-band way not described in this
           document.
         </t>
+
+	<section title="Beginning and Ending Trust Chains"
+		 anchor="trust-chain-ends">
+	  <t>
+	    A Trust Chain begins with the Entity Configuration of an Entity
+	    for which trust is being established.
+	    This is the subject of the Trust Chain.
+	    This Entity typically plays a protocol role,
+	    such as being an OpenID Provider or OpenID Relying Party.
+	  </t>
+	  <t>
+	    While such Entities are typically Leaf Entities,
+	    other topologies are possible.
+	    For instance, an Entity might simultaneously be an OpenID Provider
+	    and an Intermediate Entity, with OpenID Relying Parties
+	    and/or other Intermediates being Subordinate to it.
+	    This is a case in which the subject of a Trust Chain
+	    would not be a Leaf Entity.
+	  </t>
+	  <t>
+	    A Trust Chain ends with the Entity Configuration of a Trust Anchor.
+	    While Trust Anchors typically have no Superiors,
+	    a Trust Anchor will have a Superior when the Trust Anchor
+	    also acts as an Intermediate Entity in another federation.
+	    This will be the case when there is a hierarchy of federations.
+	  </t>
+	  <t>
+	    Thus, while it is typical for a Trust Chain to end with
+	    a Trust Anchor with no Superiors,
+	    there are situations in which the Trust Chain will end with
+	    a Trust Anchor that nonetheless has Superior Entities.
+	  </t>
+	</section>
+
+	<section title="Trust Chain Example" anchor="trust-chain-example">
+
 	<figure>
           <preamble>
             The following is an example of a Trust Chain consisting of
@@ -962,6 +1006,7 @@
 ]]>
 	  </artwork>
 	</figure>
+	</section>
 
         <section title="Trust Chain Header Parameter" anchor="trust_chain_head_param">
          <t>
@@ -1765,6 +1810,14 @@
                 another federation.
               </t>
 
+	      <t hangText="Equal Opportunity">
+		<vspace/>
+		All Superior Entities in a Trust Chain can contribute to metadata policies
+		of the Trust Chain subject on an equal basis.
+		For instance, any Intermediate can further restrict the metadata
+		of its Subordinates relative to what its Superiors specified.
+	      </t>
+
               <t hangText="Specificity and Granularity">
                 <vspace/>
                 Just like metadata, a metadata policy is bound to a specific
@@ -1821,8 +1874,8 @@
 
               <t hangText="Determinism">
                 <vspace/>
-                The resolution and application of metadata policies in a Trust
-                Chain is deterministic. Trust Anchors and Intermediate Entities
+                The resolution and application of metadata policies in a Trust Chain
+                is deterministic. Trust Anchors and Intermediate Entities
                 are thus able to formulate policies that exhibit predictable and
                 reproducible outcomes.
               </t>
@@ -2015,7 +2068,7 @@
                 </list>
               </t>
               <t>
-                Order of processing: First
+                Order of application: First
               </t>
               <t>
                 Operator value merge: Allowed only when the operator values are
@@ -2080,7 +2133,7 @@
                 </list>
               </t>
               <t>
-                Order of processing: After <spanx style="verb">value</spanx>.
+                Order of application: After <spanx style="verb">value</spanx>.
               </t>
               <t>
                 Operator value merge: The result of merging the values of two
@@ -2143,7 +2196,7 @@
                 </list>
               </t>
               <t>
-                Order of processing: After <spanx style="verb">add</spanx>.
+                Order of application: After <spanx style="verb">add</spanx>.
               </t>
               <t>
                 Operator value merge: The operator values MUST be equal. If the
@@ -2195,7 +2248,7 @@
                 </list>
               </t>
               <t>
-                Order of processing: After <spanx style="verb">default</spanx>.
+                Order of application: After <spanx style="verb">default</spanx>.
               </t>
               <t>
                 Operator value merge: The result of merging the values of two
@@ -2268,7 +2321,7 @@
                 </list>
               </t>
               <t>
-                Order of processing: After <spanx style="verb">one_of</spanx>.
+                Order of application: After <spanx style="verb">one_of</spanx>.
               </t>
               <t>
                 Operator value merge: The result of merging the values of two
@@ -2336,7 +2389,7 @@
                 </list>
               </t>
               <t>
-                Order of processing: After <spanx style="verb">subset_of</spanx>.
+                Order of application: After <spanx style="verb">subset_of</spanx>.
               </t>
               <t>
                 Operator value merge: The result of merging the values of two
@@ -2383,7 +2436,7 @@
                 </list>
               </t>
               <t>
-                Order of processing: Last
+                Order of application: Last
               </t>
               <t>
                 Operator value merge: If a Superior has specified
@@ -2507,6 +2560,25 @@
               operators that conform with the principles in
               <xref target="metadata_policy_principles"/> and in
               <xref target="metadata_policy_operators"/>.
+            </t>
+
+            <t>
+              Additional operators MUST observe the following rules in regard to
+              the order of their application relative to the standard operators
+              defined in <xref target="standard_metadata_policy_operators"/>:
+                <list style="symbols">
+                  <t>
+                    Additional operators that modify metadata parameters MUST be
+                    applied after the <spanx style="verb">value</spanx> operator
+                    that is specified in <xref target="value_operator"/>.
+                  </t>
+                  <t>
+                    Additional operators that check metadata parameters MUST be
+                    applied before the <spanx style="verb">essential</spanx>
+                    operator that is specified in
+                    <xref target="essential_operator"/>.
+                  </t>
+                </list>
             </t>
 
             <t>
@@ -2688,8 +2760,7 @@
               <t>
                 If no further Subordinate Statements with a
                 <spanx style="verb">metadata_policy</spanx> claim are found, the
-                current metadata policy becomes the resolved one for the Trust
-                Chain.
+                current metadata policy becomes the resolved one for the Trust Chain.
               </t>
 
             </section>
@@ -3150,7 +3221,7 @@
         </t>
         <t>
 	  A Trust Mark issuer is a Federation Entity that issues Trust Marks.
-          A Trust Mark owner is an Entity the owns the right to a Trust Mark
+          A Trust Mark owner is an Entity that owns the right to a Trust Mark
           identifier.
         </t>
         <t>
@@ -4107,14 +4178,14 @@ Host: openid.sunet.se
                 <vspace/>
                 OPTIONAL. The value of this parameter is an Entity Type Identifier.
                 If the responder knows the Entity Types of its Immediate Subordinates, the result MUST be
-                filtered to include only those that include the specified Entity Type. When 
+                filtered to include only those that include the specified Entity Type. When
                 multiple <spanx style="verb">entity_type</spanx>
-                parameters are present, for example 
+                parameters are present, for example
                 <spanx style="verb">
                     entity_type=openid_provider&amp;entity_type=openid_relying_party
-                </spanx>, 
+                </spanx>,
                 the result MUST be filtered to include all specified Entity Types.
-                
+
                 If the responder does not support this feature it MUST
                 use the HTTP status code 400 and the content type
                 <spanx style="verb">application/json</spanx>, with
@@ -5301,7 +5372,7 @@ Content-Type: application/json
         <t>
           As described in <xref target="trust_chain"/>,
           a Trust Chain consists of an ordered list of Entity Statements.
-          So whichever way Party A has acquired the set of
+          So however Party A has acquired the set of
           Entity Statements, it MUST now verify that it is a proper Trust Chain
           using the rules laid out in that section.
         </t>
@@ -5331,7 +5402,7 @@ Content-Type: application/json
               </list>
             </t>
             <t>
-              For ES[0] (the Leaf's Entity Configuration), verify that
+              For ES[0] (the Entity Configuration of the Trust Chain subject), verify that
 	      <spanx style="verb">iss</spanx> == <spanx style="verb">sub</spanx>.
             </t>
             <t>
@@ -5742,7 +5813,7 @@ GET /authorize?
                 If the OP does not have a valid registration for the RP or
                 its registration has expired, the OP MAY use the received
                 Trust Chain as a hint for which path to take from the
-                Leaf Entity to the Trust Anchor.
+                RP's Entity to the Trust Anchor.
                 The OP MAY evaluate the statements in the
                 <spanx style="verb">trust_chain</spanx>
                 to make its Federation Entity Discovery procedure more efficient,
@@ -6012,7 +6083,7 @@ HTTP/1.1 302 Found
                   Once the RP has determined a set of Trust Anchors it has in common with the OP,
                   it chooses the subset it wants to proceed with. This
                   may be a single Trust Anchor, or it can also be more than one.
-                  The RP MUST perform a Trust Chain and metadata resolution for
+                  The RP MUST perform Trust Chain and metadata resolution for
                   the OP, as specified in <xref target="resolving_trust"/>. If
                   the resolution is not successful the RP MUST abort the
                   request.
@@ -6148,7 +6219,7 @@ HTTP/1.1 302 Found
               When the RP submits an Entity Configuration the content type of
               the request MUST be
               <spanx style="verb">application/entity-statement+jwt</spanx>.
-              When the RP submits a Trust Chain the content type MUST be
+              When the RP submits a Trust Chain, the content type MUST be
               <spanx style="verb">application/trust-chain+json</spanx>.
             </t>
           </section>
@@ -6516,8 +6587,7 @@ HTTP/1.1 302 Found
           the submission of the Trust Chain embedded in the Request,
           calculated by the requestor and related to itself.
 
-          This enables the following benefits in
-          a federation:
+          This provides the following benefits:
           <list style="symbols">
 
           <t>
@@ -7870,7 +7940,7 @@ HTTP/1.1 302 Found
         </front>
       </reference>
 
-      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-01.xml" />
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-04.xml" />
 
     </references>
 
@@ -8062,7 +8132,7 @@ HTTP/1.1 302 Found
                anchor="op_discovery">
         <t>
           Federation Entity Discovery is a sequence of steps that starts with the RP
-          fetching the Entity Configuration of the OP Leaf Entity (in this case,
+          fetching the Entity Configuration of the OP's Entity (in this case,
           https://op.umu.se) using the process defined in
           <xref target="federation_configuration"/>.
           What follows after that is this sequence of steps:
@@ -8091,7 +8161,7 @@ HTTP/1.1 302 Found
         <t>
           When building the Trust Chain, the Subordinate Statements issued
           by each Immediate Superior about their Immediate Subordinates are used together with the
-          Entity Configuration issued by the Leaf.
+          Entity Configuration of the Trust Chain subject.
         </t>
         <t>
           The Entity Configurations of Intermediates are not
@@ -8664,9 +8734,9 @@ Host: geant.org
 {
   "authorization_endpoint":
     "https://op.umu.se/openid/authorization",
-  "claims_parameter_supported": false,
   "contacts": [
-    "ops@swamid.se"
+    "ops@swamid.se",
+    "ops@edugain.geant.org"
   ],
   "federation_registration_endpoint":
     "https://op.umu.se/openid/fedreg",
@@ -8691,8 +8761,6 @@ Host: geant.org
   "op_policy_uri":
     "https://www.umu.se/en/website/legal-information/",
   "request_parameter_supported": true,
-  "request_uri_parameter_supported": true,
-  "require_request_uri_registration": true,
   "response_types_supported": [
     "code",
     "code id_token",
@@ -9198,6 +9266,20 @@ Host: op.umu.se
 	<list style="symbols">
 	  <t>
 	    Addresses #2139: Clarifies metadata statements (vs metadata policies).
+      </t>
+      <t>
+	    Addressed #2143: Additional policy operators that modify metadata
+        parameters must be applied after the value operator. Additional policy
+        operators that check metadata parameters must be applied before the
+        essential operator.
+	  </t>
+	  <t>
+	    Fixed #2082: Allow Trust Chains to start with any Entity Configuration
+	    and not just those of Leaf Entities.
+	  </t>
+	  <t>
+	    Fixed #2123: Stated that all members of a Trust Chain have an
+	    equal opportunity to contribute to metadata policies.
 	  </t>
 	</list>
       </t>
