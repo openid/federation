@@ -106,16 +106,15 @@
       </t>
       <t>
         An Entity in the federation must be able to trust that other Entities
-        it interacts with belong to the same federation.
-        It must also be able to trust that the information the other Entities
-        publish about themselves has not been tampered with during transport
-        and that it adheres to the federation's policies.
-          </t>
+        it interacts with belong to the same federation. It must also be able to trust
+        that the information the other entities publish about themselves has not
+        been tampered with during transport and that it adheres to the federation's policies.
+      </t>
       <t>
-        This specification defines basic components used to build
-        multilateral federations and describes how to apply them when
-        the underlying authentication protocol used is OpenID Connect or
-        the underlying authorization protocol is OAuth 2.0.
+        This specification defines basic components used to build multilateral
+        federations and describes how to apply them when
+        authentication protocol used is OpenID Connect or the
+        underlying authorization protocol is OAuth 2.0.
       </t>
     </abstract>
   </front>
@@ -132,17 +131,28 @@
         one or more levels of authorities.
         Examples of authorities are federation operators, organizations,
         departments within organizations, and individual sites.
-	This
+        This
         specification provides the basic technical trust infrastructure building
         blocks needed to create a dynamic and distributed trust network, such as a
         federation.
       </t>
       <t>
         Note that this specification only concerns itself with how Entities
-        in a federation get to know about each other.
-        An organization
-        MAY be represented by more than one Entity in a federation.
-        An Entity MAY also belong to more than one federation.
+        in a federation get to know about each other. An organization MAY
+        be represented by more than one Entity in a federation. An Entity
+        MAY also belong to more than one federation. Determining that two
+        Entities belong to the same federation is the basis for
+        establishing trust between them in this specification.
+      </t>
+      <t>
+        Of course, the word "trust" is also used in the vernacular to
+        encompass confidence in the security, reliability, and integrity of entities
+        and their actions. This kind trust is often established through
+        empirical proof, such as past performance, security certifications,
+        or transparent operational practices, which demonstrate a track
+        record of adherence to security standards and ethical conduct.
+        To be clear, this broader meaning of trust, while important,
+        is largely beyond the scope of what this specification accomplishes.
       </t>
       <figure>
 	<preamble>
@@ -523,30 +533,37 @@
             </t>
             <t hangText="metadata">
               <vspace/>
-              OPTIONAL. JSON object with protocol-specific claims that represent the
-              Entity's Types within its federations and metadata for those Entity Types.
-	      Each member name of the JSON object is an Entity Type Identifier,
-	      and each value MUST be a JSON object representing
-	      metadata according to the metadata schema of that Entity Type.
-	      When an Entity participates in a federation or federations
-	      with one or more Entity Types,
-	      its Entity Configuration MUST contain a <spanx style="verb">metadata</spanx> claim
-	      with entries for each of the corresponding Entity Type Identifiers,
-	      even if the values for those entries are
-	      the empty JSON object <spanx style="verb">{}</spanx>.
-	      (The value might contain no entries when Superiors supply any needed metadata).
-	      <vspace blankLines="1" />
-
-	      In some cases, an Immediate Superior may want to be explicit about what metadata
-              should be used for an Immediate Subordinate. In that case
-              <spanx style="verb">metadata</spanx> MAY be used in a Subordinate Statement.
-              If <spanx style="verb">metadata</spanx> is used in a Subordinate Statement,
-	      it is only valid for the subject of the Subordinate Statement
-	      and has no impact on the subject's Subordinates.
-              If both <spanx style="verb">metadata</spanx> and
-              <spanx style="verb">metadata_policy</spanx> appear in a Subordinate Statement,
-              then <spanx style="verb">metadata</spanx> MUST be applied before
-              <spanx style="verb">metadata_policy</spanx>.
+              OPTIONAL. JSON object that represents the Entity's Types and the
+              metadata for those Entity Types. Each member name of the JSON
+              object is an Entity Type Identifier, and each value MUST be a JSON
+              object containing metadata parameters according to the metadata
+              schema of the Entity Type.
+              <vspace blankLines="1" />
+              When an Entity participates in a federation or federations with
+              one or more Entity Types, its Entity Configuration MUST contain a
+              <spanx style="verb">metadata</spanx> claim with JSON object values
+              for each of the corresponding Entity Type Identifiers, even if the
+              values are the empty JSON object <spanx style="verb">{}</spanx>
+              (when the Entity Type has no associated metadata or Immediate
+              Superiors supply any needed metadata).
+              <vspace blankLines="1"/>
+              An Immediate Superior MAY provide selected or all metadata
+              parameters for an Immediate Subordinate, by using the
+              <spanx style="verb">metadata</spanx> claim in a Subordinate
+              Statement. When <spanx style="verb">metadata</spanx> is used in a
+              Subordinate Statement, it applies only to those Entity Types that
+              are present in the subject's Entity Configuration. Furthermore,
+              the metadata applies only to the subject of the Subordinate
+              Statement and has no effect on the subject's Subordinates.
+              Metadata parameters in a Subordinate Statement have precedence and
+              override identically named parameters under the same Entity Type
+              in the subject's Entity Configuration. If both
+              <spanx style="verb">metadata</spanx> and
+              <spanx style="verb">metadata_policy</spanx> appear in a
+              Subordinate Statement, then the stated
+              <spanx style="verb">metadata</spanx> MUST be applied before the
+              <spanx style="verb">metadata_policy</spanx>, as described in
+              <xref target="metadata_policy_application"/>.
             </t>
             <t hangText="metadata_policy">
               <vspace/>
@@ -556,7 +573,8 @@
               that is the subject of this Subordinate Statement as well as to
               all Entities that are Subordinate to it. Applying to Subordinate
               Entities distinguishes <spanx style="verb">metadata_policy</spanx>
-              from metadata, which only applies to the subject itself.
+              from <spanx style="verb">metadata</spanx>, which only applies to
+              the subject itself.
             </t>
             <t hangText="constraints">
               <vspace/>
@@ -2775,7 +2793,7 @@
                 of the Trust Chain subject resolves simply to the
                 <spanx style="verb">metadata</spanx> found in its Entity
                 Configuration, with any <spanx style="verb">metadata</spanx>
-                parameters asserted by the Immediate Superior applied to it.
+                parameters provided by the Immediate Superior applied to it.
               </t>
 
               <t>
@@ -9301,6 +9319,9 @@ Host: op.umu.se
       <t>
 	-35
 	<list style="symbols">
+	  <t>
+	    Addresses #2139: Clarifies metadata statements (vs metadata policies).
+      </t>
       <t>
 	    Addressed #2143: Additional policy operators that modify metadata
         parameters must be applied after the value operator. Additional policy
@@ -9312,6 +9333,10 @@ Host: op.umu.se
         referencing the ones defined in the X.509 CRL spec [RFC 5280].
 	  </t>
 	  <t>
+	    Addressed #1802: Added a definition of "trust" within the introduction,
+        to clarify its meaning within the context of the specification.
+      </t>
+      <t>
 	    Fixed #2082: Allow Trust Chains to start with any Entity Configuration
 	    and not just those of Leaf Entities.
 	  </t>
