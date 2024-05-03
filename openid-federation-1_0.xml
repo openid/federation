@@ -4754,22 +4754,15 @@ Host: trust-anchor.example.com
 
                         <t hangText="reason">
                           <vspace/>
-                          REQUIRED. Human-readable value
+                          OPTIONAL. String
                           that identifies the reason
                           for the key revocation, as defined in
-                          Section 5.3.1 of <xref target="RFC5280"/>.
-                        </t>
-
-                        <t hangText="reason_code">
-                          <vspace/>
-                          REQUIRED. Integer that identifies the reason
-                          for the key revocation, as defined in
-                          Section 5.3.1 of <xref target="RFC5280"/>.
+                          <xref target="hist-keys-reasons"/>.
                         </t>
 
                       </list>
-		      Other members of the <spanx style="verb">revoked</spanx>
-		      object MAY be defined and used.
+                        Other members of the <spanx style="verb">revoked</spanx>
+                        object MAY be defined and used.
                       </t>
 
                     </t>
@@ -4835,14 +4828,64 @@ Host: trust-anchor.example.com
                 "exp": 123974394972,
                 "revoked": {
                   "revoked_at": 123972495172,
-                  "reason": "keyCompromise",
-                  "reason_code": 1
+                  "reason": "compromised",
                 }
             }
         ]
 }
 ]]></artwork>
           </figure>
+
+        </section>
+        
+        <section anchor="hist-keys-reasons" title="Federation Historical Keys Revocation Reasons">
+
+          <t>
+            Federation Entities are strongly encouraged to use a meaningful
+            <spanx style="verb">reason</spanx> value when indicating the revocation reason
+            for a Federation Entity Key. The <spanx style="verb">reason</spanx>
+            MAY be omitted
+            instead of using the <spanx style="verb">unspecified</spanx> value.
+          </t>
+
+          <t>
+            Below is the definition of the reason values.
+          </t>
+
+          <table>
+          <preamble>
+            The following table defines Federation Entity Keys revocation reasons.
+            These reasons are inspired by Section 5.3.1 of <xref target="RFC5280"/>.
+          </preamble>
+          <name>
+            Federation Entity Keys Revocation Reasons.
+          </name>
+          <thead>
+            <tr>
+              <td>Reason</td>
+              <td>Description</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>unspecified</td>
+              <td>General or unspecified reason for the JWK status change.</td>
+            </tr>
+            <tr>
+              <td>compromised</td>
+              <td>The private key is believed to have been compromised.</td>
+            </tr>
+            <tr>
+              <td>superseded</td>
+              <td>The JWK is no longer active.</td>
+            </tr>
+          </tbody>
+        </table>
+
+            <t>
+                A federation MAY specify and utilize additional reasons depending
+                on the trust or security framework in use.
+            </t>
 
         </section>
 
@@ -9282,6 +9325,10 @@ Host: op.umu.se
         parameters must be applied after the value operator. Additional policy
         operators that check metadata parameters must be applied before the
         essential operator.
+	  </t>
+	  <t>
+	    Addressed #2140: The historical keys response JWT uses reason values without
+        referencing the ones defined in the X.509 CRL spec [RFC 5280].
 	  </t>
 	  <t>
 	    Addressed #1802: Added a definition of "trust" within the introduction,
