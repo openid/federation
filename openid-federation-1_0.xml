@@ -1594,7 +1594,7 @@
 	  <t>
 	    The following metadata parameters define ways of obtaining
 	    JWK Sets for an Entity Type of the Entity.
-	    Note that these keys are distinct from the Federaton Entity Keys
+	    Note that these keys are distinct from the Federation Entity Keys
 	    used to sign Entity Statements.
 	  </t>
 	  <t>
@@ -3675,10 +3675,14 @@
 
     <section title="Federation Endpoints" anchor="federation_endpoints">
       <t>
-        The federation endpoints of an Entity can be found in the
-        configuration response as described in
-        <xref target="federation_configuration"/>
-        or by other means.
+	The federation endpoints of an Entity are published in the
+	<spanx style="verb">federation_entity</spanx> metadata section
+	of its Entity Configuration.
+	Since these endpoints are used when building and validating Trust Chains,
+	their locations MUST be available before metadata and metadata policies
+	from Superiors can be applied.
+	Therefore, these endpoints MUST be published directly in Entity Configuration
+	metadata and not in Subordinate Statements.
       </t>
       <section title="Fetching an Entity Statement" anchor="fetch_endpoint">
         <t>
@@ -9341,6 +9345,10 @@ Host: op.umu.se
 	  <t>
 	    Fixed #2123: Stated that all members of a Trust Chain have an
 	    equal opportunity to contribute to metadata policies.
+	  </t>
+	  <t>
+	    Fixed #2148: Require federation endpoints to be published in
+	    Entity Configuration metadata.
 	  </t>
 	</list>
       </t>
