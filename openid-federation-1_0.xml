@@ -3679,14 +3679,10 @@
 
     <section title="Federation Endpoints" anchor="federation_endpoints">
       <t>
-	The federation endpoints of an Entity are published in the
-	<spanx style="verb">federation_entity</spanx> metadata
-	of its Entity Configuration.
-	Since these endpoints are used when building and validating Trust Chains,
-	their locations MUST be available before metadata and metadata policies
-	from Superiors can be applied.
-	Therefore, these endpoints MUST be published directly in Entity Configuration
-	metadata and not in Subordinate Statements.
+        The federation endpoints of an Entity can be found in the
+        configuration response as described in
+        <xref target="federation_configuration"/>
+        or by other means.
       </t>
       <section title="Fetching an Entity Statement" anchor="fetch_endpoint">
         <t>
@@ -3700,6 +3696,11 @@
 	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
 	  in the <spanx style="verb">federation_fetch_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
+	  Since this endpoint is used when building and validating Trust Chains,
+	  its location MUST be available before metadata and metadata policies
+	  from Superiors can be applied.
+	  Therefore, this endpoint MUST be published directly in Entity Configuration
+	  metadata and not in Subordinate Statements.
         </t>
         <t>
           To fetch an Entity Statement, an Entity needs to know the
@@ -4129,6 +4130,8 @@ Host: openid.sunet.se
 	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
 	  in the <spanx style="verb">federation_list_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
+	  This endpoint MUST be published directly in Entity Configuration
+	  metadata and not in Subordinate Statements.
 	</t>
 
         <t>
@@ -4320,6 +4323,8 @@ Content-Type: application/json
 	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
 	  in the <spanx style="verb">federation_trust_mark_status_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
+	  This endpoint MUST be published directly in Entity Configuration
+	  metadata and not in Subordinate Statements.
 	</t>
 
         <section anchor="tm-status-request" title="Trust Mark Status Request">
@@ -9355,8 +9360,8 @@ Host: op.umu.se
 	    equal opportunity to contribute to metadata policies.
 	  </t>
 	  <t>
-	    Fixed #2148: Require federation endpoints to be published in
-	    Entity Configuration metadata.
+	    Fixed #2148: Require fetch, listing, and trust mark status
+	    federation endpoints to be published in Entity Configuration metadata.
 	  </t>
 	</list>
       </t>
