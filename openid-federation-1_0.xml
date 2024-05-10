@@ -579,8 +579,11 @@
             </t>
             <t hangText="constraints">
               <vspace/>
-              OPTIONAL. JSON object that defines constraints that apply to the Trust Chain,
-	      as described in <xref target="chain_constraints"/>.
+              OPTIONAL. JSON object that defines Trust Chain constraints, as
+              described in <xref target="chain_constraints"/>. Only Subordinate
+              Statements MAY include this claim. The constraints apply to the
+              Entity that is the subject of this Subordinate Statement as well
+              as to all Entities that are Subordinate to it.
             </t>
             <t hangText="crit">
               <vspace/>
@@ -3033,14 +3036,10 @@
 
       <section title="Constraints" anchor="chain_constraints">
 	<t>
-	  Constraints define criteria applied to Trust Chains.
-	  They occur in the <spanx style="verb">constraints</spanx>
-	  claim of Entity Statements, per <xref target="entity-statement"/>.
-	  If the claim appears in an Entity Configuration, it MUST be applied
-	  to all Subordinates of that Entity.
-	  If the claim appears in a Subordinate Statement,
-	  then it MUST be applied to the subject of the Subordinate Statement
-	  and all the subject's Subordinates.
+      Trust Anchors and Intermediate Entities MAY define constraining criteria
+      that apply to their Subordinates. They are expressed in the
+      <spanx style="verb">constraints</spanx> claim of a Subordinate Statement,
+      as described in <xref target="entity-statement"/>.
 	</t>
     <t>
 	  The following constraint parameters are defined:
@@ -3056,16 +3055,15 @@
             <t hangText="naming_constraints">
               <vspace/>
               OPTIONAL. JSON object specifying restrictions on the URIs of the
-	      Entity Identifiers of the Entities subject to the constraints.
-              Restrictions are defined in terms of permitted or excluded URI name
-              subtrees.
+	          Entity Identifiers of Subordinate Entities. Restrictions are
+              defined in terms of permitted or excluded URI name subtrees.
             </t>
             <t hangText="allowed_entity_types">
               <vspace/>
               OPTIONAL. Array of string Entity Type Identifiers.
               Entity Type Identifiers are defined in <xref target="entity_types"/>.
-              This constraint restricts the Entity Types and hence the metadata
-              that Entities subject to the constraint MAY have.
+              This constraint specifies the Entity Types and hence the metadata
+              that Subordinate Entities are allowed to have.
             </t>
           </list>
         </t>
@@ -3082,6 +3080,7 @@
           </name>
           <artwork><![CDATA[
 {
+  "max_path_length": 2,
   "naming_constraints": {
     "permitted": [
       "https://.example.com"
@@ -3090,7 +3089,6 @@
       "https://east.example.com"
     ]
   },
-  "max_path_length": 2,
   "allowed_entity_types": [
     "openid_provider",
     "openid_relying_party"
@@ -3098,14 +3096,6 @@
 }
 ]]></artwork>
         </figure>
-        <t>
-          When an Entity has a <spanx style="verb">constraints</spanx> claim in its
-          Entity Configuration and issues a Subordinate Statement,
-          then if the same type of constraint, for example a
-          <spanx style="verb">max_path_length</spanx>,
-          appears in both the Entity Configuration and the Subordinate Statement,
-          the more restrictive of the two MUST take precedence.
-        </t>
         <t>
           If a Subordinate Statement contains a constraint specification
           that is more restrictive than the one in effect, then the more
@@ -3176,10 +3166,9 @@
 
         <section title="Naming Constraints" anchor="naming_constraints">
           <t>
-            The <spanx style="verb">naming_constraints</spanx> member
-            specifies a URI namespace within which all Entity Identifiers
-	    for Entities Subordinate to the subject of the Entity
-	    specifying the constraints in a Trust Chain MUST be located.
+            The <spanx style="verb">naming_constraints</spanx> member specifies
+            a URI namespace within which the Entity Identifiers of Subordinate
+            Entities in a Trust Chain MUST be located.
           </t>
           <t>
 	    Restrictions are defined in terms of URI name subtrees,
@@ -3209,7 +3198,8 @@
                  anchor="entity_type_constraints">
           <t>
             The <spanx style="verb">allowed_entity_types</spanx> constraint
-            specifies the acceptable Entity Types. If there is no
+            specifies the acceptable Entity Types of Subordinate Entities in a
+            Trust Chain. If there is no
             <spanx style="verb">allowed_entity_types</spanx> constraint, it
             means that any Entity Type is allowed. The
             <spanx style="verb">federation_entity</spanx> Entity Type
@@ -9321,6 +9311,10 @@ Host: op.umu.se
       <t>
 	-35
 	<list style="symbols">
+      <t>
+        Addresses #2124: The constraints claim may only appear in Subordinate
+        Statements.
+      </t>
 	  <t>
 	    Fixes #2126: The max_path_length definition must be expressed in terms
         of Intermediate Entities, not Entity Statements, to prevent ambiguity.
