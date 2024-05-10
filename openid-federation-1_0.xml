@@ -1771,7 +1771,7 @@
 	  </list>
 	  <t>
 	    It is RECOMMENDED that, when present, these metadata parameters occur in
-	    an Entity's <spanx style="verb">federation_entity</spanx> metadata section.
+	    an Entity's <spanx style="verb">federation_entity</spanx> metadata.
 	    They MAY also be present in the Entity's metadata for other Entity Types,
 	    particularly when the values for those Entity Types differ from
 	    those for the <spanx style="verb">federation_entity</spanx> metadata.
@@ -3697,6 +3697,11 @@
 	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
 	  in the <spanx style="verb">federation_fetch_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
+	  Since this endpoint is used when building and validating Trust Chains,
+	  its location MUST be available before metadata and metadata policies
+	  from Superiors can be applied.
+	  Therefore, this endpoint MUST be published directly in Entity Configuration
+	  metadata and not in Subordinate Statements.
         </t>
         <t>
           To fetch an Entity Statement, an Entity needs to know the
@@ -4132,6 +4137,8 @@ Host: openid.sunet.se
 	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
 	  in the <spanx style="verb">federation_list_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
+	  This endpoint MUST be published directly in Entity Configuration
+	  metadata and not in Subordinate Statements.
 	</t>
 
         <t>
@@ -4323,6 +4330,8 @@ Content-Type: application/json
 	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
 	  in the <spanx style="verb">federation_trust_mark_status_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
+	  This endpoint MUST be published directly in Entity Configuration
+	  metadata and not in Subordinate Statements.
 	</t>
 
         <section anchor="tm-status-request" title="Trust Mark Status Request">
@@ -9361,6 +9370,10 @@ Host: op.umu.se
 	  <t>
 	    Fixed #2123: Stated that all members of a Trust Chain have an
 	    equal opportunity to contribute to metadata policies.
+	  </t>
+	  <t>
+	    Fixed #2148: Require fetch, listing, and trust mark status
+	    federation endpoints to be published in Entity Configuration metadata.
 	  </t>
 	  <t>
 	    Fixed #2149: Stated that entities MUST publish Subordinate Statements
