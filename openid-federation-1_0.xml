@@ -3691,8 +3691,9 @@
         <t>
           Fetching Entity Statements is performed to collect Entity Statements
           one by one to assemble Trust Chains.
-          All Entities that publish Subordinate Statements
-          MUST expose a fetch endpoint.
+	  An Entity with Subordinates MUST expose a fetch endpoint.
+	  An Entity MUST publish Subordinate Statements about its
+	  Immediate Subordinates via its fetch endpoint.
 	</t>
 	<t>
 	  The fetch endpoint location is published in
@@ -3772,6 +3773,12 @@ Host: edugain.org
             If it is a negative response, it will be a JSON object and the
             content type MUST be
             <spanx style="verb">application/json</spanx>.
+	    If the fetch endpoint cannot provide data for the requested
+	    <spanx style="verb">iss</spanx> parameter, returning the
+	    <spanx style="verb">invalid_issuer</spanx> error code is RECOMMENDED.
+	    If the fetch endpoint cannot provide data for the requested
+	    <spanx style="verb">sub</spanx> parameter, returning the
+	    <spanx style="verb">not_found</spanx> error code is RECOMMENDED.
             See more about error responses in <xref target="error_response"/>.
           </t>
           <figure>
@@ -5114,6 +5121,11 @@ Host: trust-anchor.example.com
                   The Client can not be authorized or is not
                   a valid participant of the federation.
                   The HTTP response status code SHOULD be 401 (Unauthorized).
+                </t>
+                 <t hangText="invalid_issuer">
+                  <vspace/>
+                  The endpoint cannot service the requested issuer.
+                  The HTTP response status code SHOULD be 404 (Not Found).
                 </t>
                 <t hangText="not_found">
                   <vspace/>
@@ -9380,6 +9392,13 @@ Host: op.umu.se
 	  <t>
 	    Fixed #2123: Stated that all members of a Trust Chain have an
 	    equal opportunity to contribute to metadata policies.
+	  </t>
+	  <t>
+	    Fixed #2149: Stated that entities MUST publish Subordinate Statements
+	    about their Immediate Subordinates.
+	  </t>
+	  <t>
+	    Fixed #2150: Defined <spanx style="verb">invalid_issuer</spanx> error code.
 	  </t>
 	  <t>
 	    Fixed #2152: Consistently included "if not understood MUST be ignored"
