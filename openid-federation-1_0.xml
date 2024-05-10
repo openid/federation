@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="3" month="May" year="2024"/>
+    <date day="4" month="May" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -106,15 +106,16 @@
       </t>
       <t>
         An Entity in the federation must be able to trust that other Entities
-        it interacts with belong to the same federation. It must also be able to trust
-        that the information the other Entities publish about themselves has not
-        been tampered with during transport and that it adheres to the federation's policies.
-      </t>
+        it interacts with belong to the same federation.
+        It must also be able to trust that the information the other Entities
+        publish about themselves has not been tampered with during transport
+        and that it adheres to the federation's policies.
+          </t>
       <t>
-        This specification defines basic components used to build multilateral
-        federations and describes how to apply them when
-        authentication protocol used is OpenID Connect or the
-        underlying authorization protocol is OAuth 2.0.
+        This specification defines basic components used to build
+        multilateral federations and describes how to apply them when
+        the underlying authentication protocol used is OpenID Connect or
+        the underlying authorization protocol is OAuth 2.0.
       </t>
     </abstract>
   </front>
@@ -1594,7 +1595,7 @@
 	  <t>
 	    The following metadata parameters define ways of obtaining
 	    JWK Sets for an Entity Type of the Entity.
-	    Note that these keys are distinct from the Federaton Entity Keys
+	    Note that these keys are distinct from the Federation Entity Keys
 	    used to sign Entity Statements.
 	  </t>
 	  <t>
@@ -3048,9 +3049,9 @@
           <list style="hanging">
             <t hangText="max_path_length">
               <vspace/>
-              OPTIONAL. Integer specifying the maximum number of Entity Statements
-              between the Entity Statement containing the constraint
-	      and the last Entity Statement in the Trust Chain.
+              OPTIONAL. Integer specifying the maximum number of Intermediate
+              Entities between the Entity setting the constraint and the Trust
+              Chain subject.
             </t>
             <t hangText="naming_constraints">
               <vspace/>
@@ -3117,54 +3118,57 @@
         <section title="Max Path Length" anchor="max_path_length">
           <t>
             The <spanx style="verb">max_path_length</spanx> constraint specifies
-            the maximum number of
-            Entity Statements a Trust Chain can have between the Entity Statement
-            that contains the constraint specification and the Leaf's Entity Statement.
+            the maximum allowed number of Intermediate Entities in a Trust Chain
+            between a Trust Anchor or Intermediate that sets the constraint and
+            the Trust Chain subject.
           </t>
           <t>
             A <spanx style="verb">max_path_length</spanx> constraint of zero
-            indicates that no
-            Intermediates MAY appear between this Entity and the
-            Leaf Entity. Where it appears, the
-            <spanx style="verb">max_path_length</spanx> constraint
-            MUST have a value greater than or equal to zero.
+            indicates that no Intermediates MAY appear between this Entity and
+            the Trust Chain subject. The
+            <spanx style="verb">max_path_length</spanx> constraint MUST have a
+            value greater than or equal to zero.
           </t>
           <t>
-            Not including a <spanx style="verb">max_path_length</spanx> constraint means that there are
-            no additional constraints apart from those already in effect.
+            Omitting the <spanx style="verb">max_path_length</spanx> constraint
+            means that there are no additional constraints apart from those
+            already in effect.
           </t>
           <t>
             Assuming that we have a Trust Chain with four Entity Statements:
             <list style="numbers">
-              <t>Entity Configuration of the Leaf Entity (LE)</t>
-              <t>Subordinate Statement by Intermediate 1 (I1) about LE</t>
-              <t>Subordinate Statement by Intermediate 2 (I2) about I1</t>
-              <t>Subordinate Statement by the Trust Anchor (TA) about I2</t>
+              <t>Entity Configuration of a Leaf Entity (LE)</t>
+              <t>Subordinate Statement by an Intermediate 1 (I1) about LE</t>
+              <t>Subordinate Statement by an Intermediate 2 (I2) about I1</t>
+              <t>Subordinate Statement by a Trust Anchor (TA) about I2</t>
             </list>
           </t>
           <t>
             Then the Trust Chain fulfills the constraints if, for instance:
             <list style="symbols">
               <t>
-                The TA specifies a <spanx style="verb">max_path_length</spanx> that
-                is greater than or equal to 2.
+                The TA specifies a <spanx style="verb">max_path_length</spanx>
+                that is greater than or equal to 2.
               </t>
               <t>
                 TA specifies a <spanx style="verb">max_path_length</spanx> of 2,
                 I2 specifies a <spanx style="verb">max_path_length</spanx> of 1,
-                and I1 sets no <spanx style="verb">max_path_length</spanx> constraint.
+                and I1 omits the <spanx style="verb">max_path_length</spanx>
+                constraint.
               </t>
-              <t>Neither TA nor I2 specifies any
-                <spanx style="verb">max_path_length</spanx> constraint
-                while I1 sets <spanx style="verb">max_path_length</spanx> to 0.
+              <t>
+                Neither TA nor I2 specifies any
+                <spanx style="verb">max_path_length</spanx> constraint while I1
+                sets <spanx style="verb">max_path_length</spanx> to 0.
               </t>
             </list>
           </t>
           <t>
-            The Trust Chain does not fulfill the constraints if, for instance, the:
+            The Trust Chain does not fulfill the constraints if, for instance,
+            the:
             <list style="symbols">
-              <t>TA's Subordinate Statement has set the <spanx style="verb">max_path_length</spanx> to
-                1.
+              <t>
+                The TA sets the <spanx style="verb">max_path_length</spanx> to 1.
               </t>
             </list>
           </t>
@@ -3684,8 +3688,9 @@
         <t>
           Fetching Entity Statements is performed to collect Entity Statements
           one by one to assemble Trust Chains.
-          All Entities that publish Subordinate Statements
-          MUST expose a fetch endpoint.
+	  An Entity with Subordinates MUST expose a fetch endpoint.
+	  An Entity MUST publish Subordinate Statements about its
+	  Immediate Subordinates via its fetch endpoint.
 	</t>
 	<t>
 	  The fetch endpoint location is published in
@@ -9329,6 +9334,10 @@ Host: op.umu.se
 	-35
 	<list style="symbols">
 	  <t>
+	    Fixes #2126: The max_path_length definition must be expressed in terms
+        of Intermediate Entities, not Entity Statements, to prevent ambiguity.
+      </t>
+      <t>
 	    Addresses #2139: Clarifies metadata statements (vs metadata policies).
       </t>
       <t>
@@ -9352,6 +9361,10 @@ Host: op.umu.se
 	  <t>
 	    Fixed #2123: Stated that all members of a Trust Chain have an
 	    equal opportunity to contribute to metadata policies.
+	  </t>
+	  <t>
+	    Fixed #2149: Stated that entities MUST publish Subordinate Statements
+	    about their Immediate Subordinates.
 	  </t>
 	  <t>
 	    Fixed #2150: Defined <spanx style="verb">invalid_issuer</spanx> error code.
