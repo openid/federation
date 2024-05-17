@@ -326,7 +326,7 @@
               <vspace/>
               A process that starts with the Entity Identifier
 	      for the subject of the Trust Chain and collects
-              a number of Entity Statements until the chosen Trust Anchor is reached.
+              Entity Statements until the chosen Trust Anchor is reached.
               From the collected Entity Statements, a Trust Chain
               is constructed and verified.
               The result of the Federation Entity Discovery is that the
@@ -344,7 +344,7 @@
               as determined by an accreditation authority.
             </t>
             <t hangText="Federation Entity Keys">
-              Keys used for the cryptogaphic signatures required by
+              Keys used for the cryptographic signatures required by
               the trust mechanisms defined in this specification.
               Every participant in a Federation publishes its
               Federation Entity Keys in its Entity Configuration.
@@ -403,10 +403,10 @@
         <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>.
       </t>
       <t>
-        OpenID Connect is used in all of the examples in this
+        OpenID Connect is used in many of the examples in this
         specification, however this does not mean that this specification can only be used
-        together with OpenID Connect. On the contrary, it can also be
-        used to build federations using any other protocols.
+        with OpenID Connect. On the contrary, it can also be
+        used to build federations for any other protocols.
       </t>
 
       <section title="Cryptographic Trust Mechanism" anchor="CryptographicTrustMechanism">
@@ -421,7 +421,7 @@
 	  research and academic federations for over a decade.
 	</t>
 	<t>
-	  Note that this cryptographic trust mechanim intentionally does not rely on
+	  Note that this cryptographic trust mechanism intentionally does not rely on
 	  Web PKI / TLS certificates for signing keys.
 	  Which TLS certificates are considered trusted can vary considerably between systems
 	  depending upon which certificate authorities are considered trusted
@@ -843,7 +843,7 @@
           The Trust Chain logically always ends with the
           Entity Configuration of the Trust Anchor,
 	  even though it MAY be omitted from
-	  the JSON array representating the Trust Chain in some cases.
+	  the JSON array representing the Trust Chain in some cases.
         </t>
         <t>
 	  The Trust Chain contains the configuration of the federation
@@ -952,7 +952,7 @@
             a Leaf's Entity Configuration and Subordinate Statements issued
             by an Intermediate Entity and a Trust Anchor. It shows
             the relationship between the three Entities,
-	    their Entity Configurations and their Subordinate Statements.
+	    their Entity Configurations, and their Subordinate Statements.
 	    The Subordinate Statements are obtained from the
             <spanx style="verb">federation_fetch_endpoint</spanx> of
             the subject's Immediate Superior. The URL of the
@@ -3435,7 +3435,7 @@
                 verify that the Trust Mark contains
                 a <spanx style="verb">delegation</spanx>
                 claim.
-                The set of claims for the the Trust Mark identifier
+                The claims for the Trust Mark identifier
                 in the <spanx style="verb">trust_mark_owners</spanx> value
                 are used in the following way:
                 <list style="symbols">
@@ -3627,7 +3627,7 @@
   "sub": "https://gallinaccio.example.com/op",
   "iat": 1579621160,
   "logo_uri": "https://cantharellus.cibarius/static/images/cantharellus-cibarius.svg",
-  "ref": "hhttps://cantharellus.cibarius/cantharellus/cibarius"
+  "ref": "https://cantharellus.cibarius/cantharellus/cibarius"
 }
 ]]></artwork>
           </figure>
@@ -4096,10 +4096,10 @@ Host: openid.sunet.se
         <section anchor="trust-considerations" title="Trust Considerations">
           <t>
             The basic assumption of this specification is that an Entity
-            should have direct trust in noone except the Trust Anchor
+            should have direct trust in no one except the Trust Anchor
             and its own capabilities.
             However, Entities may establish a kind of
-            transistive trust in other Entities. For example, the
+            transitive trust in other Entities. For example, the
             Trust Anchor states who its Immediate Subordinates are
             and Entities may choose to trust them.
             If a party uses the resolve service of another Entity
@@ -4211,7 +4211,7 @@ Host: openid.sunet.se
                 </spanx>,
                 the result MUST be filtered to include all specified Entity Types.
 
-                If the responder does not support this feature it MUST
+                If the responder does not support this feature, it MUST
                 use the HTTP status code 400 and the content type
                 <spanx style="verb">application/json</spanx>, with
                 the error code
@@ -4227,7 +4227,7 @@ Host: openid.sunet.se
                 the result contains only the Immediate Subordinates for which
                 at least one Trust Mark have been issued and is still valid.
 
-                If the responder does not support this feature it MUST
+                If the responder does not support this feature, it MUST
                 use the HTTP status code 400 and set the content type to
                 <spanx style="verb">application/json</spanx>, with
                 the error code
@@ -4241,7 +4241,7 @@ Host: openid.sunet.se
                 the list in the response is filtered to include only
                 the Immediate Subordinates for which that Trust Mark identifier has been
                 issued and is still valid.
-                If the responder does not support this feature it MUST
+                If the responder does not support this feature, it MUST
                 use the HTTP status code 400 and set the content type to
                 <spanx style="verb">application/json</spanx>, with
                 the error code
@@ -4254,7 +4254,7 @@ Host: openid.sunet.se
                 <spanx style="verb">true</spanx>, then if the responder knows
                 whether its Immediate Subordinates are Intermediates or not,
                 the result MUST be filtered accordingly.
-                If the responder does not support this feature it MUST
+                If the responder does not support this feature, it MUST
                 use the HTTP status code 400 and the content type
                 <spanx style="verb">application/json</spanx>, with
                 the error code
@@ -4941,7 +4941,7 @@ Host: trust-anchor.example.com
             more technical details.
           -->
           <t>
-            On the basis of the attributes contained in the Entity Statements
+            Based on the attributes contained in the Entity Statements
             that form a Trust Chain, it MAY be also possible to verify
             the non-federation public keys used in the past by Leaf Entities for
             signature operations for OpenID Connect
@@ -4992,7 +4992,7 @@ Host: trust-anchor.example.com
 	</t>
 	<t>
 	  Client authentication with <spanx style="verb">private_key_jwt</spanx>
-	  is the default client authentication method to federation endpoints,
+	  is the default client authentication method to federation endpoints
 	  when client authentication is supported.
 	  This client authentication method is described in Section 9 of
 	  <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
@@ -5093,7 +5093,7 @@ Host: trust-anchor.example.com
                 </t>
                 <t hangText="invalid_client">
                   <vspace/>
-                  The Client can not be authorized or is not
+                  The Client cannot be authorized or is not
                   a valid participant of the federation.
                   The HTTP response status code SHOULD be 401 (Unauthorized).
                 </t>
@@ -5381,7 +5381,7 @@ Content-Type: application/json
 	  The following sequence diagram represents the interactions between the RP,
 	  the OP, and the Trust Anchor during a trust evaluation made by the OP
 	  about the RP.
-	  Relating this to the the preceeding description, in this diagram,
+	  Relating this to the preceding description, in this diagram,
 	  Party A is the OP and Party B is the RP.
         </preamble>
 	<name>
@@ -6140,7 +6140,7 @@ HTTP/1.1 302 Found
           <xref target="OpenID.Registration">OpenID Connect Dynamic Client
           Registration 1.0</xref> endpoint of an OP deployment. In contrast to
           Automatic Registration, it enables an OP to provision a Client ID, a
-          client secret and metadata parameters.
+          Client Secret, and metadata parameters.
         </t>
 
         <t>An example of an Explicit Registration is provided in
@@ -6160,7 +6160,7 @@ HTTP/1.1 302 Found
                   may be a single Trust Anchor, or it can also be more than one.
                   The RP MUST perform Trust Chain and metadata resolution for
                   the OP, as specified in <xref target="resolving_trust"/>. If
-                  the resolution is not successful the RP MUST abort the
+                  the resolution is not successful, the RP MUST abort the
                   request.
                 </t>
                 <t>
@@ -6203,7 +6203,7 @@ HTTP/1.1 302 Found
                   the resolved OP metadata and thus ensure a successful
                   registration with the OP. Note that if the submitted RP
                   metadata is not compliant with the metadata of the OP, the
-                  OP may choose to modify it in order to make it compliant
+                  OP may choose to modify it to make it compliant
                   rather than reject the request with an error response.
                 </t>
 
@@ -6327,7 +6327,7 @@ HTTP/1.1 302 Found
                     the statements in the Trust Chain to save the HTTP calls
                     that are necessary to perform the Federation Entity Discovery,
                     especially if the RP included more than one
-                    authority hint in its Entity Configuration. Otherwise the
+                    authority hint in its Entity Configuration. Otherwise, the
                     OP MUST extract the RP Entity Configuration from the Trust Chain
                     and proceed according to Step 2,
 		    as if only an Entity Configuration was received.
@@ -6380,10 +6380,10 @@ HTTP/1.1 302 Found
                     <vspace blankLine="1"/>
 
                     The OP MAY modify the received RP metadata, for example by
-                    substituting an invalid or unsupported parameter, in order
+                    substituting an invalid or unsupported parameter,
                     to make it compliant with its own OP metadata and other
                     policies. If the OP does not accept the RP metadata or is
-                    unwilling to modify it in order to make it compliant, it
+                    unwilling to modify it to make it compliant, it
                     MUST return a client registration error response, with an
                     appropriate error, such as
                     <spanx style="verb">invalid_client_metadata</spanx> or
@@ -6431,7 +6431,7 @@ HTTP/1.1 302 Found
                     default value, for example
                     <spanx style="verb">token_endpoint_auth_method</spanx>
                     which has a default value of
-                    <spanx style="verb">client_secret_basic</spanx>, in order
+                    <spanx style="verb">client_secret_basic</spanx>,
                     to simplify the processing of the response by the RP.
                   </t>
                   <t>
@@ -6578,7 +6578,7 @@ HTTP/1.1 302 Found
                   <t>
                     If the received registration Entity Statement does not pass the above
                     checks, the RP MUST reject it. The RP MAY choose to retry
-                    the Explicit Registration request in order to work around a
+                    the Explicit Registration request to work around a
                     transient exception, for example due to a recent change of
                     Entity metadata or metadata policy causing temporary
                     misalignment of metadata.
@@ -6660,7 +6660,7 @@ HTTP/1.1 302 Found
         <t>
           Both Automatic and Explicit Client Registration support
           the submission of the Trust Chain embedded in the Request,
-          calculated by the requestor and related to itself.
+          calculated by the requestor, and related to itself.
 
           This provides the following benefits:
           <list style="symbols">
@@ -6839,8 +6839,8 @@ HTTP/1.1 302 Found
           The static Trust Chain gives a predefined trust path,
           meaning that Federation Entity Discovery need not be performed.
           In this case, the propagation attacks will
-          be prevented, since the Trust Chain can be statically validated with the
-          Trust Anchor's public key.
+          be prevented since the Trust Chain can be statically validated with
+          a public key of the Trust Anchor.
         </t>
         <t>
           A Trust Mark can be statically validated using the public key of its issuer.
@@ -6868,11 +6868,11 @@ HTTP/1.1 302 Found
       <section title="Unsigned Error Messages" anchor="UnsignedError">
         <t>
           One of the fundamental design goals of this protocol is to
-          protect messages end-to-end. This can not be accomplished by demanding
+          protect messages end-to-end. This cannot be accomplished by demanding
           TLS since TLS, in lots of cases, is not end-to-end but ends in a HTTPS
           to HTTP Reverse Proxy.
-          Allowing unsigned error messages therefore opens up an attack
-          vector for someone who wants to run a Denial of Service attack.
+          Allowing unsigned error messages therefore opens an attack
+          vector for someone who wants to run a Denial-of-Service attack.
           This is not specific to OpenID Federation but equally valid for
           other protocols when HTTPS to HTTP reverse proxies are used.
         </t>
@@ -7695,7 +7695,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): Section <xref target="common_metadata"/> of this specification
+		Specification Document(s): <xref target="common_metadata"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -7711,7 +7711,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): Section <xref target="ExplicitRegOP"/> of this specification
+		Specification Document(s): <xref target="ExplicitRegOP"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -7727,7 +7727,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): Section <xref target="critClaim"/> of this specification
+		Specification Document(s): <xref target="critClaim"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -7743,7 +7743,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): Section <xref target="idClaim"/> of this specification
+		Specification Document(s): <xref target="idClaim"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -7759,7 +7759,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): Section <xref target="refClaim"/> of this specification
+		Specification Document(s): <xref target="refClaim"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -7775,7 +7775,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): Section <xref target="delegationClaim"/> of this specification
+		Specification Document(s): <xref target="delegationClaim"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -8145,7 +8145,7 @@ HTTP/1.1 302 Found
       </t>
       <t>
         Once the RP part of the Wiki knows which OP it SHOULD talk to, it has
-        to find out a couple of things about the OP. All of those things
+        to find out a few things about the OP. All those things
         can be found in the metadata. But finding the metadata is not enough;
         the RP also has to trust the metadata.
       </t>
@@ -9508,7 +9508,7 @@ Host: op.umu.se
 	    Moved Federation Endpoints section before Obtaining Federation Entity Configuration Information section.
 	  </t>
 	  <t>
-	    Fixed #2110: Explanation text when multiple <spanx style="verb">entity_type</spanx> parameters are provided in the Subordinate Listing endpoint.
+	    Fixed #2110: Explanatory text when multiple <spanx style="verb">entity_type</spanx> parameters are provided in the Subordinate Listing endpoint.
 	  </t>
 	  <t>
 	    Fixed #2112, #2113, and #2114: Defined that client authentication is
@@ -9746,7 +9746,7 @@ Host: op.umu.se
             Fixed #1921: brand new JWS Header parameter, <spanx style="verb">trust_chain</spanx>.
           </t>
           <t>
-            Fixed #1879, #1881, #1883, #1885: introductionary text, metadata section, editorials.
+            Fixed #1879, #1881, #1883, #1885: introductory text, metadata section, editorials.
           </t>
         </list>
       </t>
@@ -9856,7 +9856,7 @@ Host: op.umu.se
             Fixed #1701: trust_chain parameter with PAR and redirect_uri.
           </t>
           <t>
-            Fixed #1695: entity_type url paramenter for Listing endpoint.
+            Fixed #1695: entity_type URL parameter for Listing endpoint.
           </t>
           <t>
             Fixed #1712: federation_entity claims: organization_name is recommended, logo_uri is added.
@@ -9868,7 +9868,7 @@ Host: op.umu.se
             Fixed #1716: Clarified how to retrieve the RP's Entity Configuration when using Automatic Registration.
           </t>
           <t>
-            Fixed #1656: Introductionary text review.
+            Fixed #1656: Introductory text review.
           </t>
         </list>
       </t>
@@ -9925,7 +9925,7 @@ Host: op.umu.se
             Fixed #1645: Federation Entity Keys as defined term.
           </t>
           <t>
-            Fixed #1633: Explaination text about who signs the Trust Mark and how.
+            Fixed #1633: Explanatory text about who signs the Trust Mark and how.
           </t>
           <t>
             Fixed #1650: typo in signed_jws_uri and jwks metadata claims.
@@ -9991,7 +9991,7 @@ Host: op.umu.se
             Added a new constraint, allowed_leaf_entity_types.
           </t>
           <t>
-            Resolve endpoint: Removed iss paramenter in the request and specified the usage of the aud claim in the response.
+            Resolve endpoint: Removed iss parameter in the request and specified the usage of the aud claim in the response.
           </t>
           <t>
             Fixed #1513: request_authentication_methods_supported according to IANA OAuth 2.0 AS metadata registered names.
