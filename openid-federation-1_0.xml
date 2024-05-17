@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="14" month="May" year="2024"/>
+    <date day="17" month="May" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -1140,20 +1140,6 @@
               <spanx style="verb">federation_fetch_endpoint</spanx>.
               Leaf Entities MUST NOT.
             </t>
-            <t hangText="federation_resolve_endpoint">
-              <vspace/>
-              OPTIONAL.
-              The resolve endpoint described in
-              <xref target="resolve"/>.
-              This URL MUST use the <spanx style="verb">https</spanx>
-              scheme and MAY contain port,
-              path, and query parameter components encoded in
-              <spanx style="verb">application/x-www-form-urlencoded</spanx>
-              format;
-              it MUST NOT contain a fragment component.
-              Any federation Entity MAY publish a
-              <spanx style="verb">federation_resolve_endpoint</spanx>.
-            </t>
             <t hangText="federation_list_endpoint">
               <vspace/>
               OPTIONAL.
@@ -1169,6 +1155,20 @@
               Trust Anchors MUST publish a
               <spanx style="verb">federation_list_endpoint</spanx>.
               Leaf Entities MUST NOT.
+            </t>
+            <t hangText="federation_resolve_endpoint">
+              <vspace/>
+              OPTIONAL.
+              The resolve endpoint described in
+              <xref target="resolve"/>.
+              This URL MUST use the <spanx style="verb">https</spanx>
+              scheme and MAY contain port,
+              path, and query parameter components encoded in
+              <spanx style="verb">application/x-www-form-urlencoded</spanx>
+              format;
+              it MUST NOT contain a fragment component.
+              Any federation Entity MAY publish a
+              <spanx style="verb">federation_resolve_endpoint</spanx>.
             </t>
             <t hangText="federation_trust_mark_status_endpoint">
               <vspace/>
@@ -3832,6 +3832,213 @@ Host: edugain.org
         </section>
       </section>
 
+      <section title="Subordinate Listings" anchor="entity_listing">
+        <t>
+	  The listing endpoint is exposed by Federation Entities
+	  acting as a Trust Anchor, Intermediate, or Trust Mark issuer.
+	  The endpoint lists the Immediate Subordinates about which
+          the Trust Anchor, Intermediate, or Trust Mark Issuer
+	  issues Entity Statements.
+        </t>
+        <t>
+	  As a Trust Mark issuer,
+          the endpoint MAY list the Immediate Subordinates for which Trust Marks
+          have been issued and are still valid, if the issuer
+          exposing this endpoint supports Trust Mark filtering, as
+          defined below.
+        </t>
+        <t>
+          In both cases, the list contained in the result
+          MAY be a very large list.
+        </t>
+	<t>
+	  The list endpoint location is published in
+	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
+	  in the <spanx style="verb">federation_list_endpoint</spanx> parameter
+	  defined in <xref target="federation_entity"/>.
+	  This endpoint MUST be published directly in Entity Configuration
+	  metadata and not in Subordinate Statements.
+	</t>
+
+        <t>
+	  <figure>
+	    <preamble>
+	      The following example shows a tree of Entities belonging to the
+          same federation including the Trust Anchor, Intermediate Entities,
+          and Leaf Entities, discovered and collected through the Subordinate
+          listing endpoints:
+	    </preamble>
+            <name>
+	      Tree of Entities in a Federation Collected through
+          Subordinate Listing Endpoints
+            </name>
+<!--
+  NOTE: this figure was made with ASCIIflow and its editable sources
+  are available at the following link:
+  https://asciiflow.com/#/share/eJyrVspLzE1VslLKySwuycxLV8jITC1KLErOqFTSUcpJrEwtAspVxyhVxChZWRpb6sQoVQJZRuaGQFZJakUJkBOjpIAdPJqyhyooJiYPtw0gKiQoNDhEwdHP2cM%2FCC6BVxeV3UWGZoXg0qT8opTMvMSS1GIFWOhT5AQaeRPDVHyWYkYOTslRY%2FAa82hKz6MpDeho2h4sgiA0AaGZAJpGSqyT6gqww5vAWn1SE9OgZjShedvTL8Q1yNfVxdMxxBUtPLDpBhs6BYeVWNEM5NAgXhsuhHAcaa7AWgYRXxY04dJPklvwhwBON%2BJIljRWS9XkizU%2F4kx7mO6gVsJBM7kJZ3xjUz0FFonIiKQohucHtFhBjgwsEUOWatzRtgsjbpDFsMcgwViHWokoLpCMhwsiDEMWwutaLCmJsCpC8bAnRqlWqRYAUXBqQQ%3D%3D)
+-->
+            <artwork><![CDATA[
+                       +----------------------+
+                       |    Trust Anchor      |
+                       +----------------------+
+       +---------------+ Subordinate Listing  +--------------+
+       |               +----------+-----------+              |
+       |                          |                          |
+       |                          |                          |
+       |                          |                          |
+       |                          |                          |
+       |                          |                          |
++------v-------+       +----------v-----------+       +------v-------+
+|     Leaf     |       |     Intermediate     |       |     Leaf     |
++--------------+       +----------------------+       +--------------+
+                  +----+ Subordinate Listing  |
+                  |    +------------+---------+
+                  |                 |
+                  |                 |
+                  |                 |
+       +----------v-----------+     |
+       |     Intermediate     |     |
+       +----------------------+     |
+       | Subordinate Listing  |     |
+       +-+---------+----------+     |
+         |         |                |
+         |         |                |
+ +-------v--+     +v--------+    +--v------+
+ |  Leaf    |     |  Leaf   |    |  Leaf   |
+ +----------+     +---------+    +---------+
+]]></artwork>
+          </figure>
+
+        </t>
+
+        <section anchor="subordinate-request" title="Subordinate Listing Request">
+          <t>
+	    When client authentication is not used,
+            the request MUST be an HTTP request using the GET method
+            to a list endpoint with the
+            following query parameters, encoded in
+            <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
+          </t>
+          <t>
+            <list style="hanging">
+              <t hangText="entity_type">
+                <vspace/>
+                OPTIONAL. The value of this parameter is an Entity Type Identifier.
+                If the responder knows the Entity Types of its Immediate Subordinates, the result MUST be
+                filtered to include only those that include the specified Entity Type. When
+                multiple <spanx style="verb">entity_type</spanx>
+                parameters are present, for example
+                <spanx style="verb">
+                    entity_type=openid_provider&amp;entity_type=openid_relying_party
+                </spanx>,
+                the result MUST be filtered to include all specified Entity Types.
+
+                If the responder does not support this feature, it MUST
+                use the HTTP status code 400 and the content type
+                <spanx style="verb">application/json</spanx>, with
+                the error code
+                <spanx style="verb">unsupported_parameter</spanx>.
+              </t>
+              <t hangText="trust_marked">
+				<vspace/>
+                OPTIONAL. Boolean.
+
+                If the parameter
+                <spanx style="verb">trust_marked</spanx> is present and
+                set to <spanx style="verb">true</spanx>,
+                the result contains only the Immediate Subordinates for which
+                at least one Trust Mark have been issued and is still valid.
+
+                If the responder does not support this feature, it MUST
+                use the HTTP status code 400 and set the content type to
+                <spanx style="verb">application/json</spanx>, with
+                the error code
+                <spanx style="verb">unsupported_parameter</spanx>.
+			  </t>
+              <t hangText="trust_mark_id">
+                <vspace/>
+                OPTIONAL. The value of this parameter is a Trust Mark identifier.
+		If the responder has issued Trust Marks with the
+                specified Trust Mark identifier,
+                the list in the response is filtered to include only
+                the Immediate Subordinates for which that Trust Mark identifier has been
+                issued and is still valid.
+                If the responder does not support this feature, it MUST
+                use the HTTP status code 400 and set the content type to
+                <spanx style="verb">application/json</spanx>, with
+                the error code
+                <spanx style="verb">unsupported_parameter</spanx>.
+              </t>
+              <t hangText="intermediate">
+                <vspace/>
+                OPTIONAL. Boolean. If the parameter
+                <spanx style="verb">intermediate</spanx> is present and set to
+                <spanx style="verb">true</spanx>, then if the responder knows
+                whether its Immediate Subordinates are Intermediates or not,
+                the result MUST be filtered accordingly.
+                If the responder does not support this feature, it MUST
+                use the HTTP status code 400 and the content type
+                <spanx style="verb">application/json</spanx>, with
+                the error code
+                <spanx style="verb">unsupported_parameter</spanx>.
+              </t>
+            </list>
+          </t>
+	  <t>
+	    When client authentication is used,
+	    the request MUST be an HTTP request using the POST method,
+	    with the parameters passed in the POST body.
+	  </t>
+          <figure>
+            <preamble>
+              The following is a non-normative example of an HTTP GET
+              request for a list of Immediate Subordinates:
+            </preamble>
+            <name>
+              Subordinate Listing Request
+            </name>
+            <artwork><![CDATA[
+GET /list HTTP/1.1
+Host: openid.sunet.se
+]]></artwork>
+          </figure>
+        </section>
+
+        <section anchor="subordinate-response" title="Subordinate Listing Response">
+          <t>
+            A successful response MUST use the HTTP status code 200
+            with the content type <spanx style="verb">application/json</spanx>,
+            containing a JSON array with the known Entity Identifiers.
+          </t>
+
+          <t>
+            If the response is negative, the response
+            is as defined in
+            <xref target="error_response"/>.
+          </t>
+
+          <figure>
+            <preamble>
+              The following is a non-normative example of a response containing
+              the Immediate Subordinate Entities:
+            </preamble>
+            <name>
+              Subordinate Listing Response
+            </name>
+            <artwork><![CDATA[
+200 OK
+Content-Type: application/json
+
+[
+  "https://ntnu.andreas.labs.uninett.no/",
+  "https://blackboard.ntnu.no/openid/callback",
+  "https://serviceprovider.andreas.labs.uninett.no/application17"
+]
+]]></artwork>
+          </figure>
+        </section>
+      </section>
+
       <section title="Resolve Entity Statement" anchor="resolve">
         <t>
           An Entity MAY use a resolve endpoint to fetch
@@ -4107,213 +4314,6 @@ Host: openid.sunet.se
             the resolver to perform validation of the cryptographically
             protected metadata correctly and to provide it with authentic results.
           </t>
-        </section>
-      </section>
-
-      <section title="Subordinate Listings" anchor="entity_listing">
-        <t>
-	  The listing endpoint is exposed by Federation Entities
-	  acting as a Trust Anchor, Intermediate, or Trust Mark issuer.
-	  The endpoint lists the Immediate Subordinates about which
-          the Trust Anchor, Intermediate, or Trust Mark Issuer
-	  issues Entity Statements.
-        </t>
-        <t>
-	  As a Trust Mark issuer,
-          the endpoint MAY list the Immediate Subordinates for which Trust Marks
-          have been issued and are still valid, if the issuer
-          exposing this endpoint supports Trust Mark filtering, as
-          defined below.
-        </t>
-        <t>
-          In both cases, the list contained in the result
-          MAY be a very large list.
-        </t>
-	<t>
-	  The list endpoint location is published in
-	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
-	  in the <spanx style="verb">federation_list_endpoint</spanx> parameter
-	  defined in <xref target="federation_entity"/>.
-	  This endpoint MUST be published directly in Entity Configuration
-	  metadata and not in Subordinate Statements.
-	</t>
-
-        <t>
-	  <figure>
-	    <preamble>
-	      The following example shows a tree of Entities belonging to the
-          same federation including the Trust Anchor, Intermediate Entities,
-          and Leaf Entities, discovered and collected through the Subordinate
-          listing endpoints:
-	    </preamble>
-            <name>
-	      Tree of Entities in a Federation Collected through
-          Subordinate Listing Endpoints
-            </name>
-<!--
-  NOTE: this figure was made with ASCIIflow and its editable sources
-  are available at the following link:
-  https://asciiflow.com/#/share/eJyrVspLzE1VslLKySwuycxLV8jITC1KLErOqFTSUcpJrEwtAspVxyhVxChZWRpb6sQoVQJZRuaGQFZJakUJkBOjpIAdPJqyhyooJiYPtw0gKiQoNDhEwdHP2cM%2FCC6BVxeV3UWGZoXg0qT8opTMvMSS1GIFWOhT5AQaeRPDVHyWYkYOTslRY%2FAa82hKz6MpDeho2h4sgiA0AaGZAJpGSqyT6gqww5vAWn1SE9OgZjShedvTL8Q1yNfVxdMxxBUtPLDpBhs6BYeVWNEM5NAgXhsuhHAcaa7AWgYRXxY04dJPklvwhwBON%2BJIljRWS9XkizU%2F4kx7mO6gVsJBM7kJZ3xjUz0FFonIiKQohucHtFhBjgwsEUOWatzRtgsjbpDFsMcgwViHWokoLpCMhwsiDEMWwutaLCmJsCpC8bAnRqlWqRYAUXBqQQ%3D%3D)
--->
-            <artwork><![CDATA[
-                       +----------------------+
-                       |    Trust Anchor      |
-                       +----------------------+
-       +---------------+ Subordinate Listing  +--------------+
-       |               +----------+-----------+              |
-       |                          |                          |
-       |                          |                          |
-       |                          |                          |
-       |                          |                          |
-       |                          |                          |
-+------v-------+       +----------v-----------+       +------v-------+
-|     Leaf     |       |     Intermediate     |       |     Leaf     |
-+--------------+       +----------------------+       +--------------+
-                  +----+ Subordinate Listing  |
-                  |    +------------+---------+
-                  |                 |
-                  |                 |
-                  |                 |
-       +----------v-----------+     |
-       |     Intermediate     |     |
-       +----------------------+     |
-       | Subordinate Listing  |     |
-       +-+---------+----------+     |
-         |         |                |
-         |         |                |
- +-------v--+     +v--------+    +--v------+
- |  Leaf    |     |  Leaf   |    |  Leaf   |
- +----------+     +---------+    +---------+
-]]></artwork>
-          </figure>
-
-        </t>
-
-        <section anchor="subordinate-request" title="Subordinate Listing Request">
-          <t>
-	    When client authentication is not used,
-            the request MUST be an HTTP request using the GET method
-            to a list endpoint with the
-            following query parameters, encoded in
-            <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
-          </t>
-          <t>
-            <list style="hanging">
-              <t hangText="entity_type">
-                <vspace/>
-                OPTIONAL. The value of this parameter is an Entity Type Identifier.
-                If the responder knows the Entity Types of its Immediate Subordinates, the result MUST be
-                filtered to include only those that include the specified Entity Type. When
-                multiple <spanx style="verb">entity_type</spanx>
-                parameters are present, for example
-                <spanx style="verb">
-                    entity_type=openid_provider&amp;entity_type=openid_relying_party
-                </spanx>,
-                the result MUST be filtered to include all specified Entity Types.
-
-                If the responder does not support this feature, it MUST
-                use the HTTP status code 400 and the content type
-                <spanx style="verb">application/json</spanx>, with
-                the error code
-                <spanx style="verb">unsupported_parameter</spanx>.
-              </t>
-              <t hangText="trust_marked">
-				<vspace/>
-                OPTIONAL. Boolean.
-
-                If the parameter
-                <spanx style="verb">trust_marked</spanx> is present and
-                set to <spanx style="verb">true</spanx>,
-                the result contains only the Immediate Subordinates for which
-                at least one Trust Mark have been issued and is still valid.
-
-                If the responder does not support this feature, it MUST
-                use the HTTP status code 400 and set the content type to
-                <spanx style="verb">application/json</spanx>, with
-                the error code
-                <spanx style="verb">unsupported_parameter</spanx>.
-			  </t>
-              <t hangText="trust_mark_id">
-                <vspace/>
-                OPTIONAL. The value of this parameter is a Trust Mark identifier.
-		If the responder has issued Trust Marks with the
-                specified Trust Mark identifier,
-                the list in the response is filtered to include only
-                the Immediate Subordinates for which that Trust Mark identifier has been
-                issued and is still valid.
-                If the responder does not support this feature, it MUST
-                use the HTTP status code 400 and set the content type to
-                <spanx style="verb">application/json</spanx>, with
-                the error code
-                <spanx style="verb">unsupported_parameter</spanx>.
-              </t>
-              <t hangText="intermediate">
-                <vspace/>
-                OPTIONAL. Boolean. If the parameter
-                <spanx style="verb">intermediate</spanx> is present and set to
-                <spanx style="verb">true</spanx>, then if the responder knows
-                whether its Immediate Subordinates are Intermediates or not,
-                the result MUST be filtered accordingly.
-                If the responder does not support this feature, it MUST
-                use the HTTP status code 400 and the content type
-                <spanx style="verb">application/json</spanx>, with
-                the error code
-                <spanx style="verb">unsupported_parameter</spanx>.
-              </t>
-            </list>
-          </t>
-	  <t>
-	    When client authentication is used,
-	    the request MUST be an HTTP request using the POST method,
-	    with the parameters passed in the POST body.
-	  </t>
-          <figure>
-            <preamble>
-              The following is a non-normative example of an HTTP GET
-              request for a list of Immediate Subordinates:
-            </preamble>
-            <name>
-              Subordinate Listing Request
-            </name>
-            <artwork><![CDATA[
-GET /list HTTP/1.1
-Host: openid.sunet.se
-]]></artwork>
-          </figure>
-        </section>
-
-        <section anchor="subordinate-response" title="Subordinate Listing Response">
-          <t>
-            A successful response MUST use the HTTP status code 200
-            with the content type <spanx style="verb">application/json</spanx>,
-            containing a JSON array with the known Entity Identifiers.
-          </t>
-
-          <t>
-            If the response is negative, the response
-            is as defined in
-            <xref target="error_response"/>.
-          </t>
-
-          <figure>
-            <preamble>
-              The following is a non-normative example of a response containing
-              the Immediate Subordinate Entities:
-            </preamble>
-            <name>
-              Subordinate Listing Response
-            </name>
-            <artwork><![CDATA[
-200 OK
-Content-Type: application/json
-
-[
-  "https://ntnu.andreas.labs.uninett.no/",
-  "https://blackboard.ntnu.no/openid/callback",
-  "https://serviceprovider.andreas.labs.uninett.no/application17"
-]
-]]></artwork>
-          </figure>
         </section>
       </section>
 
@@ -8016,7 +8016,7 @@ HTTP/1.1 302 Found
         </front>
       </reference>
 
-      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-04.xml" />
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-05.xml" />
 
     </references>
 
@@ -9389,6 +9389,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #2153: Made reference to <xref target="RFC6749"/> normative.
+	  </t>
+	  <t>
+	    Fixed #2151: Put federation endpoints in a more logical order.
 	  </t>
 	</list>
       </t>
