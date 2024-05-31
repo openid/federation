@@ -486,19 +486,16 @@
             </t>
             <t hangText="iat">
               <vspace/>
-              REQUIRED. The time the statement was issued.
-              Its value is a JSON number representing the number of seconds from
-              1970-01-01T0:0:0Z as measured in UTC until the date/time.
-              See <xref target="RFC3339"/> for
-              details regarding date/times in general and UTC in particular.
+              REQUIRED. Number. Time when this statement was issued.
+                This is expressed as Seconds Since the Epoch, as defined in
+                <xref target="RFC7519"/>.
             </t>
             <t hangText="exp">
               <vspace/>
-              REQUIRED.
+              REQUIRED. Number.
               Expiration time after which the statement MUST NOT be
-              accepted for processing. Its value is a JSON number representing
-              the number of seconds from 1970-01-01T0:0:0Z as measured in UTC
-              until the date/time.
+              accepted for processing. This is expressed as Seconds
+              Since the Epoch, as defined in <xref target="RFC7519"/>.
             </t>
             <t hangText="jwks">
               <vspace/>
@@ -1635,13 +1632,15 @@
 		  </t>
 		  <t hangText="iat">
 		    <vspace/>
-		    OPTIONAL. This claim identifies the time when the JWT was
-		    issued.
+		    OPTIONAL. Number. Time when this signed JWK Set was issued.
+        This is expressed as Seconds Since the Epoch, as defined in
+        <xref target="RFC7519"/>.
 		  </t>
 		  <t hangText="exp">
 		    <vspace/>
-		    OPTIONAL. This claim identifies the time when the JWT is
-		    no longer valid.
+		    OPTIONAL. Number. This claim identifies the time when the JWT is
+		    no longer valid. This is expressed as Seconds
+        Since the Epoch, as defined in <xref target="RFC7519"/>.
 		  </t>
 		</list>
 		More claims are defined in <xref target="RFC7519"/>; of
@@ -3325,7 +3324,8 @@
               <t hangText="iat">
                 <vspace/>
                 REQUIRED. Number. Time when this Trust Mark was issued.
-                This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
+                This is expressed as Seconds Since the Epoch, as defined in
+                <xref target="RFC7519"/>.
               </t>
               <t hangText="logo_uri">
                 <vspace/>
@@ -3336,8 +3336,7 @@
                 <vspace/>
                 OPTIONAL. Number. Time when this Trust Mark is no longer valid.
                 This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
-                If not present, it means that
-                the Trust Mark does not expire.
+                If not present, it means that the Trust Mark does not expire.
               </t>
               <t hangText="ref">
                 <vspace/>
@@ -3397,7 +3396,8 @@
               <t hangText="iat">
                 <vspace/>
                 REQUIRED. Number. Time when this delegation was issued.
-                This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
+                This is expressed as Seconds Since the Epoch, as defined in
+                <xref target="RFC7519"/>.
               </t>
               <t hangText="exp">
                 <vspace/>
@@ -4351,7 +4351,9 @@ Host: openid.sunet.se
               </t>
               <t hangText="iat">
                 <vspace/>
-                OPTIONAL. Number. Time when the Trust Mark was issued. If
+                OPTIONAL. Number. Time when this Trust Mark was issued.
+                This is expressed as Seconds Since the Epoch, as defined in
+                <xref target="RFC7519"/>. If
                 <spanx style="verb">iat</spanx> is not specified and the
                 Trust Mark issuer has issued several Trust Marks with the
                 identifier specified in the request to the
@@ -4715,9 +4717,8 @@ Host: trust-anchor.example.com
               </t>
               <t hangText="iat">
                 <vspace/>
-                REQUIRED. Number. Time when the signed JWT was issued,
-                using the time format defined for the
-                <spanx style="verb">iat</spanx> claim in
+                REQUIRED. Number. Time when this  historical keys JWT was issued.
+                This is expressed as Seconds Since the Epoch, as defined in
                 <xref target="RFC7519"/>.
               </t>
               <t hangText="keys">
@@ -4741,18 +4742,16 @@ Host: trust-anchor.example.com
                     </t>
                     <t hangText="iat">
                       <vspace/>
-                      OPTIONAL. Time when the key was issued,
-                      using the time format defined for the
-                      <spanx style="verb">iat</spanx> claim in
+                      OPTIONAL. Number. Time when this key was issued.
+                      This is expressed as Seconds Since the Epoch, as defined in
                       <xref target="RFC7519"/>.
                     </t>
                     <t hangText="exp">
                       <vspace/>
-                      REQUIRED. Expiration time,
-                      using the time format defined for the
-                      <spanx style="verb">exp</spanx> claim in
+                      REQUIRED. Number. Expiration time for the key.
+                      This is expressed as Seconds Since the Epoch, as defined in
                       <xref target="RFC7519"/>,
-                      after which the key MUST NOT be considered to be valid.
+                      After this time the key MUST NOT be considered valid.
                     </t>
                     <t hangText="revoked">
                       <vspace/>
@@ -5757,11 +5756,14 @@ Content-Type: application/json
                 <t hangText="exp">
                   <vspace/>
                   REQUIRED. Number. Expiration time after which the JWT MUST
-                  NOT be accepted for processing.
+                  NOT be accepted for processing. This is expressed as Seconds
+                  Since the Epoch, as defined in <xref target="RFC7519"/>.
                 </t>
                 <t hangText="iat">
                   <vspace/>
-                  OPTIONAL. Number. Time when the JWT was issued.
+                  OPTIONAL. Number. Time when this Request Object was issued.
+                  This is expressed as Seconds Since the Epoch, as defined in
+                  <xref target="RFC7519"/>.
                 </t>
                 <t hangText="trust_chain" anchor="trust_chain_param">
                   <vspace/>
@@ -9335,7 +9337,12 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
-
+      <t>
+	-36
+      <list style="symbols">
+        <t>Made the definiton of iat and exp consistent</t>
+      </list>
+      </t>
       <t>
 	-35
 	<list style="symbols">
