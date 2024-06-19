@@ -1,16 +1,25 @@
-name: Deploy Docs to Pages
+name: gh-pages
 
 on:
   # Runs on pushes targeting the default branch
   push:
+    paths-ignore:
+      - README.md
+      - CONTRIBUTING.md
+      - LICENSE.md
+      - .gitignore
     branches: ["main"]
+  release:
+    types:
+      - created
+      - edited
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -20,29 +29,43 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  build-and-deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    container: ghcr.io/ietf-tools/xml2rfc-base:latest
+    env:
+        BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        
-      - name: Generate docs
-        run: |
-          xml2rfc --html openid-federation-1_0.xml --out openid-federation-1_0.html
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: github-pages
-          path: openid-federation-1_0.html
+      - name: install xml2rfc
+        run: |
+          pip install --upgrade pip
+          pip install xml2rfc
+
+      - name: Show env
+        run: echo "$GITHUB_CONTEXT"
+      
+      - name: Create html folder
+        run: mkdir html
+
+      - name: Show folders
+        run: ls -al
+
+      - name: Show branch name
+        run: echo "$BRANCH_NAME"
+
+      - name: build openid federation specs
+        run: xml2rfc --html openid-federation-1_0.xml --out html/openid-federation-$BRANCH_NAME.html
 
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: gh-pages
+          build_dir: html
+          keep_history: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
