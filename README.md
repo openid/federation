@@ -11,9 +11,14 @@ OpenID Federation 1.0 is:
 - a technology that shows us how to build trust infrastructures.
 - an advanced system for securely establishing the interoperability of participants.
 
+## Status
+
+All the news about OpenID Federation are available at the OpenID Foundation website, [here](https://openid.net/tag/federation/).
+
+The latest official build of the specification is available at [https://openid.net/specs/openid-federation-1_0.html](https://openid.net/specs/openid-federation-1_0.html).
 ## Builds
 
-Previews for each branch of this project are automatically built and published at the URL *https://openid.github.io/federation/$branchname.html*.ù
+Previews for each branch of this project are automatically built and published at the URL *https://openid.github.io/federation/$branchname.html*.
 You can view the editor's copy at [https://openid.github.io/federation/main.html](https://openid.github.io/federation/main.html).
 
 Previews for branches associated with pending Pull Requests are also deployed and accessible using the same URL pattern.
@@ -25,7 +30,7 @@ To get started with the OpenID Federation specification, clone this repository a
 git clone https://github.com/openid-foundation/openid-federation.git
 cd openid-federation
 ````
-Pleas read the [CONTRIBUTING.md](CONTRIBUTING.md) to learn how to contribute to this project.
+Please read the [CONTRIBUTING.md](CONTRIBUTING.md) to learn how to contribute to this project.
 
 ## Contact
-For further information or to get involved, please visit the [OpenID Foundation website](https://openid.net/foundation/).
+For further information or to get involved, please visit the [OpenID Foundation website](https://openid.net/wg/connect/).
