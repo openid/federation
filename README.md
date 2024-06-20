@@ -16,6 +16,7 @@ OpenID Federation 1.0 is:
 All the news about OpenID Federation are available at the OpenID Foundation website, [here](https://openid.net/tag/federation/).
 
 The latest official build of the specification is available at [https://openid.net/specs/openid-federation-1_0.html](https://openid.net/specs/openid-federation-1_0.html).
+
 ## Builds
 
 Previews for each branch of this project are automatically built and published at the URL *https://openid.github.io/federation/$branchname.html*.
