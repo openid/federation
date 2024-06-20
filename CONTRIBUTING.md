@@ -3,7 +3,7 @@
 Contributions to the OpenID Federation specification are welcome. Please ensure that your contributions adhere to the following guidelines:
 
 - **Issues**: Use the issue tracker to report problems or suggest enhancements.
-- **Pull Requests**: Submit pull requests linked to Issues that was approved during the Working Group call.
+- **Pull Requests**: Submit pull requests linked to Issues that were approved during a Working Group call.
 - **Commit Messages**: Use clear and descriptive commit messages.
 
 Here are some important resources:
