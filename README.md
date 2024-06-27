@@ -1,37 +1,37 @@
 # OpenID Federation 1.0
 
 This repository contains the OpenID Federation specification, which has been migrated from [Bitbucket](https://bitbucket.org/openid/connect/src/master/) to the OpenID Foundation's GitHub.
-The OpenID Federation specification outlines protocols and guidelines for implementing a federated infrastructure across different domains and services.
+The OpenID Federation specification defines protocols and guidelines for implementing federated infrastructures among different domains and services.
 
 ## Overview
 
 OpenID Federation 1.0 is:
 
-- a technical specification that shows us how to evaluate the Trust from a technical perspective.
-- a technology that shows us how to build trust infrastructures.
-- an advanced system for securely establishing the interoperability of participants.
+- a technical specification that shows us how to evaluate the Trust from a technical perspective,
+- a technology that defines how to build trust infrastructures,
+- a system for securely establishing the interoperability of participants.
 
 ## Status
 
-All the news about OpenID Federation are available at the OpenID Foundation website, [here](https://openid.net/tag/federation/).
+News about OpenID Federation is available at the OpenID Foundation website [here](https://openid.net/tag/federation/).
 
 The latest official build of the specification is available at [https://openid.net/specs/openid-federation-1_0.html](https://openid.net/specs/openid-federation-1_0.html).
 
 ## Builds
 
-Previews for each branch of this project are automatically built and published at the URL *https://openid.github.io/federation/$branchname.html*.
-You can view the editor's copy at [https://openid.github.io/federation/main.html](https://openid.github.io/federation/main.html).
+Previews for each branch of this project are automatically built and published at the URL https://openid.github.io/federation/$branchname.html.
+You can view the latest editor's copy at [https://openid.github.io/federation/main.html](https://openid.github.io/federation/main.html).
 
-Previews for branches associated with pending Pull Requests are also deployed and accessible using the same URL pattern.
+Previews for branches associated with pending Pull Requests are also deployed and accessible using the same pattern.
 
 ## Getting Started
 To get started with the OpenID Federation specification, clone this repository and review the documentation provided in the root directory in the form of xml files.
 
 ````bash
-git clone https://github.com/openid-foundation/openid-federation.git
-cd openid-federation
+git clone https://github.com/openid/federation.git
+cd federation
 ````
 Please read the [CONTRIBUTING.md](CONTRIBUTING.md) to learn how to contribute to this project.
 
 ## Contact
-For further information or to get involved, please visit the [OpenID Foundation website](https://openid.net/wg/connect/).
+For further information and to get involved, please visit the [OpenID Connect Working Group website](https://openid.net/wg/connect/).
