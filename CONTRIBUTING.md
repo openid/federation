@@ -15,5 +15,5 @@ When contributing, please adhere to the following guidelines:
 - **Pull Requests**: Submit pull requests linked to Issues that were approved during a Working Group call.
 - **Commit Messages**: Use clear and descriptive commit messages.
 
-Thanks,
+Thanks,<br/>
 OpenID Connect Working Group
