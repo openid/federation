@@ -6,6 +6,7 @@ You can send feedback on the specification in a way that enables the working gro
 1. signing the contribution agreement at https://openid.net/intellectual-property/ to join the working group (please specify that you are joining the “AB/Connect” working group on your contribution agreement),
 2. joining the working group mailing list at https://lists.openid.net/mailman/listinfo/openid-specs-ab, and
 3. sending your feedback to the list.
+
 Working group members can also contribute via GitHub.
 
 When contributing, please adhere to the following guidelines:
