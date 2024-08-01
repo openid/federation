@@ -116,6 +116,8 @@
         multilateral federations and describes how to apply them when
         the underlying authentication protocol used is OpenID Connect or
         the underlying authorization protocol is OAuth 2.0.
+        However, these components can also be
+        used for trust establishment with other application protocols.
       </t>
     </abstract>
   </front>
@@ -349,7 +351,7 @@
             <t hangText="Federation Entity Keys">
               Keys used for the cryptographic signatures required by
               the trust mechanisms defined in this specification.
-              Every participant in a Federation publishes its
+              Every participant in a Federation publishes its public
               Federation Entity Keys in its Entity Configuration.
             </t>
           </list>
@@ -4209,6 +4211,9 @@ Host: openid.sunet.se
                 <vspace/>
                 OPTIONAL. Array of objects, each representing a Trust Mark,
                 as defined in <xref target="entity-statement"/>.
+		Only valid Trust Marks that have been issued by Trust Mark
+                issuers trusted by the Trust Anchor to issue such Trust Marks
+		MAY appear in the resolver response.
               </t>
               <t hangText="trust_chain">
                 <vspace/>
@@ -7923,7 +7928,6 @@ HTTP/1.1 302 Found
 
     <references title="Normative References">
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.2119.xml"/>
-      <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.3339.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.4732.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5280.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5646.xml"/>
@@ -9352,6 +9356,16 @@ Host: op.umu.se
 	    to the repository https://github.com/openid/federation.
 	    Issue numbers before this draft are from the Bitbucket repository.
 	    Issue numbers starting with this draft are from the GitHub repository.
+	  </t>
+	  <t>
+	    Fixed #15: Clarified that OpenID Federation can be used for
+	    trust establishment with any application protocols.
+	  </t>
+	  <t>
+	    Fixes #18: Clarified use of valid Trust Marks.
+	  </t>
+	  <t>
+	    Fixes #19: Clarified that Federation Entities publish their public keys.
 	  </t>
 	  <t>
 	    Fixed #22: Defined that Entity Identifiers MUST use the
