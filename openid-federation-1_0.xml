@@ -3737,10 +3737,15 @@
               <t hangText="sub">
                 <vspace/>
                 OPTIONAL. The Entity Identifier of the subject
-                for which the Entity Statement is being requested. If this
-                parameter is omitted, it is considered to be the same as the
-                issuer and indicates a request for a self-signed
-                Entity Configuration.
+                for which the Entity Statement is being requested.
+                It MUST NOT set
+                with the same value as <spanx style="verb">iss</spanx>,
+                as a Federation Entity cannot be its own Subordinate.
+                If the request parameters <spanx style="verb">iss</spanx>
+                and <spanx style="verb">sub</spanx> have the same
+                Entity Identifier, the response MUST return an
+                <spanx style="verb">invalid_request</spanx>
+                error with a 400 status code.
               </t>
             </list>
           </t>
@@ -9347,6 +9352,17 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+
+
+      <t>
+	-38
+	<list style="symbols">
+	  <t>
+	    Fixed #30: the parameters sub and iss must not be set with the same value
+      at the fetch endpoint.
+	  </t>
+	</list>
+      </t>
 
       <t>
 	-37
