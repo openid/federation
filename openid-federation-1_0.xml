@@ -94,6 +94,12 @@
     <keyword>OpenID</keyword>
     <keyword>Connect</keyword>
     <keyword>Federation</keyword>
+    <keyword>Multilateral Federation</keyword>
+    <keyword>Federation Entity</keyword>
+    <keyword>Federation Operator</keyword>
+    <keyword>Trust Anchor</keyword>
+    <keyword>Trust Chain</keyword>
+    <keyword>Trust Establishment</keyword>
 
     <abstract>
       <t>
@@ -4697,12 +4703,13 @@ Host: trust-anchor.example.com
 
         <section anchor="HistKeysResp" title="Federation Historical Keys Response">
           <t>
+	    The response is a signed JWK Set containing the historical keys.
+	    It is signed with a Federation Entity Key.
+	    A signed JWK Set is a signed JWT with a
+	    JWK Set <xref target="RFC7517"/> as its payload.
             A successful response MUST use the HTTP status code 200
             with the content type
             <spanx style="verb">application/jwk-set+jwt</spanx>.
-            The response is a signed JWT with the <xref target="RFC7517">JWK Set</xref>
-            as its payload.
-	    It is signed with a Federation Entity Key.
 	  </t>
 	  <t>
 	    Historical keys JWTs are explicitly typed by setting the
@@ -6788,6 +6795,73 @@ HTTP/1.1 302 Found
       </t>
     </section>
 
+    <section anchor="MediaTypes" title="Media Types">
+      <t>
+	These media types <xref target="RFC2046"/> are defined by this specification.
+      </t>
+
+      <section anchor="entity-statement+jwt"
+	       title='"application/entity-statement+jwt" Media Type'>
+	<t>
+	  The <spanx style="verb">application/entity-statement+jwt</spanx>
+	  media type is used to specify that the associated content is
+	  an Entity Statement, as defined in <xref target="entity-statement"/>.
+	  No parameters are used with this media type.
+	</t>
+      </section>
+
+      <section anchor="trust-mark+jwt"
+	       title='"application/trust-mark+jwt" Media Type'>
+	<t>
+	  The <spanx style="verb">application/trust-mark+jwt</spanx>
+	  media type is used to specify that the associated content is
+	  a Trust Mark, as defined in <xref target="trust_marks"/>.
+	  No parameters are used with this media type.
+	</t>
+      </section>
+
+      <section anchor="resolve-response+jwt"
+	       title='"application/resolve-response+jwt" Media Type'>
+	<t>
+	  The <spanx style="verb">application/resolve-response+jwt</spanx>
+	  media type is used to specify that the associated content is
+	  a Resolve Response, as defined in <xref target="resolve-response"/>.
+	  No parameters are used with this media type.
+	</t>
+      </section>
+
+      <section anchor="trust-chain+json"
+	       title='"application/trust-chain+json" Media Type'>
+	<t>
+	  The <spanx style="verb">application/trust-chain+json</spanx>
+	  media type is used to specify that the associated content is
+	  a JSON array representing a Trust Chain, as defined in <xref target="trust_chain"/>.
+	  No parameters are used with this media type.
+	</t>
+      </section>
+
+      <section anchor="trust-mark-delegation+jwt"
+	       title='"application/trust-mark-delegation+jwt" Media Type'>
+	<t>
+	  The <spanx style="verb">application/trust-mark-delegation+jwt</spanx>
+	  media type is used to specify that the associated content is
+	  a Trust Mark delegation, as defined in <xref target="delegation_jwt"/>.
+	  No parameters are used with this media type.
+	</t>
+      </section>
+
+      <section anchor="jwk-set+jwt"
+	       title='"application/jwk-set+jwt" Media Type'>
+	<t>
+	  The <spanx style="verb">application/jwk-set+jwt</spanx>
+	  media type is used to specify that the associated content is
+	  a signed JWK Set, as defined in <xref target="HistKeysResp"/>.
+	  No parameters are used with this media type.
+	</t>
+      </section>
+
+    </section>
+
     <section anchor="Security" title="Security Considerations">
       <section title="Denial-of-Service Attack Prevention" anchor="DoS">
         <t>
@@ -7215,7 +7289,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: <xref target="entity-statement"/> of this specification
+                Published specification: <xref target="entity-statement+jwt"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -7284,7 +7358,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: <xref target="trust_marks"/> of this specification
+                Published specification: <xref target="trust-mark+jwt"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -7353,7 +7427,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: <xref target="resolve-response"/> of this specification
+                Published specification: <xref target="resolve-response+jwt"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -7423,7 +7497,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: <xref target="Cliregreq"/> of this specification
+                Published specification: <xref target="trust-chain+json"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -7492,7 +7566,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: <xref target="delegation_jwt"/> of this specification
+                Published specification: <xref target="trust-mark-delegation+jwt"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -7561,7 +7635,7 @@ HTTP/1.1 302 Found
                 Interoperability considerations: n/a
               </t>
               <t>
-                Published specification: <xref target="HistKeysResp"/> of this specification
+                Published specification: <xref target="jwk-set+jwt"/> of this specification
               </t>
               <t>
                 Applications that use this media type:
@@ -9309,6 +9383,7 @@ Host: op.umu.se
         Takahiko Kawasaki,
         Torsten Lodderstedt,
         Francesco Marino,
+	Alexey Melnikov,
         Roberto Polli,
 	Justin Richer,
         Jouke Roorda,
@@ -9332,6 +9407,9 @@ Host: op.umu.se
       <t>
 	-38
 	<list style="symbols">
+	  <t>
+	    Added section defining each media type.
+	  </t>
 	  <t>
 	    Fixed #36: Simplified obtaining Entity Configurations.
 	  </t>
