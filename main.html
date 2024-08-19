@@ -2054,8 +2054,8 @@ li > p:last-of-type:only-child {
 <dt id="section-1.2-3.3">Entity Identifier</dt>
           <dd style="margin-left: 1.5em" id="section-1.2-3.4">
               A globally unique URL that is bound to one Entity.
-       This URL MUST use the <code>https</code>
-       scheme and MAY contain port and path components.
+       This URL MUST use the <code>https</code> scheme,
+       have a host component, and MAY contain port and path components.
        It MAY NOT contain query parameter or fragment components.<a href="#section-1.2-3.4" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
@@ -7129,43 +7129,25 @@ Content-Type: application/json
 <a href="#section-9" class="section-number selfRef">9. </a><a href="#name-obtaining-federation-entity" class="section-name selfRef">Obtaining Federation Entity Configuration Information</a>
       </h2>
 <p id="section-9-1">
-        The Entity Configuration of every participant SHOULD be exposed at a well-known endpoint.
-        The configuration endpoint is found using the
-        <span><a href="#RFC8615" class="internal xref">Well-Known URIs</a> [<a href="#RFC8615" class="cite xref">RFC8615</a>]</span>
-        specification, with the suffix
-        <code>openid-federation</code>.
-        The scheme, host, and port
-        are taken directly from the Entity Identifier combined with the following
-        path: <code>/.well-known/openid-federation</code>.<a href="#section-9-1" class="pilcrow">¶</a></p>
+ The Entity Configuration of every Federation Entity is published
+ at its configuration endpoint.
+ This endpoint uses a well-known URI <span>[<a href="#RFC8615" class="cite xref">RFC8615</a>]</span>
+ with the suffix <code>openid-federation</code>.
+ Its location is determined by concatenating the string
+ <code>/.well-known/openid-federation</code>
+ to the Entity Identifier
+ (which MUST contain scheme and host components
+ and MAY also contain port and path components).
+ For instance, the configuration endpoint for the Entity Identifier
+ <code>https://entity.example</code> is the URL
+ <code>https://entity.example/.well-known/openid-federation</code>.<a href="#section-9-1" class="pilcrow">¶</a></p>
 <p id="section-9-2">
-        If the Entity Identifier contains a path, it is concatenated after
-        <code>/.well-known/openid-federation</code>
-        in the same
-        manner
-        that path components are concatenated to the well-known identifier in
-        the OAuth 2.0 Authorization Server Metadata
-        <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>
-        specification.
-        Of course, in real multi-tenant deployments, in which the Entity Identifier
-        might be of the form
-        <code>https://multi-tenant-service.example.com/my-tenant-identifier</code>
-        the tenant is very likely to not have control over the path
-        <code>https://multi-tenant-service.example.com/.well-known/openid-federation/my-tenant-identifier</code>
-        whereas it is very likely to have control over the path
-        <code>https://multi-tenant-service.example.com/my-tenant-identifier/.well-known/openid-federation</code>.
-        Therefore, if using the configuration endpoint at the URL with the
-        tenant path
-        after the well-known part fails,
-        it is RECOMMENDED that callers retry at the URL with the tenant path
-        before the well-known part
-        (even though this violates <span>[<a href="#RFC8615" class="cite xref">RFC8615</a>]</span>).<a href="#section-9-2" class="pilcrow">¶</a></p>
-<p id="section-9-3">
-        Entities SHOULD make an Entity Configuration document
-        available at the configuration endpoint.
-        There is only one exception to this
-        rule and that is for an RP that only does Explicit Registration.
+        Federation Entities MUST make an Entity Configuration document
+        available at their configuration endpoint.
+        The sole exception to this
+        rule is for an RP that only does Explicit Registration.
         Since it posts the Entity Configuration to the OP during client
-        registration, the OP has everything it needs from the RP.<a href="#section-9-3" class="pilcrow">¶</a></p>
+        registration, the OP has everything it needs from the RP.<a href="#section-9-2" class="pilcrow">¶</a></p>
 <div id="ec-request">
 <section id="section-9.1">
         <h3 id="name-federation-entity-configura">
@@ -11754,6 +11736,10 @@ Host: op.umu.se
           <p id="appendix-D-3.1.1">
      Added section defining each media type.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
 </li>
+        <li class="normal" id="appendix-D-3.2">
+          <p id="appendix-D-3.2.1">
+     Fixed #36: Simplified obtaining Entity Configurations.<a href="#appendix-D-3.2.1" class="pilcrow">¶</a></p>
+</li>
       </ul>
 <p id="appendix-D-4">
  -37<a href="#appendix-D-4" class="pilcrow">¶</a></p>
@@ -12884,8 +12870,8 @@ Host: op.umu.se
 </li>
         <li class="normal" id="appendix-D-53.6">
           <p id="appendix-D-53.6.1">
-            An RP doing only explicit client registration are not required to
-            publish and support a
+            An RP doing only explicit client registration is not required to
+            publish and support
             <code>/.well-known/openid-federation</code>.<a href="#appendix-D-53.6.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-53.7">
