@@ -1507,13 +1507,13 @@ li > p:last-of-type:only-child {
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-federation-endpoints" class="internal xref">Federation Endpoints</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
-                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-fetching-an-entity-statemen" class="internal xref">Fetching an Entity Statement</a></p>
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-fetching-a-subordinate-stat" class="internal xref">Fetching a Subordinate Statement</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1.2.1">
-                    <p id="section-toc.1-1.8.2.1.2.1.1"><a href="#section-8.1.1" class="auto internal xref">8.1.1</a>.  <a href="#name-fetch-entity-statement-requ" class="internal xref">Fetch Entity Statement Request</a></p>
+                    <p id="section-toc.1-1.8.2.1.2.1.1"><a href="#section-8.1.1" class="auto internal xref">8.1.1</a>.  <a href="#name-fetch-subordinate-statement" class="internal xref">Fetch Subordinate Statement Request</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1.2.2">
-                    <p id="section-toc.1-1.8.2.1.2.2.1"><a href="#section-8.1.2" class="auto internal xref">8.1.2</a>.  <a href="#name-fetch-entity-statement-resp" class="internal xref">Fetch Entity Statement Response</a></p>
+                    <p id="section-toc.1-1.8.2.1.2.2.1"><a href="#section-8.1.2" class="auto internal xref">8.1.2</a>.  <a href="#name-fetch-subordinate-statement-" class="internal xref">Fetch Subordinate Statement Response</a></p>
 </li>
                 </ul>
 </li>
@@ -5646,12 +5646,12 @@ li > p:last-of-type:only-child {
  If they are not understood, they MUST be ignored.<a href="#section-8-2" class="pilcrow">¶</a></p>
 <div id="fetch_endpoint">
 <section id="section-8.1">
-        <h3 id="name-fetching-an-entity-statemen">
-<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-fetching-an-entity-statemen" class="section-name selfRef">Fetching an Entity Statement</a>
+        <h3 id="name-fetching-a-subordinate-stat">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-fetching-a-subordinate-stat" class="section-name selfRef">Fetching a Subordinate Statement</a>
         </h3>
 <p id="section-8.1-1">
-          Fetching Entity Statements is performed to collect Entity Statements
-          one by one to assemble Trust Chains.
+   The fetch endpoint is used to collect Subordinate Statements
+          one-by-one when assembling Trust Chains.
    An Entity with Subordinates MUST expose a fetch endpoint.
    An Entity MUST publish Subordinate Statements about its
    Immediate Subordinates via its fetch endpoint.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
@@ -5666,14 +5666,16 @@ li > p:last-of-type:only-child {
    Therefore, this endpoint MUST be published directly in Entity Configuration
    metadata and not in Subordinate Statements.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
 <p id="section-8.1-3">
-          To fetch an Entity Statement, an Entity needs to know the
+          To fetch a Subordinate Statement, one needs to know the
           identifier of the Entity to ask (the issuer), the fetch
-          endpoint of that Entity, and the identifier of the
-          Entity, that is, the subject of the Entity Statement.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
+          endpoint of that Entity, and the Entity Identifier of the
+          subject of the Subordinate Statement.
+   The issuer is normally the Immediate Superior of the
+          subject of the Subordinate Statement.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
 <div id="fetch_statement">
 <section id="section-8.1.1">
-          <h4 id="name-fetch-entity-statement-requ">
-<a href="#section-8.1.1" class="section-number selfRef">8.1.1. </a><a href="#name-fetch-entity-statement-requ" class="section-name selfRef">Fetch Entity Statement Request</a>
+          <h4 id="name-fetch-subordinate-statement">
+<a href="#section-8.1.1" class="section-number selfRef">8.1.1. </a><a href="#name-fetch-subordinate-statement" class="section-name selfRef">Fetch Subordinate Statement Request</a>
           </h4>
 <p id="section-8.1.1-1">
      When client authentication is not used,
@@ -5686,19 +5688,16 @@ li > p:last-of-type:only-child {
             <dt id="section-8.1.1-2.1">iss</dt>
             <dd style="margin-left: 1.5em" id="section-8.1.1-2.2">
                 REQUIRED. The Entity Identifier of the issuer
-                from which the Entity Statement is issued. Because of the
+                from which the Subordinate Statement is to be issued. Because of the
                 normalization of the URL, multiple issuers MAY resolve to a
                 shared fetch endpoint. This parameter makes it explicit exactly
-                which issuer the Entity Statement must come from.<a href="#section-8.1.1-2.2" class="pilcrow">¶</a>
+                from which issuer the Subordinate Statement MUST come.<a href="#section-8.1.1-2.2" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-8.1.1-2.3">sub</dt>
             <dd style="margin-left: 1.5em" id="section-8.1.1-2.4">
-                OPTIONAL. The Entity Identifier of the subject
-                for which the Entity Statement is being requested. If this
-                parameter is omitted, it is considered to be the same as the
-                issuer and indicates a request for a self-signed
-                Entity Configuration.<a href="#section-8.1.1-2.4" class="pilcrow">¶</a>
+                REQUIRED. The Entity Identifier of the subject
+                for which the Subordinate Statement is being requested.<a href="#section-8.1.1-2.4" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 </dl>
@@ -5725,8 +5724,8 @@ Host: edugain.org
 </div>
 <div id="fetch-response">
 <section id="section-8.1.2">
-          <h4 id="name-fetch-entity-statement-resp">
-<a href="#section-8.1.2" class="section-number selfRef">8.1.2. </a><a href="#name-fetch-entity-statement-resp" class="section-name selfRef">Fetch Entity Statement Response</a>
+          <h4 id="name-fetch-subordinate-statement-">
+<a href="#section-8.1.2" class="section-number selfRef">8.1.2. </a><a href="#name-fetch-subordinate-statement-" class="section-name selfRef">Fetch Subordinate Statement Response</a>
           </h4>
 <p id="section-8.1.2-1">
             A successful response MUST use the HTTP status code 200
@@ -5742,6 +5741,9 @@ Host: edugain.org
      If the fetch endpoint cannot provide data for the requested
      <code>sub</code> parameter, returning the
      <code>not_found</code> error code is RECOMMENDED.
+     If the <code>sub</code> parameter references the same Entity
+     as the <code>iss</code> parameter, returning the
+     <code>invalid_request</code> error code is RECOMMENDED.
             See more about error responses in <a href="#error_response" class="auto internal xref">Section 8.9</a>.<a href="#section-8.1.2-1" class="pilcrow">¶</a></p>
 <p id="section-8.1.2-2" class="keepWithNext">
               The following is a non-normative example of the JWT Claims Set for a fetch response:<a href="#section-8.1.2-2" class="pilcrow">¶</a></p>
@@ -11706,6 +11708,7 @@ Host: op.umu.se
         Takahiko Kawasaki,
         Torsten Lodderstedt,
         Francesco Marino,
+ John Melati,
  Alexey Melnikov,
         Roberto Polli,
  Justin Richer,
@@ -11739,6 +11742,10 @@ Host: op.umu.se
         <li class="normal" id="appendix-D-3.2">
           <p id="appendix-D-3.2.1">
      Fixed #36: Simplified obtaining Entity Configurations.<a href="#appendix-D-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.3">
+          <p id="appendix-D-3.3.1">
+     Fixed #30: Simplified fetch endpoint to only return Subordinate Statements.<a href="#appendix-D-3.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-D-4">
