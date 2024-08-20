@@ -3694,10 +3694,11 @@
 	beyond those initially specified MAY be defined and used.
 	If they are not understood, they MUST be ignored.
       </t>
-      <section title="Fetching an Entity Statement" anchor="fetch_endpoint">
+
+      <section title="Fetching a Subordinate Statement" anchor="fetch_endpoint">
         <t>
-          Fetching Entity Statements is performed to collect Entity Statements
-          one by one to assemble Trust Chains.
+	  The fetch endpoint is used to collect Subordinate Statements
+          one-by-one when assembling Trust Chains.
 	  An Entity with Subordinates MUST expose a fetch endpoint.
 	  An Entity MUST publish Subordinate Statements about its
 	  Immediate Subordinates via its fetch endpoint.
@@ -3714,13 +3715,15 @@
 	  metadata and not in Subordinate Statements.
         </t>
         <t>
-          To fetch an Entity Statement, an Entity needs to know the
+          To fetch a Subordinate Statement, one needs to know the
           identifier of the Entity to ask (the issuer), the fetch
-          endpoint of that Entity, and the identifier of the
-          Entity, that is, the subject of the Entity Statement.
+          endpoint of that Entity, and the Entity Identifier of the
+          subject of the Subordinate Statement.
+	  The issuer is normally the Immediate Superior of the
+          subject of the Subordinate Statement.
         </t>
 
-        <section title="Fetch Entity Statement Request"
+        <section title="Fetch Subordinate Statement Request"
                  anchor="fetch_statement">
           <t>
 	    When client authentication is not used,
@@ -3735,18 +3738,15 @@
               <t hangText="iss">
                 <vspace/>
                 REQUIRED. The Entity Identifier of the issuer
-                from which the Entity Statement is issued. Because of the
+                from which the Subordinate Statement is to be issued. Because of the
                 normalization of the URL, multiple issuers MAY resolve to a
                 shared fetch endpoint. This parameter makes it explicit exactly
-                which issuer the Entity Statement must come from.
+                from which issuer the Subordinate Statement MUST come.
               </t>
               <t hangText="sub">
                 <vspace/>
-                OPTIONAL. The Entity Identifier of the subject
-                for which the Entity Statement is being requested. If this
-                parameter is omitted, it is considered to be the same as the
-                issuer and indicates a request for a self-signed
-                Entity Configuration.
+                REQUIRED. The Entity Identifier of the subject
+                for which the Subordinate Statement is being requested.
               </t>
             </list>
           </t>
@@ -3772,7 +3772,7 @@ Host: edugain.org
           </figure>
         </section>
 
-        <section anchor="fetch-response" title="Fetch Entity Statement Response">
+        <section anchor="fetch-response" title="Fetch Subordinate Statement Response">
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type
@@ -3787,6 +3787,9 @@ Host: edugain.org
 	    If the fetch endpoint cannot provide data for the requested
 	    <spanx style="verb">sub</spanx> parameter, returning the
 	    <spanx style="verb">not_found</spanx> error code is RECOMMENDED.
+	    If the <spanx style="verb">sub</spanx> parameter references the same Entity
+	    as the <spanx style="verb">iss</spanx> parameter, returning the
+	    <spanx style="verb">invalid_request</spanx> error code is RECOMMENDED.
             See more about error responses in <xref target="error_response"/>.
           </t>
           <figure>
@@ -9383,6 +9386,7 @@ Host: op.umu.se
         Takahiko Kawasaki,
         Torsten Lodderstedt,
         Francesco Marino,
+	John Melati,
 	Alexey Melnikov,
         Roberto Polli,
 	Justin Richer,
@@ -9412,6 +9416,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #36: Simplified obtaining Entity Configurations.
+	  </t>
+	  <t>
+	    Fixed #30: Simplified fetch endpoint to only return Subordinate Statements.
 	  </t>
 	</list>
       </t>
