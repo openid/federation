@@ -239,9 +239,9 @@
             <t hangText="Entity Identifier">
               <vspace/>
               A globally unique URL that is bound to one Entity.
-	      This URL MUST use the <spanx style="verb">https</spanx>
-	      scheme and MAY contain port and path components.
-	      It MUST NOT contain query parameter or fragment components.
+	      This URL MUST use the <spanx style="verb">https</spanx> scheme,
+	      have a host component, and MAY contain port and path components.
+	      It MAY NOT contain query parameter or fragment components.
             </t>
             <t hangText="Trust Anchor">
               <vspace/>
@@ -5182,43 +5182,24 @@ Content-Type: application/json
             title="Obtaining Federation Entity Configuration Information"
             anchor="federation_configuration">
       <t>
-        The Entity Configuration of every participant SHOULD be exposed at a well-known endpoint.
-        The configuration endpoint is found using the
-        <xref target="RFC8615">Well-Known URIs</xref>
-        specification, with the suffix
-        <spanx style="verb">openid-federation</spanx>.
-        The scheme, host, and port
-        are taken directly from the Entity Identifier combined with the following
-        path: <spanx style="verb">/.well-known/openid-federation</spanx>.
+	The Entity Configuration of every Federation Entity is published
+	at its configuration endpoint.
+	This endpoint uses a well-known URI <xref target="RFC8615"/>
+	with the suffix <spanx style="verb">openid-federation</spanx>.
+	Its location is determined by concatenating the string
+	<spanx style="verb">/.well-known/openid-federation</spanx>
+	to the Entity Identifier
+	(which MUST contain scheme and host components
+	and MAY also contain port and path components).
+	For instance, the configuration endpoint for the Entity Identifier
+	<spanx style="verb">https://entity.example</spanx> is the URL
+	<spanx style="verb">https://entity.example/.well-known/openid-federation</spanx>.
       </t>
       <t>
-        If the Entity Identifier contains a path, it is concatenated after
-        <spanx style="verb">/.well-known/openid-federation</spanx>
-        in the same
-        manner
-        that path components are concatenated to the well-known identifier in
-        the OAuth 2.0 Authorization Server Metadata
-        <xref target="RFC8414"/>
-        specification.
-        Of course, in real multi-tenant deployments, in which the Entity Identifier
-        might be of the form
-        <spanx style="verb">https://multi-tenant-service.example.com/my-tenant-identifier</spanx>
-        the tenant is very likely to not have control over the path
-        <spanx style="verb">https://multi-tenant-service.example.com/.well-known/openid-federation/my-tenant-identifier</spanx>
-        whereas it is very likely to have control over the path
-        <spanx style="verb">https://multi-tenant-service.example.com/my-tenant-identifier/.well-known/openid-federation</spanx>.
-        Therefore, if using the configuration endpoint at the URL with the
-        tenant path
-        after the well-known part fails,
-        it is RECOMMENDED that callers retry at the URL with the tenant path
-        before the well-known part
-        (even though this violates <xref target="RFC8615"/>).
-      </t>
-      <t>
-        Entities SHOULD make an Entity Configuration document
-        available at the configuration endpoint.
-        There is only one exception to this
-        rule and that is for an RP that only does Explicit Registration.
+        Federation Entities MUST make an Entity Configuration document
+        available at their configuration endpoint.
+        The sole exception to this
+        rule is for an RP that only does Explicit Registration.
         Since it posts the Entity Configuration to the OP during client
         registration, the OP has everything it needs from the RP.
       </t>
@@ -9434,6 +9415,9 @@ Host: op.umu.se
 	    Added section defining each media type.
 	  </t>
 	  <t>
+	    Fixed #36: Simplified obtaining Entity Configurations.
+	  </t>
+	  <t>
 	    Fixed #30: Simplified fetch endpoint to only return Subordinate Statements.
 	  </t>
 	</list>
@@ -10384,8 +10368,8 @@ Host: op.umu.se
             Dzhuvinov in Bitbucket issue #1157.
           </t>
           <t>
-            An RP doing only explicit client registration are not required to
-            publish and support a
+            An RP doing only explicit client registration is not required to
+            publish and support
             <spanx style="verb">/.well-known/openid-federation</spanx>.
           </t>
           <t>
