@@ -222,7 +222,7 @@
       </section>
       <section anchor="Terminology" title="Terminology">
         <t>
-          This specification uses the terms
+          This specification uses the terms "Claim",
           "Claim Name", "Claim Value", "JSON Web Token (JWT)", and "JWT Claims Set"
           defined by <xref target="RFC7519">JSON Web Token (JWT)</xref>
           and the terms "OpenID Provider (OP)" and "Relying Party (RP)" defined
@@ -599,6 +599,8 @@
 	      Entity Statements require that
 	      the <spanx style="verb">crit</spanx> (critical) claim
 	      defined in <xref target="critClaim"/> be understand and processed.
+	      Claims in the Entity Statement whose claim names are in the array
+	      that is the value of this claim MUST be understand and processed.
 	      Claims specified for use in Entity Statements by this specification
 	      MUST NOT be included in the list.
             </t>
@@ -1631,7 +1633,8 @@
 		<list style="hanging">
 		  <t hangText="keys">
 		    <vspace/>
-		    REQUIRED. Array of JWK values.
+		    REQUIRED. Array of JWK values in the JWK Set,
+		    as specified in Section 5.1 of <xref target="RFC7517"/>.
 		  </t>
 		  <t hangText="iss">
 		    <vspace/>
@@ -6733,41 +6736,71 @@ HTTP/1.1 302 Found
 	  as the <spanx style="verb">crit</spanx> value.
 	  Use of this claim is OPTIONAL.
 	</t>
+	<t>
+	  This claim is used in this specification in <xref target="entity-statement"/>
+	  to identify claims not defined by this specification
+	  that MUST be understand and processed
+	  when used in Entity Statements.
+	</t>
       </section>
 
       <section anchor="idClaim" title='"id" (Identifier) Claim'>
 	<t>
 	  The <spanx style="verb">id</spanx> (identifier) claim
-	  provides an identifier for a property of the JWT.
-	  Like the <spanx style="verb">sub</spanx> (subject) claim,
-	  the processing of this claim is generally application specific.
+	  is used for conveying an identifier that is a property of the JWT.
 	  The <spanx style="verb">id</spanx> value is a case-sensitive string
 	  containing a StringOrURI value.
 	  Use of this claim is OPTIONAL.
+	</t>
+	<t>
+	  For instance, an enterprise application might use
+	  the <spanx style="verb">id</spanx> (identifier) claim
+	  to convey an employee ID value.
+	  Note that this is different than
+	  the <spanx style="verb">jti</spanx> (JWT ID) claim,
+	  which contains a unique identifier for the individual JWT itself.
+	  This claim is used in this specification in <xref target="trust_mark_claims"/>
+	  to provide the identifier of the Trust Mark.
 	</t>
       </section>
 
       <section anchor="refClaim" title='"ref" (Reference) Claim'>
 	<t>
 	  The <spanx style="verb">ref</spanx> (reference) claim
-	  provides a URI for information pertaining to the JWT.
-	  Like the <spanx style="verb">sub</spanx> (subject) claim,
-	  the processing of this claim is generally application specific.
+	  is used for conveying the URI for a resource pertaining to the JWT.
+	  It plays a similar role in a JWT as
+	  the <spanx style="verb">href</spanx> property does in HTML.
+	  The nature of the content at the referenced resource
+	  is generally application specific.
 	  The <spanx style="verb">ref</spanx> value is a case-sensitive string
 	  containing a URI value.
 	  Use of this claim is OPTIONAL.
+	</t>
+	<t>
+	  For instance, a JWT referring to a contract between two parties might use
+	  the <spanx style="verb">ref</spanx> (reference) claim
+	  to refer to a resource at which the contract terms can be read.
+	  This claim is used in this specification in <xref target="trust_mark_claims"/>
+	  to provide a URL referring to human-readable information
+	  about the issuance of the Trust Mark.
 	</t>
       </section>
 
       <section anchor="delegationClaim" title='"delegation" (Delegation) Claim'>
 	<t>
-	  The <spanx style="verb">delegation</spanx> claim
-	  expresses a delegation relationship.
-	  Like the <spanx style="verb">sub</spanx> (subject) claim,
-	  the processing of this claim is generally application specific.
+	  The <spanx style="verb">delegation</spanx> claim expresses that
+	  authority is being delegated to the party referenced in the claim value.
 	  The <spanx style="verb">delegation</spanx> value is a case-sensitive string
 	  containing a StringOrURI value.
 	  Use of this claim is OPTIONAL.
+	</t>
+	<t>
+	  For instance, the <spanx style="verb">delegation</spanx> claim
+	  might be used to express that the referenced party may sign
+	  a legal document on behalf of the subject.
+	  This claim is used in this specification in <xref target="trust_mark_claims"/>
+	  to represent delegation of the right to issue Trust Marks
+	  with a particular identifier.
 	</t>
       </section>
     </section>
@@ -7746,7 +7779,7 @@ HTTP/1.1 302 Found
 
       <section anchor="ClaimsRegistry" title="JSON Web Token Claims Registration">
 	<t>
-	  This specification registers the following claim in
+	  This specification registers the following claims in
 	  the IANA "JSON Web Token Claims" registry <xref target="IANA.JWT.Claims"/>
 	  established by <xref target="RFC7519"/>.
 	</t>
@@ -7759,7 +7792,7 @@ HTTP/1.1 302 Found
 		Claim Name: <spanx style="verb">keys</spanx>
 	      </t>
 	      <t>
-		Claim Description: Array of JWK values, as defined in RFC 7517
+		Claim Description: Array of JWK values in the JWK Set
 	      </t>
 	      <t>
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
@@ -9413,7 +9446,8 @@ Host: op.umu.se
 	-39
 	<list style="symbols">
 	  <t>
-	    TBD
+	    Improved descriptions of the JWT Claims being registered,
+	    per feedback from the IANA Designated Expert.
 	  </t>
 	</list>
       </t>
