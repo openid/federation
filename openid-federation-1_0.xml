@@ -3261,35 +3261,6 @@
           cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
         </t>
 
-        <section title="Trust Mark Delegation" anchor="trust_mark_delegation">
-          <t>
-            There will be cases where the owner of a Trust Mark for some reason
-            may not match the Trust Mark issuer due to administrative or
-            technical requirements. Take as an example vehicle
-            inspection. Vehicle inspection is a procedure mandated by national
-            or subnational governments in many countries, in which a vehicle is
-            inspected to ensure that it conforms to regulations governing
-            safety, emissions, or both. The body that mandates the inspections
-            does not perform them; instead, there may be commercial companies
-            performing the inspections, after which they issue the Trust Mark.
-          </t>
-          <t>
-            The fact that a Trust Mark is issued by a Trust Mark issuer that is
-            not the owner of the Trust Mark is expressed by including
-	    a <spanx style="verb">delegation</spanx> claim in the Trust Mark,
-	    whose value is a signed JWT.
-            The format of the delegation JWT is described below.
-          </t>
-          <t>
-            If the Federation Operator knows that Trust Marks with a
-            certain Trust Mark identifier may legitimately be issued by Trust Mark issuers
-            that are not the owner of the Trust Mark identifier, then information
-            about the owner and the Trust Mark identifier MUST be included in the
-            <spanx style="verb">trust_mark_owners</spanx> claim in
-	    the Trust Anchor's Entity Configuration.
-          </t>
-        </section>
-
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
           <t>
 	    The claims in a Trust Mark are:
@@ -3352,10 +3323,10 @@
 		OPTIONAL.
 		The <spanx style="verb">delegation</spanx> claim
 		defined in <xref target="delegationClaim"/> is used in Trust Marks
-		to provide a signed JWT containing information about
-		a delegation of the right to issue Trust Marks with a particular identifier
-                created by the owner of the Trust Mark
-		that identifies the delegated issuer of the Trust Mark.
+		to delegate the right to issue Trust Marks
+		with a particular identifier.
+		Its value is a Trust Mark delegation JWT,
+		as defined in <xref target="delegation_jwt"/>.
               </t>
             </list>
           </t>
@@ -3364,8 +3335,42 @@
           </t>
         </section>
 
-        <section title="Trust Mark Delegation JWT" anchor="delegation_jwt">
+        <section title="Trust Mark Delegation" anchor="trust_mark_delegation">
           <t>
+            There will be cases where the owner of a Trust Mark for some reason
+            does not match the Trust Mark issuer due to administrative or
+            technical requirements. Take as an example vehicle
+            inspection. Vehicle inspection is a procedure mandated by national
+            or subnational governments in many countries, in which a vehicle is
+            inspected to ensure that it conforms to regulations governing
+            safety, emissions, or both. The body that mandates the inspections
+            does not perform them; instead, there may be commercial companies
+            performing the inspections, after which they issue the Trust Mark.
+          </t>
+          <t>
+            The fact that a Trust Mark is issued by a Trust Mark issuer that is
+            not the owner of the Trust Mark is expressed by including
+	    a <spanx style="verb">delegation</spanx> claim in the Trust Mark,
+	    whose value is a Trust Mark delegation JWT,
+	    as defined in <xref target="delegation_jwt"/>.
+          </t>
+          <t>
+            If the Federation Operator knows that Trust Marks with a
+            certain Trust Mark identifier may legitimately be issued by Trust Mark issuers
+            that are not the owner of the Trust Mark identifier, then information
+            about the owner and the Trust Mark identifier MUST be included in the
+            <spanx style="verb">trust_mark_owners</spanx> claim in
+	    the Trust Anchor's Entity Configuration.
+          </t>
+
+	  <section title="Trust Mark Delegation JWT" anchor="delegation_jwt">
+	    <t>
+	      A Trust Mark Delegation JWT is a signed JWT
+	      issued by a Trust Mark owner
+	      that identifies a legitimate delegated issuer of Trust Marks
+	      with a particular identifier.
+	    </t>
+	  <t>
             A Trust Mark delegation JWT MUST be explicitly typed, by setting the
             <spanx style="verb">typ</spanx> header parameter to
             <spanx style="verb">trust-mark-delegation+jwt</spanx> to prevent
@@ -3417,7 +3422,9 @@
 	  <t>
 	    Additional claims MAY be defined and used in conjunction with the claims above.
 	  </t>
+	  </section>
         </section>
+
         <section title="Validating a Trust Mark" anchor="trust_valid">
           <t>
 	    An Entity SHOULD NOT try to validate a Trust Mark until
