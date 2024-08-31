@@ -1487,19 +1487,21 @@ li > p:last-of-type:only-child {
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-trust-marks" class="internal xref">Trust Marks</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
-                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-trust-mark-delegation" class="internal xref">Trust Mark Delegation</a></p>
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-trust-mark-claims" class="internal xref">Trust Mark Claims</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
-                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-trust-mark-claims" class="internal xref">Trust Mark Claims</a></p>
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-trust-mark-delegation" class="internal xref">Trust Mark Delegation</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2.2.1">
+                    <p id="section-toc.1-1.7.2.2.2.1.1"><a href="#section-7.2.1" class="auto internal xref">7.2.1</a>.  <a href="#name-trust-mark-delegation-jwt" class="internal xref">Trust Mark Delegation JWT</a></p>
+</li>
+                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
-                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-trust-mark-delegation-jwt" class="internal xref">Trust Mark Delegation JWT</a></p>
+                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-validating-a-trust-mark" class="internal xref">Validating a Trust Mark</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.4">
-                <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="auto internal xref">7.4</a>.  <a href="#name-validating-a-trust-mark" class="internal xref">Validating a Trust Mark</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.5">
-                <p id="section-toc.1-1.7.2.5.1"><a href="#section-7.5" class="auto internal xref">7.5</a>.  <a href="#name-trust-mark-examples" class="internal xref">Trust Mark Examples</a></p>
+                <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="auto internal xref">7.4</a>.  <a href="#name-trust-mark-examples" class="internal xref">Trust Mark Examples</a></p>
 </li>
             </ul>
 </li>
@@ -5189,56 +5191,26 @@ li > p:last-of-type:only-child {
           <code>typ</code> header parameter to
           <code>trust-mark+jwt</code> to prevent
           cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.<a href="#section-7-7" class="pilcrow">¶</a></p>
-<div id="trust_mark_delegation">
+<div id="trust_mark_claims">
 <section id="section-7.1">
-        <h3 id="name-trust-mark-delegation">
-<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-trust-mark-delegation" class="section-name selfRef">Trust Mark Delegation</a>
+        <h3 id="name-trust-mark-claims">
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-trust-mark-claims" class="section-name selfRef">Trust Mark Claims</a>
         </h3>
 <p id="section-7.1-1">
-            There will be cases where the owner of a Trust Mark for some reason
-            may not match the Trust Mark issuer due to administrative or
-            technical requirements. Take as an example vehicle
-            inspection. Vehicle inspection is a procedure mandated by national
-            or subnational governments in many countries, in which a vehicle is
-            inspected to ensure that it conforms to regulations governing
-            safety, emissions, or both. The body that mandates the inspections
-            does not perform them; instead, there may be commercial companies
-            performing the inspections, after which they issue the Trust Mark.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
-<p id="section-7.1-2">
-            The fact that a Trust Mark is issued by a Trust Mark issuer that is
-            not the owner of the Trust Mark is expressed by including
-     a <code>delegation</code> claim in the Trust Mark,
-     whose value is a signed JWT.
-            The format of the delegation JWT is described below.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
-<p id="section-7.1-3">
-            If the Federation Operator knows that Trust Marks with a
-            certain Trust Mark identifier may legitimately be issued by Trust Mark issuers
-            that are not the owner of the Trust Mark identifier, then information
-            about the owner and the Trust Mark identifier MUST be included in the
-            <code>trust_mark_owners</code> claim in
-     the Trust Anchor's Entity Configuration.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="trust_mark_claims">
-<section id="section-7.2">
-        <h3 id="name-trust-mark-claims">
-<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-trust-mark-claims" class="section-name selfRef">Trust Mark Claims</a>
-        </h3>
-<p id="section-7.2-1">
-     The claims in a Trust Mark are:<a href="#section-7.2-1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-7.2-2">
-          <dt id="section-7.2-2.1">iss</dt>
-          <dd style="margin-left: 1.5em" id="section-7.2-2.2">
-                REQUIRED. String. Issuer of the Trust Mark.<a href="#section-7.2-2.2" class="pilcrow">¶</a>
+     The claims in a Trust Mark are:<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-7.1-2">
+          <dt id="section-7.1-2.1">iss</dt>
+          <dd style="margin-left: 1.5em" id="section-7.1-2.2">
+                REQUIRED. String. Issuer of the Trust Mark.<a href="#section-7.1-2.2" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-7.2-2.3">sub</dt>
-          <dd style="margin-left: 1.5em" id="section-7.2-2.4">
-                REQUIRED. String. Entity this Trust Mark applies to.<a href="#section-7.2-2.4" class="pilcrow">¶</a>
+<dt id="section-7.1-2.3">sub</dt>
+          <dd style="margin-left: 1.5em" id="section-7.1-2.4">
+                REQUIRED. String. Entity this Trust Mark applies to.<a href="#section-7.1-2.4" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-7.2-2.5">id</dt>
-          <dd style="margin-left: 1.5em" id="section-7.2-2.6">
+<dt id="section-7.1-2.5">id</dt>
+          <dd style="margin-left: 1.5em" id="section-7.1-2.6">
  REQUIRED.
  The <code>id</code> (identifier) claim
  defined in <a href="#idClaim" class="auto internal xref">Section 13.2</a> is used in Trust Marks
@@ -5253,132 +5225,167 @@ li > p:last-of-type:only-child {
                 or the trust framework
                 within which it was issued. This is required to prevent
                 Trust Marks issued in different federations
-                from having colliding identifiers.<a href="#section-7.2-2.6" class="pilcrow">¶</a>
+                from having colliding identifiers.<a href="#section-7.1-2.6" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-7.2-2.7">iat</dt>
-          <dd style="margin-left: 1.5em" id="section-7.2-2.8">
+<dt id="section-7.1-2.7">iat</dt>
+          <dd style="margin-left: 1.5em" id="section-7.1-2.8">
                 REQUIRED. Number. Time when this Trust Mark was issued.
                 This is expressed as Seconds Since the Epoch, as defined in
-                <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-7.2-2.8" class="pilcrow">¶</a>
+                <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-7.1-2.8" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-7.2-2.9">logo_uri</dt>
-          <dd style="margin-left: 1.5em" id="section-7.2-2.10">
+<dt id="section-7.1-2.9">logo_uri</dt>
+          <dd style="margin-left: 1.5em" id="section-7.1-2.10">
                 OPTIONAL. String. URL that references a logo for the Entity.
- The value of this field MUST point to a valid image file.<a href="#section-7.2-2.10" class="pilcrow">¶</a>
+ The value of this field MUST point to a valid image file.<a href="#section-7.1-2.10" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-7.2-2.11">exp</dt>
-          <dd style="margin-left: 1.5em" id="section-7.2-2.12">
+<dt id="section-7.1-2.11">exp</dt>
+          <dd style="margin-left: 1.5em" id="section-7.1-2.12">
                 OPTIONAL. Number. Time when this Trust Mark is no longer valid.
                 This is expressed as Seconds Since the Epoch, per <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.
-                If not present, it means that the Trust Mark does not expire.<a href="#section-7.2-2.12" class="pilcrow">¶</a>
+                If not present, it means that the Trust Mark does not expire.<a href="#section-7.1-2.12" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-7.2-2.13">ref</dt>
-          <dd style="margin-left: 1.5em" id="section-7.2-2.14">
+<dt id="section-7.1-2.13">ref</dt>
+          <dd style="margin-left: 1.5em" id="section-7.1-2.14">
  OPTIONAL.
  The <code>ref</code> (reference) claim
  defined in <a href="#refClaim" class="auto internal xref">Section 13.3</a> is used in Trust Marks
  to provide a URL referring to human-readable information
- about the issuance of the Trust Mark.<a href="#section-7.2-2.14" class="pilcrow">¶</a>
+ about the issuance of the Trust Mark.<a href="#section-7.1-2.14" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-7.2-2.15">delegation</dt>
-          <dd style="margin-left: 1.5em" id="section-7.2-2.16">
+<dt id="section-7.1-2.15">delegation</dt>
+          <dd style="margin-left: 1.5em" id="section-7.1-2.16">
  OPTIONAL.
  The <code>delegation</code> claim
  defined in <a href="#delegationClaim" class="auto internal xref">Section 13.4</a> is used in Trust Marks
- to provide a signed JWT containing information about
- a delegation of the right to issue Trust Marks with a particular identifier
-                created by the owner of the Trust Mark
- that identifies the delegated issuer of the Trust Mark.<a href="#section-7.2-2.16" class="pilcrow">¶</a>
+ to delegate the right to issue Trust Marks
+ with a particular identifier.
+ Its value is a Trust Mark delegation JWT,
+ as defined in <a href="#delegation_jwt" class="auto internal xref">Section 7.2.1</a>.<a href="#section-7.1-2.16" class="pilcrow">¶</a>
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-7.2-3">
-            Additional claims MAY be defined and used in conjunction with the claims above.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
+<p id="section-7.1-3">
+            Additional claims MAY be defined and used in conjunction with the claims above.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="delegation_jwt">
-<section id="section-7.3">
-        <h3 id="name-trust-mark-delegation-jwt">
-<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-trust-mark-delegation-jwt" class="section-name selfRef">Trust Mark Delegation JWT</a>
+<div id="trust_mark_delegation">
+<section id="section-7.2">
+        <h3 id="name-trust-mark-delegation">
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-trust-mark-delegation" class="section-name selfRef">Trust Mark Delegation</a>
         </h3>
-<p id="section-7.3-1">
+<p id="section-7.2-1">
+            There will be cases where the owner of a Trust Mark for some reason
+            does not match the Trust Mark issuer due to administrative or
+            technical requirements. Take as an example vehicle
+            inspection. Vehicle inspection is a procedure mandated by national
+            or subnational governments in many countries, in which a vehicle is
+            inspected to ensure that it conforms to regulations governing
+            safety, emissions, or both. The body that mandates the inspections
+            does not perform them; instead, there may be commercial companies
+            performing the inspections, after which they issue the Trust Mark.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+<p id="section-7.2-2">
+            The fact that a Trust Mark is issued by a Trust Mark issuer that is
+            not the owner of the Trust Mark is expressed by including
+     a <code>delegation</code> claim in the Trust Mark,
+     whose value is a Trust Mark delegation JWT,
+     as defined in <a href="#delegation_jwt" class="auto internal xref">Section 7.2.1</a>.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
+<p id="section-7.2-3">
+            If the Federation Operator knows that Trust Marks with a
+            certain Trust Mark identifier may legitimately be issued by Trust Mark issuers
+            that are not the owner of the Trust Mark identifier, then information
+            about the owner and the Trust Mark identifier MUST be included in the
+            <code>trust_mark_owners</code> claim in
+     the Trust Anchor's Entity Configuration.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
+<div id="delegation_jwt">
+<section id="section-7.2.1">
+          <h4 id="name-trust-mark-delegation-jwt">
+<a href="#section-7.2.1" class="section-number selfRef">7.2.1. </a><a href="#name-trust-mark-delegation-jwt" class="section-name selfRef">Trust Mark Delegation JWT</a>
+          </h4>
+<p id="section-7.2.1-1">
+       A Trust Mark Delegation JWT is a signed JWT
+       issued by a Trust Mark owner
+       that identifies a legitimate delegated issuer of Trust Marks
+       with a particular identifier.<a href="#section-7.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-7.2.1-2">
             A Trust Mark delegation JWT MUST be explicitly typed, by setting the
             <code>typ</code> header parameter to
             <code>trust-mark-delegation+jwt</code> to prevent
             cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.
-     It is signed with a Federation Entity Key.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
-<p id="section-7.3-2">
+     It is signed with a Federation Entity Key.<a href="#section-7.2.1-2" class="pilcrow">¶</a></p>
+<p id="section-7.2.1-3">
      Trust Mark delegation JWTs MUST include the
      <code>kid</code> (Key ID) header parameter
-     with its value being the Key ID of the signing key used.<a href="#section-7.3-2" class="pilcrow">¶</a></p>
-<p id="section-7.3-3">
-            The claims in a Trust Mark delegation JWT are:<a href="#section-7.3-3" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-7.3-4">
-          <dt id="section-7.3-4.1">iss</dt>
-          <dd style="margin-left: 1.5em" id="section-7.3-4.2">
-                REQUIRED. String. The owner of the Trust Mark.<a href="#section-7.3-4.2" class="pilcrow">¶</a>
+     with its value being the Key ID of the signing key used.<a href="#section-7.2.1-3" class="pilcrow">¶</a></p>
+<p id="section-7.2.1-4">
+            The claims in a Trust Mark delegation JWT are:<a href="#section-7.2.1-4" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-7.2.1-5">
+            <dt id="section-7.2.1-5.1">iss</dt>
+            <dd style="margin-left: 1.5em" id="section-7.2.1-5.2">
+                REQUIRED. String. The owner of the Trust Mark.<a href="#section-7.2.1-5.2" class="pilcrow">¶</a>
 </dd>
-          <dd class="break"></dd>
-<dt id="section-7.3-4.3">sub</dt>
-          <dd style="margin-left: 1.5em" id="section-7.3-4.4">
-                REQUIRED. String. The Entity this delegation applies to.<a href="#section-7.3-4.4" class="pilcrow">¶</a>
+            <dd class="break"></dd>
+<dt id="section-7.2.1-5.3">sub</dt>
+            <dd style="margin-left: 1.5em" id="section-7.2.1-5.4">
+                REQUIRED. String. The Entity this delegation applies to.<a href="#section-7.2.1-5.4" class="pilcrow">¶</a>
 </dd>
-          <dd class="break"></dd>
-<dt id="section-7.3-4.5">id</dt>
-          <dd style="margin-left: 1.5em" id="section-7.3-4.6">
-                REQUIRED. String. The identifier of the Trust Mark.<a href="#section-7.3-4.6" class="pilcrow">¶</a>
+            <dd class="break"></dd>
+<dt id="section-7.2.1-5.5">id</dt>
+            <dd style="margin-left: 1.5em" id="section-7.2.1-5.6">
+                REQUIRED. String. The identifier of the Trust Mark.<a href="#section-7.2.1-5.6" class="pilcrow">¶</a>
 </dd>
-          <dd class="break"></dd>
-<dt id="section-7.3-4.7">iat</dt>
-          <dd style="margin-left: 1.5em" id="section-7.3-4.8">
+            <dd class="break"></dd>
+<dt id="section-7.2.1-5.7">iat</dt>
+            <dd style="margin-left: 1.5em" id="section-7.2.1-5.8">
                 REQUIRED. Number. Time when this delegation was issued.
                 This is expressed as Seconds Since the Epoch, as defined in
-                <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-7.3-4.8" class="pilcrow">¶</a>
+                <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-7.2.1-5.8" class="pilcrow">¶</a>
 </dd>
-          <dd class="break"></dd>
-<dt id="section-7.3-4.9">exp</dt>
-          <dd style="margin-left: 1.5em" id="section-7.3-4.10">
+            <dd class="break"></dd>
+<dt id="section-7.2.1-5.9">exp</dt>
+            <dd style="margin-left: 1.5em" id="section-7.2.1-5.10">
                 OPTIONAL. Number. Time when this delegation stops being valid.
                 This is expressed as Seconds Since the Epoch, per <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.
                 If not present, it means that the delegation does not expire
-                and is valid until revoked.<a href="#section-7.3-4.10" class="pilcrow">¶</a>
+                and is valid until revoked.<a href="#section-7.2.1-5.10" class="pilcrow">¶</a>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-7.2.1-5.11">ref</dt>
+            <dd style="margin-left: 1.5em" id="section-7.2.1-5.12">
+                OPTIONAL. String. URL that points to human-readable information
+                connected to the Trust Mark.<a href="#section-7.2.1-5.12" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-7.3-4.11">ref</dt>
-          <dd style="margin-left: 1.5em" id="section-7.3-4.12">
-                OPTIONAL. String. URL that points to human-readable information
-                connected to the Trust Mark.<a href="#section-7.3-4.12" class="pilcrow">¶</a>
-</dd>
-        <dd class="break"></dd>
 </dl>
-<p id="section-7.3-5">
-     Additional claims MAY be defined and used in conjunction with the claims above.<a href="#section-7.3-5" class="pilcrow">¶</a></p>
+<p id="section-7.2.1-6">
+     Additional claims MAY be defined and used in conjunction with the claims above.<a href="#section-7.2.1-6" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="trust_valid">
-<section id="section-7.4">
+<section id="section-7.3">
         <h3 id="name-validating-a-trust-mark">
-<a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-validating-a-trust-mark" class="section-name selfRef">Validating a Trust Mark</a>
+<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-validating-a-trust-mark" class="section-name selfRef">Validating a Trust Mark</a>
         </h3>
-<p id="section-7.4-1">
+<p id="section-7.3-1">
      An Entity SHOULD NOT try to validate a Trust Mark until
      it knows which Trust Anchor it is using.
      To validate a Trust Mark issuer, follow the procedure
      defined in <a href="#resolving_trust" class="auto internal xref">Section 10</a>.
-     To validate a Trust Mark:<a href="#section-7.4-1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-7.4-2">
-<li id="section-7.4-2.1">
-            <p id="section-7.4-2.1.1">
+     To validate a Trust Mark:<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-7.3-2">
+<li id="section-7.3-2.1">
+            <p id="section-7.3-2.1.1">
                 Check the signature of the signed JWT and verify that
-                it has not expired.<a href="#section-7.4-2.1.1" class="pilcrow">¶</a></p>
+                it has not expired.<a href="#section-7.3-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-7.4-2.2">
-            <p id="section-7.4-2.2.1">
+          <li id="section-7.3-2.2">
+            <p id="section-7.3-2.2.1">
                 If the Trust Mark identifier appears in the
                 <code>trust_mark_owners</code> claim,
                 verify that the Trust Mark contains
@@ -5386,36 +5393,36 @@ li > p:last-of-type:only-child {
                 claim.
                 The claims for the Trust Mark identifier
                 in the <code>trust_mark_owners</code> value
-                are used in the following way:<a href="#section-7.4-2.2.1" class="pilcrow">¶</a></p>
+                are used in the following way:<a href="#section-7.3-2.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-7.4-2.2.2.1">
-                <p id="section-7.4-2.2.2.1.1">
+<li class="normal" id="section-7.3-2.2.2.1">
+                <p id="section-7.3-2.2.2.1.1">
                     The signature of the <code>delegation</code> JWT
-                    MUST verify with a key from <code>jwks</code> claim.<a href="#section-7.4-2.2.2.1.1" class="pilcrow">¶</a></p>
+                    MUST verify with a key from <code>jwks</code> claim.<a href="#section-7.3-2.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-7.4-2.2.2.2">
-                <p id="section-7.4-2.2.2.2.1">
+              <li class="normal" id="section-7.3-2.2.2.2">
+                <p id="section-7.3-2.2.2.2.1">
                     The issuer of the <code>delegation</code> JWT
      MUST match the <code>sub</code> value
-     in this set of claims.<a href="#section-7.4-2.2.2.2.1" class="pilcrow">¶</a></p>
+     in this set of claims.<a href="#section-7.3-2.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li id="section-7.4-2.3">
-            <p id="section-7.4-2.3.1">
+          <li id="section-7.3-2.3">
+            <p id="section-7.3-2.3.1">
                 Using the Trust Mark issuer status endpoint to verify that the
                 Trust Mark is still active
-                is described in <a href="#status_endpoint" class="auto internal xref">Section 8.4</a>.<a href="#section-7.4-2.3.1" class="pilcrow">¶</a></p>
+                is described in <a href="#status_endpoint" class="auto internal xref">Section 8.4</a>.<a href="#section-7.3-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-7.4-3">
+<p id="section-7.3-3">
             Note that the Entity representing the accreditation authority
             SHOULD be well known and trusted for a given Trust Mark identifier.
             A Trust Anchor MAY publish a list of accreditation authorities
             of Trust Marks that SHOULD be trusted by other Entities.
             A Trust Anchor uses the <code>trust_mark_issuers</code> claim
-            in its Entity Configuration to publish this information.<a href="#section-7.4-3" class="pilcrow">¶</a></p>
-<p id="section-7.4-4">
+            in its Entity Configuration to publish this information.<a href="#section-7.3-3" class="pilcrow">¶</a></p>
+<p id="section-7.3-4">
             If a Trust Mark issuer is issuing Trust Marks on behalf of a
             Trust Mark owner, then the Trust Anchor MUST publish the
             connection between the Trust Mark identifier
@@ -5424,29 +5431,29 @@ li > p:last-of-type:only-child {
             signifies that the Trust Anchor has validated
             the Trust Mark owner and that the
             Trust Mark owner has delegated the right to issue Trust Marks
-            with a designated Trust Mark identifier to a specified Trust Mark issuer.<a href="#section-7.4-4" class="pilcrow">¶</a></p>
-<p id="section-7.4-5">
+            with a designated Trust Mark identifier to a specified Trust Mark issuer.<a href="#section-7.3-4" class="pilcrow">¶</a></p>
+<p id="section-7.3-5">
             Trust Marks that are not recognized within a federation SHOULD be ignored when
             evaluating trust in the Entity that presented them. Such Trust Marks can
             appear for various reasons, such as the Entity Configuration including Trust Marks
             associated with another federation, or Trust Marks intended for specific
-            purposes or Entity audiences.<a href="#section-7.4-5" class="pilcrow">¶</a></p>
-<p id="section-7.4-6">
+            purposes or Entity audiences.<a href="#section-7.3-5" class="pilcrow">¶</a></p>
+<p id="section-7.3-6">
             An Entity MAY choose, at its own discretion, to utilize Trust Marks presented
             to it that are not recognized within the federation, and where the
-            accreditation authority is established by some out-of-band mechanism.<a href="#section-7.4-6" class="pilcrow">¶</a></p>
+            accreditation authority is established by some out-of-band mechanism.<a href="#section-7.3-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="trust_example">
-<section id="section-7.5">
+<section id="section-7.4">
         <h3 id="name-trust-mark-examples">
-<a href="#section-7.5" class="section-number selfRef">7.5. </a><a href="#name-trust-mark-examples" class="section-name selfRef">Trust Mark Examples</a>
+<a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-trust-mark-examples" class="section-name selfRef">Trust Mark Examples</a>
         </h3>
-<p id="section-7.5-1" class="keepWithNext">
+<p id="section-7.4-1" class="keepWithNext">
               A non-normative example of a <code>trust_marks</code>
-       claim in the JWT Claims Set for an Entity Configuration is:<a href="#section-7.5-1" class="pilcrow">¶</a></p>
+       claim in the JWT Claims Set for an Entity Configuration is:<a href="#section-7.4-1" class="pilcrow">¶</a></p>
 <span id="name-trust-mark-in-an-entity-con"></span><figure id="figure-18">
-          <div class="alignLeft art-text artwork" id="section-7.5-2.1">
+          <div class="alignLeft art-text artwork" id="section-7.4-2.1">
 <pre>
 {
   "iss": "https://rp.example.it/spid/",
@@ -5489,12 +5496,12 @@ li > p:last-of-type:only-child {
 <figcaption><a href="#figure-18" class="selfRef">Figure 18</a>:
 <a href="#name-trust-mark-in-an-entity-con" class="selfRef">Trust Mark in an Entity Configuration JWT Claims Set</a>
           </figcaption></figure>
-<p id="section-7.5-3" class="keepWithNext">
+<p id="section-7.4-3" class="keepWithNext">
               An example of a decoded Trust Mark payload issued to an RP,
               attesting to conformance to a national
-              public service profile:<a href="#section-7.5-3" class="pilcrow">¶</a></p>
+              public service profile:<a href="#section-7.4-3" class="pilcrow">¶</a></p>
 <span id="name-trust-mark-for-a-national-p"></span><figure id="figure-19">
-          <div class="alignLeft art-text artwork" id="section-7.5-4.1">
+          <div class="alignLeft art-text artwork" id="section-7.4-4.1">
 <pre>
 {
   "id":"https://mushrooms.federation.example.com/openid_relying_party/public/",
@@ -5513,12 +5520,12 @@ li > p:last-of-type:only-child {
 <figcaption><a href="#figure-19" class="selfRef">Figure 19</a>:
 <a href="#name-trust-mark-for-a-national-p" class="selfRef">Trust Mark for a National Profile</a>
           </figcaption></figure>
-<p id="section-7.5-5" class="keepWithNext">
+<p id="section-7.4-5" class="keepWithNext">
               An example of a decoded Trust Mark payload issued to an RP,
               attesting to its conformance to the rules for
-              data management of underage users:<a href="#section-7.5-5" class="pilcrow">¶</a></p>
+              data management of underage users:<a href="#section-7.4-5" class="pilcrow">¶</a></p>
 <span id="name-trust-mark-issued-to-an-rp"></span><figure id="figure-20">
-          <div class="alignLeft art-text artwork" id="section-7.5-6.1">
+          <div class="alignLeft art-text artwork" id="section-7.4-6.1">
 <pre>
 {
   "id":"https://mushrooms.federation.example.com/openid_relying_party/private/under-age",
@@ -5535,11 +5542,11 @@ li > p:last-of-type:only-child {
 <figcaption><a href="#figure-20" class="selfRef">Figure 20</a>:
 <a href="#name-trust-mark-issued-to-an-rp" class="selfRef">Trust Mark Issued to an RP</a>
           </figcaption></figure>
-<p id="section-7.5-7" class="keepWithNext">
+<p id="section-7.4-7" class="keepWithNext">
               An example of a decoded Trust Mark payload attesting a stipulation of an
-              agreement between two organization's Entities:<a href="#section-7.5-7" class="pilcrow">¶</a></p>
+              agreement between two organization's Entities:<a href="#section-7.4-7" class="pilcrow">¶</a></p>
 <span id="name-trust-mark-attesting-to-an-"></span><figure id="figure-21">
-          <div class="alignLeft art-text artwork" id="section-7.5-8.1">
+          <div class="alignLeft art-text artwork" id="section-7.4-8.1">
 <pre>
 {
   "id": "https://mushrooms.federation.example.com/arrosto/agreements",
@@ -5561,11 +5568,11 @@ li > p:last-of-type:only-child {
 <figcaption><a href="#figure-21" class="selfRef">Figure 21</a>:
 <a href="#name-trust-mark-attesting-to-an-" class="selfRef">Trust Mark Attesting to an Agreement Between Entities</a>
           </figcaption></figure>
-<p id="section-7.5-9" class="keepWithNext">
+<p id="section-7.4-9" class="keepWithNext">
               An example of a decoded Trust Mark payload asserting
-              conformance to a security profile:<a href="#section-7.5-9" class="pilcrow">¶</a></p>
+              conformance to a security profile:<a href="#section-7.4-9" class="pilcrow">¶</a></p>
 <span id="name-trust-mark-asserting-confor"></span><figure id="figure-22">
-          <div class="alignLeft art-text artwork" id="section-7.5-10.1">
+          <div class="alignLeft art-text artwork" id="section-7.4-10.1">
 <pre>
 {
   "id": "https://mushrooms.federation.example.com/ottimo/commestibile",
@@ -5580,9 +5587,9 @@ li > p:last-of-type:only-child {
 <figcaption><a href="#figure-22" class="selfRef">Figure 22</a>:
 <a href="#name-trust-mark-asserting-confor" class="selfRef">Trust Mark Asserting Conformance to a Security Profile</a>
           </figcaption></figure>
-<p id="section-7.5-11" class="keepWithNext">An example of a decoded self-signed Trust Mark:<a href="#section-7.5-11" class="pilcrow">¶</a></p>
+<p id="section-7.4-11" class="keepWithNext">An example of a decoded self-signed Trust Mark:<a href="#section-7.4-11" class="pilcrow">¶</a></p>
 <span id="name-self-signed-trust-mark"></span><figure id="figure-23">
-          <div class="alignLeft art-text artwork" id="section-7.5-12.1">
+          <div class="alignLeft art-text artwork" id="section-7.4-12.1">
 <pre>
 {
   "id": "https://mushrooms.federation.example.com/trust-marks/self-signed",
@@ -5597,10 +5604,10 @@ li > p:last-of-type:only-child {
 <figcaption><a href="#figure-23" class="selfRef">Figure 23</a>:
 <a href="#name-self-signed-trust-mark" class="selfRef">Self-Signed Trust Mark</a>
           </figcaption></figure>
-<p id="section-7.5-13" class="keepWithNext">
-       An example of a third-party accreditation authority for Trust Marks:<a href="#section-7.5-13" class="pilcrow">¶</a></p>
+<p id="section-7.4-13" class="keepWithNext">
+       An example of a third-party accreditation authority for Trust Marks:<a href="#section-7.4-13" class="pilcrow">¶</a></p>
 <span id="name-third-party-accreditation-a"></span><figure id="figure-24">
-          <div class="alignLeft art-text artwork" id="section-7.5-14.1">
+          <div class="alignLeft art-text artwork" id="section-7.4-14.1">
 <pre>
 {
   "iss": "https://swamid.se",
@@ -8798,7 +8805,7 @@ HTTP/1.1 302 Found
    Note that this is different than
    the <code>jti</code> (JWT ID) claim,
    which contains a unique identifier for the individual JWT itself.
-   This claim is used in this specification in <a href="#trust_mark_claims" class="auto internal xref">Section 7.2</a>
+   This claim is used in this specification in <a href="#trust_mark_claims" class="auto internal xref">Section 7.1</a>
    to provide the identifier of the Trust Mark.<a href="#section-13.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -8821,7 +8828,7 @@ HTTP/1.1 302 Found
    For instance, a JWT referring to a contract between two parties might use
    the <code>ref</code> (reference) claim
    to refer to a resource at which the contract terms can be read.
-   This claim is used in this specification in <a href="#trust_mark_claims" class="auto internal xref">Section 7.2</a>
+   This claim is used in this specification in <a href="#trust_mark_claims" class="auto internal xref">Section 7.1</a>
    to provide a URL referring to human-readable information
    about the issuance of the Trust Mark.<a href="#section-13.3-2" class="pilcrow">¶</a></p>
 </section>
@@ -8841,7 +8848,7 @@ HTTP/1.1 302 Found
    For instance, the <code>delegation</code> claim
    might be used to express that the referenced party may sign
    a legal document on behalf of the subject.
-   This claim is used in this specification in <a href="#trust_mark_claims" class="auto internal xref">Section 7.2</a>
+   This claim is used in this specification in <a href="#trust_mark_claims" class="auto internal xref">Section 7.1</a>
    to represent delegation of the right to issue Trust Marks
    with a particular identifier.<a href="#section-13.4-2" class="pilcrow">¶</a></p>
 </section>
@@ -8937,7 +8944,7 @@ HTTP/1.1 302 Found
 <p id="section-15.5-1">
    The <code>application/trust-mark-delegation+jwt</code>
    media type is used to specify that the associated content is
-   a Trust Mark delegation, as defined in <a href="#delegation_jwt" class="auto internal xref">Section 7.3</a>.
+   a Trust Mark delegation, as defined in <a href="#delegation_jwt" class="auto internal xref">Section 7.2.1</a>.
    No parameters are used with this media type.<a href="#section-15.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
