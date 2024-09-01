@@ -3665,8 +3665,77 @@
 ]]></artwork>
           </figure>
         </section>
-      </section>
+        <section title="Trust Mark Delegation Examples" anchor="trust_delegation_example">
+          <figure>
+            <preamble>
+              A non-normative example of a <spanx style="verb">trust_marks</spanx>
+	          claim in the JWT Claims Set for an Entity Configuration. Where the
+              trust mark is issued by an entity that issues trust marks on behalf of
+              another entity.
+              The fact that a Trust Mark is issued by a Trust Mark issuer that is not
+              the owner of the Trust Mark is expressed by including a
+              <spanx style="verb">delegation</spanx> claim
+              in the Trust Mark, whose value is a signed JWT.
+            </preamble>
+	    <name>
+	      Example of a Delegated Trust Mark. Only the payload of the signed JWT
+          is shown.
+	    </name>
+            <artwork><![CDATA[
+{
+  "delegation":
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IlpHdEtNVzVKVEZVeFVWOWZWSG90VTNNd1pIa
+     FlXbU5qY2pselIydFpTaTFMYzBKQ1IzcGtVRzlyYXcifQ.eyJzdWIiOiAiaHR0cHM
+     6Ly90bWkuZXhhbXBsZS5vcmciLCAiaWQiOiAiaHR0cHM6Ly9yZWZlZHMub3JnL3Np
+     cnRmaSIsICJpc3MiOiAiaHR0cHM6Ly90bV9vd25lci5leGFtcGxlLm9yZyIsICJpY
+     XQiOiAxNzI1MTc2MzAyfQ.MTPri3aSN4vxUL_yzZ16He2UsNAWE6u9u59oRl-u8kq
+     JFY95UZZxsZrCeSjLDJAclQmDfe2xHdV-UGI-zOu3wkeCW-AuIH6f8J-e_4pSHLzT
+     caZd8PvCbab2bZuQes5FYQ6xhpAQWPkry0TtHic5iN-0CZ5a1s1r3YCbj72_kicMz
+     F7WlLkMVgXDIA5TwQNuAwWavhh2c1faVYEV56uG-n_-bekIb3br6uuPtlMpRVUkoi
+     eKpwDcGxyJct-g0H436gvIm7lyKfvi0SmKxKK0AbL48-yRi1LSOXLx_60alAGHzQ-
+     XlnuREVu8VWgIPHelsyPHJPc6hQDuchyu52Nupg",
+  "iat": 1725176302,
+  "id": "https://refeds.org/sirtfi",
+  "sub": "https://entity.example.org",
+  "exp": 1727768302,
+  "iss": "https://tmi.example.org"
+}
+]]></artwork>
+          </figure>
+      <figure>
+        <preamble>
+          An example of the payload of a delegation JWT
+        </preamble>
+        <name>
+          Trust mark delegation JWT
+        </name>
+            <artwork><![CDATA[
+{
+  "sub": "https://tmi.example.org",
+  "id": "https://refeds.org/sirtfi",
+  "iss": "https://tm_owner.example.org",
+  "iat": 1725176302
+}
+]]></artwork>
 
+      </figure>
+          <figure>
+            <preamble>
+              An example of the header of a delegation JWT
+            </preamble>
+        <name>
+          The header of the Trust mark delegation JWT
+        </name>
+            <artwork><![CDATA[
+{
+  "typ": "trust-mark-delegation+jwt",
+  "alg": "RS256",
+  "kid": "TjNZeEdqdDRPSXpoUlhLOUZjcXNJb2xjci02VGxCMWRkVUUxMGhjNjd0MA"
+}
+            ]]></artwork>
+          </figure>
+        </section>
+      </section>
     <section title="Federation Endpoints" anchor="federation_endpoints">
       <t>
         The federation endpoints of an Entity can be found in the
