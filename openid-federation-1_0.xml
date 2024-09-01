@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="28" month="August" year="2024"/>
+    <date day="31" month="August" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -6704,6 +6704,54 @@ HTTP/1.1 302 Found
 	They are also used in specific kinds of JWTs defined by this specification.
       </t>
 
+      <section anchor="jwksClaim" title='"jwks" (JSON Web Key Set) Claim'>
+	<t>
+	  The <spanx style="verb">jwks</spanx> (JSON Web Key Set) claim
+	  value is a JWK Set, as defined in <xref target="RFC7517"/>.
+	  It is used to convey a set of cryptographic keys.
+	  Use of this claim is OPTIONAL.
+	</t>
+	<t>
+	  For instance, the <spanx style="verb">jwks</spanx> (JSON Web Key Set) claim
+	  might be used to represent a set of signing keys for an application.
+	  This claim is used in this specification in <xref target="entity-statement"/>
+	  to represent the public keys used to sign the Entity Statement.
+	</t>
+      </section>
+
+      <section anchor="metadataClaim" title='"metadata" Claim'>
+	<t>
+	  The <spanx style="verb">metadata</spanx> claim
+	  is used for conveying metadata pertaining to the JWT.
+	  Its value is a JSON object.
+	  The details of the metadata contained are application-specific.
+	  Use of this claim is OPTIONAL.
+	</t>
+	<t>
+	  For instance, the <spanx style="verb">metadata</spanx> claim
+	  might be used to represent a set of endpoint URLs
+	  and algorithm identifiers in an API description.
+	  This claim is used in this specification in <xref target="entity-statement"/>
+	  to represent metadata about the Entity.
+	</t>
+      </section>
+
+      <section anchor="constraintsClaim" title='"constraints" Claim'>
+	<t>
+	  The <spanx style="verb">constraints</spanx> claim
+	  is used for conveying constraints pertaining to the JWT.
+	  Its value is a JSON object.
+	  The details of the constraints contained are application-specific.
+	  Use of this claim is OPTIONAL.
+	</t>
+	<t>
+	  For instance, the <spanx style="verb">constraints</spanx> claim
+	  might be used to impose material thickness limits for a physical object.
+	  This claim is used in this specification in <xref target="entity-statement"/>
+	  to represent constraints on the Trust Chain for the Entity.
+	</t>
+      </section>
+
       <section anchor="critClaim" title='"crit" (Critical) Claim'>
 	<t>
 	  The <spanx style="verb">crit</spanx> (critical) claim
@@ -6778,7 +6826,7 @@ HTTP/1.1 302 Found
 	</t>
       </section>
 
-      <section anchor="delegationClaim" title='"delegation" (Delegation) Claim'>
+      <section anchor="delegationClaim" title='"delegation" Claim'>
 	<t>
 	  The <spanx style="verb">delegation</spanx> claim expresses that
 	  authority is being delegated to the party referenced in the claim value.
@@ -6793,6 +6841,21 @@ HTTP/1.1 302 Found
 	  This claim is used in this specification in <xref target="trust_mark_claims"/>
 	  to represent delegation of the right to issue Trust Marks
 	  with a particular identifier.
+	</t>
+      </section>
+
+      <section anchor="logo_uriClaim" title='"logo_uri" (Logo URI) Claim'>
+	<t>
+	  The <spanx style="verb">logo_uri</spanx> claim
+	  value is a URI that references a logo pertaining to the JWT.
+	  Use of this claim is OPTIONAL.
+	</t>
+	<t>
+	  For instance, the <spanx style="verb">logo_uri</spanx> claim
+	  might be used to represent the location from which to retrieve
+	  the logo of an organization to display in a user interface.
+	  This claim is used in this specification in <xref target="trust_mark_claims"/>
+	  to convey a URL that references a logo for the Entity.
 	</t>
       </section>
     </section>
@@ -7781,32 +7844,48 @@ HTTP/1.1 302 Found
 	    <?rfc subcompact="yes"?>
 	    <list style="symbols">
 	      <t>
-		Claim Name: <spanx style="verb">keys</spanx>
+		Claim Name: <spanx style="verb">jwks</spanx>
 	      </t>
 	      <t>
-		Claim Description: Array of JWK values in the JWK Set
+		Claim Description: JSON Web Key Set
 	      </t>
 	      <t>
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): <xref target="common_metadata"/> of this specification
+		Specification Document(s): <xref target="jwksClaim"/> of this specification
 	      </t>
 	    </list>
 	  </t>
 	  <t>
 	    <list style="symbols">
 	      <t>
-		Claim Name: <spanx style="verb">trust_anchor_id</spanx>
+		Claim Name: <spanx style="verb">metadata</spanx>
 	      </t>
 	      <t>
-		Claim Description: Trust Anchor ID
+		Claim Description: Metadata object
 	      </t>
 	      <t>
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): <xref target="ExplicitRegOP"/> of this specification
+		Specification Document(s): <xref target="metadataClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">constraints</spanx>
+	      </t>
+	      <t>
+		Claim Description: Constraints object
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="constraintsClaim"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -7871,6 +7950,182 @@ HTTP/1.1 302 Found
 	      </t>
 	      <t>
 		Specification Document(s): <xref target="delegationClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">logo_uri</spanx>
+	      </t>
+	      <t>
+		Claim Description: URI referencing a logo
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="logo_uriClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">authority_hints</spanx>
+	      </t>
+	      <t>
+		Claim Description: Authority Hints
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="entity-statement"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">metadata_policy</spanx>
+	      </t>
+	      <t>
+		Claim Description: Metadata Policy object
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="entity-statement"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">metadata_policy_crit</spanx>
+	      </t>
+	      <t>
+		Claim Description: Critical Metadata Policy Operators
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="entity-statement"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_marks</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Marks
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="entity-statement"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_mark_issuers</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Mark Issuers
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="entity-statement"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_mark_owners</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Mark Owners
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="entity-statement"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">source_endpoint</spanx>
+	      </t>
+	      <t>
+		Claim Description: Source Endpoint URL
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="entity-statement"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_chain</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Chain
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="trust_chain"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">keys</spanx>
+	      </t>
+	      <t>
+		Claim Description: Array of JWK values in a JWK Set
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="common_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_anchor_id</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Anchor ID
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="ExplicitRegOP"/> of this specification
 	      </t>
 	    </list>
 	  </t>
