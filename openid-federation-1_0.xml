@@ -1602,12 +1602,23 @@
 		<vspace/>
 		OPTIONAL. URL referencing a signed JWT having the Entity's
 		JWK Set document for that Entity Type as its payload.
-		The JWT MUST be signed using a Federation Entity Key.
 		This URL MUST use the <spanx style="verb">https</spanx> scheme.
-		When both signing and encryption keys are made available,
+		The JWT MUST be signed using a Federation Entity Key.
+		A successful response from the URL MUST use the HTTP status code 200
+		with the content type
+		<spanx style="verb">application/jwk-set+jwt</spanx>.
+		When both signing and encryption keys are present,
 		a <spanx style="verb">use</spanx> (public key use) parameter
 		value is REQUIRED for all keys in the referenced JWK Set
 		to indicate each key's intended usage.
+	      </t>
+	      <t>
+		Signed JWK Set JWTs are explicitly typed by setting the
+		<spanx style="verb">typ</spanx> header parameter to
+		<spanx style="verb">jwk-set+jwt</spanx> to prevent
+		cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+		Signed JWK Set JWTs without a <spanx style="verb">typ</spanx> header parameter
+		or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
 	      </t>
 	      <t>
 		The following claims are specified for use in the payload,
@@ -1695,7 +1706,7 @@
 		URL referencing a JWK Set document
 		containing the Entity's keys for that Entity Type.
 		This URL MUST use the <spanx style="verb">https</spanx> scheme.
-		When both signing and encryption keys are made available,
+		When both signing and encryption keys are present,
 		a <spanx style="verb">use</spanx> (public key use) parameter
 		value is REQUIRED for all keys in the referenced JWK Set
 		to indicate each key's intended usage.
@@ -1706,6 +1717,10 @@
 		OPTIONAL.
 		JSON Web Key Set document, passed by value,
 		containing the Entity's keys for that Entity Type.
+		When both signing and encryption keys are present,
+		a <spanx style="verb">use</spanx> (public key use) parameter
+		value is REQUIRED for all keys in the JWK Set
+		to indicate each key's intended usage.
 		This parameter is intended
 		to be used by participants that, for some reason,
 		cannot use the <spanx style="verb">signed_jwks_uri</spanx>
@@ -9402,6 +9417,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Endpoint URLs are not form-urlencoded in JSON metadata parameter values.
+	  </t>
+	  <t>
+	    Fixed #64: Explicitly typed signed JWK Sets.
 	  </t>
 	</list>
       </t>
