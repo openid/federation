@@ -466,6 +466,9 @@
           The Entity Statement is signed using one of the private keys of the issuer
           Entity in the form of a <xref target="RFC7515">JSON Web Signature
           (JWS)</xref>.
+	  Signing algorithms supported by the Entity MAY be declared using the
+	  <spanx style="verb">entity_statement_signing_alg_values_supported</spanx>
+	  Federation Entity metadata parameter defined in <xref target="federation_entity"/>.
           Implementations SHOULD support signature verification with
           the RSA SHA-256 algorithm because OpenID Connect Core
           requires support for it (<spanx style="verb">alg</spanx>
@@ -1219,6 +1222,14 @@
           All Federation Entities MAY publish a
 	      <spanx style="verb">federation_historical_keys_endpoint</spanx>.
 	    </t>
+	    <t hangText="entity_statement_signing_alg_values_supported">
+	      <vspace/>
+	      OPTIONAL.
+	      JSON array containing a list of the JWS signing algorithms
+	      (<spanx style="verb">alg</spanx> values)
+	      supported by the Entity to sign Entity Statements.
+	      If omitted, the default value is <spanx style="verb">["RS256"]</spanx>.
+	    </t>
           </list>
         </t>
 	<t>
@@ -1228,7 +1239,7 @@
 	</t>
         <figure>
 	  <preamble>
-	    The following is a non-normative example of the <spanx style="verb">federation_entity</spanx> Entity Type:
+	    The following is a non-normative example of metadata for the <spanx style="verb">federation_entity</spanx> Entity Type:
 	  </preamble>
           <name>
             Example of <spanx style="verb">federation_entity</spanx> Entity Type
@@ -1241,6 +1252,10 @@
     "https://amanita.caesarea.example.com/federation_list",
   "federation_trust_mark_status_endpoint": "https://amanita.caesarea.example.com/status",
   "federation_trust_mark_list_endpoint": "https://amanita.caesarea.example.com/trust_marked_list",
+  "entity_statement_signing_alg_values_supported": [
+    "ES256",
+    "RS256"
+  ],
   "organization_name": "Ovulo Mushroom",
   "homepage_uri": "https://amanita.caesarea.example.com"
 }
@@ -5247,6 +5262,10 @@ Content-Type: application/json
     "federation_entity": {
       "contacts": ["ops@sunet.se"],
       "federation_fetch_endpoint": "https://sunet.se/openid/fedapi",
+      "entity_statement_signing_alg_values_supported": [
+        "ES256",
+        "ES384"
+      ],
       "homepage_uri": "https://www.sunet.se",
       "organization_name": "SUNET"
     },
@@ -9402,6 +9421,10 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Endpoint URLs are not form-urlencoded in JSON metadata parameter values.
+	  </t>
+	  <t>
+	    Fixed #65: Defined <spanx style="verb">entity_statement_signing_alg_values_supported</spanx>
+	    Federation Entity metadata parameter.
 	  </t>
 	</list>
       </t>
