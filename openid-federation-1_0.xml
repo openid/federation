@@ -461,6 +461,8 @@
           <spanx style="verb">typ</spanx> header parameter to
           <spanx style="verb">entity-statement+jwt</spanx> to prevent
           cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+	  Entity Statements without a <spanx style="verb">typ</spanx> header parameter
+	  or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
         </t>
         <t>
           The Entity Statement is signed using one of the private keys of the issuer
@@ -3256,6 +3258,8 @@
           <spanx style="verb">typ</spanx> header parameter to
           <spanx style="verb">trust-mark+jwt</spanx> to prevent
           cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+	  Trust Marks without a <spanx style="verb">typ</spanx> header parameter
+	  or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
         </t>
 
         <section title="Trust Mark Delegation" anchor="trust_mark_delegation">
@@ -3367,6 +3371,8 @@
             <spanx style="verb">typ</spanx> header parameter to
             <spanx style="verb">trust-mark-delegation+jwt</spanx> to prevent
             cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+	    Trust Mark delegation JWTs without a <spanx style="verb">typ</spanx> header parameter
+	    or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
 	    It is signed with a Federation Entity Key.
           </t>
 	  <t>
@@ -4129,6 +4135,8 @@ Host: openid.sunet.se
             <spanx style="verb">typ</spanx> header parameter to
             <spanx style="verb">resolve-response+jwt</spanx> to prevent
             cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+	    Resolve responses without a <spanx style="verb">typ</spanx> header parameter
+	    or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
 	    It is signed with a Federation Entity Key.
           </t>
 	  <t>
@@ -4704,6 +4712,8 @@ Host: trust-anchor.example.com
             <spanx style="verb">typ</spanx> header parameter to
             <spanx style="verb">jwk-set+jwt</spanx> to prevent
             cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+	    Historical keys JWTs without a <spanx style="verb">typ</spanx> header parameter
+	    or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
 	  </t>
 	  <t>
 	    Historical keys JWTs MUST include the
@@ -9402,6 +9412,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Endpoint URLs are not form-urlencoded in JSON metadata parameter values.
+	  </t>
+	  <t>
+	    Fixed #55: Required validating explicit typing of JWTs.
 	  </t>
 	</list>
       </t>
