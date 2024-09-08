@@ -5631,7 +5631,7 @@ Content-Type: application/json
       </t>
       <t>
         There are two alternative approaches to establish trust between an
-        RP and an OP, which we call Automatic Registration and Explicit Registration.
+        RP and an OP: Automatic Registration and Explicit Registration.
         Members of a federation or a community
         SHOULD agree upon which one to use. While implementations should
         support both methods, deployments MAY choose to use one or the other of them.
@@ -6050,12 +6050,38 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
           </section>
         </section>
 
+	<section title="Successful Authentication Response" anchor="AuthenticationResponse">
+	  <t>
+	    The response to a successful authentication request
+	    when using Automatic Registration is the same as the
+	    successful authentication responses defined in <xref target="OpenID.Core"/>.
+	    In particular, it is a successful OAuth 2.0 authorization response
+	    sent via redirection to the Client's redirection URI.
+	  </t>
+	</section>
+
         <section title="Authentication Error Response" anchor="AuthenticationError">
           <t>
-            If the OP fails to establish trust with the RP, it SHOULD use an
-            appropriate error code and an
-            <spanx style="verb">error_description</spanx>
-            that aids the RP in understanding what is wrong.
+	    The error response to an unsuccessful authentication request
+	    when using Automatic Registration is the same as the
+	    error authentication responses defined in <xref target="OpenID.Core"/>.
+	    In particular, it is an OAuth 2.0 authorization error response
+	    sent via redirection to the Client's redirection URI.
+	  </t>
+	  <t>
+	    However, as in both <xref target="OpenID.Core"/> and <xref target="RFC6749"/>,
+	    if the redirection URI is invalid, redirection MUST NOT be performed,
+	    and instead the Authorization Server SHOULD inform the End-User
+	    of the error in the user interface.
+	    The Authorization Server MAY also choose to do this if it
+	    has reason to believe that the redirection URI might be being used
+	    as a component of an open redirector.
+	  </t>
+	  <t>
+            If the OP fails to establish trust with the RP, it SHOULD use
+            appropriate <spanx style="verb">error</spanx> code and
+            <spanx style="verb">error_description</spanx> values
+            to enable the RP to understand what went wrong.
           </t>
           <t>
             In addition to the error codes contained in the
@@ -9402,6 +9428,10 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Endpoint URLs are not form-urlencoded in JSON metadata parameter values.
+	  </t>
+	  <t>
+	    Fixed #69: Specified more details of successful and error responses
+	    to authentication requests using Automatic Registration.
 	  </t>
 	</list>
       </t>
