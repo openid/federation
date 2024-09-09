@@ -5694,16 +5694,22 @@ Content-Type: application/json
         <section anchor="authn-request" title="Authentication Request">
           <t>
             The Authentication Request is performed by passing a
-            Request Object by value as described in Section 6.1 of
+            signed Request Object by value as described in Section 6.1 of
             <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>
-            or using a pushed authorization request, as described in
+            or using a pushed authorization request with a signed Request Object,
+	    as described in Section 3 of
             <xref target="RFC9126">Pushed Authorization Requests</xref>.
+	  </t>
+	  <t>
+	    Authentication requests not using a signed Request Object
+	    MUST be rejected, since checking the request signature is used
+	    to validate that the Entity making the request controls the RP's keys.
           </t>
 
-          <section title="Using a Request Object" anchor="UsingAuthzRequestObject">
+          <section title="Using a Request Object Directly" anchor="UsingAuthzRequestObject">
 
             <t>
-              When a Request Object is used, the value of the
+              When a Request Object is used directly, the value of the
               <spanx style="verb">request</spanx>
               parameter is a JWT whose Claims are the request parameters
               specified in Section 3.1.2 in
@@ -5971,11 +5977,27 @@ POST /par HTTP/1.1
 Host: op.example.org
 Content-Type: application/x-www-form-urlencoded
 
-redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
-&scope=openid+profile+email+address+phone
-&response_type=code
-&nonce=4LX0mFMxdBjkGmtx7a8WIOnB
-&state=YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ
+request=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5fX0Q5OEl2QjhOYWUta3dBNm5yT3QtaXBU
+        aGpIa0R4MzduaWNETUgzTjQifQ.eyJhdWQiOiJodHRwczovL29wLmV4YW1wbGUub
+        3JnL2F1dGhvcml6YXRpb24tZW5kcG9pbnQiLCJjbGllbnRfaWQiOiJodHRwczovL
+        3JwLmV4YW1wbGUuY29tIiwiZXhwIjoxNTg5Njk5MTYyLCJpYXQiOjE1ODk2OTkxM
+        DIsImlzcyI6Imh0dHBzOi8vcnAuZXhhbXBsZS5jb20iLCJqdGkiOiI0ZDNlYzBmO
+        DFmMTM0ZWU5YTk3ZTA0NDliZTZkMzJiZSIsIm5vbmNlIjoiNExYMG1GTXhkQmprR
+        210eDdhOFdJT25CIiwicmVkaXJlY3RfdXJpIjoiaHR0cHM6Ly9ycC5leGFtcGxlL
+        mNvbS9hdXRoel9jYiIsInJlc3BvbnNlX3R5cGUiOiJjb2RlIiwic2NvcGUiOiJvc
+        GVuaWQgcHJvZmlsZSBlbWFpbCBhZGRyZXNzIHBob25lIiwic3RhdGUiOiJZbVg4U
+        E05STdXYk5vTW5uaWVLS0JpcHRWVzBzUDJPWiIsInRydXN0X2NoYWluIjpbImV5S
+        mhiR2NpT2lKU1V6STFOaUlzSW10cFpDSTZJbXMxTkVoUmRFUnBZbmxIWTNNNVdsZ
+        FdUV1oyYVVobSAuLi4iLCJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SWtKW
+        WRtWnliRzVvUVUxMVNGSXdOMkZxVlcxQlkwSlMgLi4uIiwiZXlKaGJHY2lPaUpTV
+        XpJMU5pSXNJbXRwWkNJNklrSllkbVp5Ykc1b1FVMTFTRkl3TjJGcVZXMUJZMEpTI
+        C4uLiJdfQ.Rv0isfuku0FcRFintgxgKDk7EnhFkpQRg3Tm6N6fCHAHEKFxVVdjy4
+        9JboJtxKcQVZKN9TKn3lEYM1wtF1e9PQrNt4HZ21ICfnzxXuNx1F5SY1GXCU2n2y
+        FVKtz3N0YkAFbTStzy-sPRTXB0stLBJH74RoPiLs2c6dDvrwEv__GA7oGkg2gWt6
+        VDvnfDpnvFi3ZEUR1J8MOeW_VFsayrT9sNjyjsz62Po4LzvQKQMKxq0dNwPNYuuS
+        fUmb-YvmFguxDb3weYl8WS-
+        48EIkP1h4b_KGU9x9n7a1fUOHrS02ATQZmaL8jUil7yLJqx5MiCsPr4pCAXV0doA
+        4pwhs_FIw
 &client_id=https%3A%2F%2Frp.example.com
 &client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3A
   client-assertion-type%3Ajwt-bearer
@@ -6095,9 +6117,10 @@ HTTP/1.1 302 Found
         <section title="Possible Other Uses of Automatic Registration" anchor="AutomaticRegistrationOtherUses">
           <t>
             Automatic Registration is designed to be able to be
-            employed for use cases beyond OpenID Federation.
-            For instance, ecosystems using <xref target="OpenID.Core">OpenID Connect</xref>,
-            <xref target="RFC6749">OAuth 2.0</xref>, and
+            employed for OAuth 2.0 use cases beyond OpenID Connect,
+	    as noted in <xref target="client_registration"/>.
+            For instance, ecosystems using
+            bare <xref target="RFC6749">OAuth 2.0</xref> or
             <xref target="FAPI">FAPI</xref> can utilize Automatic Registration.
           </t>
         </section>
@@ -9402,6 +9425,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Endpoint URLs are not form-urlencoded in JSON metadata parameter values.
+	  </t>
+	  <t>
+	    Fixed #52: Clarified that PAR requests must use Request Objects.
 	  </t>
 	</list>
       </t>
