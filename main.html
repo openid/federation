@@ -5666,23 +5666,14 @@ li > p:last-of-type:only-child {
      When client authentication is not used,
             the request MUST be an HTTP request using the GET method
             to a fetch endpoint with the
-            following query parameters, encoded in
+            following query parameter, encoded in
             <code>application/x-www-form-urlencoded</code> format.
      The request is made to the fetch endpoint of the specified issuer.<a href="#section-8.1.1-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-8.1.1-2">
-            <dt id="section-8.1.1-2.1">iss</dt>
+            <dt id="section-8.1.1-2.1">sub</dt>
             <dd style="margin-left: 1.5em" id="section-8.1.1-2.2">
-                REQUIRED. The Entity Identifier of the issuer
-                from which the Subordinate Statement is to be issued. Because of the
-                normalization of the URL, multiple issuers MAY resolve to a
-                shared fetch endpoint. This parameter makes it explicit exactly
-                from which issuer the Subordinate Statement MUST come.<a href="#section-8.1.1-2.2" class="pilcrow">¶</a>
-</dd>
-            <dd class="break"></dd>
-<dt id="section-8.1.1-2.3">sub</dt>
-            <dd style="margin-left: 1.5em" id="section-8.1.1-2.4">
                 REQUIRED. The Entity Identifier of the subject
-                for which the Subordinate Statement is being requested.<a href="#section-8.1.1-2.4" class="pilcrow">¶</a>
+                for which the Subordinate Statement is being requested.<a href="#section-8.1.1-2.2" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 </dl>
@@ -5697,7 +5688,6 @@ li > p:last-of-type:only-child {
             <div class="alignLeft art-text artwork" id="section-8.1.1-5.1">
 <pre>
 GET /federation_fetch_endpoint?
-iss=https%3A%2F%2Fedugain%2Eorg&amp;
 sub=https%3A%2F%2Fopenid%2Esunet%2Ese HTTP/1.1
 Host: edugain.org
 </pre>
@@ -5721,9 +5711,6 @@ Host: edugain.org
             content type MUST be
             <code>application/json</code>.
      If the fetch endpoint cannot provide data for the requested
-     <code>iss</code> parameter, returning the
-     <code>invalid_issuer</code> error code is RECOMMENDED.
-     If the fetch endpoint cannot provide data for the requested
      <code>sub</code> parameter, returning the
      <code>not_found</code> error code is RECOMMENDED.
      If the <code>sub</code> parameter references the same Entity
@@ -5736,11 +5723,11 @@ Host: edugain.org
             <div class="alignLeft art-text artwork" id="section-8.1.2-3.1">
 <pre>
 {
-  "iss": "https://edugain.org/federation",
+  "iss": "https://edugain.org",
   "sub": "https://openid.sunet.se",
   "exp": 1568397247,
   "iat": 1568310847,
-  "source_endpoint": "https://edugain.org/federation/federation_fetch_endpoint",
+  "source_endpoint": "https://edugain.org/federation_fetch_endpoint",
   "jwks": {
     "keys": [
       {
