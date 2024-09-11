@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="28" month="August" year="2024"/>
+    <date day="11" month="September" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -222,7 +222,7 @@
       </section>
       <section anchor="Terminology" title="Terminology">
         <t>
-          This specification uses the terms
+          This specification uses the terms "Claim",
           "Claim Name", "Claim Value", "JSON Web Token (JWT)", and "JWT Claims Set"
           defined by <xref target="RFC7519">JSON Web Token (JWT)</xref>
           and the terms "OpenID Provider (OP)" and "Relying Party (RP)" defined
@@ -241,7 +241,7 @@
               A globally unique URL that is bound to one Entity.
 	      This URL MUST use the <spanx style="verb">https</spanx> scheme,
 	      have a host component, and MAY contain port and path components.
-	      It MAY NOT contain query parameter or fragment components.
+	      It MUST NOT contain query parameter or fragment components.
             </t>
             <t hangText="Trust Anchor">
               <vspace/>
@@ -535,7 +535,7 @@
               the Entities that have at least one Superior above them,
               such as Leaf and Intermediate Entities.
               Its value MUST contain the Entity Identifiers of
-	      all Immediate Superiors and
+	      its Immediate Superiors and
 	      MUST NOT be the empty array
               <spanx style="verb">[]</spanx>.
               This claim MUST NOT be present in Entity Configurations
@@ -600,7 +600,9 @@
               OPTIONAL.
 	      Entity Statements require that
 	      the <spanx style="verb">crit</spanx> (critical) claim
-	      defined in <xref target="critClaim"/> be understand and processed.
+	      defined in <xref target="critClaim"/> be understood and processed.
+	      Claims in the Entity Statement whose claim names are in the array
+	      that is the value of this claim MUST be understood and processed.
 	      Claims specified for use in Entity Statements by this specification
 	      MUST NOT be included in the list.
             </t>
@@ -1618,7 +1620,8 @@
 		<list style="hanging">
 		  <t hangText="keys">
 		    <vspace/>
-		    REQUIRED. Array of JWK values.
+		    REQUIRED. Array of JWK values in the JWK Set,
+		    as specified in Section 5.1 of <xref target="RFC7517"/>.
 		  </t>
 		  <t hangText="iss">
 		    <vspace/>
@@ -3260,35 +3263,6 @@
           cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
         </t>
 
-        <section title="Trust Mark Delegation" anchor="trust_mark_delegation">
-          <t>
-            There will be cases where the owner of a Trust Mark for some reason
-            may not match the Trust Mark issuer due to administrative or
-            technical requirements. Take as an example vehicle
-            inspection. Vehicle inspection is a procedure mandated by national
-            or subnational governments in many countries, in which a vehicle is
-            inspected to ensure that it conforms to regulations governing
-            safety, emissions, or both. The body that mandates the inspections
-            does not perform them; instead, there may be commercial companies
-            performing the inspections, after which they issue the Trust Mark.
-          </t>
-          <t>
-            The fact that a Trust Mark is issued by a Trust Mark issuer that is
-            not the owner of the Trust Mark is expressed by including
-	    a <spanx style="verb">delegation</spanx> claim in the Trust Mark,
-	    whose value is a signed JWT.
-            The format of the delegation JWT is described below.
-          </t>
-          <t>
-            If the Federation Operator knows that Trust Marks with a
-            certain Trust Mark identifier may legitimately be issued by Trust Mark issuers
-            that are not the owner of the Trust Mark identifier, then information
-            about the owner and the Trust Mark identifier MUST be included in the
-            <spanx style="verb">trust_mark_owners</spanx> claim in
-	    the Trust Anchor's Entity Configuration.
-          </t>
-        </section>
-
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
           <t>
 	    The claims in a Trust Mark are:
@@ -3351,10 +3325,10 @@
 		OPTIONAL.
 		The <spanx style="verb">delegation</spanx> claim
 		defined in <xref target="delegationClaim"/> is used in Trust Marks
-		to provide a signed JWT containing information about
-		a delegation of the right to issue Trust Marks with a particular identifier
-                created by the owner of the Trust Mark
-		that identifies the delegated issuer of the Trust Mark.
+		to delegate the right to issue Trust Marks
+		with a particular identifier.
+		Its value is a Trust Mark delegation JWT,
+		as defined in <xref target="delegation_jwt"/>.
               </t>
             </list>
           </t>
@@ -3363,8 +3337,42 @@
           </t>
         </section>
 
-        <section title="Trust Mark Delegation JWT" anchor="delegation_jwt">
+        <section title="Trust Mark Delegation" anchor="trust_mark_delegation">
           <t>
+            There will be cases where the owner of a Trust Mark for some reason
+            does not match the Trust Mark issuer due to administrative or
+            technical requirements. Take as an example vehicle
+            inspection. Vehicle inspection is a procedure mandated by national
+            or subnational governments in many countries, in which a vehicle is
+            inspected to ensure that it conforms to regulations governing
+            safety, emissions, or both. The body that mandates the inspections
+            does not perform them; instead, there may be commercial companies
+            performing the inspections, after which they issue the Trust Mark.
+          </t>
+          <t>
+            The fact that a Trust Mark is issued by a Trust Mark issuer that is
+            not the owner of the Trust Mark is expressed by including
+	    a <spanx style="verb">delegation</spanx> claim in the Trust Mark,
+	    whose value is a Trust Mark delegation JWT,
+	    as defined in <xref target="delegation_jwt"/>.
+          </t>
+          <t>
+            If the Federation Operator knows that Trust Marks with a
+            certain Trust Mark identifier may legitimately be issued by Trust Mark issuers
+            that are not the owner of the Trust Mark identifier, then information
+            about the owner and the Trust Mark identifier MUST be included in the
+            <spanx style="verb">trust_mark_owners</spanx> claim in
+	    the Trust Anchor's Entity Configuration.
+          </t>
+
+	  <section title="Trust Mark Delegation JWT" anchor="delegation_jwt">
+	    <t>
+	      A Trust Mark Delegation JWT is a signed JWT
+	      issued by a Trust Mark owner
+	      that identifies a legitimate delegated issuer of Trust Marks
+	      with a particular identifier.
+	    </t>
+	  <t>
             A Trust Mark delegation JWT MUST be explicitly typed, by setting the
             <spanx style="verb">typ</spanx> header parameter to
             <spanx style="verb">trust-mark-delegation+jwt</spanx> to prevent
@@ -3416,7 +3424,9 @@
 	  <t>
 	    Additional claims MAY be defined and used in conjunction with the claims above.
 	  </t>
+	  </section>
         </section>
+
         <section title="Validating a Trust Mark" anchor="trust_valid">
           <t>
 	    An Entity SHOULD NOT try to validate a Trust Mark until
@@ -3667,8 +3677,78 @@
 ]]></artwork>
           </figure>
         </section>
-      </section>
+        <section title="Trust Mark Delegation Example" anchor="trust_delegation_example">
+          <figure>
+            <preamble>
+              A non-normative example of a <spanx style="verb">trust_marks</spanx>
+	          claim in the JWT Claims Set for an Entity Configuration in which the
+              Trust Mark is issued by an Entity that issues Trust Marks on behalf of
+              another Entity.
+              The fact that a Trust Mark is issued by a Trust Mark issuer that is not
+              the owner of the Trust Mark is expressed by including a
+              <spanx style="verb">delegation</spanx> claim
+              in the Trust Mark, whose value is a signed JWT.
+            </preamble>
+	    <name>
+	      Example of a Trust Mark using delegation. Only the JWT Claims Set of the
+          Trust Mark is shown.
+	    </name>
+            <artwork><![CDATA[
+{
+  "delegation":
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IlpHdEtNVzVKVEZVeFVWOWZWSG90VTNNd1pIa
+     FlXbU5qY2pselIydFpTaTFMYzBKQ1IzcGtVRzlyYXcifQ.eyJzdWIiOiAiaHR0cHM
+     6Ly90bWkuZXhhbXBsZS5vcmciLCAiaWQiOiAiaHR0cHM6Ly9yZWZlZHMub3JnL3Np
+     cnRmaSIsICJpc3MiOiAiaHR0cHM6Ly90bV9vd25lci5leGFtcGxlLm9yZyIsICJpY
+     XQiOiAxNzI1MTc2MzAyfQ.MTPri3aSN4vxUL_yzZ16He2UsNAWE6u9u59oRl-u8kq
+     JFY95UZZxsZrCeSjLDJAclQmDfe2xHdV-UGI-zOu3wkeCW-AuIH6f8J-e_4pSHLzT
+     caZd8PvCbab2bZuQes5FYQ6xhpAQWPkry0TtHic5iN-0CZ5a1s1r3YCbj72_kicMz
+     F7WlLkMVgXDIA5TwQNuAwWavhh2c1faVYEV56uG-n_-bekIb3br6uuPtlMpRVUkoi
+     eKpwDcGxyJct-g0H436gvIm7lyKfvi0SmKxKK0AbL48-yRi1LSOXLx_60alAGHzQ-
+     XlnuREVu8VWgIPHelsyPHJPc6hQDuchyu52Nupg",
+  "iat": 1725176302,
+  "id": "https://refeds.org/sirtfi",
+  "sub": "https://entity.example.org",
+  "exp": 1727768302,
+  "iss": "https://tmi.example.org"
+}
+]]></artwork>
+          </figure>
+      <figure>
+        <preamble>
+          JWT Claims Set of the Trust Mark delegation JWT in the "delegation" claim above
+        </preamble>
+        <name>
+          Trust Mark delegation JWT Claim Set
+        </name>
+            <artwork><![CDATA[
+{
+  "sub": "https://tmi.example.org",
+  "id": "https://refeds.org/sirtfi",
+  "iss": "https://tm_owner.example.org",
+  "iat": 1725176302
+}
+]]></artwork>
 
+      </figure>
+          <figure>
+            <preamble>
+              JWS Header Parameters for the Trust Mark delegation JWT in
+              the "delegation" claim above
+            </preamble>
+        <name>
+          Trust Mark delegation JWT JWS Header Parameters
+        </name>
+            <artwork><![CDATA[
+{
+  "typ": "trust-mark-delegation+jwt",
+  "alg": "RS256",
+  "kid": "TjNZeEdqdDRPSXpoUlhLOUZjcXNJb2xjci02VGxCMWRkVUUxMGhjNjd0MA"
+}
+            ]]></artwork>
+          </figure>
+        </section>
+      </section>
     <section title="Federation Endpoints" anchor="federation_endpoints">
       <t>
         The federation endpoints of an Entity can be found in the
@@ -3716,20 +3796,12 @@
 	    When client authentication is not used,
             the request MUST be an HTTP request using the GET method
             to a fetch endpoint with the
-            following query parameters, encoded in
+            following query parameter, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
 	    The request is made to the fetch endpoint of the specified issuer.
           </t>
           <t>
             <list style="hanging">
-              <t hangText="iss">
-                <vspace/>
-                REQUIRED. The Entity Identifier of the issuer
-                from which the Subordinate Statement is to be issued. Because of the
-                normalization of the URL, multiple issuers MAY resolve to a
-                shared fetch endpoint. This parameter makes it explicit exactly
-                from which issuer the Subordinate Statement MUST come.
-              </t>
               <t hangText="sub">
                 <vspace/>
                 REQUIRED. The Entity Identifier of the subject
@@ -3752,7 +3824,6 @@
             </name>
             <artwork><![CDATA[
 GET /federation_fetch_endpoint?
-iss=https%3A%2F%2Fedugain%2Eorg&
 sub=https%3A%2F%2Fopenid%2Esunet%2Ese HTTP/1.1
 Host: edugain.org
 ]]></artwork>
@@ -3768,9 +3839,6 @@ Host: edugain.org
             If it is a negative response, it will be a JSON object and the
             content type MUST be
             <spanx style="verb">application/json</spanx>.
-	    If the fetch endpoint cannot provide data for the requested
-	    <spanx style="verb">iss</spanx> parameter, returning the
-	    <spanx style="verb">invalid_issuer</spanx> error code is RECOMMENDED.
 	    If the fetch endpoint cannot provide data for the requested
 	    <spanx style="verb">sub</spanx> parameter, returning the
 	    <spanx style="verb">not_found</spanx> error code is RECOMMENDED.
@@ -3788,11 +3856,11 @@ Host: edugain.org
             </name>
             <artwork><![CDATA[
 {
-  "iss": "https://edugain.org/federation",
+  "iss": "https://edugain.org",
   "sub": "https://openid.sunet.se",
   "exp": 1568397247,
   "iat": 1568310847,
-  "source_endpoint": "https://edugain.org/federation/federation_fetch_endpoint",
+  "source_endpoint": "https://edugain.org/federation_fetch_endpoint",
   "jwks": {
     "keys": [
       {
@@ -4042,7 +4110,7 @@ Content-Type: application/json
         </section>
       </section>
 
-      <section title="Resolve Entity Statement" anchor="resolve">
+      <section title="Resolve Entity" anchor="resolve">
         <t>
           An Entity MAY use a resolve endpoint to fetch
           resolved metadata and Trust Marks for an Entity.
@@ -5171,8 +5239,6 @@ Content-Type: application/json
       <t>
 	The Entity Configuration of every Federation Entity is published
 	at its configuration endpoint.
-	This endpoint uses a well-known URI <xref target="RFC8615"/>
-	with the suffix <spanx style="verb">openid-federation</spanx>.
 	Its location is determined by concatenating the string
 	<spanx style="verb">/.well-known/openid-federation</spanx>
 	to the Entity Identifier
@@ -5321,6 +5387,13 @@ Content-Type: application/json
         After that, Party A MUST validate the Trust Chains independently,
         and if there are multiple valid Trust Chains and if the
         application demands it, choose one to use.
+      </t>
+
+      <t>
+        To delegate the Trust Chain evaluation to a trusted third party,
+        the Entity (Party A) that wants to establish trust with
+        another Entity (Party B) MAY use
+        a resolve endpoint, as defined in <xref target="resolve"/>.
       </t>
 
       <section anchor="fetching-es"
@@ -5475,7 +5548,7 @@ Content-Type: application/json
               For each j = 0,...,i-1, verify that ES[j]["iss"] == ES[j+1]["sub"].
             </t>
             <t>
-              For each j = 0,...,i-1, verify the signature of ES[j] with a public
+              For each j = 0,...,i-1, verify that the signature of ES[j] validates with a public
               key in ES[j+1]["jwks"].
             </t>
             <t>
@@ -6696,6 +6769,54 @@ HTTP/1.1 302 Found
 	They are also used in specific kinds of JWTs defined by this specification.
       </t>
 
+      <section anchor="jwksClaim" title='"jwks" (JSON Web Key Set) Claim'>
+	<t>
+	  The <spanx style="verb">jwks</spanx> (JSON Web Key Set) claim
+	  value is a JWK Set, as defined in <xref target="RFC7517"/>.
+	  It is used to convey a set of cryptographic keys.
+	  Use of this claim is OPTIONAL.
+	</t>
+	<t>
+	  For instance, the <spanx style="verb">jwks</spanx> (JSON Web Key Set) claim
+	  might be used to represent a set of signing keys for an application.
+	  This claim is used in this specification in <xref target="entity-statement"/>
+	  to represent the public keys used to sign the Entity Statement.
+	</t>
+      </section>
+
+      <section anchor="metadataClaim" title='"metadata" Claim'>
+	<t>
+	  The <spanx style="verb">metadata</spanx> claim
+	  is used for conveying metadata pertaining to the JWT.
+	  Its value is a JSON object.
+	  The details of the metadata contained are application-specific.
+	  Use of this claim is OPTIONAL.
+	</t>
+	<t>
+	  For instance, the <spanx style="verb">metadata</spanx> claim
+	  might be used to represent a set of endpoint URLs
+	  and algorithm identifiers in an API description.
+	  This claim is used in this specification in <xref target="entity-statement"/>
+	  to represent metadata about the Entity.
+	</t>
+      </section>
+
+      <section anchor="constraintsClaim" title='"constraints" Claim'>
+	<t>
+	  The <spanx style="verb">constraints</spanx> claim
+	  is used for conveying constraints pertaining to the JWT.
+	  Its value is a JSON object.
+	  The details of the constraints contained are application-specific.
+	  Use of this claim is OPTIONAL.
+	</t>
+	<t>
+	  For instance, the <spanx style="verb">constraints</spanx> claim
+	  might be used to impose material thickness limits for a physical object.
+	  This claim is used in this specification in <xref target="entity-statement"/>
+	  to represent constraints on the Trust Chain for the Entity.
+	</t>
+      </section>
+
       <section anchor="critClaim" title='"crit" (Critical) Claim'>
 	<t>
 	  The <spanx style="verb">crit</spanx> (critical) claim
@@ -6720,41 +6841,86 @@ HTTP/1.1 302 Found
 	  as the <spanx style="verb">crit</spanx> value.
 	  Use of this claim is OPTIONAL.
 	</t>
+	<t>
+	  This claim is used in this specification in <xref target="entity-statement"/>
+	  to identify claims not defined by this specification
+	  that MUST be understood and processed
+	  when used in Entity Statements.
+	</t>
       </section>
 
       <section anchor="idClaim" title='"id" (Identifier) Claim'>
 	<t>
 	  The <spanx style="verb">id</spanx> (identifier) claim
-	  provides an identifier for a property of the JWT.
-	  Like the <spanx style="verb">sub</spanx> (subject) claim,
-	  the processing of this claim is generally application specific.
+	  is used for conveying an identifier that is a property of the JWT.
 	  The <spanx style="verb">id</spanx> value is a case-sensitive string
 	  containing a StringOrURI value.
 	  Use of this claim is OPTIONAL.
+	</t>
+	<t>
+	  For instance, an enterprise application might use
+	  the <spanx style="verb">id</spanx> (identifier) claim
+	  to convey an employee ID value.
+	  Note that this is different than
+	  the <spanx style="verb">jti</spanx> (JWT ID) claim,
+	  which contains a unique identifier for the individual JWT itself.
+	  This claim is used in this specification in <xref target="trust_mark_claims"/>
+	  to provide the identifier of the Trust Mark.
 	</t>
       </section>
 
       <section anchor="refClaim" title='"ref" (Reference) Claim'>
 	<t>
 	  The <spanx style="verb">ref</spanx> (reference) claim
-	  provides a URI for information pertaining to the JWT.
-	  Like the <spanx style="verb">sub</spanx> (subject) claim,
-	  the processing of this claim is generally application specific.
+	  is used for conveying the URI for a resource pertaining to the JWT.
+	  It plays a similar role in a JWT as
+	  the <spanx style="verb">href</spanx> property does in HTML.
+	  The nature of the content at the referenced resource
+	  is generally application specific.
 	  The <spanx style="verb">ref</spanx> value is a case-sensitive string
 	  containing a URI value.
 	  Use of this claim is OPTIONAL.
 	</t>
+	<t>
+	  For instance, a JWT referring to a contract between two parties might use
+	  the <spanx style="verb">ref</spanx> (reference) claim
+	  to refer to a resource at which the contract terms can be read.
+	  This claim is used in this specification in <xref target="trust_mark_claims"/>
+	  to provide a URL referring to human-readable information
+	  about the issuance of the Trust Mark.
+	</t>
       </section>
 
-      <section anchor="delegationClaim" title='"delegation" (Delegation) Claim'>
+      <section anchor="delegationClaim" title='"delegation" Claim'>
 	<t>
-	  The <spanx style="verb">delegation</spanx> claim
-	  expresses a delegation relationship.
-	  Like the <spanx style="verb">sub</spanx> (subject) claim,
-	  the processing of this claim is generally application specific.
+	  The <spanx style="verb">delegation</spanx> claim expresses that
+	  authority is being delegated to the party referenced in the claim value.
 	  The <spanx style="verb">delegation</spanx> value is a case-sensitive string
 	  containing a StringOrURI value.
 	  Use of this claim is OPTIONAL.
+	</t>
+	<t>
+	  For instance, the <spanx style="verb">delegation</spanx> claim
+	  might be used to express that the referenced party may sign
+	  a legal document on behalf of the subject.
+	  This claim is used in this specification in <xref target="trust_mark_claims"/>
+	  to represent delegation of the right to issue Trust Marks
+	  with a particular identifier.
+	</t>
+      </section>
+
+      <section anchor="logo_uriClaim" title='"logo_uri" (Logo URI) Claim'>
+	<t>
+	  The <spanx style="verb">logo_uri</spanx> claim
+	  value is a URI that references a logo pertaining to the JWT.
+	  Use of this claim is OPTIONAL.
+	</t>
+	<t>
+	  For instance, the <spanx style="verb">logo_uri</spanx> claim
+	  might be used to represent the location from which to retrieve
+	  the logo of an organization to display in a user interface.
+	  This claim is used in this specification in <xref target="trust_mark_claims"/>
+	  to convey a URL that references a logo for the Entity.
 	</t>
       </section>
     </section>
@@ -7733,7 +7899,7 @@ HTTP/1.1 302 Found
 
       <section anchor="ClaimsRegistry" title="JSON Web Token Claims Registration">
 	<t>
-	  This specification registers the following claim in
+	  This specification registers the following claims in
 	  the IANA "JSON Web Token Claims" registry <xref target="IANA.JWT.Claims"/>
 	  established by <xref target="RFC7519"/>.
 	</t>
@@ -7743,32 +7909,48 @@ HTTP/1.1 302 Found
 	    <?rfc subcompact="yes"?>
 	    <list style="symbols">
 	      <t>
-		Claim Name: <spanx style="verb">keys</spanx>
+		Claim Name: <spanx style="verb">jwks</spanx>
 	      </t>
 	      <t>
-		Claim Description: Array of JWK values, as defined in RFC 7517
+		Claim Description: JSON Web Key Set
 	      </t>
 	      <t>
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): <xref target="common_metadata"/> of this specification
+		Specification Document(s): <xref target="jwksClaim"/> of this specification
 	      </t>
 	    </list>
 	  </t>
 	  <t>
 	    <list style="symbols">
 	      <t>
-		Claim Name: <spanx style="verb">trust_anchor_id</spanx>
+		Claim Name: <spanx style="verb">metadata</spanx>
 	      </t>
 	      <t>
-		Claim Description: Trust Anchor ID
+		Claim Description: Metadata object
 	      </t>
 	      <t>
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): <xref target="ExplicitRegOP"/> of this specification
+		Specification Document(s): <xref target="metadataClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">constraints</spanx>
+	      </t>
+	      <t>
+		Claim Description: Constraints object
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="constraintsClaim"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -7833,6 +8015,182 @@ HTTP/1.1 302 Found
 	      </t>
 	      <t>
 		Specification Document(s): <xref target="delegationClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">logo_uri</spanx>
+	      </t>
+	      <t>
+		Claim Description: URI referencing a logo
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="logo_uriClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">authority_hints</spanx>
+	      </t>
+	      <t>
+		Claim Description: Authority Hints
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="entity-statement"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">metadata_policy</spanx>
+	      </t>
+	      <t>
+		Claim Description: Metadata Policy object
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="entity-statement"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">metadata_policy_crit</spanx>
+	      </t>
+	      <t>
+		Claim Description: Critical Metadata Policy Operators
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="entity-statement"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_marks</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Marks
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="entity-statement"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_mark_issuers</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Mark Issuers
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="entity-statement"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_mark_owners</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Mark Owners
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="entity-statement"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">source_endpoint</spanx>
+	      </t>
+	      <t>
+		Claim Description: Source Endpoint URL
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="entity-statement"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_chain</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Chain
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="trust_chain"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">keys</spanx>
+	      </t>
+	      <t>
+		Claim Description: Array of JWK values in a JWK Set
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="common_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_anchor_id</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Anchor ID
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="ExplicitRegOP"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -7986,7 +8344,6 @@ HTTP/1.1 302 Found
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7638.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8414.xml"/>
-      <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8615.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8705.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9126.xml"/>
 
@@ -9368,8 +9725,8 @@ Host: op.umu.se
         Andrii Deinega,
         Erick Domingues,
         Heather Flanagan,
-        Joseph Heenan,
         Samuel Gulliksson,
+        Joseph Heenan,
 	Pedram Hosseyni,
         Takahiko Kawasaki,
         Torsten Lodderstedt,
@@ -9405,6 +9762,22 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Endpoint URLs are not form-urlencoded in JSON metadata parameter values.
+	  </t>
+	  <t>
+	    Improved descriptions of the JWT Claims being registered,
+	    per feedback from the IANA Designated Expert.
+	  </t>
+	  <t>
+	    Fixes #45: Tightened Trust Chain signature validation wording.
+	  </t>
+	  <t>
+	    Fixed #40: Changed section name from "Resolve Entity Statement" to "Resolve Entity".
+	  </t>
+	  <t>
+	    Fixed #39: Removed <spanx style="verb">iss</spanx> parameter from fetch endpoint.
+	  </t>
+	  <t>
+	    Fixed #54: MAY NOT -> MUST NOT.
 	  </t>
 	  <t>
 	    Fixed #58: Require <spanx style="verb">authority_hints</spanx> value

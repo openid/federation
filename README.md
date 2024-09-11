@@ -15,17 +15,18 @@ OpenID Federation 1.0 is:
 
 News about OpenID Federation is available at the OpenID Foundation website [here](https://openid.net/tag/federation/).
 
-The latest official build of the specification is available at [https://openid.net/specs/openid-federation-1_0.html](https://openid.net/specs/openid-federation-1_0.html).
+The latest released draft of the specification is available at [https://openid.net/specs/openid-federation-1_0.html](https://openid.net/specs/openid-federation-1_0.html).
+The most recent Implementer's Draft is available at [https://openid.net/specs/openid-federation-1_0-ID4.html](https://openid.net/specs/openid-federation-1_0-ID4.html).
 
 ## Builds
 
-Previews for each branch of this project are automatically built and published at the URL https://openid.github.io/federation/$branchname.html.
-You can view the latest editor's copy at [https://openid.github.io/federation/main.html](https://openid.github.io/federation/main.html).
+You can view the latest editors' draft at [https://openid.github.io/federation/main.html](https://openid.github.io/federation/main.html).
 
-Previews for branches associated with pending Pull Requests are also deployed and accessible using the same pattern.
+Previews for each branch of this project are automatically built and published at the URL https://openid.github.io/federation/$branchname.html.
+Previews for branches associated with pending Pull Requests are accessible using this pattern.
 
 ## Getting Started
-To get started with the OpenID Federation specification, clone this repository and review the documentation provided in the root directory in the form of xml files.
+To get started working on the OpenID Federation specification, clone this repository and review the documentation provided in the root directory.
 
 ````bash
 git clone https://github.com/openid/federation.git
