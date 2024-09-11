@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="28" month="August" year="2024"/>
+    <date day="10" month="September" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -241,7 +241,7 @@
               A globally unique URL that is bound to one Entity.
 	      This URL MUST use the <spanx style="verb">https</spanx> scheme,
 	      have a host component, and MAY contain port and path components.
-	      It MAY NOT contain query parameter or fragment components.
+	      It MUST NOT contain query parameter or fragment components.
             </t>
             <t hangText="Trust Anchor">
               <vspace/>
@@ -3263,7 +3263,7 @@
         <section title="Trust Mark Delegation" anchor="trust_mark_delegation">
           <t>
             There will be cases where the owner of a Trust Mark for some reason
-            may not match the Trust Mark issuer due to administrative or
+            does not match the Trust Mark issuer due to administrative or
             technical requirements. Take as an example vehicle
             inspection. Vehicle inspection is a procedure mandated by national
             or subnational governments in many countries, in which a vehicle is
@@ -3667,8 +3667,78 @@
 ]]></artwork>
           </figure>
         </section>
-      </section>
+        <section title="Trust Mark Delegation Example" anchor="trust_delegation_example">
+          <figure>
+            <preamble>
+              A non-normative example of a <spanx style="verb">trust_marks</spanx>
+	          claim in the JWT Claims Set for an Entity Configuration in which the
+              Trust Mark is issued by an Entity that issues Trust Marks on behalf of
+              another Entity.
+              The fact that a Trust Mark is issued by a Trust Mark issuer that is not
+              the owner of the Trust Mark is expressed by including a
+              <spanx style="verb">delegation</spanx> claim
+              in the Trust Mark, whose value is a signed JWT.
+            </preamble>
+	    <name>
+	      Example of a Trust Mark using delegation. Only the JWT Claims Set of the
+          Trust Mark is shown.
+	    </name>
+            <artwork><![CDATA[
+{
+  "delegation":
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IlpHdEtNVzVKVEZVeFVWOWZWSG90VTNNd1pIa
+     FlXbU5qY2pselIydFpTaTFMYzBKQ1IzcGtVRzlyYXcifQ.eyJzdWIiOiAiaHR0cHM
+     6Ly90bWkuZXhhbXBsZS5vcmciLCAiaWQiOiAiaHR0cHM6Ly9yZWZlZHMub3JnL3Np
+     cnRmaSIsICJpc3MiOiAiaHR0cHM6Ly90bV9vd25lci5leGFtcGxlLm9yZyIsICJpY
+     XQiOiAxNzI1MTc2MzAyfQ.MTPri3aSN4vxUL_yzZ16He2UsNAWE6u9u59oRl-u8kq
+     JFY95UZZxsZrCeSjLDJAclQmDfe2xHdV-UGI-zOu3wkeCW-AuIH6f8J-e_4pSHLzT
+     caZd8PvCbab2bZuQes5FYQ6xhpAQWPkry0TtHic5iN-0CZ5a1s1r3YCbj72_kicMz
+     F7WlLkMVgXDIA5TwQNuAwWavhh2c1faVYEV56uG-n_-bekIb3br6uuPtlMpRVUkoi
+     eKpwDcGxyJct-g0H436gvIm7lyKfvi0SmKxKK0AbL48-yRi1LSOXLx_60alAGHzQ-
+     XlnuREVu8VWgIPHelsyPHJPc6hQDuchyu52Nupg",
+  "iat": 1725176302,
+  "id": "https://refeds.org/sirtfi",
+  "sub": "https://entity.example.org",
+  "exp": 1727768302,
+  "iss": "https://tmi.example.org"
+}
+]]></artwork>
+          </figure>
+      <figure>
+        <preamble>
+          JWT Claims Set of the Trust Mark delegation JWT in the "delegation" claim above
+        </preamble>
+        <name>
+          Trust Mark delegation JWT Claim Set
+        </name>
+            <artwork><![CDATA[
+{
+  "sub": "https://tmi.example.org",
+  "id": "https://refeds.org/sirtfi",
+  "iss": "https://tm_owner.example.org",
+  "iat": 1725176302
+}
+]]></artwork>
 
+      </figure>
+          <figure>
+            <preamble>
+              JWS Header Parameters for the Trust Mark delegation JWT in
+              the "delegation" claim above
+            </preamble>
+        <name>
+          Trust Mark delegation JWT JWS Header Parameters
+        </name>
+            <artwork><![CDATA[
+{
+  "typ": "trust-mark-delegation+jwt",
+  "alg": "RS256",
+  "kid": "TjNZeEdqdDRPSXpoUlhLOUZjcXNJb2xjci02VGxCMWRkVUUxMGhjNjd0MA"
+}
+            ]]></artwork>
+          </figure>
+        </section>
+      </section>
     <section title="Federation Endpoints" anchor="federation_endpoints">
       <t>
         The federation endpoints of an Entity can be found in the
@@ -3716,20 +3786,12 @@
 	    When client authentication is not used,
             the request MUST be an HTTP request using the GET method
             to a fetch endpoint with the
-            following query parameters, encoded in
+            following query parameter, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
 	    The request is made to the fetch endpoint of the specified issuer.
           </t>
           <t>
             <list style="hanging">
-              <t hangText="iss">
-                <vspace/>
-                REQUIRED. The Entity Identifier of the issuer
-                from which the Subordinate Statement is to be issued. Because of the
-                normalization of the URL, multiple issuers MAY resolve to a
-                shared fetch endpoint. This parameter makes it explicit exactly
-                from which issuer the Subordinate Statement MUST come.
-              </t>
               <t hangText="sub">
                 <vspace/>
                 REQUIRED. The Entity Identifier of the subject
@@ -3752,7 +3814,6 @@
             </name>
             <artwork><![CDATA[
 GET /federation_fetch_endpoint?
-iss=https%3A%2F%2Fedugain%2Eorg&
 sub=https%3A%2F%2Fopenid%2Esunet%2Ese HTTP/1.1
 Host: edugain.org
 ]]></artwork>
@@ -3768,9 +3829,6 @@ Host: edugain.org
             If it is a negative response, it will be a JSON object and the
             content type MUST be
             <spanx style="verb">application/json</spanx>.
-	    If the fetch endpoint cannot provide data for the requested
-	    <spanx style="verb">iss</spanx> parameter, returning the
-	    <spanx style="verb">invalid_issuer</spanx> error code is RECOMMENDED.
 	    If the fetch endpoint cannot provide data for the requested
 	    <spanx style="verb">sub</spanx> parameter, returning the
 	    <spanx style="verb">not_found</spanx> error code is RECOMMENDED.
@@ -3788,11 +3846,11 @@ Host: edugain.org
             </name>
             <artwork><![CDATA[
 {
-  "iss": "https://edugain.org/federation",
+  "iss": "https://edugain.org",
   "sub": "https://openid.sunet.se",
   "exp": 1568397247,
   "iat": 1568310847,
-  "source_endpoint": "https://edugain.org/federation/federation_fetch_endpoint",
+  "source_endpoint": "https://edugain.org/federation_fetch_endpoint",
   "jwks": {
     "keys": [
       {
@@ -4042,7 +4100,7 @@ Content-Type: application/json
         </section>
       </section>
 
-      <section title="Resolve Entity Statement" anchor="resolve">
+      <section title="Resolve Entity" anchor="resolve">
         <t>
           An Entity MAY use a resolve endpoint to fetch
           resolved metadata and Trust Marks for an Entity.
@@ -5171,8 +5229,6 @@ Content-Type: application/json
       <t>
 	The Entity Configuration of every Federation Entity is published
 	at its configuration endpoint.
-	This endpoint uses a well-known URI <xref target="RFC8615"/>
-	with the suffix <spanx style="verb">openid-federation</spanx>.
 	Its location is determined by concatenating the string
 	<spanx style="verb">/.well-known/openid-federation</spanx>
 	to the Entity Identifier
@@ -5321,6 +5377,13 @@ Content-Type: application/json
         After that, Party A MUST validate the Trust Chains independently,
         and if there are multiple valid Trust Chains and if the
         application demands it, choose one to use.
+      </t>
+
+      <t>
+        To delegate the Trust Chain evaluation to a trusted third party,
+        the Entity (Party A) that wants to establish trust with
+        another Entity (Party B) MAY use
+        a resolve endpoint, as defined in <xref target="resolve"/>.
       </t>
 
       <section anchor="fetching-es"
@@ -5475,7 +5538,7 @@ Content-Type: application/json
               For each j = 0,...,i-1, verify that ES[j]["iss"] == ES[j+1]["sub"].
             </t>
             <t>
-              For each j = 0,...,i-1, verify the signature of ES[j] with a public
+              For each j = 0,...,i-1, verify that the signature of ES[j] validates with a public
               key in ES[j+1]["jwks"].
             </t>
             <t>
@@ -7986,7 +8049,6 @@ HTTP/1.1 302 Found
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7638.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8414.xml"/>
-      <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8615.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8705.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9126.xml"/>
 
@@ -9362,22 +9424,22 @@ Host: op.umu.se
         The authors wish to acknowledge the contributions of the following
         individuals and organizations to this specification:
         Pasquale Barbaro,
-     	Brian Campbell,
+       	Brian Campbell,
         David Chadwick,
         Michele D'Amico,
         Andrii Deinega,
         Erick Domingues,
         Heather Flanagan,
-        Joseph Heenan,
         Samuel Gulliksson,
-	Pedram Hosseyni,
+	      Pedram Hosseyni,
+        Joseph Heenan,
         Takahiko Kawasaki,
         Torsten Lodderstedt,
         Francesco Marino,
-	John Melati,
-	Alexey Melnikov,
+        John Melati,
+        Alexey Melnikov,
         Roberto Polli,
-	Justin Richer,
+        Justin Richer,
         Jouke Roorda,
         Nat Sakimura,
         Mischa Sallé,
@@ -9387,7 +9449,7 @@ Host: op.umu.se
         Michael Schwartz,
         Giada Sciarretta,
         Amir Sharif,
-	Sean Turner,
+        Sean Turner,
         Kristina Yasuda,
         and
         the JRA3T3 task force of GEANT4-2.
@@ -9409,6 +9471,17 @@ Host: op.umu.se
 	  <t>
 	    Fixed #58: Require <spanx style="verb">authority_hints</spanx> value
 	    to contain the Entity Identifiers of all Immediate Superiors.
+	  </t>
+	  <t>
+	    Fixes #45: Tightened Trust Chain signature validation wording.
+	  </t>
+	  <t>
+	    Fixed #40: Changed section name from "Resolve Entity Statement" to "Resolve Entity".
+	  </t>
+	    Fixed #39: Removed <spanx style="verb">iss</spanx> parameter from fetch endpoint.
+	  </t>
+	  <t>
+	    Fixed #54: MAY NOT -> MUST NOT.
 	  </t>
 	</list>
       </t>
