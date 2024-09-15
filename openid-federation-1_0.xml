@@ -212,13 +212,20 @@
         </artwork>
       </figure>
 
-      <section anchor="requirements-language" title="Requirements Language">
+      <section anchor="requirements-language" title="Requirements Notation and Conventions">
         <t>
           The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
           "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this
           document are to be interpreted as described in
           BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/>.
         </t>
+	<t>
+	  All uses of JSON Web Signature (JWS) <xref target="RFC7515"/>
+	  and JSON Web Encryption (JWE) <xref target="RFC7516"/>
+	  data structures in this specification utilize
+	  the JWS Compact Serialization or the JWE Compact Serialization;
+	  the JWS JSON Serialization and the JWE JSON Serialization are not used.
+	</t>
       </section>
       <section anchor="Terminology" title="Terminology">
         <t>
@@ -461,6 +468,8 @@
           <spanx style="verb">typ</spanx> header parameter to
           <spanx style="verb">entity-statement+jwt</spanx> to prevent
           cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+	  Entity Statements without a <spanx style="verb">typ</spanx> header parameter
+	  or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
         </t>
         <t>
           The Entity Statement is signed using one of the private keys of the issuer
@@ -1522,7 +1531,11 @@
                 "tls_client_auth",
                 "self_signed_tls_client_auth"
             ]
-        }
+         },
+         "request_authentication_signing_alg_values_supported": [
+            "ES256",
+            "RS256"
+         ]
       }
    },
    "authority_hints":[
@@ -3261,6 +3274,8 @@
           <spanx style="verb">typ</spanx> header parameter to
           <spanx style="verb">trust-mark+jwt</spanx> to prevent
           cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+	  Trust Marks without a <spanx style="verb">typ</spanx> header parameter
+	  or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
         </t>
 
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
@@ -3377,6 +3392,8 @@
             <spanx style="verb">typ</spanx> header parameter to
             <spanx style="verb">trust-mark-delegation+jwt</spanx> to prevent
             cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+	    Trust Mark delegation JWTs without a <spanx style="verb">typ</spanx> header parameter
+	    or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
 	    It is signed with a Federation Entity Key.
           </t>
 	  <t>
@@ -4161,6 +4178,11 @@ Content-Type: application/json
                 Its value is an Entity Type Identifier, as specified in
                 <xref target="entity_types"/>.
                 If this parameter is not present, then all Entity Types are returned.
+		<vspace blankLine="1"/>
+		The <spanx style="verb">type</spanx> request parameter
+		MAY occur multiple times, in which case, data for each Entity Type
+		whose Entity Type Identifier is a <spanx style="verb">type</spanx>
+		parameter value is returned.
               </t>
             </list>
           </t>
@@ -4199,6 +4221,8 @@ Host: openid.sunet.se
             <spanx style="verb">typ</spanx> header parameter to
             <spanx style="verb">resolve-response+jwt</spanx> to prevent
             cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+	    Resolve responses without a <spanx style="verb">typ</spanx> header parameter
+	    or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
 	    It is signed with a Federation Entity Key.
           </t>
 	  <t>
@@ -4774,6 +4798,8 @@ Host: trust-anchor.example.com
             <spanx style="verb">typ</spanx> header parameter to
             <spanx style="verb">jwk-set+jwt</spanx> to prevent
             cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+	    Historical keys JWTs without a <spanx style="verb">typ</spanx> header parameter
+	    or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
 	  </t>
 	  <t>
 	    Historical keys JWTs MUST include the
@@ -5799,9 +5825,8 @@ Content-Type: application/json
                 </t>
                 <t hangText="sub">
                   <vspace/>
-                  MUST NOT be present. This, together with the value of
-                  <spanx style="verb">aud</spanx>,
-                  prevent reuse of the statement for
+                  MUST NOT be present.
+                  This prevents reuse of the statement for
                   <spanx style="verb">private_key_jwt</spanx>
                   client authentication.
                 </t>
@@ -9718,6 +9743,7 @@ Host: op.umu.se
       <t>
         The authors wish to acknowledge the contributions of the following
         individuals and organizations to this specification:
+	Marcus Almgren,
         Pasquale Barbaro,
        	Brian Campbell,
         David Chadwick,
@@ -9728,6 +9754,7 @@ Host: op.umu.se
         Samuel Gulliksson,
         Joseph Heenan,
 	Pedram Hosseyni,
+        Marko Ivančić,
         Takahiko Kawasaki,
         Torsten Lodderstedt,
         Francesco Marino,
@@ -9744,7 +9771,8 @@ Host: op.umu.se
         Michael Schwartz,
         Giada Sciarretta,
         Amir Sharif,
-        Sean Turner,
+	Sean Turner,
+	Tim Würtele,
         Kristina Yasuda,
         and
         the JRA3T3 task force of GEANT4-2.
@@ -9764,6 +9792,25 @@ Host: op.umu.se
 	    Endpoint URLs are not form-urlencoded in JSON metadata parameter values.
 	  </t>
 	  <t>
+	    Fixed #55: Required validating explicit typing of JWTs.
+	  </t>
+	  <t>
+	    Fixed #53: State that JWS and JWE Compact Serializations are used.
+	  </t>
+	  <t>
+	    Fixed #49: Added request_authentication_signing_alg_values_supported to example.
+	  </t>
+	  <t>
+	    Fixed #46: Corrected statment about preventing use of Request Object
+	    for <spanx style="verb">private_key_jwt</spanx> client authentication.
+    </t>
+    <t>
+	    Fixed #43: Allow multiple <spanx style="verb">type</spanx> request parameters in resolve requests.
+	  </t>
+    <t>
+	    Fixed #40: Changed section name from "Resolve Entity Statement" to "Resolve Entity".
+	  </t>
+     <t>
 	    Improved descriptions of the JWT Claims being registered,
 	    per feedback from the IANA Designated Expert.
 	  </t>
