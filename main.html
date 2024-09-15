@@ -1260,7 +1260,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-09-11" class="published">11 September 2024</time>
+<time datetime="2024-09-15" class="published">15 September 2024</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -1326,7 +1326,7 @@ li > p:last-of-type:only-child {
             <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
-                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-requirements-language" class="internal xref">Requirements Language</a></p>
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-requirements-notation-and-c" class="internal xref">Requirements Notation and Conventions</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2">
                 <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-terminology" class="internal xref">Terminology</a></p>
@@ -1671,7 +1671,7 @@ li > p:last-of-type:only-child {
                     <p id="section-toc.1-1.12.2.1.2.1.1"><a href="#section-12.1.1" class="auto internal xref">12.1.1</a>.  <a href="#name-authentication-request" class="internal xref">Authentication Request</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1.2.1.2.1">
-                        <p id="section-toc.1-1.12.2.1.2.1.2.1.1"><a href="#section-12.1.1.1" class="auto internal xref">12.1.1.1</a>.  <a href="#name-using-a-request-object" class="internal xref">Using a Request Object</a></p>
+                        <p id="section-toc.1-1.12.2.1.2.1.2.1.1"><a href="#section-12.1.1.1" class="auto internal xref">12.1.1.1</a>.  <a href="#name-using-a-request-object-dire" class="internal xref">Using a Request Object Directly</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1.2.1.2.1.2.1">
                             <p id="section-toc.1-1.12.2.1.2.1.2.1.2.1.1"><a href="#section-12.1.1.1.1" class="auto internal xref">12.1.1.1.1</a>.  <a href="#name-authorization-request-with-" class="internal xref">Authorization Request with a Trust Chain</a></p>
@@ -2038,14 +2038,20 @@ li > p:last-of-type:only-child {
         </figcaption></figure>
 <div id="requirements-language">
 <section id="section-1.1">
-        <h3 id="name-requirements-language">
-<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-requirements-language" class="section-name selfRef">Requirements Language</a>
+        <h3 id="name-requirements-notation-and-c">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-requirements-notation-and-c" class="section-name selfRef">Requirements Notation and Conventions</a>
         </h3>
 <p id="section-1.1-1">
           The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
           "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this
           document are to be interpreted as described in
           BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span>.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">
+   All uses of JSON Web Signature (JWS) <span>[<a href="#RFC7515" class="cite xref">RFC7515</a>]</span>
+   and JSON Web Encryption (JWE) <span>[<a href="#RFC7516" class="cite xref">RFC7516</a>]</span>
+   data structures in this specification utilize
+   the JWS Compact Serialization or the JWE Compact Serialization;
+   the JWS JSON Serialization and the JWE JSON Serialization are not used.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="Terminology">
@@ -2316,7 +2322,9 @@ li > p:last-of-type:only-child {
           Entity Statement JWTs MUST be explicitly typed, by setting the
           <code>typ</code> header parameter to
           <code>entity-statement+jwt</code> to prevent
-          cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.<a href="#section-3-2" class="pilcrow">¶</a></p>
+          cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.
+   Entity Statements without a <code>typ</code> header parameter
+   or with a different <code>typ</code> value MUST be rejected.<a href="#section-3-2" class="pilcrow">¶</a></p>
 <p id="section-3-3">
           The Entity Statement is signed using one of the private keys of the issuer
           Entity in the form of a <span><a href="#RFC7515" class="internal xref">JSON Web Signature
@@ -2387,11 +2395,13 @@ li > p:last-of-type:only-child {
 <div id="authority_hints">
               OPTIONAL. An array of strings representing
               the Entity Identifiers of Intermediate Entities or Trust Anchors
-              that MAY issue Subordinate Statements about the Entity.
+              that are Immediate Superiors of the Entity.
               This claim is REQUIRED in Entity Configurations of
               the Entities that have at least one Superior above them,
               such as Leaf and Intermediate Entities.
-              Its value MUST NOT be the empty array
+              Its value MUST contain the Entity Identifiers of
+       its Immediate Superiors and
+       MUST NOT be the empty array
               <code>[]</code>.
               This claim MUST NOT be present in Entity Configurations
               of Trust Anchors with no Superiors.
@@ -3514,9 +3524,12 @@ li > p:last-of-type:only-child {
             <dd style="margin-left: 1.5em" id="section-5.2.1-2.2">
  OPTIONAL. URL referencing a signed JWT having the Entity's
  JWK Set document for that Entity Type as its payload.
- The JWT MUST be signed using a Federation Entity Key.
  This URL MUST use the <code>https</code> scheme.
- When both signing and encryption keys are made available,
+ The JWT MUST be signed using a Federation Entity Key.
+ A successful response from the URL MUST use the HTTP status code 200
+ with the content type
+ <code>application/jwk-set+jwt</code>.
+ When both signing and encryption keys are present,
  a <code>use</code> (public key use) parameter
  value is REQUIRED for all keys in the referenced JWK Set
  to indicate each key's intended usage.<a href="#section-5.2.1-2.2" class="pilcrow">¶</a>
@@ -3524,60 +3537,70 @@ li > p:last-of-type:only-child {
             <dd class="break"></dd>
 <dt id="section-5.2.1-2.3"></dt>
             <dd style="margin-left: 1.5em" id="section-5.2.1-2.4">
-              <p id="section-5.2.1-2.4.1">
- The following claims are specified for use in the payload,
- all of which except <code>keys</code>
- are defined in <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>:<a href="#section-5.2.1-2.4.1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-5.2.1-2.4.2">
-                <dt id="section-5.2.1-2.4.2.1">keys</dt>
-                <dd style="margin-left: 1.5em" id="section-5.2.1-2.4.2.2">
-     REQUIRED. Array of JWK values in the JWK Set,
-     as specified in Section 5.1 of <span>[<a href="#RFC7517" class="cite xref">RFC7517</a>]</span>.<a href="#section-5.2.1-2.4.2.2" class="pilcrow">¶</a>
-</dd>
-                <dd class="break"></dd>
-<dt id="section-5.2.1-2.4.2.3">iss</dt>
-                <dd style="margin-left: 1.5em" id="section-5.2.1-2.4.2.4">
-     REQUIRED. The "iss" (issuer) claim identifies the principal
-     that issued the JWT.<a href="#section-5.2.1-2.4.2.4" class="pilcrow">¶</a>
-</dd>
-                <dd class="break"></dd>
-<dt id="section-5.2.1-2.4.2.5">sub</dt>
-                <dd style="margin-left: 1.5em" id="section-5.2.1-2.4.2.6">
-     REQUIRED. This claim identifies the owner of the keys.
-     It SHOULD be the same as the issuer.<a href="#section-5.2.1-2.4.2.6" class="pilcrow">¶</a>
-</dd>
-                <dd class="break"></dd>
-<dt id="section-5.2.1-2.4.2.7">iat</dt>
-                <dd style="margin-left: 1.5em" id="section-5.2.1-2.4.2.8">
-     OPTIONAL. Number. Time when this signed JWK Set was issued.
-        This is expressed as Seconds Since the Epoch, as defined in
-        <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-5.2.1-2.4.2.8" class="pilcrow">¶</a>
-</dd>
-                <dd class="break"></dd>
-<dt id="section-5.2.1-2.4.2.9">exp</dt>
-                <dd style="margin-left: 1.5em" id="section-5.2.1-2.4.2.10">
-     OPTIONAL. Number. This claim identifies the time when the JWT is
-     no longer valid. This is expressed as Seconds
-        Since the Epoch, as defined in <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-5.2.1-2.4.2.10" class="pilcrow">¶</a>
-</dd>
-              <dd class="break"></dd>
-</dl>
-<p id="section-5.2.1-2.4.3">
- More claims are defined in <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>; of
- these, <code>aud</code> SHOULD NOT be used since
- the issuer cannot know who the audience is.
- <code>nbf</code> and <code>jti</code>
- are not particularly useful in this context and SHOULD be omitted.<a href="#section-5.2.1-2.4.3" class="pilcrow">¶</a></p>
+ Signed JWK Set JWTs are explicitly typed by setting the
+ <code>typ</code> header parameter to
+ <code>jwk-set+jwt</code> to prevent
+ cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.
+ Signed JWK Set JWTs without a <code>typ</code> header parameter
+ or with a different <code>typ</code> value MUST be rejected.<a href="#section-5.2.1-2.4" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-5.2.1-2.5"></dt>
             <dd style="margin-left: 1.5em" id="section-5.2.1-2.6">
               <p id="section-5.2.1-2.6.1">
- Additional claims MAY be defined and used in conjunction with the claims above.<a href="#section-5.2.1-2.6.1" class="pilcrow">¶</a></p>
-<p id="section-5.2.1-2.6.2" class="keepWithNext">
-     The following is a non-normative example of the JWT Claims Set for a signed JWK Set.<a href="#section-5.2.1-2.6.2" class="pilcrow">¶</a></p>
+ The following claims are specified for use in the payload,
+ all of which except <code>keys</code>
+ are defined in <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>:<a href="#section-5.2.1-2.6.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-5.2.1-2.6.2">
+                <dt id="section-5.2.1-2.6.2.1">keys</dt>
+                <dd style="margin-left: 1.5em" id="section-5.2.1-2.6.2.2">
+     REQUIRED. Array of JWK values in the JWK Set,
+     as specified in Section 5.1 of <span>[<a href="#RFC7517" class="cite xref">RFC7517</a>]</span>.<a href="#section-5.2.1-2.6.2.2" class="pilcrow">¶</a>
+</dd>
+                <dd class="break"></dd>
+<dt id="section-5.2.1-2.6.2.3">iss</dt>
+                <dd style="margin-left: 1.5em" id="section-5.2.1-2.6.2.4">
+     REQUIRED. The "iss" (issuer) claim identifies the principal
+     that issued the JWT.<a href="#section-5.2.1-2.6.2.4" class="pilcrow">¶</a>
+</dd>
+                <dd class="break"></dd>
+<dt id="section-5.2.1-2.6.2.5">sub</dt>
+                <dd style="margin-left: 1.5em" id="section-5.2.1-2.6.2.6">
+     REQUIRED. This claim identifies the owner of the keys.
+     It SHOULD be the same as the issuer.<a href="#section-5.2.1-2.6.2.6" class="pilcrow">¶</a>
+</dd>
+                <dd class="break"></dd>
+<dt id="section-5.2.1-2.6.2.7">iat</dt>
+                <dd style="margin-left: 1.5em" id="section-5.2.1-2.6.2.8">
+     OPTIONAL. Number. Time when this signed JWK Set was issued.
+        This is expressed as Seconds Since the Epoch, as defined in
+        <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-5.2.1-2.6.2.8" class="pilcrow">¶</a>
+</dd>
+                <dd class="break"></dd>
+<dt id="section-5.2.1-2.6.2.9">exp</dt>
+                <dd style="margin-left: 1.5em" id="section-5.2.1-2.6.2.10">
+     OPTIONAL. Number. This claim identifies the time when the JWT is
+     no longer valid. This is expressed as Seconds
+        Since the Epoch, as defined in <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-5.2.1-2.6.2.10" class="pilcrow">¶</a>
+</dd>
+              <dd class="break"></dd>
+</dl>
+<p id="section-5.2.1-2.6.3">
+ More claims are defined in <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>; of
+ these, <code>aud</code> SHOULD NOT be used since
+ the issuer cannot know who the audience is.
+ <code>nbf</code> and <code>jti</code>
+ are not particularly useful in this context and SHOULD be omitted.<a href="#section-5.2.1-2.6.3" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-5.2.1-2.7"></dt>
+            <dd style="margin-left: 1.5em" id="section-5.2.1-2.8">
+              <p id="section-5.2.1-2.8.1">
+ Additional claims MAY be defined and used in conjunction with the claims above.<a href="#section-5.2.1-2.8.1" class="pilcrow">¶</a></p>
+<p id="section-5.2.1-2.8.2" class="keepWithNext">
+     The following is a non-normative example of the JWT Claims Set for a signed JWK Set.<a href="#section-5.2.1-2.8.2" class="pilcrow">¶</a></p>
 <span id="name-example-jwt-claims-set-for-"></span><figure id="figure-10">
-                <div class="alignLeft art-text artwork" id="section-5.2.1-2.6.3.1">
+                <div class="alignLeft art-text artwork" id="section-5.2.1-2.8.3.1">
 <pre>
     {
       "keys": [
@@ -3613,29 +3636,33 @@ li > p:last-of-type:only-child {
                 </figcaption></figure>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.2.1-2.7">jwks_uri</dt>
-            <dd style="margin-left: 1.5em" id="section-5.2.1-2.8">
+<dt id="section-5.2.1-2.9">jwks_uri</dt>
+            <dd style="margin-left: 1.5em" id="section-5.2.1-2.10">
  OPTIONAL.
  URL referencing a JWK Set document
  containing the Entity's keys for that Entity Type.
  This URL MUST use the <code>https</code> scheme.
- When both signing and encryption keys are made available,
+ When both signing and encryption keys are present,
  a <code>use</code> (public key use) parameter
  value is REQUIRED for all keys in the referenced JWK Set
- to indicate each key's intended usage.<a href="#section-5.2.1-2.8" class="pilcrow">¶</a>
+ to indicate each key's intended usage.<a href="#section-5.2.1-2.10" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.2.1-2.9">jwks</dt>
-            <dd style="margin-left: 1.5em" id="section-5.2.1-2.10">
+<dt id="section-5.2.1-2.11">jwks</dt>
+            <dd style="margin-left: 1.5em" id="section-5.2.1-2.12">
  OPTIONAL.
  JSON Web Key Set document, passed by value,
  containing the Entity's keys for that Entity Type.
+ When both signing and encryption keys are present,
+ a <code>use</code> (public key use) parameter
+ value is REQUIRED for all keys in the JWK Set
+ to indicate each key's intended usage.
  This parameter is intended
  to be used by participants that, for some reason,
  cannot use the <code>signed_jwks_uri</code>
  parameter.
  An upside of using <code>jwks</code> is that
- the Entity's keys for the Entity Type are recorded in Trust Chains.<a href="#section-5.2.1-2.10" class="pilcrow">¶</a>
+ the Entity's keys for the Entity Type are recorded in Trust Chains.<a href="#section-5.2.1-2.12" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 </dl>
@@ -5209,7 +5236,9 @@ li > p:last-of-type:only-child {
           Trust Mark JWTs MUST be explicitly typed by setting the
           <code>typ</code> header parameter to
           <code>trust-mark+jwt</code> to prevent
-          cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.<a href="#section-7-7" class="pilcrow">¶</a></p>
+          cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.
+   Trust Marks without a <code>typ</code> header parameter
+   or with a different <code>typ</code> value MUST be rejected.<a href="#section-7-7" class="pilcrow">¶</a></p>
 <div id="trust_mark_claims">
 <section id="section-7.1">
         <h3 id="name-trust-mark-claims">
@@ -5335,6 +5364,8 @@ li > p:last-of-type:only-child {
             <code>typ</code> header parameter to
             <code>trust-mark-delegation+jwt</code> to prevent
             cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.
+     Trust Mark delegation JWTs without a <code>typ</code> header parameter
+     or with a different <code>typ</code> value MUST be rejected.
      It is signed with a Federation Entity Key.<a href="#section-7.2.1-2" class="pilcrow">¶</a></p>
 <p id="section-7.2.1-3">
      Trust Mark delegation JWTs MUST include the
@@ -6181,6 +6212,8 @@ Host: openid.sunet.se
             <code>typ</code> header parameter to
             <code>resolve-response+jwt</code> to prevent
             cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.
+     Resolve responses without a <code>typ</code> header parameter
+     or with a different <code>typ</code> value MUST be rejected.
      It is signed with a Federation Entity Key.<a href="#section-8.3.2-2" class="pilcrow">¶</a></p>
 <p id="section-8.3.2-3">
      The resolve response JWT MUST include the
@@ -6767,7 +6800,9 @@ Host: trust-anchor.example.com
      Historical keys JWTs are explicitly typed by setting the
             <code>typ</code> header parameter to
             <code>jwk-set+jwt</code> to prevent
-            cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.<a href="#section-8.7.2-2" class="pilcrow">¶</a></p>
+            cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.
+     Historical keys JWTs without a <code>typ</code> header parameter
+     or with a different <code>typ</code> value MUST be rejected.<a href="#section-8.7.2-2" class="pilcrow">¶</a></p>
 <p id="section-8.7.2-3">
      Historical keys JWTs MUST include the
      <code>kid</code> (Key ID) header parameter
@@ -7771,17 +7806,22 @@ Content-Type: application/json
           </h4>
 <p id="section-12.1.1-1">
             The Authentication Request is performed by passing a
-            Request Object by value as described in Section 6.1 of
+            signed Request Object by value as described in Section 6.1 of
             <span><a href="#OpenID.Core" class="internal xref">OpenID Connect Core 1.0</a> [<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span>
-            or using a pushed authorization request, as described in
+            or using a pushed authorization request with a signed Request Object,
+     as described in Section 3 of
             <span><a href="#RFC9126" class="internal xref">Pushed Authorization Requests</a> [<a href="#RFC9126" class="cite xref">RFC9126</a>]</span>.<a href="#section-12.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-12.1.1-2">
+     Authentication requests not using a signed Request Object
+     MUST be rejected, since checking the request signature is used
+     to validate that the Entity making the request controls the RP's keys.<a href="#section-12.1.1-2" class="pilcrow">¶</a></p>
 <div id="UsingAuthzRequestObject">
 <section id="section-12.1.1.1">
-            <h5 id="name-using-a-request-object">
-<a href="#section-12.1.1.1" class="section-number selfRef">12.1.1.1. </a><a href="#name-using-a-request-object" class="section-name selfRef">Using a Request Object</a>
+            <h5 id="name-using-a-request-object-dire">
+<a href="#section-12.1.1.1" class="section-number selfRef">12.1.1.1. </a><a href="#name-using-a-request-object-dire" class="section-name selfRef">Using a Request Object Directly</a>
             </h5>
 <p id="section-12.1.1.1-1">
-              When a Request Object is used, the value of the
+              When a Request Object is used directly, the value of the
               <code>request</code>
               parameter is a JWT whose Claims are the request parameters
               specified in Section 3.1.2 in
@@ -8058,11 +8098,27 @@ POST /par HTTP/1.1
 Host: op.example.org
 Content-Type: application/x-www-form-urlencoded
 
-redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
-&amp;scope=openid+profile+email+address+phone
-&amp;response_type=code
-&amp;nonce=4LX0mFMxdBjkGmtx7a8WIOnB
-&amp;state=YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ
+request=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5fX0Q5OEl2QjhOYWUta3dBNm5yT3QtaXBU
+        aGpIa0R4MzduaWNETUgzTjQifQ.eyJhdWQiOiJodHRwczovL29wLmV4YW1wbGUub
+        3JnL2F1dGhvcml6YXRpb24tZW5kcG9pbnQiLCJjbGllbnRfaWQiOiJodHRwczovL
+        3JwLmV4YW1wbGUuY29tIiwiZXhwIjoxNTg5Njk5MTYyLCJpYXQiOjE1ODk2OTkxM
+        DIsImlzcyI6Imh0dHBzOi8vcnAuZXhhbXBsZS5jb20iLCJqdGkiOiI0ZDNlYzBmO
+        DFmMTM0ZWU5YTk3ZTA0NDliZTZkMzJiZSIsIm5vbmNlIjoiNExYMG1GTXhkQmprR
+        210eDdhOFdJT25CIiwicmVkaXJlY3RfdXJpIjoiaHR0cHM6Ly9ycC5leGFtcGxlL
+        mNvbS9hdXRoel9jYiIsInJlc3BvbnNlX3R5cGUiOiJjb2RlIiwic2NvcGUiOiJvc
+        GVuaWQgcHJvZmlsZSBlbWFpbCBhZGRyZXNzIHBob25lIiwic3RhdGUiOiJZbVg4U
+        E05STdXYk5vTW5uaWVLS0JpcHRWVzBzUDJPWiIsInRydXN0X2NoYWluIjpbImV5S
+        mhiR2NpT2lKU1V6STFOaUlzSW10cFpDSTZJbXMxTkVoUmRFUnBZbmxIWTNNNVdsZ
+        FdUV1oyYVVobSAuLi4iLCJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SWtKW
+        WRtWnliRzVvUVUxMVNGSXdOMkZxVlcxQlkwSlMgLi4uIiwiZXlKaGJHY2lPaUpTV
+        XpJMU5pSXNJbXRwWkNJNklrSllkbVp5Ykc1b1FVMTFTRkl3TjJGcVZXMUJZMEpTI
+        C4uLiJdfQ.Rv0isfuku0FcRFintgxgKDk7EnhFkpQRg3Tm6N6fCHAHEKFxVVdjy4
+        9JboJtxKcQVZKN9TKn3lEYM1wtF1e9PQrNt4HZ21ICfnzxXuNx1F5SY1GXCU2n2y
+        FVKtz3N0YkAFbTStzy-sPRTXB0stLBJH74RoPiLs2c6dDvrwEv__GA7oGkg2gWt6
+        VDvnfDpnvFi3ZEUR1J8MOeW_VFsayrT9sNjyjsz62Po4LzvQKQMKxq0dNwPNYuuS
+        fUmb-YvmFguxDb3weYl8WS-
+        48EIkP1h4b_KGU9x9n7a1fUOHrS02ATQZmaL8jUil7yLJqx5MiCsPr4pCAXV0doA
+        4pwhs_FIw
 &amp;client_id=https%3A%2F%2Frp.example.com
 &amp;client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3A
   client-assertion-type%3Ajwt-bearer
@@ -8198,9 +8254,10 @@ HTTP/1.1 302 Found
           </h4>
 <p id="section-12.1.3-1">
             Automatic Registration is designed to be able to be
-            employed for use cases beyond OpenID Federation.
-            For instance, ecosystems using <span><a href="#OpenID.Core" class="internal xref">OpenID Connect</a> [<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span>,
-            <span><a href="#RFC6749" class="internal xref">OAuth 2.0</a> [<a href="#RFC6749" class="cite xref">RFC6749</a>]</span>, and
+            employed for OAuth 2.0 use cases beyond OpenID Connect,
+     as noted in <a href="#client_registration" class="auto internal xref">Section 12</a>.
+            For instance, ecosystems using
+            bare <span><a href="#RFC6749" class="internal xref">OAuth 2.0</a> [<a href="#RFC6749" class="cite xref">RFC6749</a>]</span> or
             <span><a href="#FAPI" class="internal xref">FAPI</a> [<a href="#FAPI" class="cite xref">FAPI</a>]</span> can utilize Automatic Registration.<a href="#section-12.1.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -10758,6 +10815,10 @@ HTTP/1.1 302 Found
         <dd>
 <span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">N. Sakimura</span>, <span class="refTitle">"JSON Web Signature (JWS)"</span>, <span class="seriesInfo">RFC 7515</span>, <span class="seriesInfo">DOI 10.17487/RFC7515</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7515">https://www.rfc-editor.org/info/rfc7515</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC7516">[RFC7516]</dt>
+        <dd>
+<span class="refAuthor">Jones, M.</span> and <span class="refAuthor">J. Hildebrand</span>, <span class="refTitle">"JSON Web Encryption (JWE)"</span>, <span class="seriesInfo">RFC 7516</span>, <span class="seriesInfo">DOI 10.17487/RFC7516</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7516">https://www.rfc-editor.org/info/rfc7516</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC7517">[RFC7517]</dt>
         <dd>
 <span class="refAuthor">Jones, M.</span>, <span class="refTitle">"JSON Web Key (JWK)"</span>, <span class="seriesInfo">RFC 7517</span>, <span class="seriesInfo">DOI 10.17487/RFC7517</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7517">https://www.rfc-editor.org/info/rfc7517</a>&gt;</span>. </dd>
@@ -12091,7 +12152,7 @@ Host: op.umu.se
         individuals and organizations to this specification:
  Marcus Almgren,
         Pasquale Barbaro,
-      Brian Campbell,
+        Brian Campbell,
         David Chadwick,
         Michele D'Amico,
         Andrii Deinega,
@@ -12099,14 +12160,15 @@ Host: op.umu.se
         Heather Flanagan,
         Samuel Gulliksson,
         Joseph Heenan,
+ Pedram Hosseyni,
         Marko Ivančić,
         Takahiko Kawasaki,
         Torsten Lodderstedt,
         Francesco Marino,
- John Melati,
- Alexey Melnikov,
+        John Melati,
+        Alexey Melnikov,
         Roberto Polli,
- Justin Richer,
+        Justin Richer,
         Jouke Roorda,
         Nat Sakimura,
         Mischa Sallé,
@@ -12142,41 +12204,62 @@ Host: op.umu.se
 </li>
         <li class="normal" id="appendix-D-3.3">
           <p id="appendix-D-3.3.1">
-     Fixed #49: Added request_authentication_signing_alg_values_supported to example.<a href="#appendix-D-3.3.1" class="pilcrow">¶</a></p>
+     Fixed #52: Clarified that PAR requests must use Request Objects.<a href="#appendix-D-3.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.4">
           <p id="appendix-D-3.4.1">
-     Fixed #46: Corrected statment about preventing use of Request Object
-     for <code>private_key_jwt</code> client authentication.<a href="#appendix-D-3.4.1" class="pilcrow">¶</a></p>
+     Fixed #64: Explicitly typed signed JWK Sets.<a href="#appendix-D-3.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.5">
           <p id="appendix-D-3.5.1">
-     Fixed #43: Allow multiple <code>type</code> request parameters in resolve requests.<a href="#appendix-D-3.5.1" class="pilcrow">¶</a></p>
+     Fixed #55: Required validating explicit typing of JWTs.<a href="#appendix-D-3.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.6">
           <p id="appendix-D-3.6.1">
-     Fixed #40: Changed section name from "Resolve Entity Statement" to "Resolve Entity".<a href="#appendix-D-3.6.1" class="pilcrow">¶</a></p>
+     Fixed #53: State that JWS and JWE Compact Serializations are used.<a href="#appendix-D-3.6.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.7">
           <p id="appendix-D-3.7.1">
-     Improved descriptions of the JWT Claims being registered,
-     per feedback from the IANA Designated Expert.<a href="#appendix-D-3.7.1" class="pilcrow">¶</a></p>
+     Fixed #49: Added request_authentication_signing_alg_values_supported to example.<a href="#appendix-D-3.7.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.8">
           <p id="appendix-D-3.8.1">
-     Fixes #45: Tightened Trust Chain signature validation wording.<a href="#appendix-D-3.8.1" class="pilcrow">¶</a></p>
+     Fixed #46: Corrected statment about preventing use of Request Object
+     for <code>private_key_jwt</code> client authentication.<a href="#appendix-D-3.8.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.9">
           <p id="appendix-D-3.9.1">
-     Fixed #40: Changed section name from "Resolve Entity Statement" to "Resolve Entity".<a href="#appendix-D-3.9.1" class="pilcrow">¶</a></p>
+     Fixed #43: Allow multiple <code>type</code> request parameters in resolve requests.<a href="#appendix-D-3.9.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.10">
           <p id="appendix-D-3.10.1">
-     Fixed #39: Removed <code>iss</code> parameter from fetch endpoint.<a href="#appendix-D-3.10.1" class="pilcrow">¶</a></p>
+     Fixed #40: Changed section name from "Resolve Entity Statement" to "Resolve Entity".<a href="#appendix-D-3.10.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.11">
           <p id="appendix-D-3.11.1">
-     Fixed #54: MAY NOT -&gt; MUST NOT.<a href="#appendix-D-3.11.1" class="pilcrow">¶</a></p>
+     Improved descriptions of the JWT Claims being registered,
+     per feedback from the IANA Designated Expert.<a href="#appendix-D-3.11.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.12">
+          <p id="appendix-D-3.12.1">
+     Fixes #45: Tightened Trust Chain signature validation wording.<a href="#appendix-D-3.12.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.13">
+          <p id="appendix-D-3.13.1">
+     Fixed #40: Changed section name from "Resolve Entity Statement" to "Resolve Entity".<a href="#appendix-D-3.13.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.14">
+          <p id="appendix-D-3.14.1">
+     Fixed #39: Removed <code>iss</code> parameter from fetch endpoint.<a href="#appendix-D-3.14.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.15">
+          <p id="appendix-D-3.15.1">
+     Fixed #54: MAY NOT -&gt; MUST NOT.<a href="#appendix-D-3.15.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.16">
+          <p id="appendix-D-3.16.1">
+     Fixed #58: Require <code>authority_hints</code> value
+     to contain the Entity Identifiers of all Immediate Superiors.<a href="#appendix-D-3.16.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-D-4">
