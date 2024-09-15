@@ -539,11 +539,13 @@
               <vspace/>
               OPTIONAL. An array of strings representing
               the Entity Identifiers of Intermediate Entities or Trust Anchors
-              that MAY issue Subordinate Statements about the Entity.
+              that are Immediate Superiors of the Entity.
               This claim is REQUIRED in Entity Configurations of
               the Entities that have at least one Superior above them,
               such as Leaf and Intermediate Entities.
-              Its value MUST NOT be the empty array
+              Its value MUST contain the Entity Identifiers of
+	      its Immediate Superiors and
+	      MUST NOT be the empty array
               <spanx style="verb">[]</spanx>.
               This claim MUST NOT be present in Entity Configurations
               of Trust Anchors with no Superiors.
@@ -9743,7 +9745,7 @@ Host: op.umu.se
         individuals and organizations to this specification:
 	Marcus Almgren,
         Pasquale Barbaro,
-     	Brian Campbell,
+       	Brian Campbell,
         David Chadwick,
         Michele D'Amico,
         Andrii Deinega,
@@ -9751,14 +9753,15 @@ Host: op.umu.se
         Heather Flanagan,
         Samuel Gulliksson,
         Joseph Heenan,
+	Pedram Hosseyni,
         Marko Ivančić,
         Takahiko Kawasaki,
         Torsten Lodderstedt,
         Francesco Marino,
-	John Melati,
-	Alexey Melnikov,
+        John Melati,
+        Alexey Melnikov,
         Roberto Polli,
-	Justin Richer,
+        Justin Richer,
         Jouke Roorda,
         Nat Sakimura,
         Mischa Sallé,
@@ -9822,6 +9825,10 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #54: MAY NOT -> MUST NOT.
+	  </t>
+	  <t>
+	    Fixed #58: Require <spanx style="verb">authority_hints</spanx> value
+	    to contain the Entity Identifiers of all Immediate Superiors.
 	  </t>
 	</list>
       </t>
