@@ -6389,6 +6389,8 @@ HTTP/1.1 302 Found
                   <vspace/>
                   REQUIRED.
                   Its value MUST be the Entity Identifier of the OP.
+		  This claim is used in Explicit Registration requests
+		  but is not a general Entity Statement claim.
                 </t>
                 <t hangText="authority_hints">
                   <vspace/>
@@ -6437,6 +6439,13 @@ HTTP/1.1 302 Found
                     the content type to determine whether it contains an Entity Configuration
                     or an entire Trust Chain.
                   </t>
+		  <t>
+		    The OP MUST validate the RP's explicit registration request JWT.
+		    All the normal Entity Statement validation rules apply.
+		    In addition, if the <spanx style="verb">aud</spanx> (audience)
+		    Claim value is not the Entity Identifier of the OP,
+		    then the request MUST be rejected.
+		  </t>
                   <t>
                     If the request contains an Entity Configuration the OP
                     MUST use it to complete the Federation Entity Discovery by
@@ -6610,10 +6619,10 @@ HTTP/1.1 302 Found
                   <t hangText="aud">
                     <vspace/>
                     REQUIRED.
-                    Its value MUST be the Entity Identifier of the RP. See
-                    <xref target="RFC7519"/> for the full specification. This
-                    claim is specific to Explicit Registration responses and is
-                    not a general Entity Statement claim.
+                    Its value MUST be the Entity Identifier of the RP.
+		    See <xref target="RFC7519"/> for the full specification.
+		    This claim is used in Explicit Registration responses
+		    but is not a general Entity Statement claim.
                   </t>
                   <t hangText="trust_anchor_id">
                     <vspace/>
@@ -6677,6 +6686,10 @@ HTTP/1.1 302 Found
                     in a Trust Chain that the RP successfully resolved for the
                     OP when it prepared the Explicit Registration request.
                   </t>
+		  <t>
+		    The RP MUST verify that the <spanx style="verb">aud</spanx> (audience)
+		    claim value is its Entity Identifier.
+		  </t>
                   <t>
                     The RP MUST verify that the
                     <spanx style="verb">trust_anchor_id</spanx> represents one
@@ -9874,6 +9887,10 @@ Host: op.umu.se
 	  <t>
 	    Fixed #58: Require <spanx style="verb">authority_hints</spanx> value
 	    to contain the Entity Identifiers of all Immediate Superiors.
+	  </t>
+	  <t>
+	    Fixed #88: Explicitly require audience validation for
+	    explicit registration requests and responses.
 	  </t>
 	</list>
       </t>
