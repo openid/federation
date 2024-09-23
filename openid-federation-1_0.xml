@@ -6203,7 +6203,9 @@ request=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5fX0Q5OEl2QjhOYWUta3dBNm5yT3QtaXBU
 	    when using Automatic Registration is the same as the
 	    error authentication responses defined in <xref target="OpenID.Core"/>.
 	    In particular, it is an OAuth 2.0 authorization error response
-	    sent via redirection to the Client's redirection URI.
+	    sent via redirection to the Client's redirection URI,
+	    unless a <xref target="RFC9126">Pushed Authorization Request</xref>
+	    was used for the request.
 	  </t>
 	  <t>
 	    However, as in both <xref target="OpenID.Core"/> and <xref target="RFC6749"/>,
@@ -6215,10 +6217,14 @@ request=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5fX0Q5OEl2QjhOYWUta3dBNm5yT3QtaXBU
 	    as a component of an open redirector.
 	  </t>
 	  <t>
-            If the OP fails to establish trust with the RP, it SHOULD use
-            appropriate <spanx style="verb">error</spanx> code and
-            <spanx style="verb">error_description</spanx> values
-            to enable the RP to understand what went wrong.
+	    If the OP fails to establish trust with the RP,
+	    it SHOULD consider the redirection URI to be invalid
+	    and not perform redirection.
+	    This means that the two error codes defined below,
+	    both of which are about reasons trust failed to be established,
+	    SHOULD only be returned in
+	    <xref target="RFC9126">Pushed Authorization Request</xref>
+	    error responses, and not via redirection.
           </t>
           <t>
             In addition to the error codes contained in the
@@ -6232,7 +6238,7 @@ request=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5fX0Q5OEl2QjhOYWUta3dBNm5yT3QtaXBU
                 <vspace/>
                 No trusted Trust Anchor could be found.
               </t>
-              <t hangText="validation_failed">
+              <t hangText="trust_chain_validation_failed">
                 <vspace/>
                 Trust chain validation failed.
               </t>
@@ -6248,9 +6254,9 @@ request=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5fX0Q5OEl2QjhOYWUta3dBNm5yT3QtaXBU
             <artwork><![CDATA[
 HTTP/1.1 302 Found
   Location: https://client.example.org/cb?
-    error=missing_trust_anchor
+    error=consent_required
     &error_description=
-      Could%20not%20find%20a%20trusted%20anchor
+      Consent%20by%20the%20End-User%20required
     &state=af0ifjsldkj
 ]]></artwork>
           </figure>
@@ -7484,7 +7490,7 @@ HTTP/1.1 302 Found
           </t>
           <t>
             <list style="symbols">
-              <t>Name: validation_failed</t>
+              <t>Name: trust_chain_validation_failed</t>
               <t>Usage Location: authorization endpoint</t>
               <t>Protocol Extension: OpenID Federation</t>
               <t>
@@ -9853,6 +9859,10 @@ Host: op.umu.se
 	  <t>
 	    Fixed #69: Specified more details of successful and error responses
 	    to authentication requests using Automatic Registration.
+	  </t>
+	  <t>
+	    Renamed <spanx style="verb">validation_failed</spanx> error code to
+	    <spanx style="verb">trust_chain_validation_failed</spanx>.
 	  </t>
 	</list>
       </t>
