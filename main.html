@@ -1371,7 +1371,7 @@ li > p:last-of-type:only-child {
                     <p id="section-toc.1-1.5.2.1.2.2.1"><a href="#section-5.1.2" class="auto internal xref">5.1.2</a>.  <a href="#name-openid-connect-relying-part" class="internal xref">OpenID Connect Relying Party</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1.2.3">
-                    <p id="section-toc.1-1.5.2.1.2.3.1"><a href="#section-5.1.3" class="auto internal xref">5.1.3</a>.  <a href="#name-openid-provider" class="internal xref">OpenID Provider</a></p>
+                    <p id="section-toc.1-1.5.2.1.2.3.1"><a href="#section-5.1.3" class="auto internal xref">5.1.3</a>.  <a href="#name-openid-connect-openid-provi" class="internal xref">OpenID Connect OpenID Provider</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1.2.4">
                     <p id="section-toc.1-1.5.2.1.2.4.1"><a href="#section-5.1.4" class="auto internal xref">5.1.4</a>.  <a href="#name-oauth-authorization-server" class="internal xref">OAuth Authorization Server</a></p>
@@ -2980,7 +2980,7 @@ li > p:last-of-type:only-child {
       </h2>
 <p id="section-5-1">
  This section defines how to represent and use metadata about Entities.
- It reuses existing OpenID Connect and OAuth 2.0 metadata standards
+ It uses existing OpenID Connect and OAuth 2.0 metadata standards
  that are applicable to each Entity Type.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <p id="section-5-2">
  As described in <a href="#entity-statement" class="auto internal xref">Section 3</a>,
@@ -3229,8 +3229,8 @@ li > p:last-of-type:only-child {
 </div>
 <div id="OP_metadata">
 <section id="section-5.1.3">
-          <h4 id="name-openid-provider">
-<a href="#section-5.1.3" class="section-number selfRef">5.1.3. </a><a href="#name-openid-provider" class="section-name selfRef">OpenID Provider</a>
+          <h4 id="name-openid-connect-openid-provi">
+<a href="#section-5.1.3" class="section-number selfRef">5.1.3. </a><a href="#name-openid-connect-openid-provi" class="section-name selfRef">OpenID Connect OpenID Provider</a>
           </h4>
 <p id="section-5.1.3-1">
           The Entity Type Identifier is
@@ -4782,14 +4782,18 @@ li > p:last-of-type:only-child {
                 operator.<a href="#section-6.1.4.2-3" class="pilcrow">¶</a></p>
 <p id="section-6.1.4.2-4">
                 If the application of metadata policies results in illegal or
-                otherwise incorrect metadata, then the metadata MUST be regarded
+                otherwise incorrect resolved metadata, then the metadata MUST be regarded
                 as broken and MUST NOT be used.<a href="#section-6.1.4.2-4" class="pilcrow">¶</a></p>
 <p id="section-6.1.4.2-5">
                 The Trust Chain subject is responsible to verify that it is
-                able to support and comply with the metadata that results from
+                able to support and comply with the resolved metadata that results from
                 the application of federation metadata policies. For instance,
                 this may involve a check that cryptographic algorithms required
-                by the resulting metadata are supported. When metadata policies
+                by the resulting resolved metadata are supported.
+ Likewise, the Trust Chain subject MUST verify that
+ all the required metadata parameters for its Entity Types are present
+ and all the metadata values in the resolved metadata are valid.
+ When metadata policies
                 change, Trust Chain subjects may need to reevaluate their
                 support and compliance.<a href="#section-6.1.4.2-5" class="pilcrow">¶</a></p>
 </section>
@@ -4969,8 +4973,8 @@ li > p:last-of-type:only-child {
               Intermediate Entity for its Immediate Subordinates are applied to
               the Trust Chain subject <code>metadata</code>.
               After that, the merged metadata policy is applied, to produce the
-              following resulting RP metadata:<a href="#section-6.1.5-10" class="pilcrow">¶</a></p>
-<span id="name-the-resulting-rp-metadata-f"></span><figure id="figure-16">
+              following resulting resolved RP metadata:<a href="#section-6.1.5-10" class="pilcrow">¶</a></p>
+<span id="name-the-resulting-resolved-rp-m"></span><figure id="figure-16">
             <div class="alignLeft art-text artwork" id="section-6.1.5-11.1">
 <pre>
 {
@@ -4996,7 +5000,7 @@ li > p:last-of-type:only-child {
 </pre>
 </div>
 <figcaption><a href="#figure-16" class="selfRef">Figure 16</a>:
-<a href="#name-the-resulting-rp-metadata-f" class="selfRef">The Resulting RP Metadata for the Trust Chain Subject</a>
+<a href="#name-the-resulting-resolved-rp-m" class="selfRef">The Resulting Resolved RP Metadata for the Trust Chain Subject</a>
             </figcaption></figure>
 </section>
 </div>
@@ -12158,6 +12162,7 @@ Host: op.umu.se
         Andrii Deinega,
         Erick Domingues,
         Heather Flanagan,
+ Michael Fraser,
         Samuel Gulliksson,
         Joseph Heenan,
  Pedram Hosseyni,
@@ -12196,7 +12201,7 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-D-3.1">
           <p id="appendix-D-3.1.1">
-     TBD<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
+     Fixed #28: Described validation of resolved metadata.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-D-4">
