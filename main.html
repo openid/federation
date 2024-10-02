@@ -2373,21 +2373,30 @@ li > p:last-of-type:only-child {
         <dd class="break"></dd>
 <dt id="section-3-6.9">jwks</dt>
         <dd style="margin-left: 1.5em" id="section-3-6.10">
+          <p id="section-3-6.10.1">
               REQUIRED. A <span><a href="#RFC7517" class="internal xref">JSON Web Key Set (JWKS)</a> [<a href="#RFC7517" class="cite xref">RFC7517</a>]</span>
               representing the public part of the subject's Federation Entity
               signing keys. The corresponding private key is
               used by the Entity to sign the Entity Configuration about itself,
-              and by Trust Anchors and Intermediate Entities to sign Subordinate Statements about their Immediate Subordinates.
-              The public keys are used to verify the signatures of the
-              issued Entity Statements and Trust Marks and SHOULD NOT be used in other protocols.
-       (Keys to be used in other protocols, such as OpenID Connect, are conveyed
-              in the <code>metadata</code> elements of the respective Entity Statements.)
+              by Trust Anchors and Intermediate Entities
+       to sign Subordinate Statements about their Immediate Subordinates,
+       and for other signatures made by Federation Entities,
+       such as Trust Mark signatures.
               This claim is only OPTIONAL for the Entity Statement returned
-              from an OP when the client is doing Explicit Registration.
-              In all other cases, it is REQUIRED.
+              from an OP when the client is doing Explicit Registration;
+              in all other cases, it is REQUIRED.
               Every JWK in the JWK Set MUST have a unique <code>kid</code> (Key ID) value.
               It is RECOMMENDED that the Key ID be the JWK Thumbprint <span>[<a href="#RFC7638" class="cite xref">RFC7638</a>]</span>
-              using the SHA-256 hash function of the key.<a href="#section-3-6.10" class="pilcrow">¶</a>
+              using the SHA-256 hash function of the key.<a href="#section-3-6.10.1" class="pilcrow">¶</a></p>
+<p id="section-3-6.10.2">
+       These Federation Entity Keys SHOULD NOT be used in other protocols.
+       (Keys to be used in other protocols, such as OpenID Connect,
+       are conveyed in the <code>metadata</code> elements
+       for the protocol's Entity Type Identifiers,
+       such as the metadata under the
+       <code>openid_provider</code> and
+       <code>openid_relying_party</code>
+       Entity Type Identifiers.)<a href="#section-3-6.10.2" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 <dt id="section-3-6.11">authority_hints</dt>
@@ -12216,12 +12225,16 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-D-3.1">
           <p id="appendix-D-3.1.1">
-     Fixed #88: Explicitly require audience validation for
-     explicit registration requests and responses.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
+     Fixed #89: Improved Entity Statement <code>jwks</code> claim description.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.2">
           <p id="appendix-D-3.2.1">
-     Fixed #28: Described validation of resolved metadata.<a href="#appendix-D-3.2.1" class="pilcrow">¶</a></p>
+     Fixed #88: Explicitly require audience validation for
+     explicit registration requests and responses.<a href="#appendix-D-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.3">
+          <p id="appendix-D-3.3.1">
+     Fixed #28: Described validation of resolved metadata.<a href="#appendix-D-3.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-D-4">
