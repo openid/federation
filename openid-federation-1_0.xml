@@ -523,17 +523,25 @@
               representing the public part of the subject's Federation Entity
               signing keys. The corresponding private key is
               used by the Entity to sign the Entity Configuration about itself,
-              and by Trust Anchors and Intermediate Entities to sign Subordinate Statements about their Immediate Subordinates.
-              The public keys are used to verify the signatures of the
-              issued Entity Statements and Trust Marks and SHOULD NOT be used in other protocols.
-	      (Keys to be used in other protocols, such as OpenID Connect, are conveyed
-              in the <spanx style="verb">metadata</spanx> elements of the respective Entity Statements.)
+              by Trust Anchors and Intermediate Entities
+	      to sign Subordinate Statements about their Immediate Subordinates,
+	      and for other signatures made by Federation Entities,
+	      such as Trust Mark signatures.
               This claim is only OPTIONAL for the Entity Statement returned
-              from an OP when the client is doing Explicit Registration.
-              In all other cases, it is REQUIRED.
+              from an OP when the client is doing Explicit Registration;
+              in all other cases, it is REQUIRED.
               Every JWK in the JWK Set MUST have a unique <spanx style="verb">kid</spanx> (Key ID) value.
               It is RECOMMENDED that the Key ID be the JWK Thumbprint <xref target="RFC7638"/>
               using the SHA-256 hash function of the key.
+	      <vspace blankLines="1"/>
+	      These Federation Entity Keys SHOULD NOT be used in other protocols.
+	      (Keys to be used in other protocols, such as OpenID Connect,
+	      are conveyed in the <spanx style="verb">metadata</spanx> elements
+	      for the protocol's Entity Type Identifiers,
+	      such as the metadata under the
+	      <spanx style="verb">openid_provider</spanx> and
+	      <spanx style="verb">openid_relying_party</spanx>
+	      Entity Type Identifiers.)
             </t>
             <t hangText="authority_hints" anchor="authority_hints">
               <vspace/>
@@ -9832,6 +9840,9 @@ Host: op.umu.se
       <t>
 	-40
 	<list style="symbols">
+	  <t>
+	    Fixed #89: Improved Entity Statement <spanx style="verb">jwks</spanx> claim description.
+	  </t>
 	  <t>
 	    Fixed #88: Explicitly require audience validation for
 	    explicit registration requests and responses.
