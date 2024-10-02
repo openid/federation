@@ -8417,7 +8417,9 @@ HTTP/1.1 302 Found
 <dt id="section-12.2.1-4.11">aud</dt>
             <dd style="margin-left: 1.5em" id="section-12.2.1-4.12">
                   REQUIRED.
-                  Its value MUST be the Entity Identifier of the OP.<a href="#section-12.2.1-4.12" class="pilcrow">¶</a>
+                  Its value MUST be the Entity Identifier of the OP.
+   This claim is only used in Explicit Registration requests,
+   since it is not a general Entity Statement claim.<a href="#section-12.2.1-4.12" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-12.2.1-4.13">authority_hints</dt>
@@ -8477,6 +8479,14 @@ HTTP/1.1 302 Found
 </li>
               <li id="section-12.2.2.1-2.2">
                 <p id="section-12.2.2.1-2.2.1">
+     The OP MUST validate the RP's explicit registration request JWT.
+     All the normal Entity Statement validation rules apply.
+     In addition, if the <code>aud</code> (audience)
+     claim value is not the Entity Identifier of the OP,
+     then the request MUST be rejected.<a href="#section-12.2.2.1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+              <li id="section-12.2.2.1-2.3">
+                <p id="section-12.2.2.1-2.3.1">
                     If the request contains an Entity Configuration the OP
                     MUST use it to complete the Federation Entity Discovery by
                     collecting and evaluating the Trust Chains that start with
@@ -8485,10 +8495,10 @@ HTTP/1.1 302 Found
                     one Trust Chain, the OP MUST verify the signature of the
                     received Entity Configuration. If the OP finds more than
                     one acceptable Trust Chain, it MUST choose one Trust Anchor
-                    from those chains as the one to proceed with.<a href="#section-12.2.2.1-2.2.1" class="pilcrow">¶</a></p>
+                    from those chains as the one to proceed with.<a href="#section-12.2.2.1-2.3.1" class="pilcrow">¶</a></p>
 </li>
-              <li id="section-12.2.2.1-2.3">
-                <p id="section-12.2.2.1-2.3.1">
+              <li id="section-12.2.2.1-2.4">
+                <p id="section-12.2.2.1-2.4.1">
                     If the request contains a Trust Chain, the OP MAY evaluate
                     the statements in the Trust Chain to save the HTTP calls
                     that are necessary to perform the Federation Entity Discovery,
@@ -8496,44 +8506,44 @@ HTTP/1.1 302 Found
                     authority hint in its Entity Configuration. Otherwise, the
                     OP MUST extract the RP Entity Configuration from the Trust Chain
                     and proceed according to Step 2,
-     as if only an Entity Configuration was received.<a href="#section-12.2.2.1-2.3.1" class="pilcrow">¶</a></p>
+     as if only an Entity Configuration was received.<a href="#section-12.2.2.1-2.4.1" class="pilcrow">¶</a></p>
 </li>
-              <li id="section-12.2.2.1-2.4">
-                <p id="section-12.2.2.1-2.4.1">
+              <li id="section-12.2.2.1-2.5">
+                <p id="section-12.2.2.1-2.5.1">
                     At this point, if the OP finds that it already has an
                     existing client registration for the requesting RP, then
                     that registration MUST be invalidated. The precise time of
                     the invalidation is at the OP's discretion, as the OP may
                     want to ensure the completion of concurrent OpenID
                     authentication requests initiated by the RP while the
-                    registration request is being processed.<a href="#section-12.2.2.1-2.4.1" class="pilcrow">¶</a></p>
-<p id="section-12.2.2.1-2.4.2">
+                    registration request is being processed.<a href="#section-12.2.2.1-2.5.1" class="pilcrow">¶</a></p>
+<p id="section-12.2.2.1-2.5.2">
 
                     The OP MAY retain client credentials and key material from
                     the invalidated registration in order to verify past RP
                     signatures and perform other cryptographic operations on
-                    past RP data.<a href="#section-12.2.2.1-2.4.2" class="pilcrow">¶</a></p>
+                    past RP data.<a href="#section-12.2.2.1-2.5.2" class="pilcrow">¶</a></p>
 </li>
-              <li id="section-12.2.2.1-2.5">
-                <p id="section-12.2.2.1-2.5.1">
+              <li id="section-12.2.2.1-2.6">
+                <p id="section-12.2.2.1-2.6.1">
                     The OP will now use the RP metadata to create a client
                     registration compliant with its own OP metadata and other
-                    applicable policies.<a href="#section-12.2.2.1-2.5.1" class="pilcrow">¶</a></p>
-<p id="section-12.2.2.1-2.5.2">
+                    applicable policies.<a href="#section-12.2.2.1-2.6.1" class="pilcrow">¶</a></p>
+<p id="section-12.2.2.1-2.6.2">
 
                     The OP MAY provision the RP with a
                     <code>client_id</code> other than the RP's
                     Entity Identifier. This enables Explicit Registration to be
                     implemented on top of the
                     <span><a href="#OpenID.Registration" class="internal xref">OpenID Connect Dynamic
-                    Client Registration 1.0</a> [<a href="#OpenID.Registration" class="cite xref">OpenID.Registration</a>]</span> endpoint of an OP.<a href="#section-12.2.2.1-2.5.2" class="pilcrow">¶</a></p>
-<p id="section-12.2.2.1-2.5.3">
+                    Client Registration 1.0</a> [<a href="#OpenID.Registration" class="cite xref">OpenID.Registration</a>]</span> endpoint of an OP.<a href="#section-12.2.2.1-2.6.2" class="pilcrow">¶</a></p>
+<p id="section-12.2.2.1-2.6.3">
 
                     If the RP is provisioned with a
                     <code>client_secret</code> it MUST NOT
                     expire before the expiration of the registration Entity Statement
-                    that will be returned to the RP.<a href="#section-12.2.2.1-2.5.3" class="pilcrow">¶</a></p>
-<p id="section-12.2.2.1-2.5.4">
+                    that will be returned to the RP.<a href="#section-12.2.2.1-2.6.3" class="pilcrow">¶</a></p>
+<p id="section-12.2.2.1-2.6.4">
 
                     The OP SHOULD NOT provision the RP with a
                     <code>registration_access_token</code> and a
@@ -8544,8 +8554,8 @@ HTTP/1.1 302 Found
                     <code>registration_access_token</code> for
                     some purpose, for example to let it independently check its
                     registered metadata, the token MUST NOT allow modification
-                    of the registration.<a href="#section-12.2.2.1-2.5.4" class="pilcrow">¶</a></p>
-<p id="section-12.2.2.1-2.5.5">
+                    of the registration.<a href="#section-12.2.2.1-2.6.4" class="pilcrow">¶</a></p>
+<p id="section-12.2.2.1-2.6.5">
 
                     The OP MAY modify the received RP metadata, for example by
                     substituting an invalid or unsupported parameter,
@@ -8557,33 +8567,33 @@ HTTP/1.1 302 Found
                     <code>invalid_client_metadata</code> or
                     <code>invalid_redirect_uri</code>, as
                     specified in Section 3.3 of
-                    <span>[<a href="#OpenID.Registration" class="cite xref">OpenID.Registration</a>]</span>.<a href="#section-12.2.2.1-2.5.5" class="pilcrow">¶</a></p>
-</li>
-              <li id="section-12.2.2.1-2.6">
-                <p id="section-12.2.2.1-2.6.1">
-                    The OP MUST assign an expiration time to the created
-                    registration. This time MUST NOT exceed the expiration time
-                    of the Trust Chain that the OP selected to process the request.<a href="#section-12.2.2.1-2.6.1" class="pilcrow">¶</a></p>
+                    <span>[<a href="#OpenID.Registration" class="cite xref">OpenID.Registration</a>]</span>.<a href="#section-12.2.2.1-2.6.5" class="pilcrow">¶</a></p>
 </li>
               <li id="section-12.2.2.1-2.7">
                 <p id="section-12.2.2.1-2.7.1">
+                    The OP MUST assign an expiration time to the created
+                    registration. This time MUST NOT exceed the expiration time
+                    of the Trust Chain that the OP selected to process the request.<a href="#section-12.2.2.1-2.7.1" class="pilcrow">¶</a></p>
+</li>
+              <li id="section-12.2.2.1-2.8">
+                <p id="section-12.2.2.1-2.8.1">
                     If the OP created a client registration for the RP, it MUST
-                    then construct a success response in the form of an Entity Statement.<a href="#section-12.2.2.1-2.7.1" class="pilcrow">¶</a></p>
-<p id="section-12.2.2.1-2.7.2">
+                    then construct a success response in the form of an Entity Statement.<a href="#section-12.2.2.1-2.8.1" class="pilcrow">¶</a></p>
+<p id="section-12.2.2.1-2.8.2">
 
                     The OP MUST set the <code>trust_anchor_id</code>
                     claim of the Entity Statement to the Trust Anchor it
                     selected to process the request. The
                     <code>authority_hints</code> claim MUST be
                     set to the OP's Immediate Superior in the
-                    selected Trust Chain.<a href="#section-12.2.2.1-2.7.2" class="pilcrow">¶</a></p>
-<p id="section-12.2.2.1-2.7.3">
+                    selected Trust Chain.<a href="#section-12.2.2.1-2.8.2" class="pilcrow">¶</a></p>
+<p id="section-12.2.2.1-2.8.3">
 
                     The OP MUST set the <code>exp</code> claim
                     to the expiration time of the created registration. The OP
                     MAY choose to invalidate the registration before that, as
-                    explained in <a href="#AfterExplicitReg" class="auto internal xref">Section 12.2.3</a>.<a href="#section-12.2.2.1-2.7.3" class="pilcrow">¶</a></p>
-<p id="section-12.2.2.1-2.7.4">
+                    explained in <a href="#AfterExplicitReg" class="auto internal xref">Section 12.2.3</a>.<a href="#section-12.2.2.1-2.8.3" class="pilcrow">¶</a></p>
+<p id="section-12.2.2.1-2.8.4">
 
                     The OP MUST express the client registration it created for
                     the RP by means of the <code>metadata</code>
@@ -8594,20 +8604,20 @@ HTTP/1.1 302 Found
                     <code>client_id</code> that was provisioned
                     for the RP. If the RP was provisioned with credentials,
                     for example a <code>client_secret</code>,
-                    these MUST be included as well.<a href="#section-12.2.2.1-2.7.4" class="pilcrow">¶</a></p>
-<p id="section-12.2.2.1-2.7.5">
+                    these MUST be included as well.<a href="#section-12.2.2.1-2.8.4" class="pilcrow">¶</a></p>
+<p id="section-12.2.2.1-2.8.5">
 
                     The OP SHOULD include metadata parameters that have a
                     default value, for example
                     <code>token_endpoint_auth_method</code>
                     which has a default value of
                     <code>client_secret_basic</code>,
-                    to simplify the processing of the response by the RP.<a href="#section-12.2.2.1-2.7.5" class="pilcrow">¶</a></p>
+                    to simplify the processing of the response by the RP.<a href="#section-12.2.2.1-2.8.5" class="pilcrow">¶</a></p>
 </li>
-              <li id="section-12.2.2.1-2.8">
-                <p id="section-12.2.2.1-2.8.1">
+              <li id="section-12.2.2.1-2.9">
+                <p id="section-12.2.2.1-2.9.1">
                     The OP MUST sign the registration Entity Statement with a
-                    current Federation Entity Key in its possession.<a href="#section-12.2.2.1-2.8.1" class="pilcrow">¶</a></p>
+                    current Federation Entity Key in its possession.<a href="#section-12.2.2.1-2.9.1" class="pilcrow">¶</a></p>
 </li>
             </ol>
 <p id="section-12.2.2.1-3">
@@ -8657,10 +8667,10 @@ HTTP/1.1 302 Found
 <dt id="section-12.2.2.1-4.11">aud</dt>
               <dd style="margin-left: 1.5em" id="section-12.2.2.1-4.12">
                     REQUIRED.
-                    Its value MUST be the Entity Identifier of the RP. See
-                    <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span> for the full specification. This
-                    claim is specific to Explicit Registration responses and is
-                    not a general Entity Statement claim.<a href="#section-12.2.2.1-4.12" class="pilcrow">¶</a>
+                    Its value MUST be the Entity Identifier of the RP.
+     See <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span> for the full specification.
+     This claim is used in Explicit Registration responses
+     but is not a general Entity Statement claim.<a href="#section-12.2.2.1-4.12" class="pilcrow">¶</a>
 </dd>
               <dd class="break"></dd>
 <dt id="section-12.2.2.1-4.13">trust_anchor_id</dt>
@@ -8732,20 +8742,25 @@ HTTP/1.1 302 Found
 </li>
               <li id="section-12.2.2.2-1.2">
                 <p id="section-12.2.2.2-1.2.1">
-                    The RP MUST verify that the
-                    <code>trust_anchor_id</code> represents one
-                    of its own Trust Anchors.<a href="#section-12.2.2.2-1.2.1" class="pilcrow">¶</a></p>
+     The RP MUST verify that the <code>aud</code> (audience)
+     claim value is its Entity Identifier.<a href="#section-12.2.2.2-1.2.1" class="pilcrow">¶</a></p>
 </li>
               <li id="section-12.2.2.2-1.3">
                 <p id="section-12.2.2.2-1.3.1">
+                    The RP MUST verify that the
+                    <code>trust_anchor_id</code> represents one
+                    of its own Trust Anchors.<a href="#section-12.2.2.2-1.3.1" class="pilcrow">¶</a></p>
+</li>
+              <li id="section-12.2.2.2-1.4">
+                <p id="section-12.2.2.2-1.4.1">
                     The RP MUST verify that at least one of the
                     <code>authority_hints</code> it specified in
                     the Explicit Registration request leads to the Trust Anchor
                     that the OP set in the
-                    <code>trust_anchor_id</code> claim.<a href="#section-12.2.2.2-1.3.1" class="pilcrow">¶</a></p>
+                    <code>trust_anchor_id</code> claim.<a href="#section-12.2.2.2-1.4.1" class="pilcrow">¶</a></p>
 </li>
-              <li id="section-12.2.2.2-1.4">
-                <p id="section-12.2.2.2-1.4.1">
+              <li id="section-12.2.2.2-1.5">
+                <p id="section-12.2.2.2-1.5.1">
                     The RP MUST ensure that the metadata it was registered with
                     at the OP complies with the Trust Chain
                     <code>openid_relying_party</code> policies,
@@ -8755,16 +8770,16 @@ HTTP/1.1 302 Found
                     received registration Entity Statement. The RP SHOULD perform this check
                     by applying the resolved policies to the metadata as
                     specified in <a href="#metadata_policy_resolution" class="auto internal xref">Section 6.1.4.1</a>, or
-                    utilize another equivalent method.<a href="#section-12.2.2.2-1.4.1" class="pilcrow">¶</a></p>
+                    utilize another equivalent method.<a href="#section-12.2.2.2-1.5.1" class="pilcrow">¶</a></p>
 </li>
-              <li id="section-12.2.2.2-1.5">
-                <p id="section-12.2.2.2-1.5.1">
+              <li id="section-12.2.2.2-1.6">
+                <p id="section-12.2.2.2-1.6.1">
                     If the received registration Entity Statement does not pass the above
                     checks, the RP MUST reject it. The RP MAY choose to retry
                     the Explicit Registration request to work around a
                     transient exception, for example due to a recent change of
                     Entity metadata or metadata policy causing temporary
-                    misalignment of metadata.<a href="#section-12.2.2.2-1.5.1" class="pilcrow">¶</a></p>
+                    misalignment of metadata.<a href="#section-12.2.2.2-1.6.1" class="pilcrow">¶</a></p>
 </li>
             </ol>
 </section>
@@ -12201,7 +12216,12 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-D-3.1">
           <p id="appendix-D-3.1.1">
-     Fixed #28: Described validation of resolved metadata.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
+     Fixed #88: Explicitly require audience validation for
+     explicit registration requests and responses.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.2">
+          <p id="appendix-D-3.2.1">
+     Fixed #28: Described validation of resolved metadata.<a href="#appendix-D-3.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-D-4">
