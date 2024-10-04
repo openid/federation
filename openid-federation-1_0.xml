@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="21" month="September" year="2024"/>
+    <date day="2" month="October" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -523,17 +523,25 @@
               representing the public part of the subject's Federation Entity
               signing keys. The corresponding private key is
               used by the Entity to sign the Entity Configuration about itself,
-              and by Trust Anchors and Intermediate Entities to sign Subordinate Statements about their Immediate Subordinates.
-              The public keys are used to verify the signatures of the
-              issued Entity Statements and Trust Marks and SHOULD NOT be used in other protocols.
-	      (Keys to be used in other protocols, such as OpenID Connect, are conveyed
-              in the <spanx style="verb">metadata</spanx> elements of the respective Entity Statements.)
+              by Trust Anchors and Intermediate Entities
+	      to sign Subordinate Statements about their Immediate Subordinates,
+	      and for other signatures made by Federation Entities,
+	      such as Trust Mark signatures.
               This claim is only OPTIONAL for the Entity Statement returned
-              from an OP when the client is doing Explicit Registration.
-              In all other cases, it is REQUIRED.
+              from an OP when the client is doing Explicit Registration;
+              in all other cases, it is REQUIRED.
               Every JWK in the JWK Set MUST have a unique <spanx style="verb">kid</spanx> (Key ID) value.
               It is RECOMMENDED that the Key ID be the JWK Thumbprint <xref target="RFC7638"/>
               using the SHA-256 hash function of the key.
+	      <vspace blankLines="1"/>
+	      These Federation Entity Keys SHOULD NOT be used in other protocols.
+	      (Keys to be used in other protocols, such as OpenID Connect,
+	      are conveyed in the <spanx style="verb">metadata</spanx> elements
+	      for the protocol's Entity Type Identifiers,
+	      such as the metadata under the
+	      <spanx style="verb">openid_provider</spanx> and
+	      <spanx style="verb">openid_relying_party</spanx>
+	      Entity Type Identifiers.)
             </t>
             <t hangText="authority_hints" anchor="authority_hints">
               <vspace/>
@@ -1098,7 +1106,7 @@
     <section anchor="metadata" title="Metadata">
       <t>
 	This section defines how to represent and use metadata about Entities.
-	It reuses existing OpenID Connect and OAuth 2.0 metadata standards
+	It uses existing OpenID Connect and OAuth 2.0 metadata standards
 	that are applicable to each Entity Type.
       </t>
       <t>
@@ -1354,7 +1362,7 @@
 	</figure>
       </section>
 
-      <section title="OpenID Provider" anchor="OP_metadata">
+      <section title="OpenID Connect OpenID Provider" anchor="OP_metadata">
         <t>
           The Entity Type Identifier is
           <spanx style="verb">openid_provider</spanx>.
@@ -2777,16 +2785,20 @@
 
               <t>
                 If the application of metadata policies results in illegal or
-                otherwise incorrect metadata, then the metadata MUST be regarded
+                otherwise incorrect resolved metadata, then the metadata MUST be regarded
                 as broken and MUST NOT be used.
               </t>
 
               <t>
                 The Trust Chain subject is responsible to verify that it is
-                able to support and comply with the metadata that results from
+                able to support and comply with the resolved metadata that results from
                 the application of federation metadata policies. For instance,
                 this may involve a check that cryptographic algorithms required
-                by the resulting metadata are supported. When metadata policies
+                by the resulting resolved metadata are supported.
+		Likewise, the Trust Chain subject MUST verify that
+		all the required metadata parameters for its Entity Types are present
+		and all the metadata values in the resolved metadata are valid.
+		When metadata policies
                 change, Trust Chain subjects may need to reevaluate their
                 support and compliance.
               </t>
@@ -2966,10 +2978,10 @@
               Intermediate Entity for its Immediate Subordinates are applied to
               the Trust Chain subject <spanx style="verb">metadata</spanx>.
               After that, the merged metadata policy is applied, to produce the
-              following resulting RP metadata:
+              following resulting resolved RP metadata:
             </preamble>
             <name>
-              The Resulting RP Metadata for the Trust Chain Subject
+              The Resulting Resolved RP Metadata for the Trust Chain Subject
             </name>
             <artwork><![CDATA[
 {
@@ -5844,7 +5856,7 @@ Content-Type: application/json
 }
 .
 {
-  "aud": "https://op.example.org/authorization-endpoint",
+  "aud": "https://op.example.org",
   "client_id": "https://rp.example.com",
   "exp": 1589699162,
   "iat": 1589699102,
@@ -6299,6 +6311,8 @@ HTTP/1.1 302 Found
                   <vspace/>
                   REQUIRED.
                   Its value MUST be the Entity Identifier of the OP.
+		  This claim is only used in Explicit Registration requests,
+		  since it is not a general Entity Statement claim.
                 </t>
                 <t hangText="authority_hints">
                   <vspace/>
@@ -6347,6 +6361,13 @@ HTTP/1.1 302 Found
                     the content type to determine whether it contains an Entity Configuration
                     or an entire Trust Chain.
                   </t>
+		  <t>
+		    The OP MUST validate the RP's explicit registration request JWT.
+		    All the normal Entity Statement validation rules apply.
+		    In addition, if the <spanx style="verb">aud</spanx> (audience)
+		    claim value is not the Entity Identifier of the OP,
+		    then the request MUST be rejected.
+		  </t>
                   <t>
                     If the request contains an Entity Configuration the OP
                     MUST use it to complete the Federation Entity Discovery by
@@ -6520,10 +6541,10 @@ HTTP/1.1 302 Found
                   <t hangText="aud">
                     <vspace/>
                     REQUIRED.
-                    Its value MUST be the Entity Identifier of the RP. See
-                    <xref target="RFC7519"/> for the full specification. This
-                    claim is specific to Explicit Registration responses and is
-                    not a general Entity Statement claim.
+                    Its value MUST be the Entity Identifier of the RP.
+		    See <xref target="RFC7519"/> for the full specification.
+		    This claim is used in Explicit Registration responses
+		    but is not a general Entity Statement claim.
                   </t>
                   <t hangText="trust_anchor_id">
                     <vspace/>
@@ -6587,6 +6608,10 @@ HTTP/1.1 302 Found
                     in a Trust Chain that the RP successfully resolved for the
                     OP when it prepared the Explicit Registration request.
                   </t>
+		  <t>
+		    The RP MUST verify that the <spanx style="verb">aud</spanx> (audience)
+		    claim value is its Entity Identifier.
+		  </t>
                   <t>
                     The RP MUST verify that the
                     <spanx style="verb">trust_anchor_id</spanx> represents one
@@ -8304,89 +8329,79 @@ HTTP/1.1 302 Found
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8705.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9126.xml"/>
 
-      <reference anchor="OpenID.Core"
-                 target="https://openid.net/specs/openid-connect-core-1_0.html">
+      <reference anchor="OpenID.Core" target="https://openid.net/specs/openid-connect-core-1_0.html">
         <front>
           <title>OpenID Connect Core 1.0</title>
 
           <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
-            <organization abbrev="NRI">Nomura Research Institute,
-              Ltd.
-            </organization>
+            <organization abbrev="NAT.Consulting (was at NRI)">NAT.Consulting</organization>
           </author>
 
           <author fullname="John Bradley" initials="J." surname="Bradley">
-            <organization abbrev="Ping Identity">Ping Identity</organization>
+            <organization abbrev="Yubico (was at Ping Identity)">Yubico</organization>
           </author>
 
           <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
-            <organization abbrev="Microsoft">Microsoft</organization>
+            <organization abbrev="Self-Issued Consulting (was at Microsoft)">Self-Issued Consulting</organization>
           </author>
 
-          <author fullname="Breno de Medeiros" initials="B."
-                  surname="de Medeiros">
+          <author fullname="Breno de Medeiros" initials="B." surname="de Medeiros">
             <organization abbrev="Google">Google</organization>
           </author>
 
-          <author fullname="Chuck Mortimore" initials="C." surname="Mortimore">
-            <organization abbrev="Salesforce">Salesforce</organization>
-          </author>
+	  <author fullname="Chuck Mortimore" initials="C." surname="Mortimore">
+	    <organization abbrev="Disney (was at Salesforce)">Disney</organization>
+	  </author>
 
-          <date day="8" month="November" year="2014"/>
+          <date day="15" month="December" year="2023"/>
         </front>
       </reference>
 
-      <reference anchor="OpenID.Discovery"
-                 target="https://openid.net/specs/openid-connect-discovery-1_0.html">
-        <front>
-          <title>OpenID Connect Discovery 1.0</title>
+      <reference anchor="OpenID.Discovery" target="https://openid.net/specs/openid-connect-discovery-1_0.html">
+	<front>
+	  <title>OpenID Connect Discovery 1.0</title>
 
-          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
-            <organization abbrev="NRI">Nomura Research Institute,
-              Ltd.
-            </organization>
-          </author>
+	  <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
+	    <organization abbrev="NAT.Consulting (was at NRI)">NAT.Consulting</organization>
+	  </author>
 
-          <author fullname="John Bradley" initials="J." surname="Bradley">
-            <organization abbrev="Ping Identity">Ping Identity</organization>
-          </author>
+	  <author fullname="John Bradley" initials="J." surname="Bradley">
+	    <organization abbrev="Yubico (was at Ping Identity)">Yubico</organization>
+	  </author>
 
-          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
-            <organization abbrev="Microsoft">Microsoft</organization>
-          </author>
+	  <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
+	    <organization abbrev="Self-Issued Consulting (was at Microsoft)">Self-Issued Consulting</organization>
+	  </author>
 
-          <author fullname="Edmund Jay" initials="E." surname="Jay">
-            <organization abbrev="Illumila">Illumila</organization>
-          </author>
+	  <author fullname="Edmund Jay" initials="E." surname="Jay">
+	    <organization abbrev="Illumila">Illumila</organization>
+	  </author>
 
-          <date day="8" month="November" year="2014"/>
-        </front>
+          <date day="15" month="December" year="2023"/>
+	</front>
       </reference>
 
-      <reference anchor="OpenID.Registration"
-                 target="https://openid.net/specs/openid-connect-registration-1_0.html">
-        <front>
-          <title>OpenID Connect Dynamic Client Registration 1.0</title>
+      <reference anchor="OpenID.Registration" target="https://openid.net/specs/openid-connect-registration-1_0.html">
+	<front>
+	  <title>OpenID Connect Dynamic Client Registration 1.0</title>
 
-          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
-            <organization abbrev="NRI">Nomura Research Institute,
-              Ltd.
-            </organization>
-          </author>
+	  <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
+	    <organization abbrev="NAT.Consulting (was at NRI)">NAT.Consulting</organization>
+	  </author>
 
-          <author fullname="John Bradley" initials="J." surname="Bradley">
-            <organization abbrev="Ping Identity">Ping Identity</organization>
-          </author>
+	  <author fullname="John Bradley" initials="J." surname="Bradley">
+	    <organization abbrev="Yubico (was at Ping Identity)">Yubico</organization>
+	  </author>
 
-          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
-            <organization abbrev="Microsoft">Microsoft</organization>
-          </author>
+	  <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
+	    <organization abbrev="Self-Issued Consulting (was at Microsoft)">Self-Issued Consulting</organization>
+	  </author>
 
-          <date day="8" month="November" year="2014"/>
-        </front>
+          <date day="15" month="December" year="2023"/>
+	</front>
       </reference>
 
-      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-05.xml" />
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-10.xml" />
 
     </references>
 
@@ -9683,6 +9698,7 @@ Host: op.umu.se
         Andrii Deinega,
         Erick Domingues,
         Heather Flanagan,
+	Michael Fraser,
         Samuel Gulliksson,
         Joseph Heenan,
 	Pedram Hosseyni,
@@ -9718,6 +9734,16 @@ Host: op.umu.se
 	-40
 	<list style="symbols">
 	  <t>
+	    Fixed #89: Improved Entity Statement <spanx style="verb">jwks</spanx> claim description.
+	  </t>
+	  <t>
+	    Fixed #88: Explicitly require audience validation for
+	    explicit registration requests and responses.
+	  </t>
+	  <t>
+	    Fixed #28: Described validation of resolved metadata.
+	  </t>
+	  <t>
 	    Fixed #34: Deleted
 	    <spanx style="verb">request_authentication_methods_supported</spanx>
 	    and replaced with the use of standard PAR metadata values.
@@ -9726,7 +9752,7 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #98: Required audience when using
-	    <spanx style="verb">private_key_jwt</spanx>
+	    <spanx style="verb">private_key_jwt</spanx> with PAR
 	    to be the Authorization Server's Entity Identifier.
 	  </t>
 	</list>
