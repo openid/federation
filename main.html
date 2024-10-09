@@ -1260,7 +1260,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-10-02" class="published">2 October 2024</time>
+<time datetime="2024-10-03" class="published">3 October 2024</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -7088,7 +7088,8 @@ Host: trust-anchor.example.com
    This client authentication method is described in Section 9 of
    <span><a href="#OpenID.Core" class="internal xref">OpenID Connect Core 1.0</a> [<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span>.
    The client authentication JWT MUST be signed with a Federation Entity Key.
-   The audience of the JWT MUST be the URL of the federation endpoint.
+   The audience of the JWT MUST be the Entity Identifier
+   of the Entity whose federation endpoint is being authenticated to.
    When client authentication is used,
    the request MUST be an HTTP request using the POST method,
    with the client authentication and endpoint request parameters passed in the POST body.
@@ -10805,7 +10806,7 @@ HTTP/1.1 302 Found
 <dl class="references">
 <dt id="I-D.ietf-oauth-resource-metadata">[I-D.ietf-oauth-resource-metadata]</dt>
         <dd>
-<span class="refAuthor">Jones, M. B.</span>, <span class="refAuthor">Hunt, P.</span>, and <span class="refAuthor">A. Parecki</span>, <span class="refTitle">"OAuth 2.0 Protected Resource Metadata"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-oauth-resource-metadata-10</span>, <time datetime="2024-09-16" class="refDate">16 September 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-resource-metadata-10">https://datatracker.ietf.org/doc/html/draft-ietf-oauth-resource-metadata-10</a>&gt;</span>. </dd>
+<span class="refAuthor">Jones, M. B.</span>, <span class="refAuthor">Hunt, P.</span>, and <span class="refAuthor">A. Parecki</span>, <span class="refTitle">"OAuth 2.0 Protected Resource Metadata"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-oauth-resource-metadata-12</span>, <time datetime="2024-10-03" class="refDate">3 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-resource-metadata-12">https://datatracker.ietf.org/doc/html/draft-ietf-oauth-resource-metadata-12</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="OpenID.Core">[OpenID.Core]</dt>
         <dd>
@@ -12235,6 +12236,13 @@ Host: op.umu.se
         <li class="normal" id="appendix-D-3.3">
           <p id="appendix-D-3.3.1">
      Fixed #28: Described validation of resolved metadata.<a href="#appendix-D-3.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.4">
+          <p id="appendix-D-3.4.1">
+     Fixed #98: Require that the audience of JWTs used for
+     client authentication at federation endpoints
+     with <code>private_key_jwt</code>
+     be the Entity Identifier of the endpoint's Entity.<a href="#appendix-D-3.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-D-4">
