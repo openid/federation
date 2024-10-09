@@ -4444,8 +4444,8 @@ Host: openid.sunet.se
 
       <section title="Trust Mark Status" anchor="status_endpoint">
         <t>
-          This enables an Entity to check whether a Trust Mark is still
-          active or not. The query MUST be sent to the Trust Mark issuer.
+          This enables an Entity to check whether a Trust Mark has been issued to
+          an Enity and is still active. The query MUST be sent to the Trust Mark issuer.
         </t>
 	<t>
 	  The Trust Mark status endpoint location is published in
@@ -4458,7 +4458,7 @@ Host: openid.sunet.se
 
         <section anchor="tm-status-request" title="Trust Mark Status Request">
           <t>
-            The request MUST be an HTTP request using the POST method
+            The request MUST be an HTTP request using the GET method
             to a Trust Mark status endpoint
             with the following query parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
@@ -4467,36 +4467,14 @@ Host: openid.sunet.se
             <list style="hanging">
               <t hangText="sub">
                 <vspace/>
-                OPTIONAL. The Entity Identifier of the Entity to which the Trust Mark
+                REQUIRED. The Entity Identifier of the Entity to which the Trust Mark
                 was issued.
               </t>
               <t hangText="trust_mark_id">
                 <vspace/>
-                OPTIONAL. Identifier of the Trust Mark.
-              </t>
-              <t hangText="iat">
-                <vspace/>
-                OPTIONAL. Number. Time when this Trust Mark was issued.
-                This is expressed as Seconds Since the Epoch, as defined in
-                <xref target="RFC7519"/>. If
-                <spanx style="verb">iat</spanx> is not specified and the
-                Trust Mark issuer has issued several Trust Marks with the
-                identifier specified in the request to the
-                Entity identified by <spanx style="verb">sub</spanx>, the
-                most recent one is assumed.
-              </t>
-              <t hangText="trust_mark">
-                <vspace/>
-                OPTIONAL. The whole Trust Mark.
+                REQUIRED. Identifier of the Trust Mark.
               </t>
             </list>
-          </t>
-          <t>
-            If <spanx style="verb">trust_mark</spanx> is used, then
-            <spanx style="verb">sub</spanx> and <spanx style="verb">trust_mark_id</spanx>
-            are not needed. If <spanx style="verb">trust_mark</spanx> is not used,
-            then <spanx style="verb">sub</spanx> and <spanx style="verb">trust_mark_id</spanx>
-            are REQUIRED.
           </t>
 	  <t>
 	    When client authentication is used,
@@ -4505,8 +4483,7 @@ Host: openid.sunet.se
 	  </t>
             <figure>
               <preamble>
-                The following is a non-normative example of a Trust Mark status request using
-                <spanx style="verb">sub</spanx> and <spanx style="verb">trust_mark_id</spanx>:
+                The following is a non-normative example of a Trust Mark status request:
               </preamble>
 	      <name>
 		Trust Mark Status Request
