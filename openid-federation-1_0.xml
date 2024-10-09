@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="2" month="October" year="2024"/>
+    <date day="3" month="October" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -5124,7 +5124,8 @@ Host: trust-anchor.example.com
 	  This client authentication method is described in Section 9 of
 	  <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
 	  The client authentication JWT MUST be signed with a Federation Entity Key.
-	  The audience of the JWT MUST be the URL of the federation endpoint.
+	  The audience of the JWT MUST be the Entity Identifier
+	  of the Entity whose federation endpoint is being authenticated to.
 	  When client authentication is used,
 	  the request MUST be an HTTP request using the POST method,
 	  with the client authentication and endpoint request parameters passed in the POST body.
@@ -8508,7 +8509,7 @@ HTTP/1.1 302 Found
 	</front>
       </reference>
 
-      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-10.xml" />
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-12.xml" />
 
     </references>
 
@@ -9849,6 +9850,12 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #28: Described validation of resolved metadata.
+	  </t>
+	  <t>
+	    Fixed #98: Require that the audience of JWTs used for
+	    client authentication at federation endpoints
+	    with <spanx style="verb">private_key_jwt</spanx>
+	    be the Entity Identifier of the endpoint's Entity.
 	  </t>
 	</list>
       </t>
