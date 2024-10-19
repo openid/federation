@@ -1407,21 +1407,6 @@
               Registration as described in <xref target="explicit"/>,
               then this claim is REQUIRED.
             </t>
-
-            <t hangText="request_authentication_signing_alg_values_supported">
-              <vspace/>
-              OPTIONAL.
-              JSON array containing a list of the supported
-              <xref target="RFC7515">JWS</xref> algorithms
-              (<spanx style="verb">alg</spanx> values)
-              for signing the <xref target="RFC7519">JWT</xref>
-              used in the Request Object of the OpenID Connect authentication request
-	      or in the <spanx style="verb">private_key_jwt</spanx> JWT
-	      of a pushed authorization request to the OP.
-              No default algorithms are implied if this entry is omitted.
-              Servers SHOULD support <spanx style="verb">RS256</spanx>.
-              The value <spanx style="verb">none</spanx> MUST NOT be used.
-            </t>
           </list>
         </t>
 
@@ -1476,7 +1461,11 @@
             "private_key_jwt"
          ],
          "pushed_authorization_request_endpoint":"https://op.umu.se/openid/par",
-         "request_authentication_signing_alg_values_supported": [
+         "request_object_signing_alg_values_supported": [
+            "ES256",
+            "RS256"
+         ],
+         "token_endpoint_auth_signing_alg_values_supported": [
             "ES256",
             "RS256"
          ]
@@ -7139,25 +7128,6 @@ HTTP/1.1 302 Found
           <t>
             <list style='symbols'>
               <t>
-                Metadata Name: <spanx style="verb">request_authentication_signing_alg_values_supported</spanx>
-              </t>
-              <t>
-                Metadata Description:
-                JSON array containing the JWS signing algorithms
-                supported for the signature on
-                the JWT used to authenticate the request
-              </t>
-              <t>
-                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-              </t>
-              <t>
-                Specification Document(s): <xref target="OP_metadata"/> of this specification
-              </t>
-            </list>
-          </t>
-          <t>
-            <list style='symbols'>
-              <t>
                 Metadata Name: <spanx style="verb">signed_jwks_uri</spanx>
               </t>
               <t>
@@ -9742,8 +9712,10 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #34: Deleted
-	    <spanx style="verb">request_authentication_methods_supported</spanx>
-	    and replaced with the use of standard PAR metadata values.
+	    <spanx style="verb">request_authentication_methods_supported</spanx> and
+	    <spanx style="verb">request_authentication_signing_alg_values_supported</spanx>
+	    and replaced with the use of standard Request Object
+	    and PAR metadata values.
 	    Also restricted PAR authentication methods to those
 	    performing signing with the RP's keys.
 	  </t>
