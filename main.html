@@ -3252,19 +3252,24 @@ li > p:last-of-type:only-child {
    IANA "OAuth Authorization Server Metadata" registry
    <span>[<a href="#IANA.OAuth.Parameters" class="cite xref">IANA.OAuth.Parameters</a>]</span>.<a href="#section-5.1.3-2" class="pilcrow">¶</a></p>
 <p id="section-5.1.3-3">
-          In addition, the following OP metadata parameters are defined:<a href="#section-5.1.3-3" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-5.1.3-4">
-            <dt id="section-5.1.3-4.1">client_registration_types_supported</dt>
-            <dd style="margin-left: 1.5em" id="section-5.1.3-4.2">
+          The <code>issuer</code> parameter value
+          in the <code>openid_provider</code> metadata MUST
+          match the Federation Entity identifier
+          (the <code>iss</code> parameter within the Entity Configuration).<a href="#section-5.1.3-3" class="pilcrow">¶</a></p>
+<p id="section-5.1.3-4">
+          In addition, the following OP metadata parameters are defined:<a href="#section-5.1.3-4" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-5.1.3-5">
+            <dt id="section-5.1.3-5.1">client_registration_types_supported</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.3-5.2">
               REQUIRED. Array specifying the federation types supported.
               Federation-type values defined by this specification are
               <code>automatic</code>
               and <code>explicit</code>.
-       Additional values MAY be defined and used, without restriction by this specification.<a href="#section-5.1.3-4.2" class="pilcrow">¶</a>
+       Additional values MAY be defined and used, without restriction by this specification.<a href="#section-5.1.3-5.2" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.1.3-4.3">federation_registration_endpoint</dt>
-            <dd style="margin-left: 1.5em" id="section-5.1.3-4.4">
+<dt id="section-5.1.3-5.3">federation_registration_endpoint</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.3-5.4">
               OPTIONAL.
               URL of the OP's federation-specific Dynamic Client Registration
               Endpoint. If the OP supports Explicit Client Registration Endpoint
@@ -3274,20 +3279,20 @@ li > p:last-of-type:only-child {
               it MUST NOT contain a fragment component.
               If the OP supports Explicit Client
               Registration as described in <a href="#explicit" class="auto internal xref">Section 12.2</a>,
-              then this claim is REQUIRED.<a href="#section-5.1.3-4.4" class="pilcrow">¶</a>
+              then this claim is REQUIRED.<a href="#section-5.1.3-5.4" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.1.3-4.5">request_authentication_methods_supported</dt>
-            <dd style="margin-left: 1.5em" id="section-5.1.3-4.6">
-              <p id="section-5.1.3-4.6.1">
+<dt id="section-5.1.3-5.5">request_authentication_methods_supported</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.3-5.6">
+              <p id="section-5.1.3-5.6.1">
               OPTIONAL.
        An OP MUST be able to verify that a request comes from an RP
        that is a member of a federation that the OP is a member of.
        This is done via request authentication methods.
        These methods achieve this by proving that
        the RP is in possession of a key that appears in its metadata.
-       This parameter declares the request authentication methods that the OP supports.<a href="#section-5.1.3-4.6.1" class="pilcrow">¶</a></p>
-<p id="section-5.1.3-4.6.2">
+       This parameter declares the request authentication methods that the OP supports.<a href="#section-5.1.3-5.6.1" class="pilcrow">¶</a></p>
+<p id="section-5.1.3-5.6.2">
 
        The <code>request_authentication_methods_supported</code>
        value is a JSON object where the member names are names of endpoints
@@ -3300,8 +3305,8 @@ li > p:last-of-type:only-child {
        <code>pushed_authorization_request_endpoint</code>.
        The values of the JSON object members for the endpoint names are
        JSON arrays containing the names of the request authentication methods
-       used at those endpoints.<a href="#section-5.1.3-4.6.2" class="pilcrow">¶</a></p>
-<p id="section-5.1.3-4.6.3">
+       used at those endpoints.<a href="#section-5.1.3-5.6.2" class="pilcrow">¶</a></p>
+<p id="section-5.1.3-5.6.3">
 
        Some OAuth 2.0 client authentication methods can be used at the
        <code>pushed_authorization_request_endpoint</code>
@@ -3309,55 +3314,55 @@ li > p:last-of-type:only-child {
        They are the subset of those listed in the
        IANA "OAuth Token Endpoint Authentication Methods" registry <span>[<a href="#IANA.OAuth.Parameters" class="cite xref">IANA.OAuth.Parameters</a>]</span>
        that perform client authentication by proving possession of a private key.
-              These client authentication methods are:<a href="#section-5.1.3-4.6.3" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-5.1.3-4.6.4">
-                <dt id="section-5.1.3-4.6.4.1">private_key_jwt</dt>
-                <dd style="margin-left: 1.5em" id="section-5.1.3-4.6.4.2">
+              These client authentication methods are:<a href="#section-5.1.3-5.6.3" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-5.1.3-5.6.4">
+                <dt id="section-5.1.3-5.6.4.1">private_key_jwt</dt>
+                <dd style="margin-left: 1.5em" id="section-5.1.3-5.6.4.2">
                   This client authentication method is described in Section 9 of
                   <span><a href="#OpenID.Core" class="internal xref">OpenID Connect Core 1.0</a> [<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span>.
                   Note that if <code>private_key_jwt</code> is
                   used, the audience of the signed JWT MUST be either the URL of
                   the Authorization Server's Authorization Endpoint or the
-                  Authorization Server's Entity Identifier.<a href="#section-5.1.3-4.6.4.2" class="pilcrow">¶</a>
+                  Authorization Server's Entity Identifier.<a href="#section-5.1.3-5.6.4.2" class="pilcrow">¶</a>
 </dd>
                 <dd class="break"></dd>
-<dt id="section-5.1.3-4.6.4.3">tls_client_auth</dt>
-                <dd style="margin-left: 1.5em" id="section-5.1.3-4.6.4.4">
+<dt id="section-5.1.3-5.6.4.3">tls_client_auth</dt>
+                <dd style="margin-left: 1.5em" id="section-5.1.3-5.6.4.4">
                   Section 2.1 of
-                  <span>[<a href="#RFC8705" class="cite xref">RFC8705</a>]</span>.<a href="#section-5.1.3-4.6.4.4" class="pilcrow">¶</a>
+                  <span>[<a href="#RFC8705" class="cite xref">RFC8705</a>]</span>.<a href="#section-5.1.3-5.6.4.4" class="pilcrow">¶</a>
 </dd>
                 <dd class="break"></dd>
-<dt id="section-5.1.3-4.6.4.5">self_signed_tls_client_auth</dt>
-                <dd style="margin-left: 1.5em" id="section-5.1.3-4.6.4.6">
+<dt id="section-5.1.3-5.6.4.5">self_signed_tls_client_auth</dt>
+                <dd style="margin-left: 1.5em" id="section-5.1.3-5.6.4.6">
                   Section 2.2 of
-                  <span>[<a href="#RFC8705" class="cite xref">RFC8705</a>]</span>.<a href="#section-5.1.3-4.6.4.6" class="pilcrow">¶</a>
+                  <span>[<a href="#RFC8705" class="cite xref">RFC8705</a>]</span>.<a href="#section-5.1.3-5.6.4.6" class="pilcrow">¶</a>
 </dd>
               <dd class="break"></dd>
 </dl>
-<p id="section-5.1.3-4.6.5">
+<p id="section-5.1.3-5.6.5">
 
-              A request authentication method that is not a client authentication method is:<a href="#section-5.1.3-4.6.5" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-5.1.3-4.6.6">
-                <dt id="section-5.1.3-4.6.6.1">request_object</dt>
-                <dd style="margin-left: 1.5em" id="section-5.1.3-4.6.6.2">
+              A request authentication method that is not a client authentication method is:<a href="#section-5.1.3-5.6.5" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-5.1.3-5.6.6">
+                <dt id="section-5.1.3-5.6.6.1">request_object</dt>
+                <dd style="margin-left: 1.5em" id="section-5.1.3-5.6.6.2">
                   Use of a Request Object, as described in
                   <span><a href="#OpenID.Core" class="internal xref">OpenID Connect Core 1.0</a> [<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span>.
    The request authentication is performed by verifying that
    the request object is signed with a key that the RP controls.
    Use of Request Objects by Automatic Registration is described in
-                  <a href="#automatic" class="auto internal xref">Section 12.1</a>.<a href="#section-5.1.3-4.6.6.2" class="pilcrow">¶</a>
+                  <a href="#automatic" class="auto internal xref">Section 12.1</a>.<a href="#section-5.1.3-5.6.6.2" class="pilcrow">¶</a>
 </dd>
               <dd class="break"></dd>
 </dl>
-<p id="section-5.1.3-4.6.7">
-       The <code>request_object</code> method MAY be used at either endpoint.<a href="#section-5.1.3-4.6.7" class="pilcrow">¶</a></p>
-<p id="section-5.1.3-4.6.8">
+<p id="section-5.1.3-5.6.7">
+       The <code>request_object</code> method MAY be used at either endpoint.<a href="#section-5.1.3-5.6.7" class="pilcrow">¶</a></p>
+<p id="section-5.1.3-5.6.8">
 
-       Additional request authentication methods MAY be defined and used.<a href="#section-5.1.3-4.6.8" class="pilcrow">¶</a></p>
+       Additional request authentication methods MAY be defined and used.<a href="#section-5.1.3-5.6.8" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.1.3-4.7">request_authentication_signing_alg_values_supported</dt>
-            <dd style="margin-left: 1.5em" id="section-5.1.3-4.8">
+<dt id="section-5.1.3-5.7">request_authentication_signing_alg_values_supported</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.3-5.8">
               OPTIONAL.
               JSON array containing a list of the supported
               <span><a href="#RFC7515" class="internal xref">JWS</a> [<a href="#RFC7515" class="cite xref">RFC7515</a>]</span> algorithms
@@ -3370,14 +3375,14 @@ li > p:last-of-type:only-child {
               in the <code>request_authentication_methods_supported</code> entry.
               No default algorithms are implied if this entry is omitted.
               Servers SHOULD support <code>RS256</code>.
-              The value <code>none</code> MUST NOT be used.<a href="#section-5.1.3-4.8" class="pilcrow">¶</a>
+              The value <code>none</code> MUST NOT be used.<a href="#section-5.1.3-5.8" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 </dl>
-<p id="section-5.1.3-5" class="keepWithNext">
-     The following is a non-normative example of the JWT Claims Set for an OP's Entity Configuration:<a href="#section-5.1.3-5" class="pilcrow">¶</a></p>
+<p id="section-5.1.3-6" class="keepWithNext">
+     The following is a non-normative example of the JWT Claims Set for an OP's Entity Configuration:<a href="#section-5.1.3-6" class="pilcrow">¶</a></p>
 <span id="name-example-openid-provider-ent"></span><figure id="figure-9">
-            <div class="alignLeft art-text artwork" id="section-5.1.3-6.1">
+            <div class="alignLeft art-text artwork" id="section-5.1.3-7.1">
 <pre>
 {
    "iss":"https://op.umu.se",
@@ -3386,7 +3391,7 @@ li > p:last-of-type:only-child {
    "iat":1568310847,
    "metadata":{
       "openid_provider":{
-         "issuer":"https://op.umu.se/openid",
+         "issuer":"https://op.umu.se",
          "signed_jwks_uri":"https://op.umu.se/openid/signed_jwks.jose",
          "authorization_endpoint":"https://op.umu.se/openid/authorization",
          "client_registration_types_supported":[
@@ -3475,6 +3480,11 @@ li > p:last-of-type:only-child {
    as well as additional parameters registered in the
    IANA "OAuth Authorization Server Metadata" registry
    <span>[<a href="#IANA.OAuth.Parameters" class="cite xref">IANA.OAuth.Parameters</a>]</span>.<a href="#section-5.1.4-2" class="pilcrow">¶</a></p>
+<p id="section-5.1.4-3">
+          The <code>issuer</code> parameter value
+          in the <code>oauth_authorization_server</code> metadata MUST
+          match the Federation Entity identifier
+          (the <code>iss</code> claim in the Entity Configuration).<a href="#section-5.1.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="oauth-client">
