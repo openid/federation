@@ -6344,8 +6344,7 @@ HTTP/1.1 302 Found
             </t>
           </section>
 
-          <section anchor="cliregresp" title="Explicit Client Registration Response">
-            <section anchor="ExplicitRegOP" title="Processing of the Request by the OP">
+            <section anchor="ExplicitRegOP" title="Processing Explicit Client Registration Request by OP">
               <t>
                 The OP processes the request as follows:
               </t>
@@ -6448,25 +6447,30 @@ HTTP/1.1 302 Found
                     registration. This time MUST NOT exceed the expiration time
                     of the Trust Chain that the OP selected to process the request.
                   </t>
+                </list>
+	      </t>
+	    </section>
+
+          <section anchor="cliregresp" title="Explicit Client Registration Response">
                   <t>
                     If the OP created a client registration for the RP, it MUST
                     then construct a success response in the form of an Entity Statement.
-                    <vspace blankLine="1"/>
-
+		  </t>
+		  <t>
                     The OP MUST set the <spanx style="verb">trust_anchor_id</spanx>
                     claim of the Entity Statement to the Trust Anchor it
                     selected to process the request. The
                     <spanx style="verb">authority_hints</spanx> claim MUST be
                     set to the OP's Immediate Superior in the
                     selected Trust Chain.
-                    <vspace blankLine="1"/>
-
+		  </t>
+		  <t>
                     The OP MUST set the <spanx style="verb">exp</spanx> claim
                     to the expiration time of the created registration. The OP
                     MAY choose to invalidate the registration before that, as
                     explained in <xref target="AfterExplicitReg"/>.
-                    <vspace blankLine="1"/>
-
+		  </t>
+		  <t>
                     The OP MUST express the client registration it created for
                     the RP by means of the <spanx style="verb">metadata</spanx>
                     claim, by placing the metadata parameters under the
@@ -6477,8 +6481,8 @@ HTTP/1.1 302 Found
                     for the RP. If the RP was provisioned with credentials,
                     for example a <spanx style="verb">client_secret</spanx>,
                     these MUST be included as well.
-                    <vspace blankLine="1"/>
-
+		  </t>
+		  <t>
                     The OP SHOULD include metadata parameters that have a
                     default value, for example
                     <spanx style="verb">token_endpoint_auth_method</spanx>
@@ -6490,11 +6494,9 @@ HTTP/1.1 302 Found
                     The OP MUST sign the registration Entity Statement with a
                     current Federation Entity Key in its possession.
                   </t>
-                </list>
-              </t>
               <t>
-                The following Entity Statement claims are specified for use in
-                Explicit Registration responses.
+                The following Entity Statement claims are used in
+                Explicit Registration responses:
               </t>
               <t>
                 <list style="hanging">
@@ -6588,7 +6590,7 @@ HTTP/1.1 302 Found
               </t>
             </section>
 
-            <section anchor="ExplicitRegRP" title="Processing of the Response by the RP">
+            <section anchor="ExplicitRegRP" title="Processing Explicit Client Registration Response by RP">
               <t>
                 <list style="numbers">
                   <t>
@@ -6642,7 +6644,6 @@ HTTP/1.1 302 Found
                 </list>
               </t>
             </section>
-          </section>
 
         <section title="After an Explicit Client Registration" anchor="AfterExplicitReg">
           <t>
