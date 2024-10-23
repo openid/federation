@@ -6433,8 +6433,8 @@ Host: openid.sunet.se
 <a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-trust-mark-status" class="section-name selfRef">Trust Mark Status</a>
         </h3>
 <p id="section-8.4-1">
-          This enables an Entity to check whether a Trust Mark is still
-          active or not. The query MUST be sent to the Trust Mark issuer.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
+          This enables an Entity to check whether a Trust Mark has been issued to
+          an Entity and is still active. The query MUST be sent to the Trust Mark issuer.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
 <p id="section-8.4-2">
    The Trust Mark status endpoint location is published in
    the Entity's <code>federation_entity</code> metadata
@@ -6448,62 +6448,36 @@ Host: openid.sunet.se
 <a href="#section-8.4.1" class="section-number selfRef">8.4.1. </a><a href="#name-trust-mark-status-request" class="section-name selfRef">Trust Mark Status Request</a>
           </h4>
 <p id="section-8.4.1-1">
-            The request MUST be an HTTP request using the POST method
+            The request MUST be an HTTP request using the GET method
             to a Trust Mark status endpoint
             with the following query parameters, encoded in
             <code>application/x-www-form-urlencoded</code> format.<a href="#section-8.4.1-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-8.4.1-2">
             <dt id="section-8.4.1-2.1">sub</dt>
             <dd style="margin-left: 1.5em" id="section-8.4.1-2.2">
-                OPTIONAL. The Entity Identifier of the Entity to which the Trust Mark
+                REQUIRED. The Entity Identifier of the Entity to which the Trust Mark
                 was issued.<a href="#section-8.4.1-2.2" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-8.4.1-2.3">trust_mark_id</dt>
             <dd style="margin-left: 1.5em" id="section-8.4.1-2.4">
-                OPTIONAL. Identifier of the Trust Mark.<a href="#section-8.4.1-2.4" class="pilcrow">¶</a>
-</dd>
-            <dd class="break"></dd>
-<dt id="section-8.4.1-2.5">iat</dt>
-            <dd style="margin-left: 1.5em" id="section-8.4.1-2.6">
-                OPTIONAL. Number. Time when this Trust Mark was issued.
-                This is expressed as Seconds Since the Epoch, as defined in
-                <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>. If
-                <code>iat</code> is not specified and the
-                Trust Mark issuer has issued several Trust Marks with the
-                identifier specified in the request to the
-                Entity identified by <code>sub</code>, the
-                most recent one is assumed.<a href="#section-8.4.1-2.6" class="pilcrow">¶</a>
-</dd>
-            <dd class="break"></dd>
-<dt id="section-8.4.1-2.7">trust_mark</dt>
-            <dd style="margin-left: 1.5em" id="section-8.4.1-2.8">
-                OPTIONAL. The whole Trust Mark.<a href="#section-8.4.1-2.8" class="pilcrow">¶</a>
+                REQUIRED. Identifier of the Trust Mark.<a href="#section-8.4.1-2.4" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 </dl>
 <p id="section-8.4.1-3">
-            If <code>trust_mark</code> is used, then
-            <code>sub</code> and <code>trust_mark_id</code>
-            are not needed. If <code>trust_mark</code> is not used,
-            then <code>sub</code> and <code>trust_mark_id</code>
-            are REQUIRED.<a href="#section-8.4.1-3" class="pilcrow">¶</a></p>
-<p id="section-8.4.1-4">
      When client authentication is used,
      the request MUST be an HTTP request using the POST method,
-     with the parameters passed in the POST body.<a href="#section-8.4.1-4" class="pilcrow">¶</a></p>
-<p id="section-8.4.1-5" class="keepWithNext">
-                The following is a non-normative example of a Trust Mark status request using
-                <code>sub</code> and <code>trust_mark_id</code>:<a href="#section-8.4.1-5" class="pilcrow">¶</a></p>
+     with the parameters passed in the POST body.<a href="#section-8.4.1-3" class="pilcrow">¶</a></p>
+<p id="section-8.4.1-4" class="keepWithNext">
+                The following is a non-normative example of a Trust Mark status request:<a href="#section-8.4.1-4" class="pilcrow">¶</a></p>
 <span id="name-trust-mark-status-request-2"></span><figure id="figure-35">
-            <div class="alignLeft art-text artwork" id="section-8.4.1-6.1">
+            <div class="alignLeft art-text artwork" id="section-8.4.1-5.1">
 <pre>
-POST /federation_trust_mark_status_endpoint HTTP/1.1
+GET /federation_trust_mark_status_endpoint?
+sub=https%3A%2F%2Fopenid.sunet.se%2FRP&amp;
+trust_mark_id=https%3A%2F%2Frefeds.org%2Fsirtfi HTTP/1.1
 Host: op.example.org
-Content-Type: application/x-www-form-urlencoded
-
-sub=https%3A%2F%2Fopenid.sunet.se%2FRP
-&amp;trust_mark_id=https%3A%2F%2Frefeds.org%2Fsirtfi
 </pre>
 </div>
 <figcaption><a href="#figure-35" class="selfRef">Figure 35</a>:
