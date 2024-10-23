@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="17" month="October" year="2024"/>
+    <date day="23" month="October" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -1381,6 +1381,14 @@
 	  IANA "OAuth Authorization Server Metadata" registry
 	  <xref target="IANA.OAuth.Parameters"/>.
         </t>
+
+        <t>
+          The <spanx style="verb">issuer</spanx> parameter value
+          in the <spanx style="verb">openid_provider</spanx> metadata MUST
+          match the Federation Entity identifier
+          (the <spanx style="verb">iss</spanx> parameter within the Entity Configuration).
+        </t>
+
         <t>
           In addition, the following OP metadata parameters are defined:
         </t>
@@ -1425,7 +1433,7 @@
    "iat":1568310847,
    "metadata":{
       "openid_provider":{
-         "issuer":"https://op.umu.se/openid",
+         "issuer":"https://op.umu.se",
          "signed_jwks_uri":"https://op.umu.se/openid/signed_jwks.jose",
          "authorization_endpoint":"https://op.umu.se/openid/authorization",
          "client_registration_types_supported":[
@@ -1502,6 +1510,14 @@
 	  IANA "OAuth Authorization Server Metadata" registry
 	  <xref target="IANA.OAuth.Parameters"/>.
         </t>
+
+        <t>
+          The <spanx style="verb">issuer</spanx> parameter value
+          in the <spanx style="verb">oauth_authorization_server</spanx> metadata MUST
+          match the Federation Entity identifier
+          (the <spanx style="verb">iss</spanx> claim in the Entity Configuration).
+        </t>
+
       </section>
 
       <section anchor="oauth-client" title="OAuth Client">
@@ -4369,8 +4385,8 @@ Host: openid.sunet.se
 
       <section title="Trust Mark Status" anchor="status_endpoint">
         <t>
-          This enables an Entity to check whether a Trust Mark is still
-          active or not. The query MUST be sent to the Trust Mark issuer.
+          This enables an Entity to check whether a Trust Mark has been issued to
+          an Entity and is still active. The query MUST be sent to the Trust Mark issuer.
         </t>
 	<t>
 	  The Trust Mark status endpoint location is published in
@@ -4383,7 +4399,7 @@ Host: openid.sunet.se
 
         <section anchor="tm-status-request" title="Trust Mark Status Request">
           <t>
-            The request MUST be an HTTP request using the POST method
+            The request MUST be an HTTP request using the GET method
             to a Trust Mark status endpoint
             with the following query parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
@@ -4392,36 +4408,14 @@ Host: openid.sunet.se
             <list style="hanging">
               <t hangText="sub">
                 <vspace/>
-                OPTIONAL. The Entity Identifier of the Entity to which the Trust Mark
+                REQUIRED. The Entity Identifier of the Entity to which the Trust Mark
                 was issued.
               </t>
               <t hangText="trust_mark_id">
                 <vspace/>
-                OPTIONAL. Identifier of the Trust Mark.
-              </t>
-              <t hangText="iat">
-                <vspace/>
-                OPTIONAL. Number. Time when this Trust Mark was issued.
-                This is expressed as Seconds Since the Epoch, as defined in
-                <xref target="RFC7519"/>. If
-                <spanx style="verb">iat</spanx> is not specified and the
-                Trust Mark issuer has issued several Trust Marks with the
-                identifier specified in the request to the
-                Entity identified by <spanx style="verb">sub</spanx>, the
-                most recent one is assumed.
-              </t>
-              <t hangText="trust_mark">
-                <vspace/>
-                OPTIONAL. The whole Trust Mark.
+                REQUIRED. Identifier of the Trust Mark.
               </t>
             </list>
-          </t>
-          <t>
-            If <spanx style="verb">trust_mark</spanx> is used, then
-            <spanx style="verb">sub</spanx> and <spanx style="verb">trust_mark_id</spanx>
-            are not needed. If <spanx style="verb">trust_mark</spanx> is not used,
-            then <spanx style="verb">sub</spanx> and <spanx style="verb">trust_mark_id</spanx>
-            are REQUIRED.
           </t>
 	  <t>
 	    When client authentication is used,
@@ -4430,19 +4424,16 @@ Host: openid.sunet.se
 	  </t>
             <figure>
               <preamble>
-                The following is a non-normative example of a Trust Mark status request using
-                <spanx style="verb">sub</spanx> and <spanx style="verb">trust_mark_id</spanx>:
+                The following is a non-normative example of a Trust Mark status request:
               </preamble>
 	      <name>
 		Trust Mark Status Request
 	      </name>
               <artwork><![CDATA[
-POST /federation_trust_mark_status_endpoint HTTP/1.1
+GET /federation_trust_mark_status_endpoint?
+sub=https%3A%2F%2Fopenid.sunet.se%2FRP&
+trust_mark_id=https%3A%2F%2Frefeds.org%2Fsirtfi HTTP/1.1
 Host: op.example.org
-Content-Type: application/x-www-form-urlencoded
-
-sub=https%3A%2F%2Fopenid.sunet.se%2FRP
-&trust_mark_id=https%3A%2F%2Frefeds.org%2Fsirtfi
 ]]></artwork>
             </figure>
         </section>
@@ -9733,6 +9724,10 @@ Host: op.umu.se
 	    Fixed #104: Removed the <spanx style="verb">*_auth_signing_algs</spanx>
 	    metadata parameters in favor of
 	    <spanx style="verb">endpoint_auth_signing_alg_values_supported</spanx>.
+	  </t>
+	  <t>
+	    Required that the <spanx style="verb">issuer</spanx> OP and AS
+	    metadata values match the Entity Identifier.
 	  </t>
 	</list>
       </t>
