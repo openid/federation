@@ -1260,7 +1260,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-10-21" class="published">21 October 2024</time>
+<time datetime="2024-10-23" class="published">23 October 2024</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -2062,9 +2062,14 @@ li > p:last-of-type:only-child {
 <p id="section-1.2-1">
           This specification uses the terms "Claim",
           "Claim Name", "Claim Value", "JSON Web Token (JWT)", and "JWT Claims Set"
-          defined by <span><a href="#RFC7519" class="internal xref">JSON Web Token (JWT)</a> [<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>
-          and the terms "OpenID Provider (OP)" and "Relying Party (RP)" defined
-          by <span><a href="#OpenID.Core" class="internal xref">OpenID Connect Core 1.0</a> [<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span>.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
+          defined by <span><a href="#RFC7519" class="internal xref">JSON Web Token (JWT)</a> [<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>,
+          the terms "OpenID Provider (OP)" and "Relying Party (RP)" defined
+          by <span><a href="#OpenID.Core" class="internal xref">OpenID Connect Core 1.0</a> [<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span>, and
+   the terms "Authorization Endpoint", "Authorization Server",
+   "Client", "Client Authentication", "Client Identifier", "Client Secret",
+   "Grant Type", "Protected Resource", "Redirection URI", "Refresh Token",
+   and "Token Endpoint"
+   defined by <span><a href="#RFC6749" class="internal xref">OAuth 2.0</a> [<a href="#RFC6749" class="cite xref">RFC6749</a>]</span>.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
 <p id="section-1.2-2">
           This specification also defines the following terms:<a href="#section-1.2-2" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-1.2-3">
@@ -3128,6 +3133,21 @@ li > p:last-of-type:only-child {
           All Federation Entities MAY publish a
        <code>federation_historical_keys_endpoint</code>.<a href="#section-5.1.1-4.14" class="pilcrow">¶</a>
 </dd>
+            <dd class="break"></dd>
+<dt id="section-5.1.1-4.15">endpoint_auth_signing_alg_values_supported</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-4.16">
+              OPTIONAL.
+              JSON array containing a list of the supported
+              <span><a href="#RFC7515" class="internal xref">JWS</a> [<a href="#RFC7515" class="cite xref">RFC7515</a>]</span> algorithms
+              (<code>alg</code> values)
+              for signing the <span><a href="#RFC7519" class="internal xref">JWT</a> [<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>
+              used for <code>private_key_jwt</code>
+       when authenticating to federation endpoints,
+       as described in <a href="#ClientAuthentication" class="auto internal xref">Section 8.8</a>.
+              No default algorithms are implied if this entry is omitted.
+              Servers SHOULD support <code>RS256</code>.
+              The value <code>none</code> MUST NOT be used.<a href="#section-5.1.1-4.16" class="pilcrow">¶</a>
+</dd>
           <dd class="break"></dd>
 </dl>
 <p id="section-5.1.1-5">
@@ -3281,102 +3301,6 @@ li > p:last-of-type:only-child {
               Registration as described in <a href="#explicit" class="auto internal xref">Section 12.2</a>,
               then this claim is REQUIRED.<a href="#section-5.1.3-5.4" class="pilcrow">¶</a>
 </dd>
-            <dd class="break"></dd>
-<dt id="section-5.1.3-5.5">request_authentication_methods_supported</dt>
-            <dd style="margin-left: 1.5em" id="section-5.1.3-5.6">
-              <p id="section-5.1.3-5.6.1">
-              OPTIONAL.
-       An OP MUST be able to verify that a request comes from an RP
-       that is a member of a federation that the OP is a member of.
-       This is done via request authentication methods.
-       These methods achieve this by proving that
-       the RP is in possession of a key that appears in its metadata.
-       This parameter declares the request authentication methods that the OP supports.<a href="#section-5.1.3-5.6.1" class="pilcrow">¶</a></p>
-<p id="section-5.1.3-5.6.2">
-
-       The <code>request_authentication_methods_supported</code>
-       value is a JSON object where the member names are names of endpoints
-       where the request authentication occurs.
-       This MAY be either at
-       the OP's Authorization Endpoint or
-       the OP's Pushed Authorization Request (PAR) endpoint.
-       Supported endpoint identifiers are
-       <code>authorization_endpoint</code> and
-       <code>pushed_authorization_request_endpoint</code>.
-       The values of the JSON object members for the endpoint names are
-       JSON arrays containing the names of the request authentication methods
-       used at those endpoints.<a href="#section-5.1.3-5.6.2" class="pilcrow">¶</a></p>
-<p id="section-5.1.3-5.6.3">
-
-       Some OAuth 2.0 client authentication methods can be used at the
-       <code>pushed_authorization_request_endpoint</code>
-       to achieve request authentication.
-       They are the subset of those listed in the
-       IANA "OAuth Token Endpoint Authentication Methods" registry <span>[<a href="#IANA.OAuth.Parameters" class="cite xref">IANA.OAuth.Parameters</a>]</span>
-       that perform client authentication by proving possession of a private key.
-              These client authentication methods are:<a href="#section-5.1.3-5.6.3" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-5.1.3-5.6.4">
-                <dt id="section-5.1.3-5.6.4.1">private_key_jwt</dt>
-                <dd style="margin-left: 1.5em" id="section-5.1.3-5.6.4.2">
-                  This client authentication method is described in Section 9 of
-                  <span><a href="#OpenID.Core" class="internal xref">OpenID Connect Core 1.0</a> [<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span>.
-                  Note that if <code>private_key_jwt</code> is
-                  used, the audience of the signed JWT MUST be either the URL of
-                  the Authorization Server's Authorization Endpoint or the
-                  Authorization Server's Entity Identifier.<a href="#section-5.1.3-5.6.4.2" class="pilcrow">¶</a>
-</dd>
-                <dd class="break"></dd>
-<dt id="section-5.1.3-5.6.4.3">tls_client_auth</dt>
-                <dd style="margin-left: 1.5em" id="section-5.1.3-5.6.4.4">
-                  Section 2.1 of
-                  <span>[<a href="#RFC8705" class="cite xref">RFC8705</a>]</span>.<a href="#section-5.1.3-5.6.4.4" class="pilcrow">¶</a>
-</dd>
-                <dd class="break"></dd>
-<dt id="section-5.1.3-5.6.4.5">self_signed_tls_client_auth</dt>
-                <dd style="margin-left: 1.5em" id="section-5.1.3-5.6.4.6">
-                  Section 2.2 of
-                  <span>[<a href="#RFC8705" class="cite xref">RFC8705</a>]</span>.<a href="#section-5.1.3-5.6.4.6" class="pilcrow">¶</a>
-</dd>
-              <dd class="break"></dd>
-</dl>
-<p id="section-5.1.3-5.6.5">
-
-              A request authentication method that is not a client authentication method is:<a href="#section-5.1.3-5.6.5" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-5.1.3-5.6.6">
-                <dt id="section-5.1.3-5.6.6.1">request_object</dt>
-                <dd style="margin-left: 1.5em" id="section-5.1.3-5.6.6.2">
-                  Use of a Request Object, as described in
-                  <span><a href="#OpenID.Core" class="internal xref">OpenID Connect Core 1.0</a> [<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span>.
-   The request authentication is performed by verifying that
-   the request object is signed with a key that the RP controls.
-   Use of Request Objects by Automatic Registration is described in
-                  <a href="#automatic" class="auto internal xref">Section 12.1</a>.<a href="#section-5.1.3-5.6.6.2" class="pilcrow">¶</a>
-</dd>
-              <dd class="break"></dd>
-</dl>
-<p id="section-5.1.3-5.6.7">
-       The <code>request_object</code> method MAY be used at either endpoint.<a href="#section-5.1.3-5.6.7" class="pilcrow">¶</a></p>
-<p id="section-5.1.3-5.6.8">
-
-       Additional request authentication methods MAY be defined and used.<a href="#section-5.1.3-5.6.8" class="pilcrow">¶</a></p>
-</dd>
-            <dd class="break"></dd>
-<dt id="section-5.1.3-5.7">request_authentication_signing_alg_values_supported</dt>
-            <dd style="margin-left: 1.5em" id="section-5.1.3-5.8">
-              OPTIONAL.
-              JSON array containing a list of the supported
-              <span><a href="#RFC7515" class="internal xref">JWS</a> [<a href="#RFC7515" class="cite xref">RFC7515</a>]</span> algorithms
-              (<code>alg</code> values)
-              for signing the <span><a href="#RFC7519" class="internal xref">JWT</a> [<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>
-              used in the Request Object
-              contained in the request parameter of an authorization request or
-              in the <code>private_key_jwt</code> of a pushed authorization request.
-              This entry MUST be present if either of these authentication methods are specified
-              in the <code>request_authentication_methods_supported</code> entry.
-              No default algorithms are implied if this entry is omitted.
-              Servers SHOULD support <code>RS256</code>.
-              The value <code>none</code> MUST NOT be used.<a href="#section-5.1.3-5.8" class="pilcrow">¶</a>
-</dd>
           <dd class="break"></dd>
 </dl>
 <p id="section-5.1.3-6" class="keepWithNext">
@@ -3427,18 +3351,11 @@ li > p:last-of-type:only-child {
             "private_key_jwt"
          ],
          "pushed_authorization_request_endpoint":"https://op.umu.se/openid/par",
-         "request_authentication_methods_supported": {
-            "authorization_endpoint": [
-                "request_object"
-            ],
-            "pushed_authorization_request_endpoint": [
-                "request_object",
-                "private_key_jwt",
-                "tls_client_auth",
-                "self_signed_tls_client_auth"
-            ]
-         },
-         "request_authentication_signing_alg_values_supported": [
+         "request_object_signing_alg_values_supported": [
+            "ES256",
+            "RS256"
+         ],
+         "token_endpoint_auth_signing_alg_values_supported": [
             "ES256",
             "RS256"
          ]
@@ -7086,17 +7003,15 @@ Host: trust-anchor.example.com
 <p id="section-8.8.1-1">
      Like other OAuth and OpenID endpoints supporting client authentication,
      this specification defines metadata parameters saying which
-     client authentication methods are supported.
+     client authentication methods are supported for each endpoint.
      These largely parallel the
-     <code>token_endpoint_auth_methods_supported</code> and
-     <code>token_endpoint_auth_signing_alg_values_supported</code>
-     metadata values defined in Section 3 of
+     <code>token_endpoint_auth_methods_supported</code>
+     metadata value defined in Section 3 of
      <span><a href="#OpenID.Discovery" class="internal xref">OpenID Connect Discovery 1.0</a> [<a href="#OpenID.Discovery" class="cite xref">OpenID.Discovery</a>]</span>.<a href="#section-8.8.1-1" class="pilcrow">¶</a></p>
 <p id="section-8.8.1-2">
      Specifically, for each of the federation endpoints defined in
      <a href="#federation_entity" class="auto internal xref">Section 5.1.1</a>, parameters named
-     <code>*_auth_methods</code> and
-     <code>*_auth_signing_algs</code>
+     <code>*_auth_methods</code>
      are defined, where the <code>*</code> represents the
      federation endpoint names
      <code>federation_fetch_endpoint</code>,
@@ -7104,8 +7019,10 @@ Host: trust-anchor.example.com
      <code>federation_historical_keys_endpoint</code>.<a href="#section-8.8.1-2" class="pilcrow">¶</a></p>
 <p id="section-8.8.1-3">
      The <code>*_auth_methods</code>
-     metadata parameters list supported client authentication methods, just as
-     <code>token_endpoint_auth_methods_supported</code> does.
+     metadata parameters list supported client authentication methods
+     for these endpoints, just as
+     <code>token_endpoint_auth_methods_supported</code>
+     does for the Token Endpoint.
      In addition, the value <code>none</code> MAY be used
      to indicate that client authentication is not required at the endpoint.<a href="#section-8.8.1-3" class="pilcrow">¶</a></p>
 <p id="section-8.8.1-4" class="keepWithNext">
@@ -7128,13 +7045,11 @@ Host: trust-anchor.example.com
      <code>["none"]</code>,
      indicating that only unauthenticated requests are accepted.<a href="#section-8.8.1-6" class="pilcrow">¶</a></p>
 <p id="section-8.8.1-7">
-     The <code>*_auth_signing_algs</code>
-     metadata parameters list supported client authentication
-     signing algorithms supported, just as
-     <code>token_endpoint_auth_signing_alg_values_supported</code> does.
-     If omitted and <code>private_key_jwt</code> is supported,
-     the default value is <code>["RS256"]</code>.
-     The value <code>none</code> MUST NOT be used.<a href="#section-8.8.1-7" class="pilcrow">¶</a></p>
+     The <code>endpoint_auth_signing_alg_values_supported</code>
+     metadata parameter lists supported client authentication
+     signing algorithms supported for these endpoints, just as
+     <code>token_endpoint_auth_signing_alg_values_supported</code>
+     does for the Token Endpoint.<a href="#section-8.8.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -7785,12 +7700,6 @@ Content-Type: application/json
               Instead, the Automatic Registration model requires the RP to use
               asymmetric cryptography to authenticate its requests.<a href="#section-12.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-12.1-3.3">
-            <p id="section-12.1-3.3.1">
-              The OP MUST publish that it supports one or more request authentication
-              methods using the <code>openid_provider</code> metadata parameter
-              <code>request_authentication_methods_supported</code>.<a href="#section-12.1-3.3.1" class="pilcrow">¶</a></p>
-</li>
         </ul>
 <p id="section-12.1-4">
           An OP that supports Automatic Registration MUST include the
@@ -7806,21 +7715,20 @@ Content-Type: application/json
             The Authentication Request is performed by passing a
             signed Request Object by value as described in Section 6.1 of
             <span><a href="#OpenID.Core" class="internal xref">OpenID Connect Core 1.0</a> [<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span>
-            or using a pushed authorization request with a signed Request Object,
-     as described in Section 3 of
+            or using a pushed authorization request, as described in
             <span><a href="#RFC9126" class="internal xref">Pushed Authorization Requests</a> [<a href="#RFC9126" class="cite xref">RFC9126</a>]</span>.<a href="#section-12.1.1-1" class="pilcrow">¶</a></p>
 <p id="section-12.1.1-2">
-     Authentication requests not using a signed Request Object
-     MUST be rejected, since checking the request signature is used
-     to validate that the Entity making the request controls the RP's keys.<a href="#section-12.1.1-2" class="pilcrow">¶</a></p>
+     Authentication requests MUST demonstrate that the requesting Entity
+     controls the Entity's RP keys, using one of the methods described below.
+     Attempted authentication requests that do not do so MUST be rejected.<a href="#section-12.1.1-2" class="pilcrow">¶</a></p>
 <div id="UsingAuthzRequestObject">
 <section id="section-12.1.1.1">
             <h5 id="name-using-a-request-object-dire">
 <a href="#section-12.1.1.1" class="section-number selfRef">12.1.1.1. </a><a href="#name-using-a-request-object-dire" class="section-name selfRef">Using a Request Object Directly</a>
             </h5>
 <p id="section-12.1.1.1-1">
-              When a Request Object is used directly, the value of the
-              <code>request</code>
+              When a Request Object is used directly at the Authorization Endpoint,
+       the value of the <code>request</code>
               parameter is a JWT whose Claims are the request parameters
               specified in Section 3.1.2 in
               <span><a href="#OpenID.Core" class="internal xref">OpenID Connect Core 1.0</a> [<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span>.
@@ -7901,7 +7809,7 @@ Content-Type: application/json
 <p id="section-12.1.1.1.1-2">
               Due to the large size of a Trust Chain, it may be necessary
               to use the HTTP POST method,
-              <code>request_uri</code>,
+              a <code>request_uri</code>,
               or
               a <span><a href="#RFC9126" class="internal xref">Pushed Authorization Request</a> [<a href="#RFC9126" class="cite xref">RFC9126</a>]</span>
               for the request.<a href="#section-12.1.1.1.1-2" class="pilcrow">¶</a></p>
@@ -7952,21 +7860,22 @@ GET /authorize?
     &amp;scope=openid+profile+email+address+phone
     &amp;response_type=code
     &amp;client_id=https%3A%2F%2Frp.example.com
-    &amp;request=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5fX0Q5OEl2QjhOYWUta3dBNm5yT3QtaXBU
-        aGpIa0R4MzduaWNETUgzTjQifQ.eyJhdWQiOiJodHRwczovL29wLmV4YW1wbGUub
-        3JnL2F1dGhvcml6YXRpb24tZW5kcG9pbnQiLCJjbGllbnRfaWQiOiJodHRwczovL
-        3JwLmV4YW1wbGUuY29tIiwiZXhwIjoxNTg5Njk5MTYyLCJpYXQiOjE1ODk2OTkxM
-        DIsImlzcyI6Imh0dHBzOi8vcnAuZXhhbXBsZS5jb20iLCJqdGkiOiI0ZDNlYzBmO
-        DFmMTM0ZWU5YTk3ZTA0NDliZTZkMzJiZSIsIm5vbmNlIjoiNExYMG1GTXhkQmprR
-        210eDdhOFdJT25CIiwicmVkaXJlY3RfdXJpIjoiaHR0cHM6Ly9ycC5leGFtcGxlL
-        mNvbS9hdXRoel9jYiIsInJlc3BvbnNlX3R5cGUiOiJjb2RlIiwic2NvcGUiOiJvc
-        GVuaWQgcHJvZmlsZSBlbWFpbCBhZGRyZXNzIHBob25lIiwic3RhdGUiOiJZbVg4U
-        E05STdXYk5vTW5uaWVLS0JpcHRWVzBzUDJPWiIsInRydXN0X2NoYWluIjpbImV5S
-        mhiR2NpT2lKU1V6STFOaUlzSW10cFpDSTZJbXMxTkVoUmRFUnBZbmxIWTNNNVdsZ
-        FdUV1oyYVVobSAuLi4iLCJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SWtKW
-        WRtWnliRzVvUVUxMVNGSXdOMkZxVlcxQlkwSlMgLi4uIiwiZXlKaGJHY2lPaUpTV
-        XpJMU5pSXNJbXRwWkNJNklrSllkbVp5Ykc1b1FVMTFTRkl3TjJGcVZXMUJZMEpTI
-        C4uLiJdfQ.Rv0isfuku0FcRFintgxgKDk7EnhFkpQRg3Tm6N6fCHAHEKFxVVdjy4
+    &amp;request=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5fX0Q5OEl2QjhOYWUta3dBNm5yT3Q
+        taXBUaGpIa0R4MzduaWNETUgzTjQifQ.
+        eyJhdWQiOiJodHRwczovL29wLmV4YW1wbGUub3JnIiwiY2xpZW50X2lkIjoiaHR0
+        cHM6Ly9ycC5leGFtcGxlLmNvbSIsImV4cCI6MTU4OTY5OTE2MiwiaWF0IjoxNTg5
+        Njk5MTAyLCJpc3MiOiJodHRwczovL3JwLmV4YW1wbGUuY29tIiwianRpIjoiNGQz
+        ZWMwZjgxZjEzNGVlOWE5N2UwNDQ5YmU2ZDMyYmUiLCJub25jZSI6IjRMWDBtRk14
+        ZEJqa0dtdHg3YThXSU9uQiIsInJlZGlyZWN0X3VyaSI6Imh0dHBzOi8vcnAuZXhh
+        bXBsZS5jb20vYXV0aHpfY2IiLCJyZXNwb25zZV90eXBlIjoiY29kZSIsInNjb3Bl
+        Ijoib3BlbmlkIHByb2ZpbGUgZW1haWwgYWRkcmVzcyBwaG9uZSIsInN0YXRlIjoi
+        WW1YOFBNOUk3V2JOb01ubmllS0tCaXB0Vlcwc1AyT1oiLCJ0cnVzdF9jaGFpbiI6
+        WyJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SW1zMU5FaFJkRVJwWW5sSFkz
+        TTVXbGRXVFdaMmFVaG0gLi4uIiwiZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJ
+        NklrSllkbVp5Ykc1b1FVMTFTRkl3TjJGcVZXMUJZMEpTIC4uLiIsImV5SmhiR2Np
+        T2lKU1V6STFOaUlzSW10cFpDSTZJa0pZZG1aeWJHNW9RVTExU0ZJd04yRnFWVzFC
+        WTBKUyAuLi4iXX0.
+        Rv0isfuku0FcRFintgxgKDk7EnhFkpQRg3Tm6N6fCHAHEKFxVVdjy4
         9JboJtxKcQVZKN9TKn3lEYM1wtF1e9PQrNt4HZ21ICfnzxXuNx1F5SY1GXCU2n2y
         FVKtz3N0YkAFbTStzy-sPRTXB0stLBJH74RoPiLs2c6dDvrwEv__GA7oGkg2gWt6
         VDvnfDpnvFi3ZEUR1J8MOeW_VFsayrT9sNjyjsz62Po4LzvQKQMKxq0dNwPNYuuS
@@ -8049,46 +7958,43 @@ GET /authorize?
 <p id="section-12.1.1.2-1">
               <span><a href="#RFC9126" class="internal xref">Pushed Authorization Requests</a> [<a href="#RFC9126" class="cite xref">RFC9126</a>]</span>
               provide an
-              interoperable way to push a Request Object
-              directly to the AS in exchange for a
-              <code>request_uri</code>.<a href="#section-12.1.1.2-1" class="pilcrow">¶</a></p>
+              interoperable way to push authentication request parameters
+              directly to the AS in exchange for a one-time-use
+              <code>request_uri</code>.
+       The standard PAR metadata parameters are used in the
+       RP and OP metadata to indicate its use.<a href="#section-12.1.1.2-1" class="pilcrow">¶</a></p>
 <p id="section-12.1.1.2-2">
-              There are four applicable authentication methods:<a href="#section-12.1.1.2-2" class="pilcrow">¶</a></p>
+       When using PAR with Automatic Registration,
+       either a Request Object MUST be used as a PAR parameter,
+       with the Request Object being as described in
+       <a href="#UsingAuthzRequestObject" class="auto internal xref">Section 12.1.1.1</a>, or
+       a client authentication method for the PAR endpoint
+       MUST be used that proves possession of one of the RP's private keys.
+       Furthermore, the corresponding public key MUST be in the
+       Entity's RP JWK Set.<a href="#section-12.1.1.2-2" class="pilcrow">¶</a></p>
+<p id="section-12.1.1.2-3">
+              The two applicable PAR client authentication methods are:<a href="#section-12.1.1.2-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-12.1.1.2-3.1">
-                <p id="section-12.1.1.2-3.1.1">
+<li class="normal" id="section-12.1.1.2-4.1">
+                <p id="section-12.1.1.2-4.1.1">
    JWT Client authentication, as described
-                  for <code>private_key_jwt</code> in Section 9
-                  of
-                  <span><a href="#OpenID.Core" class="internal xref">OpenID Connect Core 1.0</a> [<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span>.<a href="#section-12.1.1.2-3.1.1" class="pilcrow">¶</a></p>
+                  for <code>private_key_jwt</code> in Section 9 of
+                  <span><a href="#OpenID.Core" class="internal xref">OpenID Connect Core 1.0</a> [<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span>.
+   In this case, the audience of the client authentication JWT
+   MUST be the Entity Identifier of the OP's Entity.<a href="#section-12.1.1.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="normal" id="section-12.1.1.2-3.2">
-                <p id="section-12.1.1.2-3.2.1">
+              <li class="normal" id="section-12.1.1.2-4.2">
+                <p id="section-12.1.1.2-4.2.1">
                   mTLS using self-signed certificates,
    as described in Section 2.2 of <span>[<a href="#RFC8705" class="cite xref">RFC8705</a>]</span>.
                   In this case, the self-signed certificate MUST be present as
                   the value of an <code>x5c</code>
-                  claim for one key in the JWK Set describing
-                  the RP's keys.<a href="#section-12.1.1.2-3.2.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-12.1.1.2-3.3">
-                <p id="section-12.1.1.2-3.3.1">
-                  mTLS using public key infrastructure (PKI),
-   as described in Section 2.1 of <span>[<a href="#RFC8705" class="cite xref">RFC8705</a>]</span>.<a href="#section-12.1.1.2-3.3.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-12.1.1.2-3.4">
-                <p id="section-12.1.1.2-3.4.1">
-                  A Request Object, as described in
-                  <a href="#UsingAuthzRequestObject" class="auto internal xref">Section 12.1.1.1</a>
-                  and <a href="#trust_chain_authz" class="auto internal xref">Section 12.1.1.1.1</a>.<a href="#section-12.1.1.2-3.4.1" class="pilcrow">¶</a></p>
+                  claim for a key in the Entity's RP JWK Set.
+   In this case, the server MUST omit certificate chain validation.<a href="#section-12.1.1.2-4.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
-<p id="section-12.1.1.2-4">
-              Note that if mTLS is used, TLS client authentication MUST be
-              configured and, in the case of self-signed certificates, the server must
-              omit the certificate chain validation.<a href="#section-12.1.1.2-4" class="pilcrow">¶</a></p>
 <p id="section-12.1.1.2-5" class="keepWithNext">
-       Using the example above, a Pushed Authorization Request could look like this:<a href="#section-12.1.1.2-5" class="pilcrow">¶</a></p>
+       A Pushed Authorization Request to the OP could look like this:<a href="#section-12.1.1.2-5" class="pilcrow">¶</a></p>
 <span id="name-pushed-authorization-reques"></span><figure id="figure-50">
               <div class="alignLeft art-text artwork" id="section-12.1.1.2-6.1">
 <pre>
@@ -8096,38 +8002,23 @@ POST /par HTTP/1.1
 Host: op.example.org
 Content-Type: application/x-www-form-urlencoded
 
-request=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5fX0Q5OEl2QjhOYWUta3dBNm5yT3QtaXBU
-        aGpIa0R4MzduaWNETUgzTjQifQ.eyJhdWQiOiJodHRwczovL29wLmV4YW1wbGUub
-        3JnL2F1dGhvcml6YXRpb24tZW5kcG9pbnQiLCJjbGllbnRfaWQiOiJodHRwczovL
-        3JwLmV4YW1wbGUuY29tIiwiZXhwIjoxNTg5Njk5MTYyLCJpYXQiOjE1ODk2OTkxM
-        DIsImlzcyI6Imh0dHBzOi8vcnAuZXhhbXBsZS5jb20iLCJqdGkiOiI0ZDNlYzBmO
-        DFmMTM0ZWU5YTk3ZTA0NDliZTZkMzJiZSIsIm5vbmNlIjoiNExYMG1GTXhkQmprR
-        210eDdhOFdJT25CIiwicmVkaXJlY3RfdXJpIjoiaHR0cHM6Ly9ycC5leGFtcGxlL
-        mNvbS9hdXRoel9jYiIsInJlc3BvbnNlX3R5cGUiOiJjb2RlIiwic2NvcGUiOiJvc
-        GVuaWQgcHJvZmlsZSBlbWFpbCBhZGRyZXNzIHBob25lIiwic3RhdGUiOiJZbVg4U
-        E05STdXYk5vTW5uaWVLS0JpcHRWVzBzUDJPWiIsInRydXN0X2NoYWluIjpbImV5S
-        mhiR2NpT2lKU1V6STFOaUlzSW10cFpDSTZJbXMxTkVoUmRFUnBZbmxIWTNNNVdsZ
-        FdUV1oyYVVobSAuLi4iLCJleUpoYkdjaU9pSlNVekkxTmlJc0ltdHBaQ0k2SWtKW
-        WRtWnliRzVvUVUxMVNGSXdOMkZxVlcxQlkwSlMgLi4uIiwiZXlKaGJHY2lPaUpTV
-        XpJMU5pSXNJbXRwWkNJNklrSllkbVp5Ykc1b1FVMTFTRkl3TjJGcVZXMUJZMEpTI
-        C4uLiJdfQ.Rv0isfuku0FcRFintgxgKDk7EnhFkpQRg3Tm6N6fCHAHEKFxVVdjy4
-        9JboJtxKcQVZKN9TKn3lEYM1wtF1e9PQrNt4HZ21ICfnzxXuNx1F5SY1GXCU2n2y
-        FVKtz3N0YkAFbTStzy-sPRTXB0stLBJH74RoPiLs2c6dDvrwEv__GA7oGkg2gWt6
-        VDvnfDpnvFi3ZEUR1J8MOeW_VFsayrT9sNjyjsz62Po4LzvQKQMKxq0dNwPNYuuS
-        fUmb-YvmFguxDb3weYl8WS-
-        48EIkP1h4b_KGU9x9n7a1fUOHrS02ATQZmaL8jUil7yLJqx5MiCsPr4pCAXV0doA
-        4pwhs_FIw
+redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
+&amp;scope=openid+profile+email+address+phone
+&amp;response_type=code
+&amp;nonce=4LX0mFMxdBjkGmtx7a8WIOnB
+&amp;state=YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ
 &amp;client_id=https%3A%2F%2Frp.example.com
 &amp;client_assertion_type=urn%3Aietf%3Aparams%3Aoauth%3A
   client-assertion-type%3Ajwt-bearer
 &amp;client_assertion=eyJhbGciOiJSUzI1NiIsImtpZCI6ImRVTjJ
   hMDF3Umtoa1NXcGxRVGh2Y1ZCSU5VSXdUVWRPVUZVMlRtVnJTbW
-  hFUVhnelpYbHBUemRRTkEifQ.eyJzdWIiOiAiaHR0cHM6Ly9ycC
-  5leGFtcGxlLmNvbSIsICJpc3MiOiAiaHR0cHM6Ly9ycC5leGFtc
-  GxlLmNvbSIsICJpYXQiOiAxNTg5NzA0NzAxLCAiZXhwIjogMTU4
-  OTcwNDc2MSwgImF1ZCI6ICJodHRwczovL29wLmV4YW1wbGUub3J
-  nL2F1dGhvcml6YXRpb24iLCAianRpIjogIjM5ZDVhZTU1MmQ5Yz
-  Q4ZjBiOTEyZGM1NTY4ZWQ1MGQ2In0.oUt9Knx_lxb4V2S0tyNFH
+  hFUVhnelpYbHBUemRRTkEifQ.
+  eyJzdWIiOiAiaHR0cHM6Ly9ycC5leGFtcGxlLmNvbSIsICJpc3M
+  iOiAiaHR0cHM6Ly9ycC5leGFtcGxlLmNvbSIsICJpYXQiOiAxNT
+  g5NzA0NzAxLCAiZXhwIjogMTU4OTcwNDc2MSwgImF1ZCI6ICJod
+  HRwczovL29wLmV4YW1wbGUub3JnIiwgImp0aSI6ICIzOWQ1YWU1
+  NTJkOWM0OGYwYjkxMmRjNTU2OGVkNTBkNiJ9.
+  oUt9Knx_lxb4V2S0tyNFH
   CNZeP7sImBy5XDsFxv1cUpGkAojNXSy2dnU5HEzscMgNW4wguz6
   KDkC01aq5OfN04SuVItS66bsx0h4Gs7grKAp_51bClzreBVzU4g
   _-dFTgF15T9VLIgM_juFNPA_g4Lx7Eb5r37rWTUrzXdmfxeou0X
@@ -8138,7 +8029,7 @@ request=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5fX0Q5OEl2QjhOYWUta3dBNm5yT3QtaXBU
 </pre>
 </div>
 <figcaption><a href="#figure-50" class="selfRef">Figure 50</a>:
-<a href="#name-pushed-authorization-reques" class="selfRef">Pushed Authorization Request</a>
+<a href="#name-pushed-authorization-reques" class="selfRef">Pushed Authorization Request to the OP</a>
               </figcaption></figure>
 <div id="par-processing">
 <section id="section-12.1.1.2.1">
@@ -8151,7 +8042,7 @@ request=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5fX0Q5OEl2QjhOYWUta3dBNm5yT3QtaXBU
                 also apply to <span><a href="#RFC9126" class="internal xref">Pushed Authorization Requests</a> [<a href="#RFC9126" class="cite xref">RFC9126</a>]</span>.<a href="#section-12.1.1.2.1-1" class="pilcrow">¶</a></p>
 <p id="section-12.1.1.2.1-2">
                 Once the OP has the RP's metadata, it MUST verify the client
- using the keys published for the
+ is using the keys published for the
  <code>openid_relying_party</code>
  Entity Type Identifier.
  If the RP does not verify, the OP MUST reject the request.<a href="#section-12.1.1.2.1-2" class="pilcrow">¶</a></p>
@@ -8163,34 +8054,17 @@ request=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5fX0Q5OEl2QjhOYWUta3dBNm5yT3QtaXBU
                     If this method is used, then the OP verifies the
                     signature of the signed JWT using the key material published
                     by the RP in its metadata. If the authentication is
-                    successful, then the registration is valid.<a href="#section-12.1.1.2.1-4.2" class="pilcrow">¶</a>
+                    successful, then the registration is valid.
+     The audience of the signed JWT MUST be
+     the Authorization Server's Entity Identifier.<a href="#section-12.1.1.2.1-4.2" class="pilcrow">¶</a>
 </dd>
                 <dd class="break"></dd>
-<dt id="section-12.1.1.2.1-4.3">tls_client_auth</dt>
+<dt id="section-12.1.1.2.1-4.3">self_signed_tls_client_auth</dt>
                 <dd style="margin-left: 1.5em" id="section-12.1.1.2.1-4.4">
-                  <p id="section-12.1.1.2.1-4.4.1">
-                    If the certificate used is not self-signed, it MUST first be
-                    validated as chaining to a trusted root.
-     (The selection of trusted roots is outside of this trust model.)<a href="#section-12.1.1.2.1-4.4.1" class="pilcrow">¶</a></p>
-<p id="section-12.1.1.2.1-4.4.2">
-                    The RP metadata MUST contain exactly one of the five members listed in
-                    Section 2.1.2 of <span>[<a href="#RFC8705" class="cite xref">RFC8705</a>]</span>.
-                    For example, if the
-     <code>tls_client_auth_san_dns</code> member
-     is specified with a value of <code>host.example.com</code>,
-     the certificate would only match for authentication
-                    if that DNS name is present in the Subject Alternative Name (SAN)
-                    of the certificate.<a href="#section-12.1.1.2.1-4.4.2" class="pilcrow">¶</a></p>
-</dd>
-                <dd class="break"></dd>
-<dt id="section-12.1.1.2.1-4.5">self_signed_tls_client_auth</dt>
-                <dd style="margin-left: 1.5em" id="section-12.1.1.2.1-4.6">
-                    If mTLS is used with a self-signed
-                    certificate, then the certificate MUST be present as the
-                    value
-                    of an <code>x5c</code>
-                    claim for a key in the JWK Set containing the RP's
-                    keys.<a href="#section-12.1.1.2.1-4.6" class="pilcrow">¶</a>
+                    If mTLS is used with a self-signed certificate,
+     then the certificate MUST be present as the
+                    value of an <code>x5c</code>
+                    claim for a key in the JWK Set containing the RP's keys.<a href="#section-12.1.1.2.1-4.4" class="pilcrow">¶</a>
 </dd>
               <dd class="break"></dd>
 </dl>
@@ -9342,12 +9216,12 @@ HTTP/1.1 302 Found
 <ul class="compact">
 <li class="compact" id="section-17.1.1-3.1">
               <p id="section-17.1.1-3.1.1">
-                Metadata Name: <code>request_authentication_methods_supported</code><a href="#section-17.1.1-3.1.1" class="pilcrow">¶</a></p>
+                Metadata Name: <code>signed_jwks_uri</code><a href="#section-17.1.1-3.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.1.1-3.2">
               <p id="section-17.1.1-3.2.1">
                 Metadata Description:
-                Authentication request authentication methods supported<a href="#section-17.1.1-3.2.1" class="pilcrow">¶</a></p>
+                URL referencing a signed JWT having this authorization server's JWK Set document as its payload<a href="#section-17.1.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.1.1-3.3">
               <p id="section-17.1.1-3.3.1">
@@ -9355,20 +9229,18 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-17.1.1-3.4">
               <p id="section-17.1.1-3.4.1">
-                Specification Document(s): <a href="#OP_metadata" class="auto internal xref">Section 5.1.3</a> of this specification<a href="#section-17.1.1-3.4.1" class="pilcrow">¶</a></p>
+                Specification Document(s): <a href="#jwks_metadata" class="auto internal xref">Section 5.2.1</a> of this specification<a href="#section-17.1.1-3.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <ul class="compact">
 <li class="compact" id="section-17.1.1-4.1">
               <p id="section-17.1.1-4.1.1">
-                Metadata Name: <code>request_authentication_signing_alg_values_supported</code><a href="#section-17.1.1-4.1.1" class="pilcrow">¶</a></p>
+                Metadata Name: <code>jwks</code><a href="#section-17.1.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.1.1-4.2">
               <p id="section-17.1.1-4.2.1">
                 Metadata Description:
-                JSON array containing the JWS signing algorithms
-                supported for the signature on
-                the JWT used to authenticate the request<a href="#section-17.1.1-4.2.1" class="pilcrow">¶</a></p>
+                JSON Web Key Set document, passed by value<a href="#section-17.1.1-4.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.1.1-4.3">
               <p id="section-17.1.1-4.3.1">
@@ -9376,18 +9248,18 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-17.1.1-4.4">
               <p id="section-17.1.1-4.4.1">
-                Specification Document(s): <a href="#OP_metadata" class="auto internal xref">Section 5.1.3</a> of this specification<a href="#section-17.1.1-4.4.1" class="pilcrow">¶</a></p>
+                Specification Document(s): <a href="#jwks_metadata" class="auto internal xref">Section 5.2.1</a> of this specification<a href="#section-17.1.1-4.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <ul class="compact">
 <li class="compact" id="section-17.1.1-5.1">
               <p id="section-17.1.1-5.1.1">
-                Metadata Name: <code>signed_jwks_uri</code><a href="#section-17.1.1-5.1.1" class="pilcrow">¶</a></p>
+                Metadata Name: <code>organization_name</code><a href="#section-17.1.1-5.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.1.1-5.2">
               <p id="section-17.1.1-5.2.1">
                 Metadata Description:
-                URL referencing a signed JWT having this authorization server's JWK Set document as its payload<a href="#section-17.1.1-5.2.1" class="pilcrow">¶</a></p>
+                Human-readable name representing the organization owning this authorization server<a href="#section-17.1.1-5.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.1.1-5.3">
               <p id="section-17.1.1-5.3.1">
@@ -9395,18 +9267,18 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-17.1.1-5.4">
               <p id="section-17.1.1-5.4.1">
-                Specification Document(s): <a href="#jwks_metadata" class="auto internal xref">Section 5.2.1</a> of this specification<a href="#section-17.1.1-5.4.1" class="pilcrow">¶</a></p>
+                Specification Document(s): <a href="#informational_metadata" class="auto internal xref">Section 5.2.2</a> of this specification<a href="#section-17.1.1-5.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <ul class="compact">
 <li class="compact" id="section-17.1.1-6.1">
               <p id="section-17.1.1-6.1.1">
-                Metadata Name: <code>jwks</code><a href="#section-17.1.1-6.1.1" class="pilcrow">¶</a></p>
+                Metadata Name: <code>contacts</code><a href="#section-17.1.1-6.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.1.1-6.2">
               <p id="section-17.1.1-6.2.1">
                 Metadata Description:
-                JSON Web Key Set document, passed by value<a href="#section-17.1.1-6.2.1" class="pilcrow">¶</a></p>
+                Array of strings representing ways to contact people responsible for this authorization server, typically email addresses<a href="#section-17.1.1-6.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.1.1-6.3">
               <p id="section-17.1.1-6.3.1">
@@ -9414,18 +9286,18 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-17.1.1-6.4">
               <p id="section-17.1.1-6.4.1">
-                Specification Document(s): <a href="#jwks_metadata" class="auto internal xref">Section 5.2.1</a> of this specification<a href="#section-17.1.1-6.4.1" class="pilcrow">¶</a></p>
+                Specification Document(s): <a href="#informational_metadata" class="auto internal xref">Section 5.2.2</a> of this specification<a href="#section-17.1.1-6.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <ul class="compact">
 <li class="compact" id="section-17.1.1-7.1">
               <p id="section-17.1.1-7.1.1">
-                Metadata Name: <code>organization_name</code><a href="#section-17.1.1-7.1.1" class="pilcrow">¶</a></p>
+                Metadata Name: <code>logo_uri</code><a href="#section-17.1.1-7.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.1.1-7.2">
               <p id="section-17.1.1-7.2.1">
                 Metadata Description:
-                Human-readable name representing the organization owning this authorization server<a href="#section-17.1.1-7.2.1" class="pilcrow">¶</a></p>
+ URL that references a logo for the organization owning this authorization server<a href="#section-17.1.1-7.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.1.1-7.3">
               <p id="section-17.1.1-7.3.1">
@@ -9439,12 +9311,12 @@ HTTP/1.1 302 Found
 <ul class="compact">
 <li class="compact" id="section-17.1.1-8.1">
               <p id="section-17.1.1-8.1.1">
-                Metadata Name: <code>contacts</code><a href="#section-17.1.1-8.1.1" class="pilcrow">¶</a></p>
+                Metadata Name: <code>homepage_uri</code><a href="#section-17.1.1-8.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.1.1-8.2">
               <p id="section-17.1.1-8.2.1">
                 Metadata Description:
-                Array of strings representing ways to contact people responsible for this authorization server, typically email addresses<a href="#section-17.1.1-8.2.1" class="pilcrow">¶</a></p>
+ URL of a Web page for the organization owning this authorization server<a href="#section-17.1.1-8.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.1.1-8.3">
               <p id="section-17.1.1-8.3.1">
@@ -9453,44 +9325,6 @@ HTTP/1.1 302 Found
             <li class="compact" id="section-17.1.1-8.4">
               <p id="section-17.1.1-8.4.1">
                 Specification Document(s): <a href="#informational_metadata" class="auto internal xref">Section 5.2.2</a> of this specification<a href="#section-17.1.1-8.4.1" class="pilcrow">¶</a></p>
-</li>
-          </ul>
-<ul class="compact">
-<li class="compact" id="section-17.1.1-9.1">
-              <p id="section-17.1.1-9.1.1">
-                Metadata Name: <code>logo_uri</code><a href="#section-17.1.1-9.1.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="compact" id="section-17.1.1-9.2">
-              <p id="section-17.1.1-9.2.1">
-                Metadata Description:
- URL that references a logo for the organization owning this authorization server<a href="#section-17.1.1-9.2.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="compact" id="section-17.1.1-9.3">
-              <p id="section-17.1.1-9.3.1">
-                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-17.1.1-9.3.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="compact" id="section-17.1.1-9.4">
-              <p id="section-17.1.1-9.4.1">
-                Specification Document(s): <a href="#informational_metadata" class="auto internal xref">Section 5.2.2</a> of this specification<a href="#section-17.1.1-9.4.1" class="pilcrow">¶</a></p>
-</li>
-          </ul>
-<ul class="compact">
-<li class="compact" id="section-17.1.1-10.1">
-              <p id="section-17.1.1-10.1.1">
-                Metadata Name: <code>homepage_uri</code><a href="#section-17.1.1-10.1.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="compact" id="section-17.1.1-10.2">
-              <p id="section-17.1.1-10.2.1">
-                Metadata Description:
- URL of a Web page for the organization owning this authorization server<a href="#section-17.1.1-10.2.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="compact" id="section-17.1.1-10.3">
-              <p id="section-17.1.1-10.3.1">
-                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-17.1.1-10.3.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="compact" id="section-17.1.1-10.4">
-              <p id="section-17.1.1-10.4.1">
-                Specification Document(s): <a href="#informational_metadata" class="auto internal xref">Section 5.2.2</a> of this specification<a href="#section-17.1.1-10.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -10790,7 +10624,7 @@ HTTP/1.1 302 Found
 <dl class="references">
 <dt id="I-D.ietf-oauth-resource-metadata">[I-D.ietf-oauth-resource-metadata]</dt>
         <dd>
-<span class="refAuthor">Jones, M. B.</span>, <span class="refAuthor">Hunt, P.</span>, and <span class="refAuthor">A. Parecki</span>, <span class="refTitle">"OAuth 2.0 Protected Resource Metadata"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-oauth-resource-metadata-12</span>, <time datetime="2024-10-03" class="refDate">3 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-resource-metadata-12">https://datatracker.ietf.org/doc/html/draft-ietf-oauth-resource-metadata-12</a>&gt;</span>. </dd>
+<span class="refAuthor">Jones, M. B.</span>, <span class="refAuthor">Hunt, P.</span>, and <span class="refAuthor">A. Parecki</span>, <span class="refTitle">"OAuth 2.0 Protected Resource Metadata"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-oauth-resource-metadata-13</span>, <time datetime="2024-10-15" class="refDate">15 October 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-resource-metadata-13">https://datatracker.ietf.org/doc/html/draft-ietf-oauth-resource-metadata-13</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="OpenID.Core">[OpenID.Core]</dt>
         <dd>
@@ -12230,8 +12064,36 @@ Host: op.umu.se
 </li>
         <li class="normal" id="appendix-D-3.5">
           <p id="appendix-D-3.5.1">
+     Fixed #34: Deleted
+     <code>request_authentication_methods_supported</code> and
+     <code>request_authentication_signing_alg_values_supported</code>
+     and replaced with the use of standard Request Object
+     and PAR metadata values.
+     Also restricted PAR authentication methods to those
+     performing signing with the RP's keys.<a href="#appendix-D-3.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.6">
+          <p id="appendix-D-3.6.1">
+     Fixed #98: Required audience when using
+     <code>private_key_jwt</code> with PAR
+     to be the Authorization Server's Entity Identifier.<a href="#appendix-D-3.6.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.7">
+          <p id="appendix-D-3.7.1">
+     Reverted change to allow PAR requests not using Request Objects
+     when the client authentication method uses a signature with
+     with a Federation Entity Key.<a href="#appendix-D-3.7.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.8">
+          <p id="appendix-D-3.8.1">
+     Fixed #104: Removed the <code>*_auth_signing_algs</code>
+     metadata parameters in favor of
+     <code>endpoint_auth_signing_alg_values_supported</code>.<a href="#appendix-D-3.8.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.9">
+          <p id="appendix-D-3.9.1">
      Required that the <code>issuer</code> OP and AS
-     metadata values match the Entity Identifier.<a href="#appendix-D-3.5.1" class="pilcrow">¶</a></p>
+     metadata values match the Entity Identifier.<a href="#appendix-D-3.9.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-D-4">
