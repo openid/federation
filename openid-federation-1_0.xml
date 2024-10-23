@@ -5666,7 +5666,7 @@ Content-Type: application/json
       </t>
       <t>
         There are two alternative approaches to establish trust between an
-        RP and an OP, which we call Automatic Registration and Explicit Registration.
+        RP and an OP: Automatic Registration and Explicit Registration.
         Members of a federation or a community
         SHOULD agree upon which one to use. While implementations should
         support both methods, deployments MAY choose to use one or the other of them.
@@ -6072,12 +6072,44 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
           </section>
         </section>
 
+	<section title="Successful Authentication Response" anchor="AuthenticationResponse">
+	  <t>
+	    The response to a successful authentication request
+	    when using Automatic Registration is the same as the
+	    successful authentication responses defined in <xref target="OpenID.Core"/>.
+	    In particular, it is a successful OAuth 2.0 authorization response
+	    sent to the Client's redirection URI.
+	  </t>
+	</section>
+
         <section title="Authentication Error Response" anchor="AuthenticationError">
           <t>
-            If the OP fails to establish trust with the RP, it SHOULD use an
-            appropriate error code and an
-            <spanx style="verb">error_description</spanx>
-            that aids the RP in understanding what is wrong.
+	    The error response to an unsuccessful authentication request
+	    when using Automatic Registration is the same as the
+	    error authentication responses defined in <xref target="OpenID.Core"/>.
+	    In particular, it is an OAuth 2.0 authorization error response
+	    sent to the Client's redirection URI,
+	    unless a <xref target="RFC9126">Pushed Authorization Request</xref>
+	    was used for the request.
+	  </t>
+	  <t>
+	    However, as in both <xref target="OpenID.Core"/> and <xref target="RFC6749"/>,
+	    if the redirection URI is invalid, redirection MUST NOT be performed,
+	    and instead the Authorization Server SHOULD inform the End-User
+	    of the error in the user interface.
+	    The Authorization Server MAY also choose to do this if it
+	    has reason to believe that the redirection URI might be being used
+	    as a component of an open redirector.
+	  </t>
+	  <t>
+	    If the OP fails to establish trust with the RP,
+	    it MUST treat the redirection URI as invalid
+	    and not perform redirection.
+	    This means that the two error codes defined below,
+	    both of which are about reasons trust failed to be established,
+	    SHOULD only be returned in
+	    <xref target="RFC9126">Pushed Authorization Request</xref>
+	    error responses, and not to the Client's redirection URI.
           </t>
           <t>
             In addition to the error codes contained in the
@@ -6091,7 +6123,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                 <vspace/>
                 No trusted Trust Anchor could be found.
               </t>
-              <t hangText="validation_failed">
+              <t hangText="trust_chain_validation_failed">
                 <vspace/>
                 Trust chain validation failed.
               </t>
@@ -6107,9 +6139,9 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
             <artwork><![CDATA[
 HTTP/1.1 302 Found
   Location: https://client.example.org/cb?
-    error=missing_trust_anchor
+    error=consent_required
     &error_description=
-      Could%20not%20find%20a%20trusted%20anchor
+      Consent%20by%20the%20End-User%20required
     &state=af0ifjsldkj
 ]]></artwork>
           </figure>
@@ -7320,7 +7352,7 @@ HTTP/1.1 302 Found
           </t>
           <t>
             <list style="symbols">
-              <t>Name: validation_failed</t>
+              <t>Name: trust_chain_validation_failed</t>
               <t>Usage Location: authorization endpoint</t>
               <t>Protocol Extension: OpenID Federation</t>
               <t>
@@ -9678,6 +9710,8 @@ Host: op.umu.se
 	-40
 	<list style="symbols">
 	  <t>
+	    Renamed <spanx style="verb">validation_failed</spanx> error code to
+	    <spanx style="verb">trust_chain_validation_failed</spanx>.
 	    Fixed #89: Improved Entity Statement <spanx style="verb">jwks</spanx> claim description.
 	  </t>
 	  <t>
@@ -9720,6 +9754,10 @@ Host: op.umu.se
 	  <t>
 	    Required that the <spanx style="verb">issuer</spanx> OP and AS
 	    metadata values match the Entity Identifier.
+	  </t>
+	  <t>
+	    Fixed #69: Specified more details of successful and error responses
+	    to authentication requests using Automatic Registration.
 	  </t>
 	</list>
       </t>
