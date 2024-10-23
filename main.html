@@ -1692,10 +1692,13 @@ li > p:last-of-type:only-child {
                     </ul>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1.2.2">
-                    <p id="section-toc.1-1.12.2.1.2.2.1"><a href="#section-12.1.2" class="auto internal xref">12.1.2</a>.  <a href="#name-authentication-error-respon" class="internal xref">Authentication Error Response</a></p>
+                    <p id="section-toc.1-1.12.2.1.2.2.1"><a href="#section-12.1.2" class="auto internal xref">12.1.2</a>.  <a href="#name-successful-authentication-r" class="internal xref">Successful Authentication Response</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1.2.3">
-                    <p id="section-toc.1-1.12.2.1.2.3.1"><a href="#section-12.1.3" class="auto internal xref">12.1.3</a>.  <a href="#name-possible-other-uses-of-auto" class="internal xref">Possible Other Uses of Automatic Registration</a></p>
+                    <p id="section-toc.1-1.12.2.1.2.3.1"><a href="#section-12.1.3" class="auto internal xref">12.1.3</a>.  <a href="#name-authentication-error-respon" class="internal xref">Authentication Error Response</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1.2.4">
+                    <p id="section-toc.1-1.12.2.1.2.4.1"><a href="#section-12.1.4" class="auto internal xref">12.1.4</a>.  <a href="#name-possible-other-uses-of-auto" class="internal xref">Possible Other Uses of Automatic Registration</a></p>
 </li>
                 </ul>
 </li>
@@ -7645,7 +7648,7 @@ Content-Type: application/json
         that have no explicit configuration or registration between them in advance.<a href="#section-12-1" class="pilcrow">¶</a></p>
 <p id="section-12-2">
         There are two alternative approaches to establish trust between an
-        RP and an OP, which we call Automatic Registration and Explicit Registration.
+        RP and an OP: Automatic Registration and Explicit Registration.
         Members of a federation or a community
         SHOULD agree upon which one to use. While implementations should
         support both methods, deployments MAY choose to use one or the other of them.<a href="#section-12-2" class="pilcrow">¶</a></p>
@@ -8066,43 +8069,76 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
 </div>
 </section>
 </div>
-<div id="AuthenticationError">
+<div id="AuthenticationResponse">
 <section id="section-12.1.2">
-          <h4 id="name-authentication-error-respon">
-<a href="#section-12.1.2" class="section-number selfRef">12.1.2. </a><a href="#name-authentication-error-respon" class="section-name selfRef">Authentication Error Response</a>
+          <h4 id="name-successful-authentication-r">
+<a href="#section-12.1.2" class="section-number selfRef">12.1.2. </a><a href="#name-successful-authentication-r" class="section-name selfRef">Successful Authentication Response</a>
           </h4>
 <p id="section-12.1.2-1">
-            If the OP fails to establish trust with the RP, it SHOULD use an
-            appropriate error code and an
-            <code>error_description</code>
-            that aids the RP in understanding what is wrong.<a href="#section-12.1.2-1" class="pilcrow">¶</a></p>
-<p id="section-12.1.2-2">
+     The response to a successful authentication request
+     when using Automatic Registration is the same as the
+     successful authentication responses defined in <span>[<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span>.
+     In particular, it is a successful OAuth 2.0 authorization response
+     sent to the Client's redirection URI.<a href="#section-12.1.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="AuthenticationError">
+<section id="section-12.1.3">
+          <h4 id="name-authentication-error-respon">
+<a href="#section-12.1.3" class="section-number selfRef">12.1.3. </a><a href="#name-authentication-error-respon" class="section-name selfRef">Authentication Error Response</a>
+          </h4>
+<p id="section-12.1.3-1">
+     The error response to an unsuccessful authentication request
+     when using Automatic Registration is the same as the
+     error authentication responses defined in <span>[<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span>.
+     In particular, it is an OAuth 2.0 authorization error response
+     sent to the Client's redirection URI,
+     unless a <span><a href="#RFC9126" class="internal xref">Pushed Authorization Request</a> [<a href="#RFC9126" class="cite xref">RFC9126</a>]</span>
+     was used for the request.<a href="#section-12.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-12.1.3-2">
+     However, as in both <span>[<a href="#OpenID.Core" class="cite xref">OpenID.Core</a>]</span> and <span>[<a href="#RFC6749" class="cite xref">RFC6749</a>]</span>,
+     if the redirection URI is invalid, redirection MUST NOT be performed,
+     and instead the Authorization Server SHOULD inform the End-User
+     of the error in the user interface.
+     The Authorization Server MAY also choose to do this if it
+     has reason to believe that the redirection URI might be being used
+     as a component of an open redirector.<a href="#section-12.1.3-2" class="pilcrow">¶</a></p>
+<p id="section-12.1.3-3">
+     If the OP fails to establish trust with the RP,
+     it MUST treat the redirection URI as invalid
+     and not perform redirection.
+     This means that the two error codes defined below,
+     both of which are about reasons trust failed to be established,
+     SHOULD only be returned in
+     <span><a href="#RFC9126" class="internal xref">Pushed Authorization Request</a> [<a href="#RFC9126" class="cite xref">RFC9126</a>]</span>
+     error responses, and not to the Client's redirection URI.<a href="#section-12.1.3-3" class="pilcrow">¶</a></p>
+<p id="section-12.1.3-4">
             In addition to the error codes contained in the
      IANA "OAuth Extensions Error Registry" registry <span>[<a href="#IANA.OAuth.Parameters" class="cite xref">IANA.OAuth.Parameters</a>]</span>,
      this specification also defines the following error
-            codes:<a href="#section-12.1.2-2" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-12.1.2-3">
-            <dt id="section-12.1.2-3.1">missing_trust_anchor</dt>
-            <dd style="margin-left: 1.5em" id="section-12.1.2-3.2">
-                No trusted Trust Anchor could be found.<a href="#section-12.1.2-3.2" class="pilcrow">¶</a>
+            codes:<a href="#section-12.1.3-4" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-12.1.3-5">
+            <dt id="section-12.1.3-5.1">missing_trust_anchor</dt>
+            <dd style="margin-left: 1.5em" id="section-12.1.3-5.2">
+                No trusted Trust Anchor could be found.<a href="#section-12.1.3-5.2" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-12.1.2-3.3">validation_failed</dt>
-            <dd style="margin-left: 1.5em" id="section-12.1.2-3.4">
-                Trust chain validation failed.<a href="#section-12.1.2-3.4" class="pilcrow">¶</a>
+<dt id="section-12.1.3-5.3">trust_chain_validation_failed</dt>
+            <dd style="margin-left: 1.5em" id="section-12.1.3-5.4">
+                Trust chain validation failed.<a href="#section-12.1.3-5.4" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 </dl>
-<p id="section-12.1.2-4" class="keepWithNext">
-              The following is a non-normative example authentication error response:<a href="#section-12.1.2-4" class="pilcrow">¶</a></p>
+<p id="section-12.1.3-6" class="keepWithNext">
+              The following is a non-normative example authentication error response:<a href="#section-12.1.3-6" class="pilcrow">¶</a></p>
 <span id="name-authentication-error-respons"></span><figure id="figure-51">
-            <div class="alignLeft art-text artwork" id="section-12.1.2-5.1">
+            <div class="alignLeft art-text artwork" id="section-12.1.3-7.1">
 <pre>
 HTTP/1.1 302 Found
   Location: https://client.example.org/cb?
-    error=missing_trust_anchor
+    error=consent_required
     &amp;error_description=
-      Could%20not%20find%20a%20trusted%20anchor
+      Consent%20by%20the%20End-User%20required
     &amp;state=af0ifjsldkj
 </pre>
 </div>
@@ -8112,17 +8148,17 @@ HTTP/1.1 302 Found
 </section>
 </div>
 <div id="AutomaticRegistrationOtherUses">
-<section id="section-12.1.3">
+<section id="section-12.1.4">
           <h4 id="name-possible-other-uses-of-auto">
-<a href="#section-12.1.3" class="section-number selfRef">12.1.3. </a><a href="#name-possible-other-uses-of-auto" class="section-name selfRef">Possible Other Uses of Automatic Registration</a>
+<a href="#section-12.1.4" class="section-number selfRef">12.1.4. </a><a href="#name-possible-other-uses-of-auto" class="section-name selfRef">Possible Other Uses of Automatic Registration</a>
           </h4>
-<p id="section-12.1.3-1">
+<p id="section-12.1.4-1">
             Automatic Registration is designed to be able to be
             employed for OAuth 2.0 use cases beyond OpenID Connect,
      as noted in <a href="#client_registration" class="auto internal xref">Section 12</a>.
             For instance, ecosystems using
             bare <span><a href="#RFC6749" class="internal xref">OAuth 2.0</a> [<a href="#RFC6749" class="cite xref">RFC6749</a>]</span> or
-            <span><a href="#FAPI" class="internal xref">FAPI</a> [<a href="#FAPI" class="cite xref">FAPI</a>]</span> can utilize Automatic Registration.<a href="#section-12.1.3-1" class="pilcrow">¶</a></p>
+            <span><a href="#FAPI" class="internal xref">FAPI</a> [<a href="#FAPI" class="cite xref">FAPI</a>]</span> can utilize Automatic Registration.<a href="#section-12.1.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -9448,12 +9484,12 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-17.3.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.3.1-1.5">
-              <p id="section-17.3.1-1.5.1">Reference: <a href="#AuthenticationError" class="auto internal xref">Section 12.1.2</a> of this specification<a href="#section-17.3.1-1.5.1" class="pilcrow">¶</a></p>
+              <p id="section-17.3.1-1.5.1">Reference: <a href="#AuthenticationError" class="auto internal xref">Section 12.1.3</a> of this specification<a href="#section-17.3.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <ul class="compact">
 <li class="compact" id="section-17.3.1-2.1">
-              <p id="section-17.3.1-2.1.1">Name: validation_failed<a href="#section-17.3.1-2.1.1" class="pilcrow">¶</a></p>
+              <p id="section-17.3.1-2.1.1">Name: trust_chain_validation_failed<a href="#section-17.3.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.3.1-2.2">
               <p id="section-17.3.1-2.2.1">Usage Location: authorization endpoint<a href="#section-17.3.1-2.2.1" class="pilcrow">¶</a></p>
@@ -9466,7 +9502,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-17.3.1-2.4.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.3.1-2.5">
-              <p id="section-17.3.1-2.5.1">Reference: <a href="#AuthenticationError" class="auto internal xref">Section 12.1.2</a> of this specification<a href="#section-17.3.1-2.5.1" class="pilcrow">¶</a></p>
+              <p id="section-17.3.1-2.5.1">Reference: <a href="#AuthenticationError" class="auto internal xref">Section 12.1.3</a> of this specification<a href="#section-17.3.1-2.5.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -12036,6 +12072,8 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-D-3.1">
           <p id="appendix-D-3.1.1">
+     Renamed <code>validation_failed</code> error code to
+     <code>trust_chain_validation_failed</code>.
      Fixed #89: Improved Entity Statement <code>jwks</code> claim description.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.2">
@@ -12086,6 +12124,11 @@ Host: op.umu.se
           <p id="appendix-D-3.9.1">
      Required that the <code>issuer</code> OP and AS
      metadata values match the Entity Identifier.<a href="#appendix-D-3.9.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.10">
+          <p id="appendix-D-3.10.1">
+     Fixed #69: Specified more details of successful and error responses
+     to authentication requests using Automatic Registration.<a href="#appendix-D-3.10.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-D-4">
