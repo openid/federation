@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Federation">OpenID Federation 1.0 -
-      draft 40
+      draft 41
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="24" month="October" year="2024"/>
+    <date day="25" month="October" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -1069,9 +1069,9 @@
           The issuer of the JWS SHOULD select the Trust Anchor that it has in common
           with the audience of the JWS.
 	      Otherwise, the issuer is free to select a Trust Anchor.
-          All signed JWTs MAY include the
-          <spanx style="verb">trust_chain</spanx> JWS header parameter.
-          However, there are exceptions to this rule. The
+          Most signed JWTs MAY include the
+          <spanx style="verb">trust_chain</spanx> JWS header parameter,
+          with a few exceptions.
           Entity Configurations and Subordinate Statements MUST NOT
           contain the <spanx style="verb">trust_chain</spanx>  header parameter,
           as they are integral components of a Trust Chain. Additionally,
@@ -4218,7 +4218,10 @@ Host: openid.sunet.se
 	  <t>
             The response SHOULD contain the
             <spanx style="verb">aud</spanx> claim only
-            if the requesting client is authenticated.
+            if the requesting party is authenticated,
+	    in which case, the value MUST be the Entity Identifier
+	    of the requesting party
+	    and MUST NOT include any other values.
           </t>
           <t>
 	    The claims in a resolve response are:
@@ -5034,6 +5037,8 @@ Host: trust-anchor.example.com
 	  The client authentication JWT MUST be signed with a Federation Entity Key.
 	  The audience of the JWT MUST be the Entity Identifier
 	  of the Entity whose federation endpoint is being authenticated to.
+	  The endpoint MUST NOT accept JWTs containing audience values
+	  other than its Entity Identifier.
 	  When client authentication is used,
 	  the request MUST be an HTTP request using the POST method,
 	  with the client authentication and endpoint request parameters passed in the POST body.
@@ -5749,8 +5754,9 @@ Content-Type: application/json
               <list style="hanging">
                 <t hangText="aud">
                   <vspace/>
-                  REQUIRED. The Audience (aud) value MUST be or include
-                  the OP's Issuer Identifier URL.
+                  REQUIRED. The Audience (aud) value MUST be
+                  the OP's Entity Identifier
+		  and MUST NOT include any other values.
                 </t>
                 <t hangText="iss">
                   <vspace/>
@@ -5983,7 +5989,8 @@ GET /authorize?
                   for <spanx style="verb">private_key_jwt</spanx> in Section 9 of
                   <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
 		  In this case, the audience of the client authentication JWT
-		  MUST be the Entity Identifier of the OP's Entity.
+		  MUST be the OP's Entity Identifier
+		  and MUST NOT include any other values.
                 </t>
                 <t>
                   mTLS using self-signed certificates,
@@ -6057,7 +6064,8 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                     by the RP in its metadata. If the authentication is
                     successful, then the registration is valid.
 		    The audience of the signed JWT MUST be
-		    the Authorization Server's Entity Identifier.
+		    the Authorization Server's Entity Identifier
+		    and MUST NOT include any other values.
                   </t>
                   <t hangText="self_signed_tls_client_auth">
                     <vspace/>
@@ -6538,7 +6546,8 @@ HTTP/1.1 302 Found
                   <t hangText="aud">
                     <vspace/>
                     REQUIRED.
-                    Its value MUST be the Entity Identifier of the RP.
+                    Its value MUST be the RP's Entity Identifier
+		    and MUST NOT include any other values.
 		    See <xref target="RFC7519"/> for the full specification.
 		    This claim is used in Explicit Registration responses
 		    but is not a general Entity Statement claim.
@@ -9707,6 +9716,16 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+
+      <t>
+	-41
+	<list style="symbols">
+	  <t>
+	    Restrict audience values to the single Entity Identifier
+	    of the intended recipient.
+	  </t>
+	</list>
+      </t>
 
       <t>
 	-40
