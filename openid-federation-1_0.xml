@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Federation">OpenID Federation 1.0 -
-      draft 40
+      draft 41
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -1585,6 +1585,11 @@
 		cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
 		Signed JWK Set JWTs without a <spanx style="verb">typ</spanx> header parameter
 		or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
+	      </t>
+	      <t>
+		Signed JWK Set JWTs MUST include the
+		<spanx style="verb">kid</spanx> (Key ID) header parameter
+		with its value being the Key ID of the signing key used.
 	      </t>
 	      <t>
 		The following claims are specified for use in the payload,
@@ -9707,6 +9712,16 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+
+      <t>
+	-41
+	<list style="symbols">
+	  <t>
+	    Fixed #120: Required <spanx style="verb">kid</spanx> (Key ID)
+	    header parameter in Signed JWK Set JWTs.
+	  </t>
+	</list>
+      </t>
 
       <t>
 	-40
