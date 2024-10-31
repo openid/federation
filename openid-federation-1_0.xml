@@ -5735,10 +5735,14 @@ Content-Type: application/json
 	    Attempted authentication requests that do not do so MUST be rejected.
           </t>
 	  <t>
-	    Authentication requests MUST NOT pass the request object by reference
+	    Deployments MAY choose to not support passing the request object
+	    by reference
 	    (using the <spanx style="verb">request_uri</spanx> request parameter)
 	    because allowing this would make it easier for attackers
 	    to mount denial of service attacks against OpenID Providers.
+	    They can do this by using the
+	    <spanx style="verb">request_uri_parameter_supported</spanx>
+	    OP metadata parameter with the value <spanx style="verb">false</spanx>.
 	    If the request parameters are too large to practically
 	    be passed by value as query parameters,
 	    the request parameters can instead be sent via HTTP POST or
@@ -5821,7 +5825,8 @@ Content-Type: application/json
               </t>
               <t>
               Due to the large size of a Trust Chain, it may be necessary
-              to use the HTTP POST method or
+              to use the HTTP POST method,
+	      a <spanx style="verb">request_uri</spanx>, or
               a <xref target="RFC9126">Pushed Authorization Request</xref>
               for the request.
               </t>
@@ -7093,7 +7098,8 @@ HTTP/1.1 302 Found
 	<t>
 	  Passing request objects by reference (using the
 	  <spanx style="verb">request_uri</spanx> request parameter)
-	  is prohibited in <xref target="authn-request"/> to eliminate a mechanism
+	  may not be supported by some deployments,
+	  as described in <xref target="authn-request"/>, to eliminate a mechanism
 	  by which an attacker could otherwise require OPs
 	  to retrieve arbitrary content under the control of the attacker.
 	</t>
@@ -9728,7 +9734,8 @@ Host: op.umu.se
 	-41
 	<list style="symbols">
 	  <t>
-	    Fixed #114: Prohibited use of <spanx style="verb">request_uri</spanx>
+	    Fixed #114: Described why it may make sense to not support
+	    the use of <spanx style="verb">request_uri</spanx>
 	    other than in conjunction with a PAR request.
 	  </t>
 	</list>
