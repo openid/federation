@@ -5693,8 +5693,8 @@ Content-Type: application/json
       </t>
       <t>
         Independent of whether the RP uses Automatic or Explicit Registration,
-        the way that the RP learns about the OP is the same:
-        It uses the procedure
+        the way that the RP establishes trust with the OP is the same:
+        it uses Trust Chains, as
         described in <xref target="resolving_trust"/>.
       </t>
       <t>
@@ -5754,6 +5754,22 @@ Content-Type: application/json
 	    controls the Entity's RP keys, using one of the methods described below.
 	    Attempted authentication requests that do not do so MUST be rejected.
           </t>
+	  <t>
+	    Deployments MAY choose to not support passing the request object
+	    by reference
+	    (using the <spanx style="verb">request_uri</spanx> request parameter)
+	    because allowing this would make it easier for attackers
+	    to mount denial of service attacks against 
+	    OAuth 2.0 Authorization Servers or OpenID Providers.
+	    They can do this by using the
+	    <spanx style="verb">request_uri_parameter_supported</spanx>
+	    OP metadata parameter with the value <spanx style="verb">false</spanx>.
+	    If the request parameters are too large to practically
+	    be passed by value as query parameters,
+	    the request parameters can instead be sent via HTTP POST or
+	    a <xref target="RFC9126">Pushed Authorization Request</xref>,
+	    as described in <xref target="using-par"/>.
+	  </t>
 
           <section title="Using a Request Object Directly" anchor="UsingAuthzRequestObject">
 
@@ -5824,7 +5840,7 @@ Content-Type: application/json
               <t>
               When the <spanx style="verb">trust_chain</spanx>
               request parameter
-              is used in the Authorization Request Object, the Relying Party
+              is used in the authentication request, the Relying Party
               informs the OP of the sequence of Entity Statements
               that proves the trust relationship between it
               and the selected Trust Anchor.
@@ -5832,8 +5848,7 @@ Content-Type: application/json
               <t>
               Due to the large size of a Trust Chain, it may be necessary
               to use the HTTP POST method,
-              a <spanx style="verb">request_uri</spanx>,
-              or
+	      a <spanx style="verb">request_uri</spanx>, or
               a <xref target="RFC9126">Pushed Authorization Request</xref>
               for the request.
               </t>
@@ -7121,6 +7136,14 @@ HTTP/1.1 302 Found
           the Federation Entity Discovery process should not be the default
           action for the resolve endpoint in this case.
         </t>
+	<t>
+	  Passing request objects by reference (using the
+	  <spanx style="verb">request_uri</spanx> request parameter)
+	  may not be supported by some deployments,
+	  as described in <xref target="authn-request"/>, to eliminate a mechanism
+	  by which an attacker could otherwise require OPs
+	  to retrieve arbitrary content under the control of the attacker.
+	</t>
       </section>
       <section title="Unsigned Error Messages" anchor="UnsignedError">
         <t>
@@ -9820,6 +9843,11 @@ Host: op.umu.se
       <t>
 	-41
 	<list style="symbols">
+	  <t>
+	    Fixed #114: Described why it may make sense to not support
+	    the use of <spanx style="verb">request_uri</spanx>
+	    other than in conjunction with a PAR request.
+	  </t>
 	  <t>
 	    Fixed #108: Removed remark about trust mark delegation revocation.
 	  </t>
