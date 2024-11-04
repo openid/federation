@@ -7678,8 +7678,8 @@ Content-Type: application/json
         support both methods, deployments MAY choose to use one or the other of them.<a href="#section-12-2" class="pilcrow">¶</a></p>
 <p id="section-12-3">
         Independent of whether the RP uses Automatic or Explicit Registration,
-        the way that the RP learns about the OP is the same:
-        It uses the procedure
+        the way that the RP establishes trust with the OP is the same:
+        it uses Trust Chains, as
         described in <a href="#resolving_trust" class="auto internal xref">Section 10</a>.<a href="#section-12-3" class="pilcrow">¶</a></p>
 <p id="section-12-4">
  Note that both Automatic Registration and Explicit Registration
@@ -7740,6 +7740,21 @@ Content-Type: application/json
      Authentication requests MUST demonstrate that the requesting Entity
      controls the Entity's RP keys, using one of the methods described below.
      Attempted authentication requests that do not do so MUST be rejected.<a href="#section-12.1.1-2" class="pilcrow">¶</a></p>
+<p id="section-12.1.1-3">
+     Deployments MAY choose to not support passing the request object
+     by reference
+     (using the <code>request_uri</code> request parameter)
+     because allowing this would make it easier for attackers
+     to mount denial of service attacks against 
+     OAuth 2.0 Authorization Servers or OpenID Providers.
+     They can do this by using the
+     <code>request_uri_parameter_supported</code>
+     OP metadata parameter with the value <code>false</code>.
+     If the request parameters are too large to practically
+     be passed by value as query parameters,
+     the request parameters can instead be sent via HTTP POST or
+     a <span><a href="#RFC9126" class="internal xref">Pushed Authorization Request</a> [<a href="#RFC9126" class="cite xref">RFC9126</a>]</span>,
+     as described in <a href="#using-par" class="auto internal xref">Section 12.1.1.2</a>.<a href="#section-12.1.1-3" class="pilcrow">¶</a></p>
 <div id="UsingAuthzRequestObject">
 <section id="section-12.1.1.1">
             <h5 id="name-using-a-request-object-dire">
@@ -7822,15 +7837,14 @@ Content-Type: application/json
 <p id="section-12.1.1.1.1-1">
               When the <code>trust_chain</code>
               request parameter
-              is used in the Authorization Request Object, the Relying Party
+              is used in the authentication request, the Relying Party
               informs the OP of the sequence of Entity Statements
               that proves the trust relationship between it
               and the selected Trust Anchor.<a href="#section-12.1.1.1.1-1" class="pilcrow">¶</a></p>
 <p id="section-12.1.1.1.1-2">
               Due to the large size of a Trust Chain, it may be necessary
               to use the HTTP POST method,
-              a <code>request_uri</code>,
-              or
+       a <code>request_uri</code>, or
               a <span><a href="#RFC9126" class="internal xref">Pushed Authorization Request</a> [<a href="#RFC9126" class="cite xref">RFC9126</a>]</span>
               for the request.<a href="#section-12.1.1.1.1-2" class="pilcrow">¶</a></p>
 <p id="section-12.1.1.1.1-3" class="keepWithNext">
@@ -9202,6 +9216,13 @@ HTTP/1.1 302 Found
           already been evaluated and deemed trustworthy. The initiation of
           the Federation Entity Discovery process should not be the default
           action for the resolve endpoint in this case.<a href="#section-16.1-7" class="pilcrow">¶</a></p>
+<p id="section-16.1-8">
+   Passing request objects by reference (using the
+   <code>request_uri</code> request parameter)
+   may not be supported by some deployments,
+   as described in <a href="#authn-request" class="auto internal xref">Section 12.1.1</a>, to eliminate a mechanism
+   by which an attacker could otherwise require OPs
+   to retrieve arbitrary content under the control of the attacker.<a href="#section-16.1-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="UnsignedError">
@@ -12200,23 +12221,29 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-D-3.1">
           <p id="appendix-D-3.1.1">
-     Fixed #108: Removed remark about trust mark delegation revocation.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
+     Fixed #114: Described why it may make sense to not support
+     the use of <code>request_uri</code>
+     other than in conjunction with a PAR request.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.2">
           <p id="appendix-D-3.2.1">
-     Fixed #120: Required <code>kid</code> (Key ID)
-     header parameter in Signed JWK Set JWTs.<a href="#appendix-D-3.2.1" class="pilcrow">¶</a></p>
+     Fixed #108: Removed remark about trust mark delegation revocation.<a href="#appendix-D-3.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.3">
           <p id="appendix-D-3.3.1">
-     Define media type for Explicit Registration responses
-     <code>application/explicit-registration-response+jwt</code>
-     distinct from <code>application/entity-statement+jwt</code>.<a href="#appendix-D-3.3.1" class="pilcrow">¶</a></p>
+     Fixed #120: Required <code>kid</code> (Key ID)
+     header parameter in Signed JWK Set JWTs.<a href="#appendix-D-3.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.4">
           <p id="appendix-D-3.4.1">
+     Define media type for Explicit Registration responses
+     <code>application/explicit-registration-response+jwt</code>
+     distinct from <code>application/entity-statement+jwt</code>.<a href="#appendix-D-3.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.5">
+          <p id="appendix-D-3.5.1">
      Restrict audience values to the single Entity Identifier
-     of the intended recipient.<a href="#appendix-D-3.4.1" class="pilcrow">¶</a></p>
+     of the intended recipient.<a href="#appendix-D-3.5.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-D-4">
