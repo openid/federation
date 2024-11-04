@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="25" month="October" year="2024"/>
+    <date day="4" month="November" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -6600,7 +6600,13 @@ HTTP/1.1 302 Found
               <t>
                 A successful response MUST have an HTTP status code 200 and
                 the content type
-                <spanx style="verb">application/entity-statement+jwt</spanx>.
+                <spanx style="verb">application/explicit-registration-response+jwt</spanx>.
+		Furthermore, the <spanx style="verb">typ</spanx> header parameter
+		value in the response MUST be
+		<spanx style="verb">explicit-registration-response+jwt</spanx>
+		(and not <spanx style="verb">entity-statement+jwt</spanx>)
+		to prevent confusion between the Explicit Registration response
+		and normal Entity Statements.
               </t>
               <t>
                 For a client registration error, the response is as defined in
@@ -7026,6 +7032,16 @@ HTTP/1.1 302 Found
 	  The <spanx style="verb">application/jwk-set+jwt</spanx>
 	  media type is used to specify that the associated content is
 	  a signed JWK Set, as defined in <xref target="HistKeysResp"/>.
+	  No parameters are used with this media type.
+	</t>
+      </section>
+
+      <section anchor="explicit-registration-response+jwt"
+	       title='"application/explicit-registration-response+jwt" Media Type'>
+	<t>
+	  The <spanx style="verb">application/explicit-registration-response+jwt</spanx>
+	  media type is used to specify that the associated content is
+	  an Explicit Registration response, as defined in <xref target="cliregresp"/>.
 	  No parameters are used with this media type.
 	</t>
       </section>
@@ -7809,7 +7825,76 @@ HTTP/1.1 302 Found
             <?rfc subcompact="no"?>
           </t>
 
+          <t>
+            <?rfc subcompact="yes"?>
+            <list style="symbols">
+              <t>
+                Type name: application
+              </t>
+              <t>
+                Subtype name: explicit-registration-response+jwt
+              </t>
+              <t>
+                Required parameters: n/a
+              </t>
+              <t>
+                Optional parameters: n/a
+              </t>
+              <t>
+                Encoding considerations: binary;
+                An Explicit Registration response is a JWT;
+                JWT values are encoded as a
+                series of base64url-encoded values (some of which may be the
+                empty string) separated by period ('.') characters.
+              </t>
+              <t>
+                Security considerations: See <xref target="Security"/> of this specification
+              </t>
+              <t>
+                Interoperability considerations: n/a
+              </t>
+              <t>
+                Published specification: <xref target="explicit-registration-response+jwt"/> of this specification
+              </t>
+              <t>
+                Applications that use this media type:
+                Applications that use this specification
+              </t>
+              <t>
+                Fragment identifier considerations: n/a
+              </t>
+              <t>
+                Additional information:<list style="empty">
+                <t>Magic number(s): n/a</t>
+                <t>File extension(s): n/a</t>
+                <t>Macintosh file type code(s): n/a </t></list>
+                <vspace/>
+              </t>
+              <t>
+                Person &amp; email address to contact for further information:
+                <vspace/>
+                Michael B. Jones, michael_b_jones@hotmail.com
+              </t>
+              <t>
+                Intended usage: COMMON
+              </t>
+              <t>
+                Restrictions on usage: none
+              </t>
+              <t>
+                Author: Michael B. Jones, michael_b_jones@hotmail.com
+              </t>
+              <t>
+                Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Provisional registration? No
+              </t>
+            </list>
+            <?rfc subcompact="no"?>
+          </t>
         </section>
+
       </section>
 
       <section anchor="ParameterRegistry" title="OAuth Parameters Registration">
@@ -9731,6 +9816,11 @@ Host: op.umu.se
       <t>
 	-41
 	<list style="symbols">
+	  <t>
+	    Define media type for Explicit Registration responses
+	    <spanx style="verb">application/explicit-registration-response+jwt</spanx>
+	    distinct from <spanx style="verb">application/entity-statement+jwt</spanx>.
+	  </t>
 	  <t>
 	    Restrict audience values to the single Entity Identifier
 	    of the intended recipient.
