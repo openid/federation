@@ -3487,60 +3487,67 @@ li > p:last-of-type:only-child {
             <dd class="break"></dd>
 <dt id="section-5.2.1-2.5"></dt>
             <dd style="margin-left: 1.5em" id="section-5.2.1-2.6">
-              <p id="section-5.2.1-2.6.1">
- The following claims are specified for use in the payload,
- all of which except <code>keys</code>
- are defined in <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>:<a href="#section-5.2.1-2.6.1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-5.2.1-2.6.2">
-                <dt id="section-5.2.1-2.6.2.1">keys</dt>
-                <dd style="margin-left: 1.5em" id="section-5.2.1-2.6.2.2">
-     REQUIRED. Array of JWK values in the JWK Set,
-     as specified in Section 5.1 of <span>[<a href="#RFC7517" class="cite xref">RFC7517</a>]</span>.<a href="#section-5.2.1-2.6.2.2" class="pilcrow">¶</a>
-</dd>
-                <dd class="break"></dd>
-<dt id="section-5.2.1-2.6.2.3">iss</dt>
-                <dd style="margin-left: 1.5em" id="section-5.2.1-2.6.2.4">
-     REQUIRED. The "iss" (issuer) claim identifies the principal
-     that issued the JWT.<a href="#section-5.2.1-2.6.2.4" class="pilcrow">¶</a>
-</dd>
-                <dd class="break"></dd>
-<dt id="section-5.2.1-2.6.2.5">sub</dt>
-                <dd style="margin-left: 1.5em" id="section-5.2.1-2.6.2.6">
-     REQUIRED. This claim identifies the owner of the keys.
-     It SHOULD be the same as the issuer.<a href="#section-5.2.1-2.6.2.6" class="pilcrow">¶</a>
-</dd>
-                <dd class="break"></dd>
-<dt id="section-5.2.1-2.6.2.7">iat</dt>
-                <dd style="margin-left: 1.5em" id="section-5.2.1-2.6.2.8">
-     OPTIONAL. Number. Time when this signed JWK Set was issued.
-        This is expressed as Seconds Since the Epoch, as defined in
-        <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-5.2.1-2.6.2.8" class="pilcrow">¶</a>
-</dd>
-                <dd class="break"></dd>
-<dt id="section-5.2.1-2.6.2.9">exp</dt>
-                <dd style="margin-left: 1.5em" id="section-5.2.1-2.6.2.10">
-     OPTIONAL. Number. This claim identifies the time when the JWT is
-     no longer valid. This is expressed as Seconds
-        Since the Epoch, as defined in <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-5.2.1-2.6.2.10" class="pilcrow">¶</a>
-</dd>
-              <dd class="break"></dd>
-</dl>
-<p id="section-5.2.1-2.6.3">
- More claims are defined in <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>; of
- these, <code>aud</code> SHOULD NOT be used since
- the issuer cannot know who the audience is.
- <code>nbf</code> and <code>jti</code>
- are not particularly useful in this context and SHOULD be omitted.<a href="#section-5.2.1-2.6.3" class="pilcrow">¶</a></p>
+ Signed JWK Set JWTs MUST include the
+ <code>kid</code> (Key ID) header parameter
+ with its value being the Key ID of the signing key used.<a href="#section-5.2.1-2.6" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-5.2.1-2.7"></dt>
             <dd style="margin-left: 1.5em" id="section-5.2.1-2.8">
               <p id="section-5.2.1-2.8.1">
- Additional claims MAY be defined and used in conjunction with the claims above.<a href="#section-5.2.1-2.8.1" class="pilcrow">¶</a></p>
-<p id="section-5.2.1-2.8.2" class="keepWithNext">
-     The following is a non-normative example of the JWT Claims Set for a signed JWK Set.<a href="#section-5.2.1-2.8.2" class="pilcrow">¶</a></p>
+ The following claims are specified for use in the payload,
+ all of which except <code>keys</code>
+ are defined in <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>:<a href="#section-5.2.1-2.8.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-5.2.1-2.8.2">
+                <dt id="section-5.2.1-2.8.2.1">keys</dt>
+                <dd style="margin-left: 1.5em" id="section-5.2.1-2.8.2.2">
+     REQUIRED. Array of JWK values in the JWK Set,
+     as specified in Section 5.1 of <span>[<a href="#RFC7517" class="cite xref">RFC7517</a>]</span>.<a href="#section-5.2.1-2.8.2.2" class="pilcrow">¶</a>
+</dd>
+                <dd class="break"></dd>
+<dt id="section-5.2.1-2.8.2.3">iss</dt>
+                <dd style="margin-left: 1.5em" id="section-5.2.1-2.8.2.4">
+     REQUIRED. The "iss" (issuer) claim identifies the principal
+     that issued the JWT.<a href="#section-5.2.1-2.8.2.4" class="pilcrow">¶</a>
+</dd>
+                <dd class="break"></dd>
+<dt id="section-5.2.1-2.8.2.5">sub</dt>
+                <dd style="margin-left: 1.5em" id="section-5.2.1-2.8.2.6">
+     REQUIRED. This claim identifies the owner of the keys.
+     It SHOULD be the same as the issuer.<a href="#section-5.2.1-2.8.2.6" class="pilcrow">¶</a>
+</dd>
+                <dd class="break"></dd>
+<dt id="section-5.2.1-2.8.2.7">iat</dt>
+                <dd style="margin-left: 1.5em" id="section-5.2.1-2.8.2.8">
+     OPTIONAL. Number. Time when this signed JWK Set was issued.
+        This is expressed as Seconds Since the Epoch, as defined in
+        <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-5.2.1-2.8.2.8" class="pilcrow">¶</a>
+</dd>
+                <dd class="break"></dd>
+<dt id="section-5.2.1-2.8.2.9">exp</dt>
+                <dd style="margin-left: 1.5em" id="section-5.2.1-2.8.2.10">
+     OPTIONAL. Number. This claim identifies the time when the JWT is
+     no longer valid. This is expressed as Seconds
+        Since the Epoch, as defined in <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-5.2.1-2.8.2.10" class="pilcrow">¶</a>
+</dd>
+              <dd class="break"></dd>
+</dl>
+<p id="section-5.2.1-2.8.3">
+ More claims are defined in <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>; of
+ these, <code>aud</code> SHOULD NOT be used since
+ the issuer cannot know who the audience is.
+ <code>nbf</code> and <code>jti</code>
+ are not particularly useful in this context and SHOULD be omitted.<a href="#section-5.2.1-2.8.3" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-5.2.1-2.9"></dt>
+            <dd style="margin-left: 1.5em" id="section-5.2.1-2.10">
+              <p id="section-5.2.1-2.10.1">
+ Additional claims MAY be defined and used in conjunction with the claims above.<a href="#section-5.2.1-2.10.1" class="pilcrow">¶</a></p>
+<p id="section-5.2.1-2.10.2" class="keepWithNext">
+     The following is a non-normative example of the JWT Claims Set for a signed JWK Set.<a href="#section-5.2.1-2.10.2" class="pilcrow">¶</a></p>
 <span id="name-example-jwt-claims-set-for-"></span><figure id="figure-10">
-                <div class="alignLeft art-text artwork" id="section-5.2.1-2.8.3.1">
+                <div class="alignLeft art-text artwork" id="section-5.2.1-2.10.3.1">
 <pre>
     {
       "keys": [
@@ -3576,8 +3583,8 @@ li > p:last-of-type:only-child {
                 </figcaption></figure>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.2.1-2.9">jwks_uri</dt>
-            <dd style="margin-left: 1.5em" id="section-5.2.1-2.10">
+<dt id="section-5.2.1-2.11">jwks_uri</dt>
+            <dd style="margin-left: 1.5em" id="section-5.2.1-2.12">
  OPTIONAL.
  URL referencing a JWK Set document
  containing the Entity's keys for that Entity Type.
@@ -3585,11 +3592,11 @@ li > p:last-of-type:only-child {
  When both signing and encryption keys are present,
  a <code>use</code> (public key use) parameter
  value is REQUIRED for all keys in the referenced JWK Set
- to indicate each key's intended usage.<a href="#section-5.2.1-2.10" class="pilcrow">¶</a>
+ to indicate each key's intended usage.<a href="#section-5.2.1-2.12" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.2.1-2.11">jwks</dt>
-            <dd style="margin-left: 1.5em" id="section-5.2.1-2.12">
+<dt id="section-5.2.1-2.13">jwks</dt>
+            <dd style="margin-left: 1.5em" id="section-5.2.1-2.14">
  OPTIONAL.
  JSON Web Key Set document, passed by value,
  containing the Entity's keys for that Entity Type.
@@ -3602,7 +3609,7 @@ li > p:last-of-type:only-child {
  cannot use the <code>signed_jwks_uri</code>
  parameter.
  An upside of using <code>jwks</code> is that
- the Entity's keys for the Entity Type are recorded in Trust Chains.<a href="#section-5.2.1-2.12" class="pilcrow">¶</a>
+ the Entity's keys for the Entity Type are recorded in Trust Chains.<a href="#section-5.2.1-2.14" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 </dl>
@@ -12194,14 +12201,19 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-D-3.1">
           <p id="appendix-D-3.1.1">
-     Define media type for Explicit Registration responses
-     <code>application/explicit-registration-response+jwt</code>
-     distinct from <code>application/entity-statement+jwt</code>.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
+     Fixed #120: Required <code>kid</code> (Key ID)
+     header parameter in Signed JWK Set JWTs.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.2">
           <p id="appendix-D-3.2.1">
+     Define media type for Explicit Registration responses
+     <code>application/explicit-registration-response+jwt</code>
+     distinct from <code>application/entity-statement+jwt</code>.<a href="#appendix-D-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.3">
+          <p id="appendix-D-3.3.1">
      Restrict audience values to the single Entity Identifier
-     of the intended recipient.<a href="#appendix-D-3.2.1" class="pilcrow">¶</a></p>
+     of the intended recipient.<a href="#appendix-D-3.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-D-4">
