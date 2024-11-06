@@ -3417,15 +3417,16 @@
 	    it knows which Trust Anchor it is using.
 	    To validate a Trust Mark issuer, follow the procedure
 	    defined in <xref target="resolving_trust"/>.
-	    To validate a Trust Mark:
-            <list style="numbers">
+	    To validate a Trust Mark, either:
+            <list style="symbols">
               <t>
-                Check the signature of the signed JWT and verify that
+                Validate the signature of the Trust Mark JWT and verify that
                 it has not expired.
               </t>
               <t>
                 If the Trust Mark identifier appears in the
-                <spanx style="verb">trust_mark_owners</spanx> claim,
+                <spanx style="verb">trust_mark_owners</spanx> claim
+		of the Trust Anchor's Entity Configuration,
                 verify that the Trust Mark contains
                 a <spanx style="verb">delegation</spanx>
                 claim.
@@ -3444,10 +3445,13 @@
                   </t>
                 </list>
               </t>
+	    </list>
+	  or:
+            <list style="symbols">
               <t>
-                Using the Trust Mark issuer status endpoint to verify that the
+                Use the Trust Mark issuer status endpoint to verify that the
                 Trust Mark is still active
-                is described in <xref target="status_endpoint"/>.
+                as described in <xref target="status_endpoint"/>.
               </t>
             </list>
           </t>
@@ -9851,6 +9855,9 @@ Host: op.umu.se
 	    <spanx style="verb">require_signed_request_object</spanx>
 	    and <spanx style="verb">require_pushed_authorization_requests</spanx>
 	    metadata parameters can be used.
+	  </t>
+	  <t>
+	    Fixed #107: Clarified how to validate Trust Marks.
 	  </t>
 	  <t>
 	    Fixed #114: Described why it may make sense to not support
