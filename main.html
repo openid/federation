@@ -5369,17 +5369,18 @@ li > p:last-of-type:only-child {
      it knows which Trust Anchor it is using.
      To validate a Trust Mark issuer, follow the procedure
      defined in <a href="#resolving_trust" class="auto internal xref">Section 10</a>.
-     To validate a Trust Mark:<a href="#section-7.3-1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-7.3-2">
-<li id="section-7.3-2.1">
+     To validate a Trust Mark, either:<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7.3-2.1">
             <p id="section-7.3-2.1.1">
-                Check the signature of the signed JWT and verify that
+                Validate the signature of the Trust Mark JWT and verify that
                 it has not expired.<a href="#section-7.3-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-7.3-2.2">
+          <li class="normal" id="section-7.3-2.2">
             <p id="section-7.3-2.2.1">
                 If the Trust Mark identifier appears in the
-                <code>trust_mark_owners</code> claim,
+                <code>trust_mark_owners</code> claim
+ of the Trust Anchor's Entity Configuration,
                 verify that the Trust Mark contains
                 a <code>delegation</code>
                 claim.
@@ -5400,21 +5401,25 @@ li > p:last-of-type:only-child {
 </li>
             </ul>
 </li>
-          <li id="section-7.3-2.3">
-            <p id="section-7.3-2.3.1">
-                Using the Trust Mark issuer status endpoint to verify that the
-                Trust Mark is still active
-                is described in <a href="#status_endpoint" class="auto internal xref">Section 8.4</a>.<a href="#section-7.3-2.3.1" class="pilcrow">¶</a></p>
-</li>
-        </ol>
+        </ul>
 <p id="section-7.3-3">
+   or:<a href="#section-7.3-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7.3-4.1">
+            <p id="section-7.3-4.1.1">
+                Use the Trust Mark issuer status endpoint to verify that the
+                Trust Mark is still active
+                as described in <a href="#status_endpoint" class="auto internal xref">Section 8.4</a>.<a href="#section-7.3-4.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-7.3-5">
             Note that the Entity representing the accreditation authority
             SHOULD be well known and trusted for a given Trust Mark identifier.
             A Trust Anchor MAY publish a list of accreditation authorities
             of Trust Marks that SHOULD be trusted by other Entities.
             A Trust Anchor uses the <code>trust_mark_issuers</code> claim
-            in its Entity Configuration to publish this information.<a href="#section-7.3-3" class="pilcrow">¶</a></p>
-<p id="section-7.3-4">
+            in its Entity Configuration to publish this information.<a href="#section-7.3-5" class="pilcrow">¶</a></p>
+<p id="section-7.3-6">
             If a Trust Mark issuer is issuing Trust Marks on behalf of a
             Trust Mark owner, then the Trust Anchor MUST publish the
             connection between the Trust Mark identifier
@@ -5423,17 +5428,17 @@ li > p:last-of-type:only-child {
             signifies that the Trust Anchor has validated
             the Trust Mark owner and that the
             Trust Mark owner has delegated the right to issue Trust Marks
-            with a designated Trust Mark identifier to a specified Trust Mark issuer.<a href="#section-7.3-4" class="pilcrow">¶</a></p>
-<p id="section-7.3-5">
+            with a designated Trust Mark identifier to a specified Trust Mark issuer.<a href="#section-7.3-6" class="pilcrow">¶</a></p>
+<p id="section-7.3-7">
             Trust Marks that are not recognized within a federation SHOULD be ignored when
             evaluating trust in the Entity that presented them. Such Trust Marks can
             appear for various reasons, such as the Entity Configuration including Trust Marks
             associated with another federation, or Trust Marks intended for specific
-            purposes or Entity audiences.<a href="#section-7.3-5" class="pilcrow">¶</a></p>
-<p id="section-7.3-6">
+            purposes or Entity audiences.<a href="#section-7.3-7" class="pilcrow">¶</a></p>
+<p id="section-7.3-8">
             An Entity MAY choose, at its own discretion, to utilize Trust Marks presented
             to it that are not recognized within the federation, and where the
-            accreditation authority is established by some out-of-band mechanism.<a href="#section-7.3-6" class="pilcrow">¶</a></p>
+            accreditation authority is established by some out-of-band mechanism.<a href="#section-7.3-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="trust_example">
@@ -12221,29 +12226,33 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-D-3.1">
           <p id="appendix-D-3.1.1">
-     Fixed #114: Described why it may make sense to not support
-     the use of <code>request_uri</code>
-     other than in conjunction with a PAR request.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
+     Fixed #107: Clarified how to validate Trust Marks.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.2">
           <p id="appendix-D-3.2.1">
-     Fixed #108: Removed remark about trust mark delegation revocation.<a href="#appendix-D-3.2.1" class="pilcrow">¶</a></p>
+     Fixed #114: Described why it may make sense to not support
+     the use of <code>request_uri</code>
+     other than in conjunction with a PAR request.<a href="#appendix-D-3.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.3">
           <p id="appendix-D-3.3.1">
-     Fixed #120: Required <code>kid</code> (Key ID)
-     header parameter in Signed JWK Set JWTs.<a href="#appendix-D-3.3.1" class="pilcrow">¶</a></p>
+     Fixed #108: Removed remark about trust mark delegation revocation.<a href="#appendix-D-3.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.4">
           <p id="appendix-D-3.4.1">
-     Define media type for Explicit Registration responses
-     <code>application/explicit-registration-response+jwt</code>
-     distinct from <code>application/entity-statement+jwt</code>.<a href="#appendix-D-3.4.1" class="pilcrow">¶</a></p>
+     Fixed #120: Required <code>kid</code> (Key ID)
+     header parameter in Signed JWK Set JWTs.<a href="#appendix-D-3.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.5">
           <p id="appendix-D-3.5.1">
+     Define media type for Explicit Registration responses
+     <code>application/explicit-registration-response+jwt</code>
+     distinct from <code>application/entity-statement+jwt</code>.<a href="#appendix-D-3.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.6">
+          <p id="appendix-D-3.6.1">
      Restrict audience values to the single Entity Identifier
-     of the intended recipient.<a href="#appendix-D-3.5.1" class="pilcrow">¶</a></p>
+     of the intended recipient.<a href="#appendix-D-3.6.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-D-4">
