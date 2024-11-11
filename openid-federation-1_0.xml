@@ -558,12 +558,30 @@
               the Entities that have at least one Superior above them,
               such as Leaf and Intermediate Entities.
               Its value MUST contain the Entity Identifiers of
-	      its Immediate Superiors and
-	      MUST NOT be the empty array
+	            its Immediate Superiors and
+	            MUST NOT be the empty array
               <spanx style="verb">[]</spanx>.
               This claim MUST NOT be present in Entity Configurations
               of Trust Anchors with no Superiors.
-	      It MUST NOT be present in Subordinate Statements.
+	            It MUST NOT be present in Subordinate Statements.
+            </t>
+            <t hangText="ta_hints" anchor="ta_hints">
+              <vspace/>
+              OPTIONAL. An array of strings representing
+              the Entity Identifiers of known Trust Anchors
+              that the subject signals it trusts.
+              This claim is RECOMMENDED in Entity Configurations of
+              Entities that need to indicate their trusted Trust Anchors.
+              If included, its value MUST NOT be an empty array
+              <spanx style="verb">[]</spanx>.
+              When any values in this parameter match with the
+              Superior Entities listed in the
+              <spanx style="verb">authority_hints</spanx>,
+              it indicates that these Superior Entities are Trust Anchors for
+              this Entity.
+              This claim MUST NOT be present in Entity Configurations
+              of Trust Anchors with no Superiors.
+              It MUST NOT be present in Subordinate Statements.
             </t>
             <t hangText="metadata">
               <vspace/>
@@ -1361,6 +1379,9 @@
       },
       "authority_hints": [
         "https://edugain.org/federation"
+      ],
+      "ta_hints": [
+        "https://edugain.org/federation"
       ]
     }
 ]]>
@@ -1485,6 +1506,11 @@
    "authority_hints":[
       "https://umu.se"
    ],
+   "ta_hints": [
+      "https://edugain.org/federation",
+      "https://umu.se",
+      "https://swamid.se"
+   ]
    "jwks":{
       "keys":[
          {
@@ -5354,6 +5380,9 @@ Content-Type: application/json
   },
   "authority_hints": [
     "https://edugain.org/federation"
+  ],
+  "ta_hints": [
+    "https://edugain.org/federation"
   ]
 }
 ]]></artwork>
@@ -8760,6 +8789,11 @@ HTTP/1.1 302 Found
   "authority_hints": [
     "https://umu.se"
   ],
+  "ta_hints": [
+    "https://edugain.org/federation",
+    "https://umu.se",
+    "https://swamid.se"
+  ],
   "exp": 1568397247,
   "iat": 1568310847,
   "iss": "https://op.umu.se",
@@ -8859,6 +8893,11 @@ Host: umu.se
   "authority_hints": [
     "https://swamid.se"
   ],
+  "ta_hints": [
+    "https://edugain.org/federation",
+    "https://swamid.se",
+    "https://umu.se"
+  ]
   "exp": 1568397247,
   "iat": 1568310847,
   "iss": "https://umu.se",
@@ -9002,6 +9041,9 @@ Host: swamid.se
 {
   "authority_hints": [
     "https://edugain.geant.org"
+  ],
+  "ta_hints": [
+    "https://edugain.org/federation"
   ],
   "exp": 1568397247,
   "iat": 1568310847,
@@ -9879,6 +9921,11 @@ Host: op.umu.se
 	  <t>
 	    Restrict audience values to the single Entity Identifier
 	    of the intended recipient.
+	  </t>
+	  <t>
+	    Added the <spanx style="verb">ta_hints</spanx> as an
+      Entity Configuration parameter to enable Entities to indicate
+      the Trust Anchors they recognize and trust.
 	  </t>
 	</list>
       </t>
