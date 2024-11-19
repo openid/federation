@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="6" month="November" year="2024"/>
+    <date day="19" month="November" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -5158,11 +5158,31 @@ Host: trust-anchor.example.com
                   a valid participant of the federation.
                   The HTTP response status code SHOULD be 401 (Unauthorized).
                 </t>
-                 <t hangText="invalid_issuer">
+		<t hangText="invalid_issuer">
                   <vspace/>
                   The endpoint cannot service the requested issuer.
                   The HTTP response status code SHOULD be 404 (Not Found).
                 </t>
+		<t hangText="invalid_subject">
+		  <vspace/>
+		  The endpoint cannot service the requested subject.
+		  The HTTP response status code SHOULD be 404 (Not Found).
+		</t>
+		<t hangText="invalid_trust_anchor">
+		  <vspace/>
+		  The Trust Anchor cannot be found or used.
+		  The HTTP response status code SHOULD be 404 (Not Found).
+		</t>
+		<t hangText="invalid_trust_chain">
+		  <vspace/>
+		  A Trust Chain cannot be constructed or used.
+		  The HTTP response status code SHOULD be 404 (Not Found).
+		</t>
+		<t hangText="invalid_metadata">
+		  <vspace/>
+		  Metadata or Metadata Policy values are invalid or conflict.
+		  The HTTP response status code SHOULD be 400 (Bad Request).
+		</t>
                 <t hangText="not_found">
                   <vspace/>
                   The requested Entity Identifier is "not found".
@@ -6496,7 +6516,7 @@ HTTP/1.1 302 Found
 	      </t>
 	    </section>
 
-          <section anchor="cliregresp" title="Explicit Client Registration Response">
+          <section anchor="cliregresp" title="Successful Explicit Client Registration Response">
                   <t>
                     If the OP created a client registration for the RP, it MUST
                     then construct a success response in the form of an Entity Statement.
@@ -6634,9 +6654,12 @@ HTTP/1.1 302 Found
 		to prevent confusion between the Explicit Registration response
 		and normal Entity Statements.
               </t>
+	    </section>
+
+	    <section anchor="ExplicitError" title="Explicit Client Registration Error Response">
               <t>
                 For a client registration error, the response is as defined in
-                <xref target="error_response"/> and MAY use errors defined in
+                <xref target="error_response"/> and MAY use errors defined there and in
                 Section 3.3 of <xref target="OpenID.Registration"/> and
 		Section 3.2.2 of <xref target="RFC7591"/>.
               </t>
@@ -7432,6 +7455,7 @@ HTTP/1.1 302 Found
               <t>Reference: <xref target="AuthenticationError"/> of this specification</t>
             </list>
           </t>
+	  <!-- TBD also register the error codes defined at anchor="error_response" -->
         </section>
         <?rfc subcompact="no"?>
       </section>
@@ -9850,6 +9874,9 @@ Host: op.umu.se
       <t>
 	-41
 	<list style="symbols">
+	  <t>
+	    Fixed #136: Defined additional error codes.
+	  </t>
 	  <t>
 	    Fixed #105 and #106: Informatively say that the
 	    <spanx style="verb">require_signed_request_object</spanx>
