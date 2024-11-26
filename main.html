@@ -36,7 +36,7 @@
         used for trust establishment with other application protocols.
        
     " name="description">
-<meta content="xml2rfc 3.24.0" name="generator">
+<meta content="xml2rfc 3.25.0" name="generator">
 <meta content="OpenID" name="keyword">
 <meta content="Connect" name="keyword">
 <meta content="Federation" name="keyword">
@@ -48,7 +48,7 @@
 <meta content="Trust Establishment" name="keyword">
 <meta content="openid-federation-1_0" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.24.0
+  xml2rfc 3.25.0
     Python 3.10.12
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
@@ -1260,7 +1260,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-11-06" class="published">6 November 2024</time>
+<time datetime="2024-11-18" class="published">18 November 2024</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -3450,8 +3450,9 @@ li > p:last-of-type:only-child {
 <a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-common-metadata-parameters" class="section-name selfRef">Common Metadata Parameters</a>
         </h3>
 <p id="section-5.2-1">
-        This section defines additional metadata parameters
-        that MAY be used with all the Entity Types above.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+   This section defines additional metadata parameters
+   that MAY be used with all the Entity Types above,
+   with the exception for JWK Sets noted below.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <div id="jwks_metadata">
 <section id="section-5.2.1">
           <h4 id="name-extensions-for-jwk-sets-in-">
@@ -3461,7 +3462,11 @@ li > p:last-of-type:only-child {
      The following metadata parameters define ways of obtaining
      JWK Sets for an Entity Type of the Entity.
      Note that these keys are distinct from the Federation Entity Keys
-     used to sign Entity Statements.<a href="#section-5.2.1-1" class="pilcrow">¶</a></p>
+     used to sign Entity Statements, which are in
+     the <code>jwks</code> claim of the Entity Statement,
+     and not within the <code>metadata</code> claim.
+     These extensions for JWK Sets MUST NOT be used in
+     <code>federation_entity</code> Entity Type metadata.<a href="#section-5.2.1-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-5.2.1-2">
             <dt id="section-5.2.1-2.1">signed_jwks_uri</dt>
             <dd style="margin-left: 1.5em" id="section-5.2.1-2.2">
@@ -12229,40 +12234,44 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-D-3.1">
           <p id="appendix-D-3.1.1">
-     Fixed #105 and #106: Informatively say that the
-     <code>require_signed_request_object</code>
-     and <code>require_pushed_authorization_requests</code>
-     metadata parameters can be used.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
+     Fixed #140: Federation Entity Keys MUST NOT appear in metadata.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.2">
           <p id="appendix-D-3.2.1">
-     Fixed #107: Clarified how to validate Trust Marks.<a href="#appendix-D-3.2.1" class="pilcrow">¶</a></p>
+     Fixed #105 and #106: Informatively say that the
+     <code>require_signed_request_object</code>
+     and <code>require_pushed_authorization_requests</code>
+     metadata parameters can be used.<a href="#appendix-D-3.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.3">
           <p id="appendix-D-3.3.1">
-     Fixed #114: Described why it may make sense to not support
-     the use of <code>request_uri</code>
-     other than in conjunction with a PAR request.<a href="#appendix-D-3.3.1" class="pilcrow">¶</a></p>
+     Fixed #107: Clarified how to validate Trust Marks.<a href="#appendix-D-3.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.4">
           <p id="appendix-D-3.4.1">
-     Fixed #108: Removed remark about trust mark delegation revocation.<a href="#appendix-D-3.4.1" class="pilcrow">¶</a></p>
+     Fixed #114: Described why it may make sense to not support
+     the use of <code>request_uri</code>
+     other than in conjunction with a PAR request.<a href="#appendix-D-3.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.5">
           <p id="appendix-D-3.5.1">
-     Fixed #120: Required <code>kid</code> (Key ID)
-     header parameter in Signed JWK Set JWTs.<a href="#appendix-D-3.5.1" class="pilcrow">¶</a></p>
+     Fixed #108: Removed remark about trust mark delegation revocation.<a href="#appendix-D-3.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.6">
           <p id="appendix-D-3.6.1">
-     Define media type for Explicit Registration responses
-     <code>application/explicit-registration-response+jwt</code>
-     distinct from <code>application/entity-statement+jwt</code>.<a href="#appendix-D-3.6.1" class="pilcrow">¶</a></p>
+     Fixed #120: Required <code>kid</code> (Key ID)
+     header parameter in Signed JWK Set JWTs.<a href="#appendix-D-3.6.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.7">
           <p id="appendix-D-3.7.1">
+     Define media type for Explicit Registration responses
+     <code>application/explicit-registration-response+jwt</code>
+     distinct from <code>application/entity-statement+jwt</code>.<a href="#appendix-D-3.7.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.8">
+          <p id="appendix-D-3.8.1">
      Restrict audience values to the single Entity Identifier
-     of the intended recipient.<a href="#appendix-D-3.7.1" class="pilcrow">¶</a></p>
+     of the intended recipient.<a href="#appendix-D-3.8.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-D-4">
