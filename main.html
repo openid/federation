@@ -1671,7 +1671,7 @@ li > p:last-of-type:only-child {
                     <p id="section-toc.1-1.12.2.1.2.1.1"><a href="#section-12.1.1" class="auto internal xref">12.1.1</a>.  <a href="#name-authentication-request" class="internal xref">Authentication Request</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1.2.1.2.1">
-                        <p id="section-toc.1-1.12.2.1.2.1.2.1.1"><a href="#section-12.1.1.1" class="auto internal xref">12.1.1.1</a>.  <a href="#name-using-a-request-object-dire" class="internal xref">Using a Request Object Directly</a></p>
+                        <p id="section-toc.1-1.12.2.1.2.1.2.1.1"><a href="#section-12.1.1.1" class="auto internal xref">12.1.1.1</a>.  <a href="#name-using-a-request-object" class="internal xref">Using a Request Object</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1.2.1.2.1.2.1">
                             <p id="section-toc.1-1.12.2.1.2.1.2.1.2.1.1"><a href="#section-12.1.1.1.1" class="auto internal xref">12.1.1.1.1</a>.  <a href="#name-authorization-request-with-" class="internal xref">Authorization Request with a Trust Chain</a></p>
@@ -7770,11 +7770,12 @@ Content-Type: application/json
      as described in <a href="#using-par" class="auto internal xref">Section 12.1.1.2</a>.<a href="#section-12.1.1-3" class="pilcrow">¶</a></p>
 <div id="UsingAuthzRequestObject">
 <section id="section-12.1.1.1">
-            <h5 id="name-using-a-request-object-dire">
-<a href="#section-12.1.1.1" class="section-number selfRef">12.1.1.1. </a><a href="#name-using-a-request-object-dire" class="section-name selfRef">Using a Request Object Directly</a>
+            <h5 id="name-using-a-request-object">
+<a href="#section-12.1.1.1" class="section-number selfRef">12.1.1.1. </a><a href="#name-using-a-request-object" class="section-name selfRef">Using a Request Object</a>
             </h5>
 <p id="section-12.1.1.1-1">
-              When a Request Object is used directly at the Authorization Endpoint,
+              When a Request Object is used at the Authorization Endpoint
+       or the Pushed Authorization Request Endpoint,
        the value of the <code>request</code>
               parameter is a JWT whose Claims are the request parameters
               specified in Section 3.1.2 in
@@ -10252,7 +10253,7 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-17.5.1-1.4">
               <p id="section-17.5.1-1.4.1">
-                Specification Document(s): <a href="#AuthzRequestProcessing" class="auto internal xref">Section 12.1.1.1.2</a> of this specification<a href="#section-17.5.1-1.4.1" class="pilcrow">¶</a></p>
+                Specification Document(s): <a href="#trust_chain_authz" class="auto internal xref">Section 12.1.1.1.1</a> of this specification<a href="#section-17.5.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -12234,44 +12235,48 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-D-3.1">
           <p id="appendix-D-3.1.1">
-     Fixed #140: Federation Entity Keys MUST NOT appear in metadata.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
+     Fixed #139: Clarified description of using request objects.<a href="#appendix-D-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.2">
           <p id="appendix-D-3.2.1">
-     Fixed #105 and #106: Informatively say that the
-     <code>require_signed_request_object</code>
-     and <code>require_pushed_authorization_requests</code>
-     metadata parameters can be used.<a href="#appendix-D-3.2.1" class="pilcrow">¶</a></p>
+     Fixed #140: Federation Entity Keys MUST NOT appear in metadata.<a href="#appendix-D-3.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.3">
           <p id="appendix-D-3.3.1">
-     Fixed #107: Clarified how to validate Trust Marks.<a href="#appendix-D-3.3.1" class="pilcrow">¶</a></p>
+     Fixed #105 and #106: Informatively say that the
+     <code>require_signed_request_object</code>
+     and <code>require_pushed_authorization_requests</code>
+     metadata parameters can be used.<a href="#appendix-D-3.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.4">
           <p id="appendix-D-3.4.1">
-     Fixed #114: Described why it may make sense to not support
-     the use of <code>request_uri</code>
-     other than in conjunction with a PAR request.<a href="#appendix-D-3.4.1" class="pilcrow">¶</a></p>
+     Fixed #107: Clarified how to validate Trust Marks.<a href="#appendix-D-3.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.5">
           <p id="appendix-D-3.5.1">
-     Fixed #108: Removed remark about trust mark delegation revocation.<a href="#appendix-D-3.5.1" class="pilcrow">¶</a></p>
+     Fixed #114: Described why it may make sense to not support
+     the use of <code>request_uri</code>
+     other than in conjunction with a PAR request.<a href="#appendix-D-3.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.6">
           <p id="appendix-D-3.6.1">
-     Fixed #120: Required <code>kid</code> (Key ID)
-     header parameter in Signed JWK Set JWTs.<a href="#appendix-D-3.6.1" class="pilcrow">¶</a></p>
+     Fixed #108: Removed remark about trust mark delegation revocation.<a href="#appendix-D-3.6.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.7">
           <p id="appendix-D-3.7.1">
-     Define media type for Explicit Registration responses
-     <code>application/explicit-registration-response+jwt</code>
-     distinct from <code>application/entity-statement+jwt</code>.<a href="#appendix-D-3.7.1" class="pilcrow">¶</a></p>
+     Fixed #120: Required <code>kid</code> (Key ID)
+     header parameter in Signed JWK Set JWTs.<a href="#appendix-D-3.7.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-D-3.8">
           <p id="appendix-D-3.8.1">
+     Define media type for Explicit Registration responses
+     <code>application/explicit-registration-response+jwt</code>
+     distinct from <code>application/entity-statement+jwt</code>.<a href="#appendix-D-3.8.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-D-3.9">
+          <p id="appendix-D-3.9.1">
      Restrict audience values to the single Entity Identifier
-     of the intended recipient.<a href="#appendix-D-3.8.1" class="pilcrow">¶</a></p>
+     of the intended recipient.<a href="#appendix-D-3.9.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-D-4">
