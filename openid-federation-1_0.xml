@@ -365,8 +365,15 @@
             <t hangText="Trust Mark">
               Statement of conformance to a
               well-scoped set of trust and/or interoperability requirements
-              as determined by an accreditation authority.
+              as determined by an accreditation authority. 
+              Each Trust Mark has a Trust Mark identifier.
             </t>
+            <t hangText="Trust Mark Issuer">
+              A Federation Entity that issues Trust Marks.
+            </t>
+            <t hangText="Trust Mark Owner">
+              An Entity that owns the right to a Trust Mark identifier. 
+            </t>            
             <t hangText="Federation Entity Keys">
               Keys used for the cryptographic signatures required by
               the trust mechanisms defined in this specification.
@@ -686,7 +693,7 @@
               <vspace/>
               OPTIONAL.
               If a Federation Operator knows that a Trust Mark identifier is owned
-              by an Entity different from the Trust Mark issuer, then that
+              by an Entity different from the Trust Mark Issuer, then that
               knowledge MUST be expressed in this claim.
               This claim MUST be ignored if present in an Entity Configuration
               for an Entity that is not a Trust Anchor.
@@ -696,7 +703,7 @@
                 <t hangText="sub">
                   <vspace/>
                   REQUIRED
-                  Identifier of the Trust Mark owner.
+                  Identifier of the Trust Mark Owner.
                 </t>
                 <t hangText="jwks">
                   <vspace/>
@@ -1203,7 +1210,7 @@
               <vspace/>
               OPTIONAL.
               The Trust Mark status endpoint described in
-              <xref target="status_endpoint"/>. Trust Mark issuers SHOULD
+              <xref target="status_endpoint"/>. Trust Mark Issuers SHOULD
               publish a
               <spanx style="verb">federation_trust_mark_status_endpoint</spanx>.
               This URL MUST use the <spanx style="verb">https</spanx>
@@ -1220,7 +1227,7 @@
               scheme and MAY contain port,
               path, and query parameter components;
               it MUST NOT contain a fragment component.
-              Trust Mark issuers MAY publish a
+              Trust Mark Issuers MAY publish a
               <spanx style="verb">federation_trust_mark_list_endpoint</spanx>.
             </t>
             <t hangText="federation_trust_mark_endpoint">
@@ -1232,7 +1239,7 @@
               scheme and MAY contain port,
               path, and query parameter components;
               it MUST NOT contain a fragment component.
-              Trust Mark issuers MAY publish a
+              Trust Mark Issuers MAY publish a
               <spanx style="verb">federation_trust_mark_endpoint</spanx>.
             </t>
 	    <t hangText="federation_historical_keys_endpoint">
@@ -3214,15 +3221,10 @@
 	  claim definition in <xref target="entity-statement"/>.
         </t>
         <t>
-	  A Trust Mark issuer is a Federation Entity that issues Trust Marks.
-          A Trust Mark owner is an Entity that owns the right to a Trust Mark
-          identifier.
-        </t>
-        <t>
           Trust Marks are signed by a federation-accredited
-          authority called a Trust Mark issuer.
-	  All Trust Mark issuers MUST be represented in the
-          federation by an Entity. The fact that a Trust Mark issuer is
+          authority called a Trust Mark Issuer.
+	  All Trust Mark Issuers MUST be represented in the
+          federation by an Entity. The fact that a Trust Mark Issuer is
           accepted by the federation is expressed in the
           <spanx style="verb">trust_mark_issuers</spanx> claim of the
           Trust Anchor's Entity Configuration.
@@ -3328,7 +3330,7 @@
         <section title="Trust Mark Delegation" anchor="trust_mark_delegation">
           <t>
             There will be cases where the owner of a Trust Mark for some reason
-            does not match the Trust Mark issuer due to administrative or
+            does not match the Trust Mark Issuer due to administrative or
             technical requirements. Take as an example vehicle
             inspection. Vehicle inspection is a procedure mandated by national
             or subnational governments in many countries, in which a vehicle is
@@ -3338,7 +3340,7 @@
             performing the inspections, after which they issue the Trust Mark.
           </t>
           <t>
-            The fact that a Trust Mark is issued by a Trust Mark issuer that is
+            The fact that a Trust Mark is issued by a Trust Mark Issuer that is
             not the owner of the Trust Mark is expressed by including
 	    a <spanx style="verb">delegation</spanx> claim in the Trust Mark,
 	    whose value is a Trust Mark delegation JWT,
@@ -3346,7 +3348,7 @@
           </t>
           <t>
             If the Federation Operator knows that Trust Marks with a
-            certain Trust Mark identifier may legitimately be issued by Trust Mark issuers
+            certain Trust Mark identifier may legitimately be issued by Trust Mark Issuers
             that are not the owner of the Trust Mark identifier, then information
             about the owner and the Trust Mark identifier MUST be included in the
             <spanx style="verb">trust_mark_owners</spanx> claim in
@@ -3356,7 +3358,7 @@
 	  <section title="Trust Mark Delegation JWT" anchor="delegation_jwt">
 	    <t>
 	      A Trust Mark Delegation JWT is a signed JWT
-	      issued by a Trust Mark owner
+	      issued by a Trust Mark Owner
 	      that identifies a legitimate delegated issuer of Trust Marks
 	      with a particular identifier.
 	    </t>
@@ -3420,7 +3422,7 @@
           <t>
 	    An Entity SHOULD NOT try to validate a Trust Mark until
 	    it knows which Trust Anchor it is using.
-	    To validate a Trust Mark issuer, follow the procedure
+	    To validate a Trust Mark Issuer, follow the procedure
 	    defined in <xref target="resolving_trust"/>.
 	    To validate a Trust Mark, either:
             <list style="symbols">
@@ -3454,7 +3456,7 @@
 	  or:
             <list style="symbols">
               <t>
-                Use the Trust Mark issuer status endpoint to verify that the
+                Use the Trust Mark Issuer status endpoint to verify that the
                 Trust Mark is still active
                 as described in <xref target="status_endpoint"/>.
               </t>
@@ -3469,15 +3471,15 @@
             in its Entity Configuration to publish this information.
           </t>
           <t>
-            If a Trust Mark issuer is issuing Trust Marks on behalf of a
-            Trust Mark owner, then the Trust Anchor MUST publish the
+            If a Trust Mark Issuer is issuing Trust Marks on behalf of a
+            Trust Mark Owner, then the Trust Anchor MUST publish the
             connection between the Trust Mark identifier
-	    and the corresponding Trust Mark issuer in the
+	    and the corresponding Trust Mark Issuer in the
             <spanx style="verb">trust_mark_issuers</spanx> claim. This
             signifies that the Trust Anchor has validated
-            the Trust Mark owner and that the
-            Trust Mark owner has delegated the right to issue Trust Marks
-            with a designated Trust Mark identifier to a specified Trust Mark issuer.
+            the Trust Mark Owner and that the
+            Trust Mark Owner has delegated the right to issue Trust Marks
+            with a designated Trust Mark identifier to a specified Trust Mark Issuer.
           </t>
           <t>
             Trust Marks that are not recognized within a federation SHOULD be ignored when
@@ -3677,7 +3679,7 @@
 	          claim in the JWT Claims Set for an Entity Configuration in which the
               Trust Mark is issued by an Entity that issues Trust Marks on behalf of
               another Entity.
-              The fact that a Trust Mark is issued by a Trust Mark issuer that is not
+              The fact that a Trust Mark is issued by a Trust Mark Issuer that is not
               the owner of the Trust Mark is expressed by including a
               <spanx style="verb">delegation</spanx> claim
               in the Trust Mark, whose value is a signed JWT.
@@ -3899,13 +3901,13 @@ Host: edugain.org
       <section title="Subordinate Listings" anchor="entity_listing">
         <t>
 	  The listing endpoint is exposed by Federation Entities
-	  acting as a Trust Anchor, Intermediate, or Trust Mark issuer.
+	  acting as a Trust Anchor, Intermediate, or Trust Mark Issuer.
 	  The endpoint lists the Immediate Subordinates about which
           the Trust Anchor, Intermediate, or Trust Mark Issuer
 	  issues Entity Statements.
         </t>
         <t>
-	  As a Trust Mark issuer,
+	  As a Trust Mark Issuer,
           the endpoint MAY list the Immediate Subordinates for which Trust Marks
           have been issued and are still valid, if the issuer
           exposing this endpoint supports Trust Mark filtering, as
@@ -4397,7 +4399,7 @@ Host: openid.sunet.se
       <section title="Trust Mark Status" anchor="status_endpoint">
         <t>
           This enables an Entity to check whether a Trust Mark has been issued to
-          an Entity and is still active. The query MUST be sent to the Trust Mark issuer.
+          an Entity and is still active. The query MUST be sent to the Trust Mark Issuer.
         </t>
 	<t>
 	  The Trust Mark status endpoint location is published in
@@ -4432,7 +4434,7 @@ Host: openid.sunet.se
                 This is expressed as Seconds Since the Epoch, per
                 <xref target="RFC7519"/>. If
                 <spanx style="verb">iat</spanx> is not specified and the
-                Trust Mark issuer has issued several Trust Marks with the
+                Trust Mark Issuer has issued several Trust Marks with the
                 identifier specified in the request to the
                 Entity identified by <spanx style="verb">sub</spanx>, the
                 most recent one is assumed.
@@ -4507,7 +4509,7 @@ Content-Type: application/json
      <section title="Trust Marked Entities Listing" anchor="tm_listing">
         <t>
 		  The Trust Marked Entities listing endpoint is exposed by
-          Trust Mark issuers
+          Trust Mark Issuers
           and lists all the Entities for which Trust Marks
           have been issued and are still valid.
         </t>
@@ -4602,7 +4604,7 @@ Content-Type: application/json
      <section title="Trust Mark Endpoint" anchor="tm_endpoint">
         <t>
           The Trust Mark endpoint is
-          exposed by a Trust Mark issuer
+          exposed by a Trust Mark Issuer
           to provide Trust Marks to subjects.
         </t>
 	<t>
