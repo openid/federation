@@ -5752,6 +5752,19 @@ Content-Type: application/json
           <spanx style="verb">client_registration_types_supported</spanx>
           metadata parameter.
 	</t>
+	<t>
+	  Since the RP will have no Client Secret when Automatic Registration
+	  is used, the RP MUST include a
+	  <spanx style="verb">token_endpoint_auth_method</spanx>
+	  parameter in its metadata with a value other than
+	  <spanx style="verb">client_secret_basic</spanx>
+	  and/or include a
+	  <spanx style="verb">token_endpoint_auth_methods_supported</spanx>
+	  parameter in its metadata,
+	  as defined in <xref target="OpenID.RP.Metadata.Choices"/>,
+	  including a value other than
+	  <spanx style="verb">client_secret_basic</spanx>.
+	</t>
 
         <section anchor="authn-request" title="Authentication Request">
           <t>
@@ -8523,6 +8536,37 @@ HTTP/1.1 302 Found
 	</front>
       </reference>
 
+      <reference anchor="OpenID.RP.Metadata.Choices" target="https://openid.net/specs/openid-connect-rp-metadata-choices-1_0.html">
+	<front>
+	  <title>OpenID Connect Relying Party Metadata Choices 1.0</title>
+
+	  <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
+	    <organization abbrev="Self-Issued Consulting">Self-Issued Consulting</organization>
+	    <address>
+	      <email>michael_b_jones@hotmail.com</email>
+	      <uri>https://self-issued.info/</uri>
+	    </address>
+	  </author>
+
+	  <author fullname="Roland Hedberg" initials="R." surname="Hedberg">
+	    <organization>independent</organization>
+	    <address>
+	      <email>roland@catalogix.se</email>
+	    </address>
+	  </author>
+
+	  <author fullname="John Bradley" initials="J." surname="Bradley">
+	    <organization abbrev="Yubico">Yubico</organization>
+	    <address>
+	      <email>ve7jtb@ve7jtb.com</email>
+	      <uri>http://www.thread-safe.com/</uri>
+	    </address>
+	  </author>
+
+          <date day="25" month="November" year="2024"/>
+	</front>
+      </reference>
+
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-13.xml" />
 
     </references>
@@ -9570,7 +9614,11 @@ Host: op.umu.se
     "response_types": [
       "code"
     ],
-    "subject_type": "public"
+    "subject_type": "public",
+    "token_endpoint_auth_methods_supported": [
+      "private_key_jwt",
+      "self_signed_tls_client_auth"
+    ]
   }
 }
 ]]></artwork>
@@ -9604,7 +9652,11 @@ Host: op.umu.se
     "response_types": [
       "code"
     ],
-    "subject_type": "public"
+    "subject_type": "public",
+    "token_endpoint_auth_methods_supported": [
+      "private_key_jwt",
+      "self_signed_tls_client_auth"
+    ]
   }
 }
 ]]></artwork>
@@ -9815,11 +9867,18 @@ Host: op.umu.se
 	-41
 	<list style="symbols">
 	  <t>
+	    Fixed #133: Require <spanx style="verb">token_endpoint_auth_method</spanx>
+	    and/or <spanx style="verb">token_endpoint_auth_methods_supported</spanx>
+	    in RP metadata when using Automatic Registration.
+	  </t>
+	  <t>
+	    Reference OpenID Connect Relying Party Metadata Choices 1.0.
+	  </t>
+	  <t>
 	    Fixed #139: Clarified description of using request objects.
 	  </t>
 	  <t>
 	    Fixed #140: Federation Entity Keys MUST NOT appear in metadata.
-
 	  </t>
 	  <t>
 	    Fixed #105 and #106: Informatively say that the
