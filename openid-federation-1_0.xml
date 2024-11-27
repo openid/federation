@@ -1553,8 +1553,9 @@
 
       <section title="Common Metadata Parameters" anchor="common_metadata">
         <t>
-        This section defines additional metadata parameters
-        that MAY be used with all the Entity Types above.
+	  This section defines additional metadata parameters
+	  that MAY be used with all the Entity Types above,
+	  with the exception for JWK Sets noted below.
         </t>
 
 	<section anchor="jwks_metadata"
@@ -1563,7 +1564,11 @@
 	    The following metadata parameters define ways of obtaining
 	    JWK Sets for an Entity Type of the Entity.
 	    Note that these keys are distinct from the Federation Entity Keys
-	    used to sign Entity Statements.
+	    used to sign Entity Statements, which are in
+	    the <spanx style="verb">jwks</spanx> claim of the Entity Statement,
+	    and not within the <spanx style="verb">metadata</spanx> claim.
+	    These extensions for JWK Sets MUST NOT be used in
+	    <spanx style="verb">federation_entity</spanx> Entity Type metadata.
 	  </t>
 	  <t>
 	    <list style="hanging">
@@ -5797,10 +5802,11 @@ Content-Type: application/json
 	    as described in <xref target="using-par"/>.
 	  </t>
 
-          <section title="Using a Request Object Directly" anchor="UsingAuthzRequestObject">
+          <section title="Using a Request Object" anchor="UsingAuthzRequestObject">
 
             <t>
-              When a Request Object is used directly at the Authorization Endpoint,
+              When a Request Object is used at the Authorization Endpoint
+	      or the Pushed Authorization Request Endpoint,
 	      the value of the <spanx style="verb">request</spanx>
               parameter is a JWT whose Claims are the request parameters
               specified in Section 3.1.2 in
@@ -7967,7 +7973,7 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="AuthzRequestProcessing"/> of this specification
+                Specification Document(s): <xref target="trust_chain_authz"/> of this specification
               </t>
             </list>
           </t>
@@ -9866,6 +9872,12 @@ Host: op.umu.se
 	<list style="symbols">
 	  <t>
 	    Fixed #136: Defined additional error codes.
+	  </t>
+	  <t>
+	    Fixed #139: Clarified description of using request objects.
+	  </t>
+	  <t>
+	    Fixed #140: Federation Entity Keys MUST NOT appear in metadata.
 	  </t>
 	  <t>
 	    Fixed #105 and #106: Informatively say that the
