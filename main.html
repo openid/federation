@@ -2218,15 +2218,26 @@ li > p:last-of-type:only-child {
           <dd style="margin-left: 1.5em" id="section-1.2-3.38">
               Statement of conformance to a
               well-scoped set of trust and/or interoperability requirements
-              as determined by an accreditation authority.<a href="#section-1.2-3.38" class="pilcrow">¶</a>
+              as determined by an accreditation authority. 
+              Each Trust Mark has a Trust Mark identifier.<a href="#section-1.2-3.38" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-1.2-3.39">Federation Entity Keys</dt>
+<dt id="section-1.2-3.39">Trust Mark Issuer</dt>
           <dd style="margin-left: 1.5em" id="section-1.2-3.40">
+              A Federation Entity that issues Trust Marks.<a href="#section-1.2-3.40" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-1.2-3.41">Trust Mark Owner</dt>
+          <dd style="margin-left: 1.5em" id="section-1.2-3.42">
+              An Entity that owns the right to a Trust Mark identifier.<a href="#section-1.2-3.42" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-1.2-3.43">Federation Entity Keys</dt>
+          <dd style="margin-left: 1.5em" id="section-1.2-3.44">
               Keys used for the cryptographic signatures required by
               the trust mechanisms defined in this specification.
               Every participant in a Federation publishes its public
-              Federation Entity Keys in its Entity Configuration.<a href="#section-1.2-3.40" class="pilcrow">¶</a>
+              Federation Entity Keys in its Entity Configuration.<a href="#section-1.2-3.44" class="pilcrow">¶</a>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -2562,7 +2573,7 @@ li > p:last-of-type:only-child {
           <p id="section-3-6.28.1">
               OPTIONAL.
               If a Federation Operator knows that a Trust Mark identifier is owned
-              by an Entity different from the Trust Mark issuer, then that
+              by an Entity different from the Trust Mark Issuer, then that
               knowledge MUST be expressed in this claim.
               This claim MUST be ignored if present in an Entity Configuration
               for an Entity that is not a Trust Anchor.
@@ -2572,7 +2583,7 @@ li > p:last-of-type:only-child {
             <dt id="section-3-6.28.2.1">sub</dt>
             <dd style="margin-left: 1.5em" id="section-3-6.28.2.2">
                   REQUIRED
-                  Identifier of the Trust Mark owner.<a href="#section-3-6.28.2.2" class="pilcrow">¶</a>
+                  Identifier of the Trust Mark Owner.<a href="#section-3-6.28.2.2" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-3-6.28.2.3">jwks</dt>
@@ -3091,7 +3102,7 @@ li > p:last-of-type:only-child {
             <dd style="margin-left: 1.5em" id="section-5.1.1-4.8">
               OPTIONAL.
               The Trust Mark status endpoint described in
-              <a href="#status_endpoint" class="auto internal xref">Section 8.4</a>. Trust Mark issuers SHOULD
+              <a href="#status_endpoint" class="auto internal xref">Section 8.4</a>. Trust Mark Issuers SHOULD
               publish a
               <code>federation_trust_mark_status_endpoint</code>.
               This URL MUST use the <code>https</code>
@@ -3109,7 +3120,7 @@ li > p:last-of-type:only-child {
               scheme and MAY contain port,
               path, and query parameter components;
               it MUST NOT contain a fragment component.
-              Trust Mark issuers MAY publish a
+              Trust Mark Issuers MAY publish a
               <code>federation_trust_mark_list_endpoint</code>.<a href="#section-5.1.1-4.10" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
@@ -3122,7 +3133,7 @@ li > p:last-of-type:only-child {
               scheme and MAY contain port,
               path, and query parameter components;
               it MUST NOT contain a fragment component.
-              Trust Mark issuers MAY publish a
+              Trust Mark Issuers MAY publish a
               <code>federation_trust_mark_endpoint</code>.<a href="#section-5.1.1-4.12" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
@@ -5160,36 +5171,32 @@ li > p:last-of-type:only-child {
    as described in the <code>trust_marks</code>
    claim definition in <a href="#entity-statement" class="auto internal xref">Section 3</a>.<a href="#section-7-1" class="pilcrow">¶</a></p>
 <p id="section-7-2">
-   A Trust Mark issuer is a Federation Entity that issues Trust Marks.
-          A Trust Mark owner is an Entity that owns the right to a Trust Mark
-          identifier.<a href="#section-7-2" class="pilcrow">¶</a></p>
-<p id="section-7-3">
           Trust Marks are signed by a federation-accredited
-          authority called a Trust Mark issuer.
-   All Trust Mark issuers MUST be represented in the
-          federation by an Entity. The fact that a Trust Mark issuer is
+          authority called a Trust Mark Issuer.
+   All Trust Mark Issuers MUST be represented in the
+          federation by an Entity. The fact that a Trust Mark Issuer is
           accepted by the federation is expressed in the
           <code>trust_mark_issuers</code> claim of the
-          Trust Anchor's Entity Configuration.<a href="#section-7-3" class="pilcrow">¶</a></p>
-<p id="section-7-4">
+          Trust Anchor's Entity Configuration.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-3">
           The key used by the Trust Mark
           issuer to sign its Trust Marks MUST be one of the private keys
           in its set of
-          Federation Entity Keys.<a href="#section-7-4" class="pilcrow">¶</a></p>
-<p id="section-7-5">
+          Federation Entity Keys.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7-4">
    Trust Mark JWTs MUST include the
    <code>kid</code> (Key ID) header parameter
-   with its value being the Key ID of the signing key used.<a href="#section-7-5" class="pilcrow">¶</a></p>
-<p id="section-7-6">
+   with its value being the Key ID of the signing key used.<a href="#section-7-4" class="pilcrow">¶</a></p>
+<p id="section-7-5">
           Note that a federation MAY allow an Entity to self-sign
-          Trust Marks.<a href="#section-7-6" class="pilcrow">¶</a></p>
-<p id="section-7-7">
+          Trust Marks.<a href="#section-7-5" class="pilcrow">¶</a></p>
+<p id="section-7-6">
           Trust Mark JWTs MUST be explicitly typed by setting the
           <code>typ</code> header parameter to
           <code>trust-mark+jwt</code> to prevent
           cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.
    Trust Marks without a <code>typ</code> header parameter
-   or with a different <code>typ</code> value MUST be rejected.<a href="#section-7-7" class="pilcrow">¶</a></p>
+   or with a different <code>typ</code> value MUST be rejected.<a href="#section-7-6" class="pilcrow">¶</a></p>
 <div id="trust_mark_claims">
 <section id="section-7.1">
         <h3 id="name-trust-mark-claims">
@@ -5279,7 +5286,7 @@ li > p:last-of-type:only-child {
         </h3>
 <p id="section-7.2-1">
             There will be cases where the owner of a Trust Mark for some reason
-            does not match the Trust Mark issuer due to administrative or
+            does not match the Trust Mark Issuer due to administrative or
             technical requirements. Take as an example vehicle
             inspection. Vehicle inspection is a procedure mandated by national
             or subnational governments in many countries, in which a vehicle is
@@ -5288,14 +5295,14 @@ li > p:last-of-type:only-child {
             does not perform them; instead, there may be commercial companies
             performing the inspections, after which they issue the Trust Mark.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
 <p id="section-7.2-2">
-            The fact that a Trust Mark is issued by a Trust Mark issuer that is
+            The fact that a Trust Mark is issued by a Trust Mark Issuer that is
             not the owner of the Trust Mark is expressed by including
      a <code>delegation</code> claim in the Trust Mark,
      whose value is a Trust Mark delegation JWT,
      as defined in <a href="#delegation_jwt" class="auto internal xref">Section 7.2.1</a>.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
 <p id="section-7.2-3">
             If the Federation Operator knows that Trust Marks with a
-            certain Trust Mark identifier may legitimately be issued by Trust Mark issuers
+            certain Trust Mark identifier may legitimately be issued by Trust Mark Issuers
             that are not the owner of the Trust Mark identifier, then information
             about the owner and the Trust Mark identifier MUST be included in the
             <code>trust_mark_owners</code> claim in
@@ -5307,7 +5314,7 @@ li > p:last-of-type:only-child {
           </h4>
 <p id="section-7.2.1-1">
        A Trust Mark Delegation JWT is a signed JWT
-       issued by a Trust Mark owner
+       issued by a Trust Mark Owner
        that identifies a legitimate delegated issuer of Trust Marks
        with a particular identifier.<a href="#section-7.2.1-1" class="pilcrow">¶</a></p>
 <p id="section-7.2.1-2">
@@ -5375,7 +5382,7 @@ li > p:last-of-type:only-child {
 <p id="section-7.3-1">
      An Entity SHOULD NOT try to validate a Trust Mark until
      it knows which Trust Anchor it is using.
-     To validate a Trust Mark issuer, follow the procedure
+     To validate a Trust Mark Issuer, follow the procedure
      defined in <a href="#resolving_trust" class="auto internal xref">Section 10</a>.
      To validate a Trust Mark, either:<a href="#section-7.3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -5415,7 +5422,7 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-7.3-4.1">
             <p id="section-7.3-4.1.1">
-                Use the Trust Mark issuer status endpoint to verify that the
+                Use the Trust Mark Issuer status endpoint to verify that the
                 Trust Mark is still active
                 as described in <a href="#status_endpoint" class="auto internal xref">Section 8.4</a>.<a href="#section-7.3-4.1.1" class="pilcrow">¶</a></p>
 </li>
@@ -5428,15 +5435,15 @@ li > p:last-of-type:only-child {
             A Trust Anchor uses the <code>trust_mark_issuers</code> claim
             in its Entity Configuration to publish this information.<a href="#section-7.3-5" class="pilcrow">¶</a></p>
 <p id="section-7.3-6">
-            If a Trust Mark issuer is issuing Trust Marks on behalf of a
-            Trust Mark owner, then the Trust Anchor MUST publish the
+            If a Trust Mark Issuer is issuing Trust Marks on behalf of a
+            Trust Mark Owner, then the Trust Anchor MUST publish the
             connection between the Trust Mark identifier
-     and the corresponding Trust Mark issuer in the
+     and the corresponding Trust Mark Issuer in the
             <code>trust_mark_issuers</code> claim. This
             signifies that the Trust Anchor has validated
-            the Trust Mark owner and that the
-            Trust Mark owner has delegated the right to issue Trust Marks
-            with a designated Trust Mark identifier to a specified Trust Mark issuer.<a href="#section-7.3-6" class="pilcrow">¶</a></p>
+            the Trust Mark Owner and that the
+            Trust Mark Owner has delegated the right to issue Trust Marks
+            with a designated Trust Mark identifier to a specified Trust Mark Issuer.<a href="#section-7.3-6" class="pilcrow">¶</a></p>
 <p id="section-7.3-7">
             Trust Marks that are not recognized within a federation SHOULD be ignored when
             evaluating trust in the Entity that presented them. Such Trust Marks can
@@ -5638,7 +5645,7 @@ li > p:last-of-type:only-child {
            claim in the JWT Claims Set for an Entity Configuration in which the
               Trust Mark is issued by an Entity that issues Trust Marks on behalf of
               another Entity.
-              The fact that a Trust Mark is issued by a Trust Mark issuer that is not
+              The fact that a Trust Mark is issued by a Trust Mark Issuer that is not
               the owner of the Trust Mark is expressed by including a
               <code>delegation</code> claim
               in the Trust Mark, whose value is a signed JWT.<a href="#section-7.5-1" class="pilcrow">¶</a></p>
@@ -5871,12 +5878,12 @@ Host: edugain.org
         </h3>
 <p id="section-8.2-1">
    The listing endpoint is exposed by Federation Entities
-   acting as a Trust Anchor, Intermediate, or Trust Mark issuer.
+   acting as a Trust Anchor, Intermediate, or Trust Mark Issuer.
    The endpoint lists the Immediate Subordinates about which
           the Trust Anchor, Intermediate, or Trust Mark Issuer
    issues Entity Statements.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 <p id="section-8.2-2">
-   As a Trust Mark issuer,
+   As a Trust Mark Issuer,
           the endpoint MAY list the Immediate Subordinates for which Trust Marks
           have been issued and are still valid, if the issuer
           exposing this endpoint supports Trust Mark filtering, as
@@ -6369,7 +6376,7 @@ Host: openid.sunet.se
         </h3>
 <p id="section-8.4-1">
           This enables an Entity to check whether a Trust Mark has been issued to
-          an Entity and is still active. The query MUST be sent to the Trust Mark issuer.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
+          an Entity and is still active. The query MUST be sent to the Trust Mark Issuer.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
 <p id="section-8.4-2">
    The Trust Mark status endpoint location is published in
    the Entity's <code>federation_entity</code> metadata
@@ -6405,7 +6412,7 @@ Host: openid.sunet.se
                 This is expressed as Seconds Since the Epoch, per
                 <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>. If
                 <code>iat</code> is not specified and the
-                Trust Mark issuer has issued several Trust Marks with the
+                Trust Mark Issuer has issued several Trust Marks with the
                 identifier specified in the request to the
                 Entity identified by <code>sub</code>, the
                 most recent one is assumed.<a href="#section-8.4.1-2.6" class="pilcrow">¶</a>
@@ -6480,7 +6487,7 @@ Content-Type: application/json
         </h3>
 <p id="section-8.5-1">
    The Trust Marked Entities listing endpoint is exposed by
-          Trust Mark issuers
+          Trust Mark Issuers
           and lists all the Entities for which Trust Marks
           have been issued and are still valid.<a href="#section-8.5-1" class="pilcrow">¶</a></p>
 <p id="section-8.5-2">
@@ -6579,7 +6586,7 @@ Content-Type: application/json
         </h3>
 <p id="section-8.6-1">
           The Trust Mark endpoint is
-          exposed by a Trust Mark issuer
+          exposed by a Trust Mark Issuer
           to provide Trust Marks to subjects.<a href="#section-8.6-1" class="pilcrow">¶</a></p>
 <p id="section-8.6-2">
    The Trust Mark endpoint location is published in
