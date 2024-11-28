@@ -1304,8 +1304,9 @@
         </t>
         <t>
           All parameters defined in Section 2 of
-          <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>
-          and <xref target="common_metadata"/> are applicable,
+          <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>,
+	  in <xref target="OpenID.RP.Choices"/>,
+          and in <xref target="common_metadata"/> are applicable,
 	  as well as additional parameters registered in the
 	  IANA "OAuth Dynamic Client Registration Metadata" registry
 	  <xref target="IANA.OAuth.Parameters"/>.
@@ -5742,9 +5743,9 @@ Content-Type: application/json
             </t>
             <t>
               Since there is no registration step prior to the Authentication Request,
-              the RP MUST NOT be supplied with a Client Secret.
-              Instead, the Automatic Registration model requires the RP to use
-              asymmetric cryptography to authenticate its requests.
+	      asymmetric cryptography MUST be used to authenticate requests
+	      when using Automatic Registration.
+	      Note that the client will not be provisioned with a Client Secret.
             </t>
           </list>
         </t>
@@ -5753,19 +5754,6 @@ Content-Type: application/json
           <spanx style="verb">automatic</spanx> keyword in its
           <spanx style="verb">client_registration_types_supported</spanx>
           metadata parameter.
-	</t>
-	<t>
-	  Since the RP will have no Client Secret when Automatic Registration
-	  is used, the RP MUST include a
-	  <spanx style="verb">token_endpoint_auth_method</spanx>
-	  parameter in its metadata with a value other than
-	  <spanx style="verb">client_secret_basic</spanx>
-	  and/or include a
-	  <spanx style="verb">token_endpoint_auth_methods_supported</spanx>
-	  parameter in its metadata,
-	  as defined in <xref target="OpenID.RP.Choices"/>,
-	  including a value other than
-	  <spanx style="verb">client_secret_basic</spanx>.
 	</t>
 
         <section anchor="authn-request" title="Authentication Request">
@@ -9618,8 +9606,7 @@ Host: op.umu.se
     ],
     "subject_type": "public",
     "token_endpoint_auth_methods_supported": [
-      "private_key_jwt",
-      "self_signed_tls_client_auth"
+      "private_key_jwt"
     ]
   }
 }
@@ -9656,8 +9643,7 @@ Host: op.umu.se
     ],
     "subject_type": "public",
     "token_endpoint_auth_methods_supported": [
-      "private_key_jwt",
-      "self_signed_tls_client_auth"
+      "private_key_jwt"
     ]
   }
 }
@@ -9869,9 +9855,10 @@ Host: op.umu.se
 	-41
 	<list style="symbols">
 	  <t>
-	    Fixed #133: Require <spanx style="verb">token_endpoint_auth_method</spanx>
-	    and/or <spanx style="verb">token_endpoint_auth_methods_supported</spanx>
-	    in RP metadata when using Automatic Registration.
+	    Fixed #133: Refined wording about client authentication when using
+	    Automatic Registration and added
+	    <spanx style="verb">token_endpoint_auth_methods_supported</spanx>
+	    in RP metadata example.
 	  </t>
 	  <t>
 	    Reference OpenID Connect Relying Party Metadata Choices 1.0.
