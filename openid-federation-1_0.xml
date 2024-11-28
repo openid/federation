@@ -5745,7 +5745,9 @@ Content-Type: application/json
               Since there is no registration step prior to the Authentication Request,
 	      asymmetric cryptography MUST be used to authenticate requests
 	      when using Automatic Registration.
-	      asymmetric cryptography is used to authenticate requests; therefore, the OP neither assigns a Client Secret to the RP nor returns it as a result of the registration process
+	      asymmetric cryptography is used to authenticate requests;
+	      therefore, the OP neither assigns a Client Secret to the RP
+	      nor returns it as a result of the registration process.
             </t>
           </list>
         </t>
@@ -6236,8 +6238,8 @@ HTTP/1.1 302 Found
           Explicit Registration is suitable for implementation on top of the
           <xref target="OpenID.Registration">OpenID Connect Dynamic Client
           Registration 1.0</xref> endpoint of an OP deployment. In contrast to
-          Automatic Registration, it enables an OP to provision a Client ID, a
-          Client Secret, and metadata parameters.
+          Automatic Registration, it enables an OP to provision a Client ID,
+	  potentially a Client Secret, and other metadata parameters.
         </t>
 
         <t>An example of an Explicit Registration is provided in
@@ -6766,9 +6768,12 @@ HTTP/1.1 302 Found
               whereas with Explicit Registration, a Client ID is assigned by the OP and supplied to the RP.
             </t>
             <t>
-              Instead of using a Client Secret to authenticate the client, with Automatic Registration,
-              the client is authenticated by means of the RP proving that it controls a private key
+	      With Automatic Registration, the Client is authenticated by means of
+	      the RP proving that it controls a private key
               corresponding to one of its Entity Configuration's public keys.
+	      Whereas with Explicit Registration, a broader set of options
+	      is available for authenticating the Client,
+	      including the use of a Client Secret.
             </t>
           </list>
         </t>
@@ -11217,6 +11222,7 @@ Host: op.umu.se
 	Joseph Heenan,
 	Pedram Hosseyni,
 	Marko Ivančić,
+	Łukasz Jaromin,
 	Takahiko Kawasaki,
 	Torsten Lodderstedt,
 	Francesco Marino,
