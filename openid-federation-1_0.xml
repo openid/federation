@@ -7082,6 +7082,57 @@ HTTP/1.1 302 Found
 
     </section>
 
+    <section anchor="Implementation" title="Implementation Considerations">
+      <t>
+	This section provides guidance to implementers and deployers of Federations
+	on situations and properties that they should consider for their Federations.
+      </t>
+
+      <section anchor="Topologies" title="Federation Topologies">
+	<t>
+	  It is possible to construct Federation topologies that have
+	  multiple trust paths between two Entities.
+	  The specification does not disallow this, but it can create
+	  ambiguities that deployers need to be aware of.
+	</t>
+	<figure>
+	  <preamble>
+	    Consider the following Federation topology:
+	  </preamble>
+	  <name>
+	    Example topology with multiple trust paths between two Entities
+	  </name>
+	  <artwork><![CDATA[
+     TA_____
+    /  \    \
+  Im1  Im2  OP
+    \  /
+    Im3
+     |
+     RP
+]]></artwork>
+	</figure>
+	<t>
+	  In this topology, there are multiple trust paths between RP and TA,
+	  meaning that multiple different Trust Chains could be built between them.
+	  If the metadata policies of Im1 and Im2 are different, this could mean
+	  that the resolved metadata for RP is different depending upon
+	  which Intermediate is used when building the Trust Chain.
+	  Some such differences will be innocuous and some can cause failures.
+	</t>
+	<t>
+	  It is the job of the Federation architects to deploy topologies and
+	  metadata policies that work as intended, no matter which trust path
+	  is chosen when building a Trust Chain.
+	  Of course, one way to avoid potential ambiguities is to only use
+	  topologies that are trees, without multiple paths between two Entities.
+	  Topologies that are not trees are permitted,
+	  but should be used consciously and with care.
+	</t>
+      </section>
+
+    </section>
+
     <section anchor="Security" title="Security Considerations">
       <section title="Denial-of-Service Attack Prevention" anchor="DoS">
         <t>
@@ -9816,6 +9867,10 @@ Host: op.umu.se
       <t>
 	-41
 	<list style="symbols">
+	  <t>
+	    Fixed #7, #86, and #148: Provides implementation considerations
+	    on Federation topologies.
+	  </t>
 	  <t>
 	    Fixed #143: Added Trust Mark Issuer and Trust Mark Owner to Terminology section.
 	  </t>
