@@ -5135,7 +5135,7 @@ Host: trust-anchor.example.com
 
       </section>
 
-      <section title="Error Responses from Federation Endpoints" anchor="error_response">
+      <section title="Error Responses" anchor="error_response">
         <t>
           If the request was malformed or an error occurred during
           the processing of the request,
@@ -5150,7 +5150,10 @@ Host: trust-anchor.example.com
           <list style="hanging">
             <t hangText="error">
               <vspace/>
-              REQUIRED. One of the following error codes SHOULD be used.
+	      REQUIRED.
+	      Error codes in the IANA "OAuth Extensions Error Registry"
+	      <xref target="IANA.OAuth.Parameters"/> MAY be used.
+	      This specification also defines the following error codes:
 
               <list style="hanging">
                 <t hangText="invalid_request">
@@ -5182,6 +5185,7 @@ Host: trust-anchor.example.com
 		</t>
 		<t hangText="trust_chain_validation_failed">
 		  <vspace/>
+		  The Trust Chain cannot be validated.
 		  The HTTP response status code SHOULD be 400 (Bad Request).
 		</t>
 		<t hangText="invalid_metadata">
@@ -5191,7 +5195,7 @@ Host: trust-anchor.example.com
 		</t>
                 <t hangText="not_found">
                   <vspace/>
-                  The requested Entity Identifier is "not found".
+                  The requested Entity Identifier cannot be found.
                   The HTTP response status code SHOULD be 404 (Not Found).
                 </t>
                 <t hangText="server_error">
@@ -5213,14 +5217,12 @@ Host: trust-anchor.example.com
                   The server does not support the requested parameter.
                 </t>
               </list>
-
-	      Other error codes in the IANA "OAuth Extensions Error Registry"
-	      <xref target="IANA.OAuth.Parameters"/> MAY also be used.
             </t>
 
             <t hangText="error_description">
               <vspace/>
-              REQUIRED. A human-readable short text describing the error.
+	      REQUIRED. Human-readable text providing additional information
+	      used to assist the developer in understanding the error that occurred.
             </t>
           </list>
         </t>
