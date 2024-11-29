@@ -5183,7 +5183,7 @@ Host: trust-anchor.example.com
 		  The Trust Anchor cannot be found or used.
 		  The HTTP response status code SHOULD be 404 (Not Found).
 		</t>
-		<t hangText="trust_chain_validation_failed">
+		<t hangText="invalid_trust_chain">
 		  <vspace/>
 		  The Trust Chain cannot be validated.
 		  The HTTP response status code SHOULD be 400 (Bad Request).
@@ -5215,6 +5215,7 @@ Host: trust-anchor.example.com
                 <t hangText="unsupported_parameter">
                   <vspace/>
                   The server does not support the requested parameter.
+                  The HTTP response status code SHOULD be 400 (Bad Request).
                 </t>
               </list>
             </t>
@@ -6181,7 +6182,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
 	    and not perform redirection.
 	    This means that the error codes
 	    <spanx style="verb">invalid_trust_anchor</spanx> and
-	    <spanx style="verb">trust_chain_validation_failed</spanx>
+	    <spanx style="verb">invalid_trust_chain</spanx>
 	    both of which are about reasons trust failed to be established,
 	    SHOULD only be returned in
 	    <xref target="RFC9126">Pushed Authorization Request</xref>
@@ -7435,6 +7436,50 @@ HTTP/1.1 302 Found
           <t>
             <?rfc subcompact="yes"?>
             <list style="symbols">
+              <t>Name: invalid_request</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: invalid_client</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: invalid_issuer</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: invalid_subject</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
               <t>Name: invalid_trust_anchor</t>
               <t>Usage Location: authorization endpoint</t>
               <t>Protocol Extension: OpenID Federation</t>
@@ -7446,7 +7491,7 @@ HTTP/1.1 302 Found
           </t>
           <t>
             <list style="symbols">
-              <t>Name: trust_chain_validation_failed</t>
+              <t>Name: invalid_trust_chain</t>
               <t>Usage Location: authorization endpoint</t>
               <t>Protocol Extension: OpenID Federation</t>
               <t>
@@ -7455,7 +7500,61 @@ HTTP/1.1 302 Found
               <t>Reference: <xref target="error_response"/> of this specification</t>
             </list>
           </t>
-	  <!-- TBD also register the error codes defined at anchor="error_response" -->
+          <t>
+            <list style="symbols">
+              <t>Name: invalid_metadata</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: not_found</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: server_error</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: temporarily_unavailable</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: unsupported_parameter</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
         </section>
         <?rfc subcompact="no"?>
       </section>
@@ -9833,7 +9932,11 @@ Host: op.umu.se
 	-41
 	<list style="symbols">
 	  <t>
-	    Fixed #136: Defined additional error codes.
+	    Fixed #136: Defined additional error codes and rationalized naming.
+	    Renamed <spanx style="verb">trust_chain_validation_failed</spanx>
+	    to <spanx style="verb">invalid_trust_chain</spanx> and
+	    renamed <spanx style="verb">missing_trust_anchor</spanx>
+	    to <spanx style="verb">invalid_trust_anchor</spanx>.
 	  </t>
 	  <t>
 	    Fixed #143: Added Trust Mark Issuer and Trust Mark Owner to Terminology section.
