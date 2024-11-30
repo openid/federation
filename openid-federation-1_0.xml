@@ -4153,10 +4153,8 @@ Content-Type: application/json
 		<vspace blankLine="1"/>
 		The <spanx style="verb">anchor</spanx> request parameter
 		MAY occur multiple times, in which case,
-		the resolver may return a successful resolve response
-		using any one of the Trust Anchor values provided
-		and the <spanx style="verb">trust_chain</spanx> claim
-		MUST be included in the resolve response JWT.
+		the resolver MAY return a successful resolve response
+		using any one of the Trust Anchor values provided.
               </t>
               <t hangText="type">
                 <vspace/>
@@ -4217,7 +4215,7 @@ Host: openid.sunet.se
 	    with its value being the Key ID of the signing key used.
 	  </t>
           <t>
-            The resolve response JWT MAY return the Trust Chain
+            The resolve response JWT MUST return the Trust Chain
 	    from the subject to the Trust Anchor
 	    in its <spanx style="verb">trust_chain</spanx> parameter,
             sorted as shown in <xref target="trust_chain"/>.
@@ -4286,6 +4284,13 @@ Host: openid.sunet.se
                 and expressed in the <spanx style="verb">metadata</spanx> format
                 defined in <xref target="entity-statement"/>.
               </t>
+              <t hangText="trust_chain">
+                <vspace/>
+                REQUIRED. Array containing the sequence of Entity Statements
+                that compose the Trust Chain, starting with the subject and
+                ending with the selected Trust Anchor,
+                sorted as shown in <xref target="trust_chain"/>.
+              </t>
               <t hangText="trust_marks">
                 <vspace/>
                 OPTIONAL. Array of objects, each representing a Trust Mark,
@@ -4293,14 +4298,6 @@ Host: openid.sunet.se
 		Only valid Trust Marks that have been issued by Trust Mark
                 issuers trusted by the Trust Anchor to issue such Trust Marks
 		MAY appear in the resolver response.
-              </t>
-              <t hangText="trust_chain">
-                <vspace/>
-                OPTIONAL. Array containing the sequence of Entity Statements
-                that compose
-                the Trust Chain, starting with the subject and
-                ending with the selected Trust Anchor,
-                sorted as shown in <xref target="trust_chain"/>.
               </t>
             </list>
           </t>
@@ -9985,6 +9982,7 @@ Host: op.umu.se
 	<list style="symbols">
 	  <t>
 	    Fixed #130: Allow multiple Trust Anchor values to be passed in resolve requests.
+	    Require <spanx style="verb">trust_chain</spanx> claim in resolve response.
 	  </t>
 	  <t>
 	    Fixed #136: Defined additional error codes and rationalized naming.
