@@ -4145,22 +4145,22 @@ Content-Type: application/json
                 REQUIRED. The Entity Identifier of the
                 Entity whose resolved data is requested.
               </t>
-              <t hangText="anchor">
+              <t hangText="trust_anchor">
                 <vspace/>
                 REQUIRED. The Trust Anchor that the resolve endpoint
                 MUST use when resolving the metadata.
 		The value is an Entity identifier.
               </t>
-              <t hangText="type">
+              <t hangText="entity_type">
                 <vspace/>
                 OPTIONAL. A specific Entity Type to resolve.
                 Its value is an Entity Type Identifier, as specified in
                 <xref target="entity_types"/>.
                 If this parameter is not present, then all Entity Types are returned.
 		<vspace blankLine="1"/>
-		The <spanx style="verb">type</spanx> request parameter
+		The <spanx style="verb">entity_type</spanx> request parameter
 		MAY occur multiple times, in which case, data for each Entity Type
-		whose Entity Type Identifier is a <spanx style="verb">type</spanx>
+		whose Entity Type Identifier is in an <spanx style="verb">entity_type</spanx>
 		parameter value is returned.
               </t>
             </list>
@@ -4180,8 +4180,8 @@ Content-Type: application/json
             <artwork><![CDATA[
 GET /resolve?
 sub=https%3A%2F%2Fop.example.it%2Fspid&
-type=openid_provider&
-anchor=https%3A%2F%2Fswamid.se HTTP/1.1
+entity_type=openid_provider&
+trust_anchor=https%3A%2F%2Fswamid.se HTTP/1.1
 Host: openid.sunet.se
 ]]></artwork>
           </figure>
@@ -4222,7 +4222,7 @@ Host: openid.sunet.se
             as specified in <xref target="trust_chain_head_param"/>.
             When this is present, the Trust Anchor in the Trust Chain
             MUST match the Trust Anchor requested in the
-            related request in the <spanx style="verb">anchor</spanx> parameter.
+            related request in the <spanx style="verb">trust_anchor</spanx> parameter.
 	  </t>
 	  <t>
             An issuer that provides its Trust Chain within the resolve
@@ -6528,7 +6528,7 @@ HTTP/1.1 302 Found
                     then construct a success response in the form of an Entity Statement.
 		  </t>
 		  <t>
-                    The OP MUST set the <spanx style="verb">trust_anchor_id</spanx>
+                    The OP MUST set the <spanx style="verb">trust_anchor</spanx>
                     claim of the Entity Statement to the Trust Anchor it
                     selected to process the request. The
                     <spanx style="verb">authority_hints</spanx> claim MUST be
@@ -6615,7 +6615,7 @@ HTTP/1.1 302 Found
 		    This claim is used in Explicit Registration responses
 		    but is not a general Entity Statement claim.
                   </t>
-                  <t hangText="trust_anchor_id">
+                  <t hangText="trust_anchor">
                     <vspace/>
                     REQUIRED.
                     Its value MUST be the Entity Identifier of the Trust Anchor
@@ -6692,7 +6692,7 @@ HTTP/1.1 302 Found
 		  </t>
                   <t>
                     The RP MUST verify that the
-                    <spanx style="verb">trust_anchor_id</spanx> represents one
+                    <spanx style="verb">trust_anchor</spanx> represents one
                     of its own Trust Anchors.
                   </t>
                   <t>
@@ -6700,14 +6700,14 @@ HTTP/1.1 302 Found
                     <spanx style="verb">authority_hints</spanx> it specified in
                     the Explicit Registration request leads to the Trust Anchor
                     that the OP set in the
-                    <spanx style="verb">trust_anchor_id</spanx> claim.
+                    <spanx style="verb">trust_anchor</spanx> claim.
                   </t>
                   <t>
                     The RP MUST ensure that the metadata it was registered with
                     at the OP complies with the Trust Chain
                     <spanx style="verb">openid_relying_party</spanx> policies,
                     which Trust Chain is resolved using the
-                    <spanx style="verb">trust_anchor_id</spanx> and
+                    <spanx style="verb">trust_anchor</spanx> and
                     <spanx style="verb">authority_hints</spanx> claims of the
                     received registration Entity Statement. The RP SHOULD perform this check
                     by applying the resolved policies to the metadata as
@@ -8409,7 +8409,7 @@ HTTP/1.1 302 Found
 	  <t>
 	    <list style="symbols">
 	      <t>
-		Claim Name: <spanx style="verb">trust_anchor_id</spanx>
+		Claim Name: <spanx style="verb">trust_anchor</spanx>
 	      </t>
 	      <t>
 		Claim Description: Trust Anchor ID
@@ -9869,7 +9869,7 @@ Host: op.umu.se
   "aud": "https://wiki.ligo.org",
   "iat": 1601457619,
   "exp": 1601544019,
-  "trust_anchor_id": "https://edugain.geant.org",
+  "trust_anchor": "https://edugain.geant.org",
   "metadata": {
     "openid_relying_party": {
       "client_id": "m3GyHw",
@@ -9976,6 +9976,14 @@ Host: op.umu.se
       <t>
 	-41
 	<list style="symbols">
+	  <t>
+	    Fixed #131: Changed <spanx style="verb">anchor</spanx> request parameter
+	    to <spanx style="verb">trust_anchor</spanx>,
+	    changed <spanx style="verb">trust_anchor_id</spanx> claim
+	    to <spanx style="verb">trust_anchor</spanx>, and
+	    changed <spanx style="verb">type</spanx> request parameter
+	    to <spanx style="verb">entity_type</spanx>.
+	  </t>
 	  <t>
 	    Fixed #136: Defined additional error codes and rationalized naming.
 	    Renamed <spanx style="verb">trust_chain_validation_failed</spanx>
