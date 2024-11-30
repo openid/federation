@@ -4145,11 +4145,18 @@ Content-Type: application/json
                 REQUIRED. The Entity Identifier of the
                 Entity whose resolved data is requested.
               </t>
-              <t hangText="anchor">
+              <t hangText="anchor"> <!-- Note: Change "anchor" to "trust_anchor" below after #154 is merged -->
                 <vspace/>
                 REQUIRED. The Trust Anchor that the resolve endpoint
                 MUST use when resolving the metadata.
 		The value is an Entity identifier.
+		<vspace blankLine="1"/>
+		The <spanx style="verb">anchor</spanx> request parameter
+		MAY occur multiple times, in which case,
+		the resolver may return a successful resolve response
+		using any one of the Trust Anchor values provided
+		and the <spanx style="verb">trust_chain</spanx> claim
+		MUST be included in the resolve response JWT.
               </t>
               <t hangText="type">
                 <vspace/>
@@ -9976,6 +9983,9 @@ Host: op.umu.se
       <t>
 	-41
 	<list style="symbols">
+	  <t>
+	    Fixed #130: Allow multiple Trust Anchor values to be passed in resolve requests.
+	  </t>
 	  <t>
 	    Fixed #136: Defined additional error codes and rationalized naming.
 	    Renamed <spanx style="verb">trust_chain_validation_failed</spanx>
