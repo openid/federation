@@ -5136,7 +5136,7 @@ Host: trust-anchor.example.com
 
       </section>
 
-      <section title="Error Responses from Federation Endpoints" anchor="error_response">
+      <section title="Error Responses" anchor="error_response">
         <t>
           If the request was malformed or an error occurred during
           the processing of the request,
@@ -5151,7 +5151,10 @@ Host: trust-anchor.example.com
           <list style="hanging">
             <t hangText="error">
               <vspace/>
-              REQUIRED. One of the following error codes SHOULD be used.
+	      REQUIRED.
+	      Error codes in the IANA "OAuth Extensions Error Registry"
+	      <xref target="IANA.OAuth.Parameters"/> MAY be used.
+	      This specification also defines the following error codes:
 
               <list style="hanging">
                 <t hangText="invalid_request">
@@ -5166,14 +5169,34 @@ Host: trust-anchor.example.com
                   a valid participant of the federation.
                   The HTTP response status code SHOULD be 401 (Unauthorized).
                 </t>
-                 <t hangText="invalid_issuer">
+		<t hangText="invalid_issuer">
                   <vspace/>
                   The endpoint cannot service the requested issuer.
                   The HTTP response status code SHOULD be 404 (Not Found).
                 </t>
+		<t hangText="invalid_subject">
+		  <vspace/>
+		  The endpoint cannot service the requested subject.
+		  The HTTP response status code SHOULD be 404 (Not Found).
+		</t>
+		<t hangText="invalid_trust_anchor">
+		  <vspace/>
+		  The Trust Anchor cannot be found or used.
+		  The HTTP response status code SHOULD be 404 (Not Found).
+		</t>
+		<t hangText="invalid_trust_chain">
+		  <vspace/>
+		  The Trust Chain cannot be validated.
+		  The HTTP response status code SHOULD be 400 (Bad Request).
+		</t>
+		<t hangText="invalid_metadata">
+		  <vspace/>
+		  Metadata or Metadata Policy values are invalid or conflict.
+		  The HTTP response status code SHOULD be 400 (Bad Request).
+		</t>
                 <t hangText="not_found">
                   <vspace/>
-                  The requested Entity Identifier is "not found".
+                  The requested Entity Identifier cannot be found.
                   The HTTP response status code SHOULD be 404 (Not Found).
                 </t>
                 <t hangText="server_error">
@@ -5193,16 +5216,15 @@ Host: trust-anchor.example.com
                 <t hangText="unsupported_parameter">
                   <vspace/>
                   The server does not support the requested parameter.
+                  The HTTP response status code SHOULD be 400 (Bad Request).
                 </t>
               </list>
-
-	      Other error codes in the IANA "OAuth Extensions Error Registry"
-	      <xref target="IANA.OAuth.Parameters"/> MAY also be used.
             </t>
 
             <t hangText="error_description">
               <vspace/>
-              REQUIRED. A human-readable short text describing the error.
+	      REQUIRED. Human-readable text providing additional information
+	      used to assist the developer in understanding the error that occurred.
             </t>
           </list>
         </t>
@@ -6158,11 +6180,15 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
 	    as a component of an open redirector.
 	  </t>
 	  <t>
-	    If the OP fails to establish trust with the RP,
+	    If the OP fails to establish trust with the RP or
+	    finds the RP metadata to be invalid or in conflict with metadata policy,
 	    it MUST treat the redirection URI as invalid
 	    and not perform redirection.
-	    This means that the two error codes defined below,
-	    both of which are about reasons trust failed to be established,
+	    This means that the error codes
+	    <spanx style="verb">invalid_trust_anchor</spanx>,
+	    <spanx style="verb">invalid_trust_chain</spanx>, and
+	    <spanx style="verb">invalid_metadata</spanx>,
+	    which are about reasons trust failed to be established,
 	    SHOULD only be returned in
 	    <xref target="RFC9126">Pushed Authorization Request</xref>
 	    error responses, and not to the Client's redirection URI.
@@ -6170,20 +6196,9 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
           <t>
             In addition to the error codes contained in the
 	    IANA "OAuth Extensions Error Registry" registry <xref target="IANA.OAuth.Parameters"/>,
-	    this specification also defines the following error
-            codes:
-          </t>
-          <t>
-            <list style="hanging">
-              <t hangText="missing_trust_anchor">
-                <vspace/>
-                No trusted Trust Anchor could be found.
-              </t>
-              <t hangText="trust_chain_validation_failed">
-                <vspace/>
-                Trust chain validation failed.
-              </t>
-            </list>
+	    this specification also defines the error codes
+	    in <xref target="error_response"/>,
+	    which MAY also be used.
           </t>
           <figure>
             <preamble>
@@ -6507,7 +6522,7 @@ HTTP/1.1 302 Found
 	      </t>
 	    </section>
 
-          <section anchor="cliregresp" title="Explicit Client Registration Response">
+          <section anchor="cliregresp" title="Successful Explicit Client Registration Response">
                   <t>
                     If the OP created a client registration for the RP, it MUST
                     then construct a success response in the form of an Entity Statement.
@@ -6645,9 +6660,12 @@ HTTP/1.1 302 Found
 		to prevent confusion between the Explicit Registration response
 		and normal Entity Statements.
               </t>
+	    </section>
+
+	    <section anchor="ExplicitError" title="Explicit Client Registration Error Response">
               <t>
                 For a client registration error, the response is as defined in
-                <xref target="error_response"/> and MAY use errors defined in
+                <xref target="error_response"/> and MAY use errors defined there and in
                 Section 3.3 of <xref target="OpenID.Registration"/> and
 		Section 3.2.2 of <xref target="RFC7591"/>.
               </t>
@@ -7426,24 +7444,123 @@ HTTP/1.1 302 Found
           <t>
             <?rfc subcompact="yes"?>
             <list style="symbols">
-              <t>Name: missing_trust_anchor</t>
+              <t>Name: invalid_request</t>
               <t>Usage Location: authorization endpoint</t>
               <t>Protocol Extension: OpenID Federation</t>
               <t>
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
-              <t>Reference: <xref target="AuthenticationError"/> of this specification</t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
             </list>
           </t>
           <t>
             <list style="symbols">
-              <t>Name: trust_chain_validation_failed</t>
+              <t>Name: invalid_client</t>
               <t>Usage Location: authorization endpoint</t>
               <t>Protocol Extension: OpenID Federation</t>
               <t>
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
-              <t>Reference: <xref target="AuthenticationError"/> of this specification</t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: invalid_issuer</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: invalid_subject</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: invalid_trust_anchor</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: invalid_trust_chain</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: invalid_metadata</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: not_found</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: server_error</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: temporarily_unavailable</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>Name: unsupported_parameter</t>
+              <t>Usage Location: authorization endpoint</t>
+              <t>Protocol Extension: OpenID Federation</t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>Reference: <xref target="error_response"/> of this specification</t>
             </list>
           </t>
         </section>
@@ -9859,6 +9976,13 @@ Host: op.umu.se
       <t>
 	-41
 	<list style="symbols">
+	  <t>
+	    Fixed #136: Defined additional error codes and rationalized naming.
+	    Renamed <spanx style="verb">trust_chain_validation_failed</spanx>
+	    to <spanx style="verb">invalid_trust_chain</spanx> and
+	    renamed <spanx style="verb">missing_trust_anchor</spanx>
+	    to <spanx style="verb">invalid_trust_anchor</spanx>.
+	  </t>
 	  <t>
 	    Fixed #133: Refined wording about client authentication when using
 	    Automatic Registration and added
