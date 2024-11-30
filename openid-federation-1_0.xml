@@ -3418,14 +3418,35 @@
 	  </section>
         </section>
 
-        <section title="Validating a Trust Mark" anchor="trust_valid">
+        <section title="Validating a Trust Mark" anchor="trust-mark-validation">
           <t>
 	    An Entity SHOULD NOT try to validate a Trust Mark until
 	    it knows which Trust Anchor it is using.
-	    To validate a Trust Mark Issuer, follow the procedure
-	    defined in <xref target="resolving_trust"/>.
+	    To determine this, first resolve the Trust Chain,
+	    as described in <xref target="resolving_trust"/>.
+	    (TBD THEN DO WHAT?)
+	  </t>
+	  <t>
 	    To validate a Trust Mark, either:
+	    <list style="symbols">
+              <t>
+                Use the Trust Mark Status endpoint to verify that the
+                Trust Mark is still active
+                as described in <xref target="status_endpoint"/>.
+              </t>
+            </list>
+	    or perform these steps:
             <list style="symbols">
+	      <t>
+		Validate that the Trust Mark Issuer is part of the Federation
+		and that it is possible to get verified metadata about it
+		by using the procedure defined in <xref target="resolving_trust"/>.
+	      </t>
+	      <t>
+		If delegation is not being used (TBD HOW TO DETERMINE THIS?),
+		validate that the Trust Mark Issuer is entitled to issue Trust Marks
+		with the given Trust Mark identifier (TBD HOW TO DETERMINE THIS?).
+	      </t>
               <t>
                 Validate the signature of the Trust Mark JWT and verify that
                 it has not expired.
@@ -3436,7 +3457,7 @@
 		of the Trust Anchor's Entity Configuration,
                 verify that the Trust Mark contains
                 a <spanx style="verb">delegation</spanx>
-                claim.
+                claim.  (TBD WHAT TO DO IF IT DOESN'T?)
                 The claims for the Trust Mark identifier
                 in the <spanx style="verb">trust_mark_owners</spanx> value
                 are used in the following way:
@@ -3453,15 +3474,7 @@
                 </list>
               </t>
 	    </list>
-	  or:
-            <list style="symbols">
-              <t>
-                Use the Trust Mark Issuer status endpoint to verify that the
-                Trust Mark is still active
-                as described in <xref target="status_endpoint"/>.
-              </t>
-            </list>
-          </t>
+	  </t>
           <t>
             Note that the Entity representing the accreditation authority
             SHOULD be well known and trusted for a given Trust Mark identifier.
@@ -9816,6 +9829,9 @@ Host: op.umu.se
       <t>
 	-41
 	<list style="symbols">
+	  <t>
+	    Fixed #127: Explained Trust Mark Issuer validation in more detail.
+	  </t>
 	  <t>
 	    Fixed #143: Added Trust Mark Issuer and Trust Mark Owner to Terminology section.
 	  </t>
