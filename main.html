@@ -1606,7 +1606,7 @@ li > p:last-of-type:only-child {
                 </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.9">
-                <p id="section-toc.1-1.8.2.9.1"><a href="#section-8.9" class="auto internal xref">8.9</a>.  <a href="#name-error-responses-from-federa" class="internal xref">Error Responses from Federation Endpoints</a></p>
+                <p id="section-toc.1-1.8.2.9.1"><a href="#section-8.9" class="auto internal xref">8.9</a>.  <a href="#name-error-responses" class="internal xref">Error Responses</a></p>
 </li>
             </ul>
 </li>
@@ -1712,13 +1712,16 @@ li > p:last-of-type:only-child {
                     <p id="section-toc.1-1.12.2.2.2.2.1"><a href="#section-12.2.2" class="auto internal xref">12.2.2</a>.  <a href="#name-processing-explicit-client-" class="internal xref">Processing Explicit Client Registration Request by OP</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2.2.3">
-                    <p id="section-toc.1-1.12.2.2.2.3.1"><a href="#section-12.2.3" class="auto internal xref">12.2.3</a>.  <a href="#name-explicit-client-registration" class="internal xref">Explicit Client Registration Response</a></p>
+                    <p id="section-toc.1-1.12.2.2.2.3.1"><a href="#section-12.2.3" class="auto internal xref">12.2.3</a>.  <a href="#name-successful-explicit-client-" class="internal xref">Successful Explicit Client Registration Response</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2.2.4">
-                    <p id="section-toc.1-1.12.2.2.2.4.1"><a href="#section-12.2.4" class="auto internal xref">12.2.4</a>.  <a href="#name-processing-explicit-client-r" class="internal xref">Processing Explicit Client Registration Response by RP</a></p>
+                    <p id="section-toc.1-1.12.2.2.2.4.1"><a href="#section-12.2.4" class="auto internal xref">12.2.4</a>.  <a href="#name-explicit-client-registration" class="internal xref">Explicit Client Registration Error Response</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2.2.5">
-                    <p id="section-toc.1-1.12.2.2.2.5.1"><a href="#section-12.2.5" class="auto internal xref">12.2.5</a>.  <a href="#name-after-an-explicit-client-re" class="internal xref">After an Explicit Client Registration</a></p>
+                    <p id="section-toc.1-1.12.2.2.2.5.1"><a href="#section-12.2.5" class="auto internal xref">12.2.5</a>.  <a href="#name-processing-explicit-client-r" class="internal xref">Processing Explicit Client Registration Response by RP</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2.2.6">
+                    <p id="section-toc.1-1.12.2.2.2.6.1"><a href="#section-12.2.6" class="auto internal xref">12.2.6</a>.  <a href="#name-after-an-explicit-client-re" class="internal xref">After an Explicit Client Registration</a></p>
 </li>
                 </ul>
 </li>
@@ -7096,8 +7099,8 @@ Host: trust-anchor.example.com
 </div>
 <div id="error_response">
 <section id="section-8.9">
-        <h3 id="name-error-responses-from-federa">
-<a href="#section-8.9" class="section-number selfRef">8.9. </a><a href="#name-error-responses-from-federa" class="section-name selfRef">Error Responses from Federation Endpoints</a>
+        <h3 id="name-error-responses">
+<a href="#section-8.9" class="section-number selfRef">8.9. </a><a href="#name-error-responses" class="section-name selfRef">Error Responses</a>
         </h3>
 <p id="section-8.9-1">
           If the request was malformed or an error occurred during
@@ -7111,7 +7114,10 @@ Host: trust-anchor.example.com
           <dt id="section-8.9-2.1">error</dt>
           <dd style="margin-left: 1.5em" id="section-8.9-2.2">
             <p id="section-8.9-2.2.1">
-              REQUIRED. One of the following error codes SHOULD be used.<a href="#section-8.9-2.2.1" class="pilcrow">¶</a></p>
+       REQUIRED.
+       Error codes in the IANA "OAuth Extensions Error Registry"
+       <span>[<a href="#IANA.OAuth.Parameters" class="cite xref">IANA.OAuth.Parameters</a>]</span> MAY be used.
+       This specification also defines the following error codes:<a href="#section-8.9-2.2.1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-8.9-2.2.2">
               <dt id="section-8.9-2.2.2.1">invalid_request</dt>
               <dd style="margin-left: 1.5em" id="section-8.9-2.2.2.2">
@@ -7133,43 +7139,65 @@ Host: trust-anchor.example.com
                   The HTTP response status code SHOULD be 404 (Not Found).<a href="#section-8.9-2.2.2.6" class="pilcrow">¶</a>
 </dd>
               <dd class="break"></dd>
-<dt id="section-8.9-2.2.2.7">not_found</dt>
+<dt id="section-8.9-2.2.2.7">invalid_subject</dt>
               <dd style="margin-left: 1.5em" id="section-8.9-2.2.2.8">
-                  The requested Entity Identifier is "not found".
-                  The HTTP response status code SHOULD be 404 (Not Found).<a href="#section-8.9-2.2.2.8" class="pilcrow">¶</a>
+   The endpoint cannot service the requested subject.
+   The HTTP response status code SHOULD be 404 (Not Found).<a href="#section-8.9-2.2.2.8" class="pilcrow">¶</a>
 </dd>
               <dd class="break"></dd>
-<dt id="section-8.9-2.2.2.9">server_error</dt>
+<dt id="section-8.9-2.2.2.9">invalid_trust_anchor</dt>
               <dd style="margin-left: 1.5em" id="section-8.9-2.2.2.10">
+   The Trust Anchor cannot be found or used.
+   The HTTP response status code SHOULD be 404 (Not Found).<a href="#section-8.9-2.2.2.10" class="pilcrow">¶</a>
+</dd>
+              <dd class="break"></dd>
+<dt id="section-8.9-2.2.2.11">invalid_trust_chain</dt>
+              <dd style="margin-left: 1.5em" id="section-8.9-2.2.2.12">
+   The Trust Chain cannot be validated.
+   The HTTP response status code SHOULD be 400 (Bad Request).<a href="#section-8.9-2.2.2.12" class="pilcrow">¶</a>
+</dd>
+              <dd class="break"></dd>
+<dt id="section-8.9-2.2.2.13">invalid_metadata</dt>
+              <dd style="margin-left: 1.5em" id="section-8.9-2.2.2.14">
+   Metadata or Metadata Policy values are invalid or conflict.
+   The HTTP response status code SHOULD be 400 (Bad Request).<a href="#section-8.9-2.2.2.14" class="pilcrow">¶</a>
+</dd>
+              <dd class="break"></dd>
+<dt id="section-8.9-2.2.2.15">not_found</dt>
+              <dd style="margin-left: 1.5em" id="section-8.9-2.2.2.16">
+                  The requested Entity Identifier cannot be found.
+                  The HTTP response status code SHOULD be 404 (Not Found).<a href="#section-8.9-2.2.2.16" class="pilcrow">¶</a>
+</dd>
+              <dd class="break"></dd>
+<dt id="section-8.9-2.2.2.17">server_error</dt>
+              <dd style="margin-left: 1.5em" id="section-8.9-2.2.2.18">
                   The server encountered an unexpected
                   condition that prevented it from fulfilling the request.
                   The HTTP response status code SHOULD be one in the 5xx range,
-                  like 500 (Internal Server Error).<a href="#section-8.9-2.2.2.10" class="pilcrow">¶</a>
+                  like 500 (Internal Server Error).<a href="#section-8.9-2.2.2.18" class="pilcrow">¶</a>
 </dd>
               <dd class="break"></dd>
-<dt id="section-8.9-2.2.2.11">temporarily_unavailable</dt>
-              <dd style="margin-left: 1.5em" id="section-8.9-2.2.2.12">
+<dt id="section-8.9-2.2.2.19">temporarily_unavailable</dt>
+              <dd style="margin-left: 1.5em" id="section-8.9-2.2.2.20">
                   The server hosting the federation endpoint
                   is currently unable to handle
                   the request due to a temporary overloading or maintenance.
-                  The HTTP response status code SHOULD be 503 (Service Unavailable).<a href="#section-8.9-2.2.2.12" class="pilcrow">¶</a>
+                  The HTTP response status code SHOULD be 503 (Service Unavailable).<a href="#section-8.9-2.2.2.20" class="pilcrow">¶</a>
 </dd>
               <dd class="break"></dd>
-<dt id="section-8.9-2.2.2.13">unsupported_parameter</dt>
-              <dd style="margin-left: 1.5em" id="section-8.9-2.2.2.14">
-                  The server does not support the requested parameter.<a href="#section-8.9-2.2.2.14" class="pilcrow">¶</a>
+<dt id="section-8.9-2.2.2.21">unsupported_parameter</dt>
+              <dd style="margin-left: 1.5em" id="section-8.9-2.2.2.22">
+                  The server does not support the requested parameter.
+                  The HTTP response status code SHOULD be 400 (Bad Request).<a href="#section-8.9-2.2.2.22" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 </dl>
-<p id="section-8.9-2.2.3">
-
-       Other error codes in the IANA "OAuth Extensions Error Registry"
-       <span>[<a href="#IANA.OAuth.Parameters" class="cite xref">IANA.OAuth.Parameters</a>]</span> MAY also be used.<a href="#section-8.9-2.2.3" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-8.9-2.3">error_description</dt>
           <dd style="margin-left: 1.5em" id="section-8.9-2.4">
-              REQUIRED. A human-readable short text describing the error.<a href="#section-8.9-2.4" class="pilcrow">¶</a>
+       REQUIRED. Human-readable text providing additional information
+       used to assist the developer in understanding the error that occurred.<a href="#section-8.9-2.4" class="pilcrow">¶</a>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -8169,35 +8197,28 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
      has reason to believe that the redirection URI might be being used
      as a component of an open redirector.<a href="#section-12.1.3-2" class="pilcrow">¶</a></p>
 <p id="section-12.1.3-3">
-     If the OP fails to establish trust with the RP,
+     If the OP fails to establish trust with the RP or
+     finds the RP metadata to be invalid or in conflict with metadata policy,
      it MUST treat the redirection URI as invalid
      and not perform redirection.
-     This means that the two error codes defined below,
-     both of which are about reasons trust failed to be established,
+     This means that the error codes
+     <code>invalid_trust_anchor</code>,
+     <code>invalid_trust_chain</code>, and
+     <code>invalid_metadata</code>,
+     which are about reasons trust failed to be established,
      SHOULD only be returned in
      <span><a href="#RFC9126" class="internal xref">Pushed Authorization Request</a> [<a href="#RFC9126" class="cite xref">RFC9126</a>]</span>
      error responses, and not to the Client's redirection URI.<a href="#section-12.1.3-3" class="pilcrow">¶</a></p>
 <p id="section-12.1.3-4">
             In addition to the error codes contained in the
      IANA "OAuth Extensions Error Registry" registry <span>[<a href="#IANA.OAuth.Parameters" class="cite xref">IANA.OAuth.Parameters</a>]</span>,
-     this specification also defines the following error
-            codes:<a href="#section-12.1.3-4" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-12.1.3-5">
-            <dt id="section-12.1.3-5.1">missing_trust_anchor</dt>
-            <dd style="margin-left: 1.5em" id="section-12.1.3-5.2">
-                No trusted Trust Anchor could be found.<a href="#section-12.1.3-5.2" class="pilcrow">¶</a>
-</dd>
-            <dd class="break"></dd>
-<dt id="section-12.1.3-5.3">trust_chain_validation_failed</dt>
-            <dd style="margin-left: 1.5em" id="section-12.1.3-5.4">
-                Trust chain validation failed.<a href="#section-12.1.3-5.4" class="pilcrow">¶</a>
-</dd>
-          <dd class="break"></dd>
-</dl>
-<p id="section-12.1.3-6" class="keepWithNext">
-              The following is a non-normative example authentication error response:<a href="#section-12.1.3-6" class="pilcrow">¶</a></p>
+     this specification also defines the error codes
+     in <a href="#error_response" class="auto internal xref">Section 8.9</a>,
+     which MAY also be used.<a href="#section-12.1.3-4" class="pilcrow">¶</a></p>
+<p id="section-12.1.3-5" class="keepWithNext">
+              The following is a non-normative example authentication error response:<a href="#section-12.1.3-5" class="pilcrow">¶</a></p>
 <span id="name-authentication-error-respons"></span><figure id="figure-51">
-            <div class="alignLeft art-text artwork" id="section-12.1.3-7.1">
+            <div class="alignLeft art-text artwork" id="section-12.1.3-6.1">
 <pre>
 HTTP/1.1 302 Found
   Location: https://client.example.org/cb?
@@ -8536,8 +8557,8 @@ HTTP/1.1 302 Found
 </div>
 <div id="cliregresp">
 <section id="section-12.2.3">
-          <h4 id="name-explicit-client-registration">
-<a href="#section-12.2.3" class="section-number selfRef">12.2.3. </a><a href="#name-explicit-client-registration" class="section-name selfRef">Explicit Client Registration Response</a>
+          <h4 id="name-successful-explicit-client-">
+<a href="#section-12.2.3" class="section-number selfRef">12.2.3. </a><a href="#name-successful-explicit-client-" class="section-name selfRef">Successful Explicit Client Registration Response</a>
           </h4>
 <p id="section-12.2.3-1">
                     If the OP created a client registration for the RP, it MUST
@@ -8553,7 +8574,7 @@ HTTP/1.1 302 Found
                     The OP MUST set the <code>exp</code> claim
                     to the expiration time of the created registration. The OP
                     MAY choose to invalidate the registration before that, as
-                    explained in <a href="#AfterExplicitReg" class="auto internal xref">Section 12.2.5</a>.<a href="#section-12.2.3-3" class="pilcrow">¶</a></p>
+                    explained in <a href="#AfterExplicitReg" class="auto internal xref">Section 12.2.6</a>.<a href="#section-12.2.3-3" class="pilcrow">¶</a></p>
 <p id="section-12.2.3-4">
                     The OP MUST express the client registration it created for
                     the RP by means of the <code>metadata</code>
@@ -8676,53 +8697,60 @@ HTTP/1.1 302 Found
  (and not <code>entity-statement+jwt</code>)
  to prevent confusion between the Explicit Registration response
  and normal Entity Statements.<a href="#section-12.2.3-9" class="pilcrow">¶</a></p>
-<p id="section-12.2.3-10">
+</section>
+</div>
+<div id="ExplicitError">
+<section id="section-12.2.4">
+          <h4 id="name-explicit-client-registration">
+<a href="#section-12.2.4" class="section-number selfRef">12.2.4. </a><a href="#name-explicit-client-registration" class="section-name selfRef">Explicit Client Registration Error Response</a>
+          </h4>
+<p id="section-12.2.4-1">
                 For a client registration error, the response is as defined in
-                <a href="#error_response" class="auto internal xref">Section 8.9</a> and MAY use errors defined in
+                <a href="#error_response" class="auto internal xref">Section 8.9</a> and MAY use errors defined there and in
                 Section 3.3 of <span>[<a href="#OpenID.Registration" class="cite xref">OpenID.Registration</a>]</span> and
- Section 3.2.2 of <span>[<a href="#RFC7591" class="cite xref">RFC7591</a>]</span>.<a href="#section-12.2.3-10" class="pilcrow">¶</a></p>
+ Section 3.2.2 of <span>[<a href="#RFC7591" class="cite xref">RFC7591</a>]</span>.<a href="#section-12.2.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ExplicitRegRP">
-<section id="section-12.2.4">
+<section id="section-12.2.5">
           <h4 id="name-processing-explicit-client-r">
-<a href="#section-12.2.4" class="section-number selfRef">12.2.4. </a><a href="#name-processing-explicit-client-r" class="section-name selfRef">Processing Explicit Client Registration Response by RP</a>
+<a href="#section-12.2.5" class="section-number selfRef">12.2.5. </a><a href="#name-processing-explicit-client-r" class="section-name selfRef">Processing Explicit Client Registration Response by RP</a>
           </h4>
-<ol start="1" type="1" class="normal type-1" id="section-12.2.4-1">
-<li id="section-12.2.4-1.1">
-              <p id="section-12.2.4-1.1.1">
+<ol start="1" type="1" class="normal type-1" id="section-12.2.5-1">
+<li id="section-12.2.5-1.1">
+              <p id="section-12.2.5-1.1.1">
                     If the response indicates success, the RP MUST verify that
-                    its content is a valid Entity Statement and issued by the OP.<a href="#section-12.2.4-1.1.1" class="pilcrow">¶</a></p>
-<p id="section-12.2.4-1.1.2">
+                    its content is a valid Entity Statement and issued by the OP.<a href="#section-12.2.5-1.1.1" class="pilcrow">¶</a></p>
+<p id="section-12.2.5-1.1.2">
 
                     The RP MUST ensure the signing Federation Entity Key used
                     by the OP is present in the
                     <code>jwks</code> claim of the Subordinate Statement
                     issued by the OP's Immediate Superior
                     in a Trust Chain that the RP successfully resolved for the
-                    OP when it prepared the Explicit Registration request.<a href="#section-12.2.4-1.1.2" class="pilcrow">¶</a></p>
+                    OP when it prepared the Explicit Registration request.<a href="#section-12.2.5-1.1.2" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-12.2.4-1.2">
-              <p id="section-12.2.4-1.2.1">
+            <li id="section-12.2.5-1.2">
+              <p id="section-12.2.5-1.2.1">
      The RP MUST verify that the <code>aud</code> (audience)
-     claim value is its Entity Identifier.<a href="#section-12.2.4-1.2.1" class="pilcrow">¶</a></p>
+     claim value is its Entity Identifier.<a href="#section-12.2.5-1.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-12.2.4-1.3">
-              <p id="section-12.2.4-1.3.1">
+            <li id="section-12.2.5-1.3">
+              <p id="section-12.2.5-1.3.1">
                     The RP MUST verify that the
                     <code>trust_anchor_id</code> represents one
-                    of its own Trust Anchors.<a href="#section-12.2.4-1.3.1" class="pilcrow">¶</a></p>
+                    of its own Trust Anchors.<a href="#section-12.2.5-1.3.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-12.2.4-1.4">
-              <p id="section-12.2.4-1.4.1">
+            <li id="section-12.2.5-1.4">
+              <p id="section-12.2.5-1.4.1">
                     The RP MUST verify that at least one of the
                     <code>authority_hints</code> it specified in
                     the Explicit Registration request leads to the Trust Anchor
                     that the OP set in the
-                    <code>trust_anchor_id</code> claim.<a href="#section-12.2.4-1.4.1" class="pilcrow">¶</a></p>
+                    <code>trust_anchor_id</code> claim.<a href="#section-12.2.5-1.4.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-12.2.4-1.5">
-              <p id="section-12.2.4-1.5.1">
+            <li id="section-12.2.5-1.5">
+              <p id="section-12.2.5-1.5.1">
                     The RP MUST ensure that the metadata it was registered with
                     at the OP complies with the Trust Chain
                     <code>openid_relying_party</code> policies,
@@ -8732,26 +8760,26 @@ HTTP/1.1 302 Found
                     received registration Entity Statement. The RP SHOULD perform this check
                     by applying the resolved policies to the metadata as
                     specified in <a href="#metadata_policy_resolution" class="auto internal xref">Section 6.1.4.1</a>, or
-                    utilize another equivalent method.<a href="#section-12.2.4-1.5.1" class="pilcrow">¶</a></p>
+                    utilize another equivalent method.<a href="#section-12.2.5-1.5.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-12.2.4-1.6">
-              <p id="section-12.2.4-1.6.1">
+            <li id="section-12.2.5-1.6">
+              <p id="section-12.2.5-1.6.1">
                     If the received registration Entity Statement does not pass the above
                     checks, the RP MUST reject it. The RP MAY choose to retry
                     the Explicit Registration request to work around a
                     transient exception, for example due to a recent change of
                     Entity metadata or metadata policy causing temporary
-                    misalignment of metadata.<a href="#section-12.2.4-1.6.1" class="pilcrow">¶</a></p>
+                    misalignment of metadata.<a href="#section-12.2.5-1.6.1" class="pilcrow">¶</a></p>
 </li>
           </ol>
 </section>
 </div>
 <div id="AfterExplicitReg">
-<section id="section-12.2.5">
+<section id="section-12.2.6">
           <h4 id="name-after-an-explicit-client-re">
-<a href="#section-12.2.5" class="section-number selfRef">12.2.5. </a><a href="#name-after-an-explicit-client-re" class="section-name selfRef">After an Explicit Client Registration</a>
+<a href="#section-12.2.6" class="section-number selfRef">12.2.6. </a><a href="#name-after-an-explicit-client-re" class="section-name selfRef">After an Explicit Client Registration</a>
           </h4>
-<p id="section-12.2.5-1">
+<p id="section-12.2.6-1">
             An RP can utilize the <code>exp</code> claim of the
             registration Entity Statement to devise a suitable strategy for
             renewing its client registration. RP implementers should note that
@@ -8760,12 +8788,12 @@ HTTP/1.1 302 Found
             may cause OpenID Connect authentication requests, token requests, or
             UserInfo requests to suddenly fail. Renewing the RP registration
             prior to its expiration can prevent such errors from
-            occurring and ensure the end-user experience is not disrupted.<a href="#section-12.2.5-1" class="pilcrow">¶</a></p>
-<p id="section-12.2.5-2">
+            occurring and ensure the end-user experience is not disrupted.<a href="#section-12.2.6-1" class="pilcrow">¶</a></p>
+<p id="section-12.2.6-2">
             An OP MAY invalidate a client registration before the expiration
             that is indicated in the registration Entity Statement for the RP.
             An example reason could be the OP leaving the federation that was
-            used to register the RP.<a href="#section-12.2.5-2" class="pilcrow">¶</a></p>
+            used to register the RP.<a href="#section-12.2.6-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -9557,7 +9585,7 @@ HTTP/1.1 302 Found
           </h4>
 <ul class="compact">
 <li class="compact" id="section-17.3.1-1.1">
-              <p id="section-17.3.1-1.1.1">Name: missing_trust_anchor<a href="#section-17.3.1-1.1.1" class="pilcrow">¶</a></p>
+              <p id="section-17.3.1-1.1.1">Name: invalid_request<a href="#section-17.3.1-1.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.3.1-1.2">
               <p id="section-17.3.1-1.2.1">Usage Location: authorization endpoint<a href="#section-17.3.1-1.2.1" class="pilcrow">¶</a></p>
@@ -9570,12 +9598,12 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-17.3.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.3.1-1.5">
-              <p id="section-17.3.1-1.5.1">Reference: <a href="#AuthenticationError" class="auto internal xref">Section 12.1.3</a> of this specification<a href="#section-17.3.1-1.5.1" class="pilcrow">¶</a></p>
+              <p id="section-17.3.1-1.5.1">Reference: <a href="#error_response" class="auto internal xref">Section 8.9</a> of this specification<a href="#section-17.3.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <ul class="compact">
 <li class="compact" id="section-17.3.1-2.1">
-              <p id="section-17.3.1-2.1.1">Name: trust_chain_validation_failed<a href="#section-17.3.1-2.1.1" class="pilcrow">¶</a></p>
+              <p id="section-17.3.1-2.1.1">Name: invalid_client<a href="#section-17.3.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.3.1-2.2">
               <p id="section-17.3.1-2.2.1">Usage Location: authorization endpoint<a href="#section-17.3.1-2.2.1" class="pilcrow">¶</a></p>
@@ -9588,7 +9616,169 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-17.3.1-2.4.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-17.3.1-2.5">
-              <p id="section-17.3.1-2.5.1">Reference: <a href="#AuthenticationError" class="auto internal xref">Section 12.1.3</a> of this specification<a href="#section-17.3.1-2.5.1" class="pilcrow">¶</a></p>
+              <p id="section-17.3.1-2.5.1">Reference: <a href="#error_response" class="auto internal xref">Section 8.9</a> of this specification<a href="#section-17.3.1-2.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<ul class="compact">
+<li class="compact" id="section-17.3.1-3.1">
+              <p id="section-17.3.1-3.1.1">Name: invalid_issuer<a href="#section-17.3.1-3.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-3.2">
+              <p id="section-17.3.1-3.2.1">Usage Location: authorization endpoint<a href="#section-17.3.1-3.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-3.3">
+              <p id="section-17.3.1-3.3.1">Protocol Extension: OpenID Federation<a href="#section-17.3.1-3.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-3.4">
+              <p id="section-17.3.1-3.4.1">
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-17.3.1-3.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-3.5">
+              <p id="section-17.3.1-3.5.1">Reference: <a href="#error_response" class="auto internal xref">Section 8.9</a> of this specification<a href="#section-17.3.1-3.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<ul class="compact">
+<li class="compact" id="section-17.3.1-4.1">
+              <p id="section-17.3.1-4.1.1">Name: invalid_subject<a href="#section-17.3.1-4.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-4.2">
+              <p id="section-17.3.1-4.2.1">Usage Location: authorization endpoint<a href="#section-17.3.1-4.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-4.3">
+              <p id="section-17.3.1-4.3.1">Protocol Extension: OpenID Federation<a href="#section-17.3.1-4.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-4.4">
+              <p id="section-17.3.1-4.4.1">
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-17.3.1-4.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-4.5">
+              <p id="section-17.3.1-4.5.1">Reference: <a href="#error_response" class="auto internal xref">Section 8.9</a> of this specification<a href="#section-17.3.1-4.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<ul class="compact">
+<li class="compact" id="section-17.3.1-5.1">
+              <p id="section-17.3.1-5.1.1">Name: invalid_trust_anchor<a href="#section-17.3.1-5.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-5.2">
+              <p id="section-17.3.1-5.2.1">Usage Location: authorization endpoint<a href="#section-17.3.1-5.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-5.3">
+              <p id="section-17.3.1-5.3.1">Protocol Extension: OpenID Federation<a href="#section-17.3.1-5.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-5.4">
+              <p id="section-17.3.1-5.4.1">
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-17.3.1-5.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-5.5">
+              <p id="section-17.3.1-5.5.1">Reference: <a href="#error_response" class="auto internal xref">Section 8.9</a> of this specification<a href="#section-17.3.1-5.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<ul class="compact">
+<li class="compact" id="section-17.3.1-6.1">
+              <p id="section-17.3.1-6.1.1">Name: invalid_trust_chain<a href="#section-17.3.1-6.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-6.2">
+              <p id="section-17.3.1-6.2.1">Usage Location: authorization endpoint<a href="#section-17.3.1-6.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-6.3">
+              <p id="section-17.3.1-6.3.1">Protocol Extension: OpenID Federation<a href="#section-17.3.1-6.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-6.4">
+              <p id="section-17.3.1-6.4.1">
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-17.3.1-6.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-6.5">
+              <p id="section-17.3.1-6.5.1">Reference: <a href="#error_response" class="auto internal xref">Section 8.9</a> of this specification<a href="#section-17.3.1-6.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<ul class="compact">
+<li class="compact" id="section-17.3.1-7.1">
+              <p id="section-17.3.1-7.1.1">Name: invalid_metadata<a href="#section-17.3.1-7.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-7.2">
+              <p id="section-17.3.1-7.2.1">Usage Location: authorization endpoint<a href="#section-17.3.1-7.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-7.3">
+              <p id="section-17.3.1-7.3.1">Protocol Extension: OpenID Federation<a href="#section-17.3.1-7.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-7.4">
+              <p id="section-17.3.1-7.4.1">
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-17.3.1-7.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-7.5">
+              <p id="section-17.3.1-7.5.1">Reference: <a href="#error_response" class="auto internal xref">Section 8.9</a> of this specification<a href="#section-17.3.1-7.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<ul class="compact">
+<li class="compact" id="section-17.3.1-8.1">
+              <p id="section-17.3.1-8.1.1">Name: not_found<a href="#section-17.3.1-8.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-8.2">
+              <p id="section-17.3.1-8.2.1">Usage Location: authorization endpoint<a href="#section-17.3.1-8.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-8.3">
+              <p id="section-17.3.1-8.3.1">Protocol Extension: OpenID Federation<a href="#section-17.3.1-8.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-8.4">
+              <p id="section-17.3.1-8.4.1">
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-17.3.1-8.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-8.5">
+              <p id="section-17.3.1-8.5.1">Reference: <a href="#error_response" class="auto internal xref">Section 8.9</a> of this specification<a href="#section-17.3.1-8.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<ul class="compact">
+<li class="compact" id="section-17.3.1-9.1">
+              <p id="section-17.3.1-9.1.1">Name: server_error<a href="#section-17.3.1-9.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-9.2">
+              <p id="section-17.3.1-9.2.1">Usage Location: authorization endpoint<a href="#section-17.3.1-9.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-9.3">
+              <p id="section-17.3.1-9.3.1">Protocol Extension: OpenID Federation<a href="#section-17.3.1-9.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-9.4">
+              <p id="section-17.3.1-9.4.1">
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-17.3.1-9.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-9.5">
+              <p id="section-17.3.1-9.5.1">Reference: <a href="#error_response" class="auto internal xref">Section 8.9</a> of this specification<a href="#section-17.3.1-9.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<ul class="compact">
+<li class="compact" id="section-17.3.1-10.1">
+              <p id="section-17.3.1-10.1.1">Name: temporarily_unavailable<a href="#section-17.3.1-10.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-10.2">
+              <p id="section-17.3.1-10.2.1">Usage Location: authorization endpoint<a href="#section-17.3.1-10.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-10.3">
+              <p id="section-17.3.1-10.3.1">Protocol Extension: OpenID Federation<a href="#section-17.3.1-10.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-10.4">
+              <p id="section-17.3.1-10.4.1">
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-17.3.1-10.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-10.5">
+              <p id="section-17.3.1-10.5.1">Reference: <a href="#error_response" class="auto internal xref">Section 8.9</a> of this specification<a href="#section-17.3.1-10.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<ul class="compact">
+<li class="compact" id="section-17.3.1-11.1">
+              <p id="section-17.3.1-11.1.1">Name: unsupported_parameter<a href="#section-17.3.1-11.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-11.2">
+              <p id="section-17.3.1-11.2.1">Usage Location: authorization endpoint<a href="#section-17.3.1-11.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-11.3">
+              <p id="section-17.3.1-11.3.1">Protocol Extension: OpenID Federation<a href="#section-17.3.1-11.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-11.4">
+              <p id="section-17.3.1-11.4.1">
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-17.3.1-11.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-17.3.1-11.5">
+              <p id="section-17.3.1-11.5.1">Reference: <a href="#error_response" class="auto internal xref">Section 8.9</a> of this specification<a href="#section-17.3.1-11.5.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -12213,63 +12403,71 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-C-3.1">
           <p id="appendix-C-3.1.1">
-     Fixed #133: Refined wording about client authentication when using
-     Automatic Registration and added
-     <code>token_endpoint_auth_methods_supported</code>
-     in RP metadata example.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+     Fixed #136: Defined additional error codes and rationalized naming.
+     Renamed <code>trust_chain_validation_failed</code>
+     to <code>invalid_trust_chain</code> and
+     renamed <code>missing_trust_anchor</code>
+     to <code>invalid_trust_anchor</code>.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.2">
           <p id="appendix-C-3.2.1">
-     Reference OpenID Connect Relying Party Metadata Choices 1.0.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
+     Fixed #133: Refined wording about client authentication when using
+     Automatic Registration and added
+     <code>token_endpoint_auth_methods_supported</code>
+     in RP metadata example.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.3">
           <p id="appendix-C-3.3.1">
-     Fixed #143: Added Trust Mark Issuer and Trust Mark Owner to Terminology section.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
+     Reference OpenID Connect Relying Party Metadata Choices 1.0.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.4">
           <p id="appendix-C-3.4.1">
-     Fixed #139: Clarified description of using request objects.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
+     Fixed #143: Added Trust Mark Issuer and Trust Mark Owner to Terminology section.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.5">
           <p id="appendix-C-3.5.1">
-     Fixed #140: Federation Entity Keys MUST NOT appear in metadata.<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
+     Fixed #139: Clarified description of using request objects.<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.6">
           <p id="appendix-C-3.6.1">
-     Fixed #105 and #106: Informatively say that the
-     <code>require_signed_request_object</code>
-     and <code>require_pushed_authorization_requests</code>
-     metadata parameters can be used.<a href="#appendix-C-3.6.1" class="pilcrow">¶</a></p>
+     Fixed #140: Federation Entity Keys MUST NOT appear in metadata.<a href="#appendix-C-3.6.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.7">
           <p id="appendix-C-3.7.1">
-     Fixed #107: Clarified how to validate Trust Marks.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
+     Fixed #105 and #106: Informatively say that the
+     <code>require_signed_request_object</code>
+     and <code>require_pushed_authorization_requests</code>
+     metadata parameters can be used.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.8">
           <p id="appendix-C-3.8.1">
-     Fixed #114: Described why it may make sense to not support
-     the use of <code>request_uri</code>
-     other than in conjunction with a PAR request.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
+     Fixed #107: Clarified how to validate Trust Marks.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.9">
           <p id="appendix-C-3.9.1">
-     Fixed #108: Removed remark about trust mark delegation revocation.<a href="#appendix-C-3.9.1" class="pilcrow">¶</a></p>
+     Fixed #114: Described why it may make sense to not support
+     the use of <code>request_uri</code>
+     other than in conjunction with a PAR request.<a href="#appendix-C-3.9.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.10">
           <p id="appendix-C-3.10.1">
-     Fixed #120: Required <code>kid</code> (Key ID)
-     header parameter in Signed JWK Set JWTs.<a href="#appendix-C-3.10.1" class="pilcrow">¶</a></p>
+     Fixed #108: Removed remark about trust mark delegation revocation.<a href="#appendix-C-3.10.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.11">
           <p id="appendix-C-3.11.1">
-     Define media type for Explicit Registration responses
-     <code>application/explicit-registration-response+jwt</code>
-     distinct from <code>application/entity-statement+jwt</code>.<a href="#appendix-C-3.11.1" class="pilcrow">¶</a></p>
+     Fixed #120: Required <code>kid</code> (Key ID)
+     header parameter in Signed JWK Set JWTs.<a href="#appendix-C-3.11.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.12">
           <p id="appendix-C-3.12.1">
+     Define media type for Explicit Registration responses
+     <code>application/explicit-registration-response+jwt</code>
+     distinct from <code>application/entity-statement+jwt</code>.<a href="#appendix-C-3.12.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.13">
+          <p id="appendix-C-3.13.1">
      Restrict audience values to the single Entity Identifier
-     of the intended recipient.<a href="#appendix-C-3.12.1" class="pilcrow">¶</a></p>
+     of the intended recipient.<a href="#appendix-C-3.13.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
