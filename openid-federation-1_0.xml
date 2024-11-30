@@ -7091,7 +7091,7 @@ HTTP/1.1 302 Found
       <section anchor="Topologies" title="Federation Topologies">
 	<t>
 	  It is possible to construct Federation topologies that have
-	  multiple trust paths between two Entities.
+	  multiple trust paths between Entities.
 	  The specification does not disallow this, but it can create
 	  ambiguities that deployers need to be aware of.
 	</t>
@@ -7100,24 +7100,37 @@ HTTP/1.1 302 Found
 	    Consider the following Federation topology:
 	  </preamble>
 	  <name>
-	    Example topology with multiple trust paths between two Entities
+	    Example topology with multiple trust paths between Entities
 	  </name>
 	  <artwork><![CDATA[
-     TA_____
-    /  \    \
-  Im1  Im2  OP
-    \  /
-    Im3
-     |
-     RP
+              .--------------.
+              | Trust Anchor |
+              '--.---.-----.-'
+                 |   |     |
+              .--'   '--.  '---------------.
+              |         |                  |
+.-------------v--.   .--v-------------.    |
+| Intermediate 1 |   | Intermediate 2 |    |
+'-------------.--'   '--.-------------'    |
+              |         |                .-v--.
+              |         |                | OP |
+           .--v---------v---.            '----'
+           | Intermediate 3 |
+           '-------.--------'
+                   |
+                   |
+                 .-v--.
+                 | RP |
+                 '----'
 ]]></artwork>
 	</figure>
 	<t>
-	  In this topology, there are multiple trust paths between RP and TA,
-	  meaning that multiple different Trust Chains could be built between them.
-	  If the metadata policies of Im1 and Im2 are different, this could mean
-	  that the resolved metadata for RP is different depending upon
-	  which Intermediate is used when building the Trust Chain.
+	  In this topology, there are multiple trust paths between
+	  the RP and the Trust Anchor, meaning that
+	  multiple different Trust Chains could be built between them.
+	  If the metadata policies of Intermediate 1 and Intermediate 2 are different,
+	  this could result in the resolved metadata for the RP differing,
+	  depending upon which Intermediate is used when building the Trust Chain.
 	  Some such differences will be innocuous and some can cause failures.
 	</t>
 	<t>
