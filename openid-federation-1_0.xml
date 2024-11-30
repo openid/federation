@@ -1304,8 +1304,9 @@
         </t>
         <t>
           All parameters defined in Section 2 of
-          <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>
-          and <xref target="common_metadata"/> are applicable,
+          <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>,
+	  in <xref target="OpenID.RP.Choices"/>,
+          and in <xref target="common_metadata"/> are applicable,
 	  as well as additional parameters registered in the
 	  IANA "OAuth Dynamic Client Registration Metadata" registry
 	  <xref target="IANA.OAuth.Parameters"/>.
@@ -5742,9 +5743,11 @@ Content-Type: application/json
             </t>
             <t>
               Since there is no registration step prior to the Authentication Request,
-              the RP MUST NOT be supplied with a Client Secret.
-              Instead, the Automatic Registration model requires the RP to use
-              asymmetric cryptography to authenticate its requests.
+	      asymmetric cryptography MUST be used to authenticate requests
+	      when using Automatic Registration.
+	      asymmetric cryptography is used to authenticate requests;
+	      therefore, the OP neither assigns a Client Secret to the RP
+	      nor returns it as a result of the registration process.
             </t>
           </list>
         </t>
@@ -6235,8 +6238,8 @@ HTTP/1.1 302 Found
           Explicit Registration is suitable for implementation on top of the
           <xref target="OpenID.Registration">OpenID Connect Dynamic Client
           Registration 1.0</xref> endpoint of an OP deployment. In contrast to
-          Automatic Registration, it enables an OP to provision a Client ID, a
-          Client Secret, and metadata parameters.
+          Automatic Registration, it enables an OP to provision a Client ID,
+	  potentially a Client Secret, and other metadata parameters.
         </t>
 
         <t>An example of an Explicit Registration is provided in
@@ -6765,9 +6768,12 @@ HTTP/1.1 302 Found
               whereas with Explicit Registration, a Client ID is assigned by the OP and supplied to the RP.
             </t>
             <t>
-              Instead of using a Client Secret to authenticate the client, with Automatic Registration,
-              the client is authenticated by means of the RP proving that it controls a private key
+	      With Automatic Registration, the Client is authenticated by means of
+	      the RP proving that it controls a private key
               corresponding to one of its Entity Configuration's public keys.
+	      Whereas with Explicit Registration, a broader set of options
+	      is available for authenticating the Client,
+	      including the use of a Client Secret.
             </t>
           </list>
         </t>
@@ -8525,6 +8531,37 @@ HTTP/1.1 302 Found
 	</front>
       </reference>
 
+      <reference anchor="OpenID.RP.Choices" target="https://openid.net/specs/openid-connect-rp-metadata-choices-1_0.html">
+	<front>
+	  <title>OpenID Connect Relying Party Metadata Choices 1.0</title>
+
+	  <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
+	    <organization abbrev="Self-Issued Consulting">Self-Issued Consulting</organization>
+	    <address>
+	      <email>michael_b_jones@hotmail.com</email>
+	      <uri>https://self-issued.info/</uri>
+	    </address>
+	  </author>
+
+	  <author fullname="Roland Hedberg" initials="R." surname="Hedberg">
+	    <organization>independent</organization>
+	    <address>
+	      <email>roland@catalogix.se</email>
+	    </address>
+	  </author>
+
+	  <author fullname="John Bradley" initials="J." surname="Bradley">
+	    <organization abbrev="Yubico">Yubico</organization>
+	    <address>
+	      <email>ve7jtb@ve7jtb.com</email>
+	      <uri>http://www.thread-safe.com/</uri>
+	    </address>
+	  </author>
+
+          <date day="25" month="November" year="2024"/>
+	</front>
+      </reference>
+
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-13.xml" />
 
     </references>
@@ -9572,7 +9609,10 @@ Host: op.umu.se
     "response_types": [
       "code"
     ],
-    "subject_type": "public"
+    "subject_type": "public",
+    "token_endpoint_auth_methods_supported": [
+      "private_key_jwt"
+    ]
   }
 }
 ]]></artwork>
@@ -9606,7 +9646,10 @@ Host: op.umu.se
     "response_types": [
       "code"
     ],
-    "subject_type": "public"
+    "subject_type": "public",
+    "token_endpoint_auth_methods_supported": [
+      "private_key_jwt"
+    ]
   }
 }
 ]]></artwork>
@@ -9816,6 +9859,15 @@ Host: op.umu.se
       <t>
 	-41
 	<list style="symbols">
+	  <t>
+	    Fixed #133: Refined wording about client authentication when using
+	    Automatic Registration and added
+	    <spanx style="verb">token_endpoint_auth_methods_supported</spanx>
+	    in RP metadata example.
+	  </t>
+	  <t>
+	    Reference OpenID Connect Relying Party Metadata Choices 1.0.
+	  </t>
 	  <t>
 	    Fixed #143: Added Trust Mark Issuer and Trust Mark Owner to Terminology section.
 	  </t>
@@ -11170,6 +11222,7 @@ Host: op.umu.se
 	Joseph Heenan,
 	Pedram Hosseyni,
 	Marko Ivančić,
+	Łukasz Jaromin,
 	Takahiko Kawasaki,
 	Torsten Lodderstedt,
 	Francesco Marino,
