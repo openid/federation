@@ -5787,6 +5787,7 @@ Content-Type: application/json
             The Authentication Request is performed by passing a
             signed Request Object by value as described in Section 6.1 of
             <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>
+	    and <xref target="RFC9101">The OAuth 2.0 Authorization Framework: JWT-Secured Authorization Request (JAR)</xref>
             or using a pushed authorization request, as described in
             <xref target="RFC9126">Pushed Authorization Requests</xref>.
 	  </t>
@@ -5905,6 +5906,7 @@ Content-Type: application/json
 	      </name>
               <artwork><![CDATA[
 {
+  "typ": "oauth-authz-req+jwt",
   "alg": "RS256",
   "kid": "that-kid-which-points-to-a-jwk-contained-in-the-trust-chain",
 }
@@ -5945,8 +5947,9 @@ GET /authorize?
     &scope=openid+profile+email+address+phone
     &response_type=code
     &client_id=https%3A%2F%2Frp.example.com
-    &request=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5fX0Q5OEl2QjhOYWUta3dBNm5yT3Q
-        taXBUaGpIa0R4MzduaWNETUgzTjQifQ.
+    &request=eyJ0eXAiOiJvYXV0aC1hdXRoei1yZXErand0IiwiYWxnIjoiUlMyNTYiLCJ
+        raWQiOiJOX19EOThJdkI4TmFlLWt3QTZuck90LWlwVGhqSGtEeDM3bmljRE1IM04
+        0In0.
         eyJhdWQiOiJodHRwczovL29wLmV4YW1wbGUub3JnIiwiY2xpZW50X2lkIjoiaHR0
         cHM6Ly9ycC5leGFtcGxlLmNvbSIsImV4cCI6MTU4OTY5OTE2MiwiaWF0IjoxNTg5
         Njk5MTAyLCJpc3MiOiJodHRwczovL3JwLmV4YW1wbGUuY29tIiwianRpIjoiNGQz
@@ -8576,6 +8579,7 @@ HTTP/1.1 302 Found
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8414.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8705.xml"/>
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9101.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9126.xml"/>
 
       <reference anchor="OpenID.Core" target="https://openid.net/specs/openid-connect-core-1_0.html">
@@ -9978,6 +9982,9 @@ Host: op.umu.se
       <t>
 	-41
 	<list style="symbols">
+	  <t>
+	    Explicitly typed base64url-encoded examples that were previously untyped.
+	  </t>
 	  <t>
 	    Fixed #136: Defined additional error codes and rationalized naming.
 	    Renamed <spanx style="verb">trust_chain_validation_failed</spanx>
