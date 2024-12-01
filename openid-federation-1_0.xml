@@ -5989,26 +5989,27 @@ GET /authorize?
                 Trust Chain as a hint for which path to take from the
                 RP's Entity to the Trust Anchor.
                 The OP MAY evaluate the statements in the
-                <spanx style="verb">trust_chain</spanx>
+                provided Trust Chain
                 to make its Federation Entity Discovery procedure more efficient,
                 especially if the RP contains multiple authority hints in
                 its Entity Configuration.
+		If the OP already has a valid registration for the RP, it MAY
+		use the received Trust Chain to update the RP's registration.
 	      </t>
 	      <t>
-                If the OP already has a valid registration for the RP, it MAY
-                use the received Trust Chain to update the RP's registration.
-                Whenever the OP uses a Trust Chain submitted by an RP, the
-                OP MUST fully verify it, including every Entity Statement contained in it.
                 A Trust Chain may be relied upon by the OP because it has validated
                 all of its statements. This is true whether these statements
                 are retrieved from their URLs or whether they
                 are provided via the <spanx style="verb">trust_chain</spanx>
                 request parameter in the Request Object.
+		In both cases, the OP MUST fully verify the Trust Chain
+		including every Entity Statement contained in it.
               </t>
               <t>
                 If the RP does not include the
                 <spanx style="verb">trust_chain</spanx>
                 request parameter in the Request Object,
+		the OP for some reason decides not to use the provided Trust Chain,
                 or the OP does not support this feature, it then MUST
                 validate the possible Trust Chains, starting with the RP's Entity Configuration,
                 as described in <xref target="fetching-es"/>,
@@ -9976,6 +9977,10 @@ Host: op.umu.se
       <t>
 	-41
 	<list style="symbols">
+	  <t>
+	    Fixed #47: Described using and not using a provided Trust Chain
+	    during Automatic Registration.
+	  </t>
 	  <t>
 	    Fixed #136: Defined additional error codes and rationalized naming.
 	    Renamed <spanx style="verb">trust_chain_validation_failed</spanx>
