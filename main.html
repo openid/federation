@@ -6130,14 +6130,14 @@ Content-Type: application/json
                 Entity whose resolved data is requested.<a href="#section-8.3.1-2.2" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-8.3.1-2.3">anchor</dt>
+<dt id="section-8.3.1-2.3">trust_anchor</dt>
             <dd style="margin-left: 1.5em" id="section-8.3.1-2.4">
                 REQUIRED. The Trust Anchor that the resolve endpoint
                 MUST use when resolving the metadata.
  The value is an Entity identifier.<a href="#section-8.3.1-2.4" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-8.3.1-2.5">type</dt>
+<dt id="section-8.3.1-2.5">entity_type</dt>
             <dd style="margin-left: 1.5em" id="section-8.3.1-2.6">
               <p id="section-8.3.1-2.6.1">
                 OPTIONAL. A specific Entity Type to resolve.
@@ -6145,9 +6145,9 @@ Content-Type: application/json
                 <a href="#entity_types" class="auto internal xref">Section 5.1</a>.
                 If this parameter is not present, then all Entity Types are returned.<a href="#section-8.3.1-2.6.1" class="pilcrow">¶</a></p>
 <p id="section-8.3.1-2.6.2">
- The <code>type</code> request parameter
+ The <code>entity_type</code> request parameter
  MAY occur multiple times, in which case, data for each Entity Type
- whose Entity Type Identifier is a <code>type</code>
+ whose Entity Type Identifier is in an <code>entity_type</code>
  parameter value is returned.<a href="#section-8.3.1-2.6.2" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
@@ -6163,8 +6163,8 @@ Content-Type: application/json
 <pre>
 GET /resolve?
 sub=https%3A%2F%2Fop.example.it%2Fspid&amp;
-type=openid_provider&amp;
-anchor=https%3A%2F%2Fswamid.se HTTP/1.1
+entity_type=openid_provider&amp;
+trust_anchor=https%3A%2F%2Fswamid.se HTTP/1.1
 Host: openid.sunet.se
 </pre>
 </div>
@@ -6208,7 +6208,7 @@ Host: openid.sunet.se
             as specified in <a href="#trust_chain_head_param" class="auto internal xref">Section 4.3</a>.
             When this is present, the Trust Anchor in the Trust Chain
             MUST match the Trust Anchor requested in the
-            related request in the <code>anchor</code> parameter.<a href="#section-8.3.2-5" class="pilcrow">¶</a></p>
+            related request in the <code>trust_anchor</code> parameter.<a href="#section-8.3.2-5" class="pilcrow">¶</a></p>
 <p id="section-8.3.2-6">
             An issuer that provides its Trust Chain within the resolve
             response makes it evident that it is part of the same
@@ -8586,7 +8586,7 @@ HTTP/1.1 302 Found
                     If the OP created a client registration for the RP, it MUST
                     then construct a success response in the form of an Entity Statement.<a href="#section-12.2.3-1" class="pilcrow">¶</a></p>
 <p id="section-12.2.3-2">
-                    The OP MUST set the <code>trust_anchor_id</code>
+                    The OP MUST set the <code>trust_anchor</code>
                     claim of the Entity Statement to the Trust Anchor it
                     selected to process the request. The
                     <code>authority_hints</code> claim MUST be
@@ -8672,7 +8672,7 @@ HTTP/1.1 302 Found
      but is not a general Entity Statement claim.<a href="#section-12.2.3-8.12" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-12.2.3-8.13">trust_anchor_id</dt>
+<dt id="section-12.2.3-8.13">trust_anchor</dt>
             <dd style="margin-left: 1.5em" id="section-12.2.3-8.14">
                     REQUIRED.
                     Its value MUST be the Entity Identifier of the Trust Anchor
@@ -8760,7 +8760,7 @@ HTTP/1.1 302 Found
             <li id="section-12.2.5-1.3">
               <p id="section-12.2.5-1.3.1">
                     The RP MUST verify that the
-                    <code>trust_anchor_id</code> represents one
+                    <code>trust_anchor</code> represents one
                     of its own Trust Anchors.<a href="#section-12.2.5-1.3.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-12.2.5-1.4">
@@ -8769,7 +8769,7 @@ HTTP/1.1 302 Found
                     <code>authority_hints</code> it specified in
                     the Explicit Registration request leads to the Trust Anchor
                     that the OP set in the
-                    <code>trust_anchor_id</code> claim.<a href="#section-12.2.5-1.4.1" class="pilcrow">¶</a></p>
+                    <code>trust_anchor</code> claim.<a href="#section-12.2.5-1.4.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-12.2.5-1.5">
               <p id="section-12.2.5-1.5.1">
@@ -8777,7 +8777,7 @@ HTTP/1.1 302 Found
                     at the OP complies with the Trust Chain
                     <code>openid_relying_party</code> policies,
                     which Trust Chain is resolved using the
-                    <code>trust_anchor_id</code> and
+                    <code>trust_anchor</code> and
                     <code>authority_hints</code> claims of the
                     received registration Entity Statement. The RP SHOULD perform this check
                     by applying the resolved policies to the metadata as
@@ -10916,7 +10916,7 @@ HTTP/1.1 302 Found
 <ul class="compact">
 <li class="compact" id="section-18.7.1-18.1">
               <p id="section-18.7.1-18.1.1">
- Claim Name: <code>trust_anchor_id</code><a href="#section-18.7.1-18.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>trust_anchor</code><a href="#section-18.7.1-18.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-18.2">
               <p id="section-18.7.1-18.2.1">
@@ -12380,7 +12380,7 @@ Host: op.umu.se
   "aud": "https://wiki.ligo.org",
   "iat": 1601457619,
   "exp": 1601544019,
-  "trust_anchor_id": "https://edugain.geant.org",
+  "trust_anchor": "https://edugain.geant.org",
   "metadata": {
     "openid_relying_party": {
       "client_id": "m3GyHw",
@@ -12498,82 +12498,91 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-C-3.1">
           <p id="appendix-C-3.1.1">
-     Explicitly typed base64url-encoded examples that were previously untyped.
-     Also added missing <code>client_id</code> and
-     <code>iss</code> values in some examples.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+     Fixed #131: Changed <code>anchor</code> request parameter
+     to <code>trust_anchor</code>,
+     changed <code>trust_anchor_id</code> claim
+     to <code>trust_anchor</code>, and
+     changed <code>type</code> request parameter
+     to <code>entity_type</code>.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.2">
           <p id="appendix-C-3.2.1">
-     Fixed #7, #86, #134, and #148: Provides implementation considerations
-     on Federation topologies.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
+     Explicitly typed base64url-encoded examples that were previously untyped.
+     Also added missing <code>client_id</code> and
+     <code>iss</code> values in some examples.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.3">
           <p id="appendix-C-3.3.1">
+     Fixed #7, #86, #134, and #148: Provides implementation considerations
+     on Federation topologies.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.4">
+          <p id="appendix-C-3.4.1">
      Fixed #136: Defined additional error codes and rationalized naming.
      Renamed <code>trust_chain_validation_failed</code>
      to <code>invalid_trust_chain</code> and
      renamed <code>missing_trust_anchor</code>
-     to <code>invalid_trust_anchor</code>.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-C-3.4">
-          <p id="appendix-C-3.4.1">
-     Fixed #133: Refined wording about client authentication when using
-     Automatic Registration and added
-     <code>token_endpoint_auth_methods_supported</code>
-     in RP metadata example.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
+     to <code>invalid_trust_anchor</code>.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.5">
           <p id="appendix-C-3.5.1">
-     Reference OpenID Connect Relying Party Metadata Choices 1.0.<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
+     Fixed #133: Refined wording about client authentication when using
+     Automatic Registration and added
+     <code>token_endpoint_auth_methods_supported</code>
+     in RP metadata example.<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.6">
           <p id="appendix-C-3.6.1">
-     Fixed #143: Added Trust Mark Issuer and Trust Mark Owner to Terminology section.<a href="#appendix-C-3.6.1" class="pilcrow">¶</a></p>
+     Reference OpenID Connect Relying Party Metadata Choices 1.0.<a href="#appendix-C-3.6.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.7">
           <p id="appendix-C-3.7.1">
-     Fixed #139: Clarified description of using request objects.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
+     Fixed #143: Added Trust Mark Issuer and Trust Mark Owner to Terminology section.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.8">
           <p id="appendix-C-3.8.1">
-     Fixed #140: Federation Entity Keys MUST NOT appear in metadata.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
+     Fixed #139: Clarified description of using request objects.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.9">
           <p id="appendix-C-3.9.1">
-     Fixed #105 and #106: Informatively say that the
-     <code>require_signed_request_object</code>
-     and <code>require_pushed_authorization_requests</code>
-     metadata parameters can be used.<a href="#appendix-C-3.9.1" class="pilcrow">¶</a></p>
+     Fixed #140: Federation Entity Keys MUST NOT appear in metadata.<a href="#appendix-C-3.9.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.10">
           <p id="appendix-C-3.10.1">
-     Fixed #107: Clarified how to validate Trust Marks.<a href="#appendix-C-3.10.1" class="pilcrow">¶</a></p>
+     Fixed #105 and #106: Informatively say that the
+     <code>require_signed_request_object</code>
+     and <code>require_pushed_authorization_requests</code>
+     metadata parameters can be used.<a href="#appendix-C-3.10.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.11">
           <p id="appendix-C-3.11.1">
-     Fixed #114: Described why it may make sense to not support
-     the use of <code>request_uri</code>
-     other than in conjunction with a PAR request.<a href="#appendix-C-3.11.1" class="pilcrow">¶</a></p>
+     Fixed #107: Clarified how to validate Trust Marks.<a href="#appendix-C-3.11.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.12">
           <p id="appendix-C-3.12.1">
-     Fixed #108: Removed remark about trust mark delegation revocation.<a href="#appendix-C-3.12.1" class="pilcrow">¶</a></p>
+     Fixed #114: Described why it may make sense to not support
+     the use of <code>request_uri</code>
+     other than in conjunction with a PAR request.<a href="#appendix-C-3.12.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.13">
           <p id="appendix-C-3.13.1">
-     Fixed #120: Required <code>kid</code> (Key ID)
-     header parameter in Signed JWK Set JWTs.<a href="#appendix-C-3.13.1" class="pilcrow">¶</a></p>
+     Fixed #108: Removed remark about trust mark delegation revocation.<a href="#appendix-C-3.13.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.14">
           <p id="appendix-C-3.14.1">
-     Define media type for Explicit Registration responses
-     <code>application/explicit-registration-response+jwt</code>
-     distinct from <code>application/entity-statement+jwt</code>.<a href="#appendix-C-3.14.1" class="pilcrow">¶</a></p>
+     Fixed #120: Required <code>kid</code> (Key ID)
+     header parameter in Signed JWK Set JWTs.<a href="#appendix-C-3.14.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.15">
           <p id="appendix-C-3.15.1">
+     Define media type for Explicit Registration responses
+     <code>application/explicit-registration-response+jwt</code>
+     distinct from <code>application/entity-statement+jwt</code>.<a href="#appendix-C-3.15.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.16">
+          <p id="appendix-C-3.16.1">
      Restrict audience values to the single Entity Identifier
-     of the intended recipient.<a href="#appendix-C-3.15.1" class="pilcrow">¶</a></p>
+     of the intended recipient.<a href="#appendix-C-3.16.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
