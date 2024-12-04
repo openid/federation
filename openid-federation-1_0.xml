@@ -1100,6 +1100,7 @@
 	    </name>
 	    <artwork><![CDATA[
 {
+  "typ": "...",
   "alg": "RS256",
   "kid": "SUdtUndEWVY2cUFDeDV5NVlBWDhvOXJodVl2am1mNGNtR0pmd",
   "trust_chain": [
@@ -3692,8 +3693,10 @@
             <artwork><![CDATA[
 {
   "delegation":
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6IlpHdEtNVzVKVEZVeFVWOWZWSG90VTNNd1pIa
-     FlXbU5qY2pselIydFpTaTFMYzBKQ1IzcGtVRzlyYXcifQ.eyJzdWIiOiAiaHR0cHM
+    "eyJ0eXAiOiJ0cnVzdC1tYXJrLWRlbGVnYXRpb24rand0IiwiYWxnIjoiUlMyNTYiL
+     CJraWQiOiJUak5aZUVkcWREUlBTWHBvVWxoTE9VWmpjWE5KYjJ4amNpMDJWR3hDTV
+     dSa1ZVVXhNR2hqTmpkME1BIn0.
+     eyJzdWIiOiAiaHR0cHM
      6Ly90bWkuZXhhbXBsZS5vcmciLCAiaWQiOiAiaHR0cHM6Ly9yZWZlZHMub3JnL3Np
      cnRmaSIsICJpc3MiOiAiaHR0cHM6Ly90bV9vd25lci5leGFtcGxlLm9yZyIsICJpY
      XQiOiAxNzI1MTc2MzAyfQ.MTPri3aSN4vxUL_yzZ16He2UsNAWE6u9u59oRl-u8kq
@@ -3710,13 +3713,29 @@
 }
 ]]></artwork>
           </figure>
-      <figure>
-        <preamble>
-          JWT Claims Set of the Trust Mark delegation JWT in the "delegation" claim above
-        </preamble>
-        <name>
-          Trust Mark delegation JWT Claim Set
-        </name>
+          <figure>
+            <preamble>
+              JWS Header Parameters for the Trust Mark delegation JWT in
+              the "delegation" claim above
+            </preamble>
+	    <name>
+	      Trust Mark delegation JWT JWS Header Parameters
+	    </name>
+            <artwork><![CDATA[
+{
+  "typ": "trust-mark-delegation+jwt",
+  "alg": "RS256",
+  "kid": "TjNZeEdqdDRPSXpoUlhLOUZjcXNJb2xjci02VGxCMWRkVUUxMGhjNjd0MA"
+}
+            ]]></artwork>
+          </figure>
+	  <figure>
+	    <preamble>
+	      JWT Claims Set of the Trust Mark delegation JWT in the "delegation" claim above
+	    </preamble>
+	    <name>
+	      Trust Mark delegation JWT Claim Set
+	    </name>
             <artwork><![CDATA[
 {
   "sub": "https://tmi.example.org",
@@ -3726,23 +3745,7 @@
 }
 ]]></artwork>
 
-      </figure>
-          <figure>
-            <preamble>
-              JWS Header Parameters for the Trust Mark delegation JWT in
-              the "delegation" claim above
-            </preamble>
-        <name>
-          Trust Mark delegation JWT JWS Header Parameters
-        </name>
-            <artwork><![CDATA[
-{
-  "typ": "trust-mark-delegation+jwt",
-  "alg": "RS256",
-  "kid": "TjNZeEdqdDRPSXpoUlhLOUZjcXNJb2xjci02VGxCMWRkVUUxMGhjNjd0MA"
-}
-            ]]></artwork>
-          </figure>
+	  </figure>
         </section>
       </section>
     <section title="Federation Endpoints" anchor="federation_endpoints">
@@ -4359,15 +4362,15 @@ Host: openid.sunet.se
   "trust_marks": [
     {"id": "https://www.spid.gov.it/certification/op/",
      "trust_mark":
-       "eyJhbGciOiJSUzI1NiIsImtpZCI6ImRGRTFjMFF4UzBFdFFrWmxNRXR3ZWxOQl"
-       "eyJhbGciOiJSUzI1NiIsImtpZCI6Ijh4c3VLV2lWZndTZ0hvZjFUZTRPVWRjeT"
-       "RxN2RKcktmRlJsTzV4aEhJYTAifQ.eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkL"
-       "mdvdi5pdCIsInN1YiI6Imh0dHBzOi8vb3AuZXhhbXBsZS5pdC9zcGlkLyIsIml"
-       "hdCI6MTU3OTYyMTE2MCwiaWQiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZ"
-       "XJ0aWZpY2F0aW9uL29wLyIsImxvZ29fdXJpIjoiaHR0cHM6Ly93d3cuYWdpZC5"
-       "nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0c"
-       "HM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWN"
-       "uaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9"
+       "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiOH
+        hzdUtXaVZmd1NnSG9mMVRlNE9VZGN5NHE3ZEpyS2ZGUmxPNXhoSElhMCJ9.
+        eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkL
+        mdvdi5pdCIsInN1YiI6Imh0dHBzOi8vb3AuZXhhbXBsZS5pdC9zcGlkLyIsIml
+        hdCI6MTU3OTYyMTE2MCwiaWQiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZ
+        XJ0aWZpY2F0aW9uL29wLyIsImxvZ29fdXJpIjoiaHR0cHM6Ly93d3cuYWdpZC5
+        nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0c
+        HM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWN
+        uaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9"
     }
   ],
   "trust_chain" : [
@@ -4685,9 +4688,11 @@ Host: tuber.cert.example.org
             </name>
             <artwork><![CDATA[
 200 OK
+Content-Type: application/trust-mark+jwt
 
-eyJhbGciOiJSUzI1NiIsImtpZCI6Im1VRXR0aW5SNTNpLW9Bc1JoN2l6blY1R1hlaFh3QzZ1
-aTRScG1QeUt5ZDgifQ.eyJpc3MiOiJodHRwczovL3R1YmVyLmNlcnQuZXhhbXBsZS5vcmciL
+eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoibVVFdHRpblI1
+M2ktb0FzUmg3aXpuVjVHWGVoWHdDNnVpNFJwbVB5S3lkOCJ9.
+eyJpc3MiOiJodHRwczovL3R1YmVyLmNlcnQuZXhhbXBsZS5vcmciL
 CJzdWIiOiJodHRwczovL3RhcnR1Zm8uZXhhbXBsZS5pdCIsImlhdCI6MTU3OTYyMTE2MCwiZ
 XhwIjoxNTc5NzIxMTYwLCJpZCI6Imh0dHBzOi8vdHViZXIuY2VydC5leGFtcGxlLm9yZy9uZ
 XJvL3ByZWdpYXRvL25vcmNpYSJ9.HwzNAJVPDYC9AM-ILWfgmT5YDz-pjtklQhtEQbqhC7P0
@@ -5785,6 +5790,7 @@ Content-Type: application/json
             The Authentication Request is performed by passing a
             signed Request Object by value as described in Section 6.1 of
             <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>
+	    and <xref target="RFC9101">The OAuth 2.0 Authorization Framework: JWT-Secured Authorization Request (JAR)</xref>
             or using a pushed authorization request, as described in
             <xref target="RFC9126">Pushed Authorization Requests</xref>.
 	  </t>
@@ -5829,10 +5835,15 @@ Content-Type: application/json
                   the OP's Entity Identifier
 		  and MUST NOT include any other values.
                 </t>
+                <t hangText="client_id">
+                  <vspace/>
+                  REQUIRED. The <spanx style="verb">client_id</spanx>
+                  value MUST be the RP's Entity Identifier.
+                </t>
                 <t hangText="iss">
                   <vspace/>
                   REQUIRED. The <spanx style="verb">iss</spanx>
-                  value MUST be the Client Identifier.
+                  value MUST be the RP's Entity Identifier.
                 </t>
                 <t hangText="sub">
                   <vspace/>
@@ -5903,6 +5914,7 @@ Content-Type: application/json
 	      </name>
               <artwork><![CDATA[
 {
+  "typ": "oauth-authz-req+jwt",
   "alg": "RS256",
   "kid": "that-kid-which-points-to-a-jwk-contained-in-the-trust-chain",
 }
@@ -5943,8 +5955,9 @@ GET /authorize?
     &scope=openid+profile+email+address+phone
     &response_type=code
     &client_id=https%3A%2F%2Frp.example.com
-    &request=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik5fX0Q5OEl2QjhOYWUta3dBNm5yT3Q
-        taXBUaGpIa0R4MzduaWNETUgzTjQifQ.
+    &request=eyJ0eXAiOiJvYXV0aC1hdXRoei1yZXErand0IiwiYWxnIjoiUlMyNTYiLCJ
+        raWQiOiJOX19EOThJdkI4TmFlLWt3QTZuck90LWlwVGhqSGtEeDM3bmljRE1IM04
+        0In0.
         eyJhdWQiOiJodHRwczovL29wLmV4YW1wbGUub3JnIiwiY2xpZW50X2lkIjoiaHR0
         cHM6Ly9ycC5leGFtcGxlLmNvbSIsImV4cCI6MTU4OTY5OTE2MiwiaWF0IjoxNTg5
         Njk5MTAyLCJpc3MiOiJodHRwczovL3JwLmV4YW1wbGUuY29tIiwianRpIjoiNGQz
@@ -8638,6 +8651,7 @@ HTTP/1.1 302 Found
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8414.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8705.xml"/>
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9101.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9126.xml"/>
 
       <reference anchor="OpenID.Core" target="https://openid.net/specs/openid-connect-core-1_0.html">
@@ -9625,16 +9639,18 @@ Host: geant.org
 	    </name>
             <artwork><![CDATA[
 GET /openid/authorization?
-  request=eyJhbGciOiJSUzI1NiIsImtpZCI6ImRVTjJhMDF3Umtoa1NXc
-    GxRVGh2Y1ZCSU5VSXdUVWRPVUZVMlRtVnJTbWhFUVhnelpYbHBUemRR
-    TkEifQ.eyJyZXNwb25zZV90eXBlIjogImNvZGUiLCAic2NvcGUiOiAi
-    b3BlbmlkIHByb2ZpbGUgZW1haWwiLCAiY2xpZW50X2lkIjogImh0dHB
-    zOi8vd2lraS5saWdvLm9yZyIsICJzdGF0ZSI6ICIyZmY3ZTU4OS0zOD
-    Q4LTQ2ZGEtYTNkMi05NDllMTIzNWU2NzEiLCAibm9uY2UiOiAiZjU4M
-    WExODYtYWNhNC00NmIzLTk0ZmMtODA0ODQwODNlYjJjIiwgInJlZGly
-    ZWN0X3VyaSI6ICJodHRwczovL3dpa2kubGlnby5vcmcvb3BlbmlkL2N
-    hbGxiYWNrIiwgImlzcyI6ICIiLCAiaWF0IjogMTU5MzU4ODA4NSwgIm
-    F1ZCI6ICJodHRwczovL29wLnVtdS5zZSJ9.cRwSFNcDx6VsacAQDcIx
+  request=eyJ0eXAiOiJvYXV0aC1hdXRoei1yZXErand0IiwiYWxnIjoiU
+    lMyNTYiLCJraWQiOiJkVU4yYTAxd1JraGtTV3BsUVRodmNWQklOVUl3
+    VFVkT1VGVTJUbVZyU21oRVFYZ3paWGxwVHpkUU5BIn0.
+    eyJyZXNwb25zZV90eXBlIjogImNvZGUiLCAic2NvcGUiOiAib3Blbml
+    kIHByb2ZpbGUgZW1haWwiLCAiY2xpZW50X2lkIjogImh0dHBzOi8vd2
+    lraS5saWdvLm9yZyIsICJzdGF0ZSI6ICIyZmY3ZTU4OS0zODQ4LTQ2Z
+    GEtYTNkMi05NDllMTIzNWU2NzEiLCAibm9uY2UiOiAiZjU4MWExODYt
+    YWNhNC00NmIzLTk0ZmMtODA0ODQwODNlYjJjIiwgInJlZGlyZWN0X3V
+    yaSI6ICJodHRwczovL3dpa2kubGlnby5vcmcvb3BlbmlkL2NhbGxiYW
+    NrIiwgImlzcyI6ICJodHRwczovL3dpa2kubGlnby5vcmciLCAiaWF0I
+    jogMTU5MzU4ODA4NSwgImF1ZCI6ICJodHRwczovL29wLnVtdS5zZSJ9
+    .cRwSFNcDx6VsacAQDcIx
     5OAt_Pj30I_uUKRh04N4QJd6MZ0f50sETRv8uspSt9fMa-5yV3uzthX
     _v8OtQrV33gW1vzgOSRCdHgeCN40StbzjFk102seDwtU_Uzrcsy7KrX
     YSBp8U0dBDjuxC6h18L8ExjeR-NFjcrhy0wwua7Tnb4QqtN0QCia6DD
@@ -10040,6 +10056,11 @@ Host: op.umu.se
       <t>
 	-41
 	<list style="symbols">
+	  <t>
+	    Explicitly typed base64url-encoded examples that were previously untyped.
+	    Also added missing <spanx style="verb">client_id</spanx> and
+	    <spanx style="verb">iss</spanx> values in some examples.
+	  </t>
 	  <t>
 	    Fixed #7, #86, #134, and #148: Provides implementation considerations
 	    on Federation topologies.
