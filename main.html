@@ -8020,24 +8020,25 @@ GET /authorize?
                 Trust Chain as a hint for which path to take from the
                 RP's Entity to the Trust Anchor.
                 The OP MAY evaluate the statements in the
-                <code>trust_chain</code>
+                provided Trust Chain
                 to make its Federation Entity Discovery procedure more efficient,
                 especially if the RP contains multiple authority hints in
-                its Entity Configuration.<a href="#section-12.1.1.1.2-2" class="pilcrow">¶</a></p>
+                its Entity Configuration.
+ If the OP already has a valid registration for the RP, it MAY
+ use the received Trust Chain to update the RP's registration.<a href="#section-12.1.1.1.2-2" class="pilcrow">¶</a></p>
 <p id="section-12.1.1.1.2-3">
-                If the OP already has a valid registration for the RP, it MAY
-                use the received Trust Chain to update the RP's registration.
-                Whenever the OP uses a Trust Chain submitted by an RP, the
-                OP MUST fully verify it, including every Entity Statement contained in it.
                 A Trust Chain may be relied upon by the OP because it has validated
                 all of its statements. This is true whether these statements
                 are retrieved from their URLs or whether they
                 are provided via the <code>trust_chain</code>
-                request parameter in the Request Object.<a href="#section-12.1.1.1.2-3" class="pilcrow">¶</a></p>
+                request parameter in the Request Object.
+ In both cases, the OP MUST fully verify the Trust Chain
+ including every Entity Statement contained in it.<a href="#section-12.1.1.1.2-3" class="pilcrow">¶</a></p>
 <p id="section-12.1.1.1.2-4">
                 If the RP does not include the
                 <code>trust_chain</code>
                 request parameter in the Request Object,
+ the OP for some reason decides not to use the provided Trust Chain,
                 or the OP does not support this feature, it then MUST
                 validate the possible Trust Chains, starting with the RP's Entity Configuration,
                 as described in <a href="#fetching-es" class="auto internal xref">Section 10.1</a>,
@@ -12489,10 +12490,15 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-C-3.1">
           <p id="appendix-C-3.1.1">
+     Fixed #47: Described using and not using a provided Trust Chain
+     during Automatic Registration.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.2">
+          <p id="appendix-C-3.2.1">
      Fixed #85: Clarified Trust Chain selection during Explicit Registration.
      Also corrected the <code>authority_hints</code> value
      in the Explicit Registration response to be the Immediate Superior
-     of the RP in the Trust Chain selected for it by the OP.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+     of the RP in the Trust Chain selected for it by the OP.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
