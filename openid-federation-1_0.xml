@@ -5772,7 +5772,7 @@ Content-Type: application/json
               Since there is no registration step prior to the Authentication Request,
 	      asymmetric cryptography MUST be used to authenticate requests
 	      when using Automatic Registration.
-	      asymmetric cryptography is used to authenticate requests;
+	      Asymmetric cryptography is used to authenticate requests;
 	      therefore, the OP neither assigns a Client Secret to the RP
 	      nor returns it as a result of the registration process.
             </t>
@@ -6455,8 +6455,8 @@ HTTP/1.1 302 Found
                     Entity Configuration of the RP. After validating at least
                     one Trust Chain, the OP MUST verify the signature of the
                     received Entity Configuration. If the OP finds more than
-                    one acceptable Trust Chain, it MUST choose one Trust Anchor
-                    from those chains as the one to proceed with.
+                    one acceptable Trust Chain, it MUST choose one Trust Chain
+                    from among them as the one to proceed with.
                   </t>
                   <t>
                     If the request contains a Trust Chain, the OP MAY evaluate
@@ -6546,7 +6546,7 @@ HTTP/1.1 302 Found
                     claim of the Entity Statement to the Trust Anchor it
                     selected to process the request. The
                     <spanx style="verb">authority_hints</spanx> claim MUST be
-                    set to the OP's Immediate Superior in the
+                    set to the RP's Immediate Superior in the
                     selected Trust Chain.
 		  </t>
 		  <t>
@@ -6580,36 +6580,33 @@ HTTP/1.1 302 Found
                     current Federation Entity Key in its possession.
                   </t>
               <t>
-                The following Entity Statement claims are used in
-                Explicit Registration responses:
+		The following Entity Statement claims
+		are used in Explicit Registration responses,
+		as specified in <xref target="entity-statement"/>:
               </t>
               <t>
                 <list style="hanging">
                   <t hangText="iss">
                     <vspace/>
                     REQUIRED.
-                    Its value MUST be the Entity Identifier of the OP. See
-                    <xref target="entity-statement"/> for the full
+                    Its value MUST be the Entity Identifier of the OP.
                     specification.
                   </t>
                   <t hangText="sub">
                     <vspace/>
                     REQUIRED.
-                    Its value MUST be the Entity Identifier of the RP. See
-                    <xref target="entity-statement"/> for the full
-                    specification.
+                    Its value MUST be the Entity Identifier of the RP.
                   </t>
                   <t hangText="iat">
                     <vspace/>
                     REQUIRED.
-                    See <xref target="entity-statement"/> for the full
-                    specification.
+		    Time when this statement was issued.
                   </t>
                   <t hangText="exp">
                     <vspace/>
                     REQUIRED.
-                    See <xref target="entity-statement"/> for the full
-                    specification.
+		    Expiration time after which the statement MUST NOT be
+		    accepted for processing.
                   </t>
                   <t hangText="jwks">
                     <vspace/>
@@ -6617,7 +6614,6 @@ HTTP/1.1 302 Found
 		    If present, it MUST be a verbatim copy of the
 		    <spanx style="verb">jwks</spanx> Entity Statement claim
                     from the received Entity Configuration of the RP.
-		    This claim is defined at <xref target="entity-statement"/>.
 		    Note that this is distinct from the identically named RP metadata parameter.
                   </t>
                   <t hangText="aud">
@@ -6625,7 +6621,6 @@ HTTP/1.1 302 Found
                     REQUIRED.
                     Its value MUST be the RP's Entity Identifier
 		    and MUST NOT include any other values.
-		    See <xref target="RFC7519"/> for the full specification.
 		    This claim is used in Explicit Registration responses
 		    but is not a general Entity Statement claim.
                   </t>
@@ -6641,10 +6636,8 @@ HTTP/1.1 302 Found
                     <vspace/>
                     REQUIRED.
                     It MUST be a single-element array, whose value references
-                    the Immediate Superior of the OP in the Trust Chain
-                    that the OP selected to process the request. See
-                    <xref target="entity-statement"/> for the full
-                    specification.
+                    the Immediate Superior of the RP in the Trust Chain
+                    that the OP selected to process the request.
                   </t>
                   <t hangText="metadata">
                     <vspace/>
@@ -6652,14 +6645,12 @@ HTTP/1.1 302 Found
                     It MUST contain the registered RP metadata under the
                     <spanx style="verb">openid_relying_party</spanx>
 		    Entity Type Identifier.
-		    See <xref target="entity-statement"/> for the
-                    full specification.
                   </t>
                   <t hangText="crit">
                     <vspace/>
                     OPTIONAL.
-                    See <xref target="entity-statement"/> for the full
-                    specification.
+		    Set of claims that MUST be understood and processed,
+		    as specified in <xref target="entity-statement"/>.
                   </t>
                 </list>
               </t>
@@ -10060,6 +10051,12 @@ Host: op.umu.se
 	  <t>
 	    Fixed #47: Described using and not using a provided Trust Chain
 	    during Automatic Registration.
+	  </t>
+	  <t>
+	    Fixed #85: Clarified Trust Chain selection during Explicit Registration.
+	    Also corrected the <spanx style="verb">authority_hints</spanx> value
+	    in the Explicit Registration response to be the Immediate Superior
+	    of the RP in the Trust Chain selected for it by the OP.
 	  </t>
 	</list>
       </t>
