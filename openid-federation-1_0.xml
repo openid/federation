@@ -5442,9 +5442,11 @@ Content-Type: application/json
           Entity Statements about the Intermediates and Party B.
         </t>
         <t>
-          Note: Federation participants SHOULD NOT attempt to fetch
+          Federation participants MUST NOT attempt to fetch
           Entity Statements they already have obtained during this
           process to prevent loops.
+	  An <spanx style="verb">invalid_trust_chain</spanx> error
+	  SHOULD be returned if a loop is encountered.
         </t>
         <t>
           A successful operation will return one or more lists of
@@ -7169,6 +7171,10 @@ HTTP/1.1 302 Found
 	  topologies that are trees, without multiple paths between two Entities.
 	  Topologies that are not trees are permitted,
 	  but should be used consciously and with care.
+	</t>
+	<t>
+	  Also, as described in <xref target="fetching-es"/>
+	  Federation topologies MUST NOT contain loops.
 	</t>
       </section>
 
@@ -10047,6 +10053,9 @@ Host: op.umu.se
       <t>
 	-42
 	<list style="symbols">
+	  <t>
+	    Fixed #161: Prohibit loops in Trust Chains.
+	  </t>
 	  <t>
 	    Fixed #47: Described using and not using a provided Trust Chain
 	    during Automatic Registration.
