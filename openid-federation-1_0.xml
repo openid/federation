@@ -3247,14 +3247,15 @@
           Trust Marks.
         </t>
         <t>
-          Trust Mark JWTs MUST include the <spanx style="verb">typ</spanx> header 
-          parameter. The supported <spanx style="verb">typ</spanx> values SHOULD be 
-          defined by trust frameworks to prevent cross-JWT confusion, as outlined in 
-          Section 3.11 of <xref target="RFC8725"/>. Trust Marks without the 
-          <spanx style="verb">typ</spanx> header or with <spanx style="verb">typ</spanx> 
-          set to <spanx style="verb">JWT</spanx> MUST be rejected. All implementations 
-          MUST support the <spanx style="verb">trust-mark+jwt</spanx> type value, 
-          ensuring a common and recognized typ value for issuing Trust Marks.
+          Trust Mark JWTs MUST be explicitly typed by using the
+          <spanx style="verb">typ</spanx> header parameter to prevent
+          cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+          The <spanx style="verb">typ</spanx> header parameter value MUST be
+          <spanx style="verb">trust-mark+jwt</spanx> 
+          unless the trust framework in use defines a more specific
+          media type value for the particular kind of Trust Mark.
+	  Trust Marks without a <spanx style="verb">typ</spanx> header parameter
+	  or an unrecognized <spanx style="verb">typ</spanx> value MUST be rejected.
         </t>
 
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
@@ -6948,7 +6949,7 @@ HTTP/1.1 302 Found
 	<t>
 	  For instance, an enterprise application might use
 	  the <spanx style="verb">trust_mark_id</spanx> (identifier) claim
-	  to convey an ID value.
+	  to convey an employee ID value.
 	  Note that this is different than
 	  the <spanx style="verb">jti</spanx> (JWT ID) claim,
 	  which contains a unique identifier for the individual JWT itself.
