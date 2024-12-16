@@ -5204,14 +5204,15 @@ li > p:last-of-type:only-child {
           Note that a federation MAY allow an Entity to self-sign
           Trust Marks.<a href="#section-7-5" class="pilcrow">¶</a></p>
 <p id="section-7-6">
-          Trust Mark JWTs MUST include the <code>typ</code> header 
-          parameter. The supported <code>typ</code> values SHOULD be 
-          defined by trust frameworks to prevent cross-JWT confusion, as outlined in 
-          Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>. Trust Marks without the 
-          <code>typ</code> header or with <code>typ</code> 
-          set to <code>JWT</code> MUST be rejected. All implementations 
-          MUST support the <code>trust-mark+jwt</code> type value, 
-          ensuring a common and recognized typ value for issuing Trust Marks.<a href="#section-7-6" class="pilcrow">¶</a></p>
+          Trust Mark JWTs MUST be explicitly typed by using the
+          <code>typ</code> header parameter to prevent
+          cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.
+          The <code>typ</code> header parameter value MUST be
+          <code>trust-mark+jwt</code> 
+          unless the trust framework in use defines a more specific
+          media type value for the particular kind of Trust Mark.
+   Trust Marks without a <code>typ</code> header parameter
+   or an unrecognized <code>typ</code> value MUST be rejected.<a href="#section-7-6" class="pilcrow">¶</a></p>
 <div id="trust_mark_claims">
 <section id="section-7.1">
         <h3 id="name-trust-mark-claims">
@@ -9030,7 +9031,7 @@ HTTP/1.1 302 Found
 <p id="section-13.5-2">
    For instance, an enterprise application might use
    the <code>trust_mark_id</code> (identifier) claim
-   to convey an ID value.
+   to convey an employee ID value.
    Note that this is different than
    the <code>jti</code> (JWT ID) claim,
    which contains a unique identifier for the individual JWT itself.
