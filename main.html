@@ -7434,9 +7434,11 @@ Content-Type: application/json
           fetch endpoints, as defined in <a href="#fetch_endpoint" class="auto internal xref">Section 8.1</a>, are used to fetch
           Entity Statements about the Intermediates and Party B.<a href="#section-10.1-3" class="pilcrow">¶</a></p>
 <p id="section-10.1-4">
-          Note: Federation participants SHOULD NOT attempt to fetch
+          Federation participants MUST NOT attempt to fetch
           Entity Statements they already have obtained during this
-          process to prevent loops.<a href="#section-10.1-4" class="pilcrow">¶</a></p>
+          process to prevent loops.
+   An <code>invalid_trust_chain</code> error
+   SHOULD be returned if a loop is encountered.<a href="#section-10.1-4" class="pilcrow">¶</a></p>
 <p id="section-10.1-5">
           A successful operation will return one or more lists of
           Entity Statements. Each of the lists terminating in a self-signed
@@ -9266,6 +9268,9 @@ HTTP/1.1 302 Found
    topologies that are trees, without multiple paths between two Entities.
    Topologies that are not trees are permitted,
    but should be used consciously and with care.<a href="#section-16.1-5" class="pilcrow">¶</a></p>
+<p id="section-16.1-6">
+   Also, as described in <a href="#fetching-es" class="auto internal xref">Section 10.1</a>
+   Federation topologies MUST NOT contain loops.<a href="#section-16.1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -12482,28 +12487,32 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-C-3.1">
           <p id="appendix-C-3.1.1">
-     Fixed #47: Described using and not using a provided Trust Chain
-     during Automatic Registration.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+     Fixed #161: Prohibit loops in Trust Chains.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.2">
           <p id="appendix-C-3.2.1">
-     Fixed #85: Clarified Trust Chain selection during Explicit Registration.
-     Also corrected the <code>authority_hints</code> value
-     in the Explicit Registration response to be the Immediate Superior
-     of the RP in the Trust Chain selected for it by the OP.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
+     Fixed #47: Described using and not using a provided Trust Chain
+     during Automatic Registration.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.3">
           <p id="appendix-C-3.3.1">
-     Fixed #35: Clarified that using non-interoperable JSON, as per sections
-        4 and 8 of RFC 8259, may result in unpredictable metadata and metadata
-        policy behavior.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
+     Fixed #85: Clarified Trust Chain selection during Explicit Registration.
+     Also corrected the <code>authority_hints</code> value
+     in the Explicit Registration response to be the Immediate Superior
+     of the RP in the Trust Chain selected for it by the OP.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.4">
           <p id="appendix-C-3.4.1">
+     Fixed #35: Clarified that using non-interoperable JSON, as per sections
+        4 and 8 of RFC 8259, may result in unpredictable metadata and metadata
+        policy behavior.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.5">
+          <p id="appendix-C-3.5.1">
      Fixed #162: Trust Mark claim <code>id</code> 
      renamed to <code>trust_mark_id</code>.
      Other more specific Trust Mark JWT <code>typ</code> header parameter values
-     can be used if defined by trust frameworks in use and understood by the implementation.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
+     can be used if defined by trust frameworks in use and understood by the implementation.<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
