@@ -1752,7 +1752,7 @@ li > p:last-of-type:only-child {
                 <p id="section-toc.1-1.13.2.4.1"><a href="#section-13.4" class="auto internal xref">13.4</a>.  <a href="#name-crit-critical-claim" class="internal xref">"crit" (Critical) Claim</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.5">
-                <p id="section-toc.1-1.13.2.5.1"><a href="#section-13.5" class="auto internal xref">13.5</a>.  <a href="#name-id-identifier-claim" class="internal xref">"id" (Identifier) Claim</a></p>
+                <p id="section-toc.1-1.13.2.5.1"><a href="#section-13.5" class="auto internal xref">13.5</a>.  <a href="#name-trust_mark_id-identifier-cl" class="internal xref">"trust_mark_id" (Identifier) Claim</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.6">
                 <p id="section-toc.1-1.13.2.6.1"><a href="#section-13.6" class="auto internal xref">13.6</a>.  <a href="#name-ref-reference-claim" class="internal xref">"ref" (Reference) Claim</a></p>
@@ -5204,12 +5204,15 @@ li > p:last-of-type:only-child {
           Note that a federation MAY allow an Entity to self-sign
           Trust Marks.<a href="#section-7-5" class="pilcrow">¶</a></p>
 <p id="section-7-6">
-          Trust Mark JWTs MUST be explicitly typed by setting the
-          <code>typ</code> header parameter to
-          <code>trust-mark+jwt</code> to prevent
+          Trust Mark JWTs MUST be explicitly typed by using the
+          <code>typ</code> header parameter to prevent
           cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.
+          The <code>typ</code> header parameter value MUST be
+          <code>trust-mark+jwt</code> 
+          unless the trust framework in use defines a more specific
+          media type value for the particular kind of Trust Mark.
    Trust Marks without a <code>typ</code> header parameter
-   or with a different <code>typ</code> value MUST be rejected.<a href="#section-7-6" class="pilcrow">¶</a></p>
+   or an unrecognized <code>typ</code> value MUST be rejected.<a href="#section-7-6" class="pilcrow">¶</a></p>
 <div id="trust_mark_claims">
 <section id="section-7.1">
         <h3 id="name-trust-mark-claims">
@@ -5228,10 +5231,10 @@ li > p:last-of-type:only-child {
                 REQUIRED. String. Entity this Trust Mark applies to.<a href="#section-7.1-2.4" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-7.1-2.5">id</dt>
+<dt id="section-7.1-2.5">trust_mark_id</dt>
           <dd style="margin-left: 1.5em" id="section-7.1-2.6">
  REQUIRED.
- The <code>id</code> (identifier) claim
+ The <code>trust_mark_id</code> (identifier) claim
  defined in <a href="#idClaim" class="auto internal xref">Section 13.5</a> is used in Trust Marks
  to provide the identifier of the Trust Mark.
                 The Trust Mark identifier
@@ -5355,7 +5358,7 @@ li > p:last-of-type:only-child {
                 REQUIRED. String. The Entity this delegation applies to.<a href="#section-7.2.1-5.4" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-7.2.1-5.5">id</dt>
+<dt id="section-7.2.1-5.5">trust_mark_id</dt>
             <dd style="margin-left: 1.5em" id="section-7.2.1-5.6">
                 REQUIRED. String. The identifier of the Trust Mark.<a href="#section-7.2.1-5.6" class="pilcrow">¶</a>
 </dd>
@@ -5487,22 +5490,22 @@ li > p:last-of-type:only-child {
   "exp": 1516298022,
   "trust_marks": [
     {
-     "id": "https://www.spid.gov.it/certification/rp",
+     "trust_mark_id": "https://www.spid.gov.it/certification/rp",
      "trust_mark":
-       "eyJraWQiOiJmdWtDdUtTS3hwWWJjN09lZUk3Ynlya3N5a0E1bDhPb2RFSXVyOH
-        JoNFlBIiwidHlwIjoidHJ1c3QtbWFyaytqd3QiLCJhbGciOiJSUzI1NiJ9.eyJ
-        pc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vc
-        nAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJpZCI6Imh0dHB
-        zOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJsb2dvX3Vya
-        SI6Imh0dHBzOi8vd3d3LmFnaWQuZ292Lml0L3RoZW1lcy9jdXN0b20vYWdpZC9
-        sb2dvLnN2ZyIsInJlZiI6Imh0dHBzOi8vZG9jcy5pdGFsaWEuaXQvZG9jcy9zc
-        GlkLWNpZS1vaWRjLWRvY3MvaXQvdmVyc2lvbmUtY29ycmVudGUvIn0.AGf5Y4M
-        oJt22rznH4i7Wqpb2EF2LzE6BFEkTzY1dCBMCK-8P_vj4Boz7335pUF45XXr2j
-        x5_waDRgDoS5vOO-wfc0NWb4Zb_T1RCwcryrzV0z3jJICePMPM_1hZnBZjTNQd
-        4EsFNvKmUo_teR2yzAZjguR2Rid30O5PO8kJtGaXDmz-rWaHbmfLhlNGJnqcp9
-        Lo1bhkU_4Cjpn2bdX7RN0JyfHVY5IJXwdxUMENxZd-VtA5QYiw7kPExT53XcJO
-        89ebe_ik4D0dl-vINwYhrIz2RPnqgA1OdbK7jg0vm8Tb3aemRLG7oLntHwqLO-
-        gGYr6evM2_SgqwA0lQ9mB9yhw"
+       "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia29
+        zR20yd3VaaDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.eyJpc
+        3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAu
+        ZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYXJrX2l
+        kIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdGlvbi9ycCIsIm
+        xvZ29fdXJpIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3Rvb
+        S9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9k
+        b2NzL3NwaWQtY2llLW9pZGMtZG9jcy9pdC92ZXJzaW9uZS1jb3JyZW50ZS8ifQ.
+        L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJW
+        QBdZpjxnHBBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzS
+        an5nOmkxuAtMinU8k_-aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0Y
+        AvbMlq2pPWO5OWKdZhiFRMSprwh0GYluQkK0j1aLNMGXD3keMJd2zEoWX9D7w2f
+        XShAA48W3cNhuXyBVnCoum1K4IWK3s_fx4nIkp6W-V4jCBOpxp7Yo8LZ30o_xpE
+        OzGTIECGWVR86azOAlwVC8XSiAA"
     }
   ],
   "metadata": {
@@ -5529,7 +5532,7 @@ li > p:last-of-type:only-child {
           <div class="alignLeft art-text artwork" id="section-7.4-4.1">
 <pre>
 {
-  "id":"https://mushrooms.federation.example.com/openid_relying_party/public/",
+  "trust_mark_id":"https://mushrooms.federation.example.com/openid_relying_party/public/",
   "iss": "https://epigeo.tm-issuer.example.it",
   "sub": "https://porcino.example.com/rp",
   "iat": 1579621160,
@@ -5553,7 +5556,7 @@ li > p:last-of-type:only-child {
           <div class="alignLeft art-text artwork" id="section-7.4-6.1">
 <pre>
 {
-  "id":"https://mushrooms.federation.example.com/openid_relying_party/private/under-age",
+  "trust_mark_id":"https://mushrooms.federation.example.com/openid_relying_party/private/under-age",
   "iss": "https://trustissuer.pinarolo.example.it",
   "sub": "https://vavuso.example.com/rp",
   "iat": 1579621160,
@@ -5574,7 +5577,7 @@ li > p:last-of-type:only-child {
           <div class="alignLeft art-text artwork" id="section-7.4-8.1">
 <pre>
 {
-  "id": "https://mushrooms.federation.example.com/arrosto/agreements",
+  "trust_mark_id": "https://mushrooms.federation.example.com/arrosto/agreements",
   "iss": "https://agaricaceae.example.it",
   "sub": "https://coppolino.example.com",
   "iat": 1579621160,
@@ -5600,7 +5603,7 @@ li > p:last-of-type:only-child {
           <div class="alignLeft art-text artwork" id="section-7.4-10.1">
 <pre>
 {
-  "id": "https://mushrooms.federation.example.com/ottimo/commestibile",
+  "trust_mark_id": "https://mushrooms.federation.example.com/ottimo/commestibile",
   "iss": "https://cantharellus.cibarius.example.org",
   "sub": "https://gallinaccio.example.com/op",
   "iat": 1579621160,
@@ -5617,7 +5620,7 @@ li > p:last-of-type:only-child {
           <div class="alignLeft art-text artwork" id="section-7.4-12.1">
 <pre>
 {
-  "id": "https://mushrooms.federation.example.com/trust-marks/self-signed",
+  "trust_mark_id": "https://mushrooms.federation.example.com/trust-marks/self-signed",
   "iss": "https://amanita.muscaria.example.com",
   "sub": "https://amanita.muscaria.example.com",
   "iat": 1579621160,
@@ -5639,7 +5642,7 @@ li > p:last-of-type:only-child {
   "sub": "https://umu.se/op",
   "iat": 1577833200,
   "exp": 1609369200,
-  "id": "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf"
+  "trust_mark_id": "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf"
 }
 </pre>
 </div>
@@ -5667,20 +5670,20 @@ li > p:last-of-type:only-child {
 <pre>
 {
   "delegation":
-    "eyJ0eXAiOiJ0cnVzdC1tYXJrLWRlbGVnYXRpb24rand0IiwiYWxnIjoiUlMyNTYiL
-     CJraWQiOiJUak5aZUVkcWREUlBTWHBvVWxoTE9VWmpjWE5KYjJ4amNpMDJWR3hDTV
-     dSa1ZVVXhNR2hqTmpkME1BIn0.
-     eyJzdWIiOiAiaHR0cHM
-     6Ly90bWkuZXhhbXBsZS5vcmciLCAiaWQiOiAiaHR0cHM6Ly9yZWZlZHMub3JnL3Np
-     cnRmaSIsICJpc3MiOiAiaHR0cHM6Ly90bV9vd25lci5leGFtcGxlLm9yZyIsICJpY
-     XQiOiAxNzI1MTc2MzAyfQ.MTPri3aSN4vxUL_yzZ16He2UsNAWE6u9u59oRl-u8kq
-     JFY95UZZxsZrCeSjLDJAclQmDfe2xHdV-UGI-zOu3wkeCW-AuIH6f8J-e_4pSHLzT
-     caZd8PvCbab2bZuQes5FYQ6xhpAQWPkry0TtHic5iN-0CZ5a1s1r3YCbj72_kicMz
-     F7WlLkMVgXDIA5TwQNuAwWavhh2c1faVYEV56uG-n_-bekIb3br6uuPtlMpRVUkoi
-     eKpwDcGxyJct-g0H436gvIm7lyKfvi0SmKxKK0AbL48-yRi1LSOXLx_60alAGHzQ-
-     XlnuREVu8VWgIPHelsyPHJPc6hQDuchyu52Nupg",
+    "eyJ0eXAiOiJ0cnVzdC1tYXJrLWRlbGVnYXRpb24rand0IiwiYWxnIjoiUl
+    MyNTYiLCJraWQiOiJrb3NHbTJ3dVpoOURHbU54QXRrdU80MHBQanBMMy1qQ
+    2YxTi1xUE8tWWVVIn0.eyJzdWIiOiJodHRwczovL3RtaS5leGFtcGxlLm9y
+    ZyIsInRydXN0X21hcmtfaWQiOiJodHRwczovL3JlZmVkcy5vcmcvc2lydGZ
+    pIiwiaXNzIjoiaHR0cHM6Ly90bV9vd25lci5leGFtcGxlLm9yZyIsImlhdC
+    I6MTcyNTE3NjMwMn0.ao0rWGpVjEgpNyFxsKawps8q71eYnp78TzRdY4P52
+    CT8QX6etXt-2L2Z1Vw5A6jx2mhjpPwWi_sOxfiOSA5TugJfN0Gbwj7teTzM
+    0IMciuasCWgnLrKyLZjS147ZE50I9e9P8Ot8UQwhmXcLiuwsbDxSdqM4pVp
+    75lfWnmzPH0L2pDZG5COFgIgSOAlK3TVMBOR8fziF-VmWNPzAfB0lSc-hjH
+    -7q66GyT43o3Exnm6DsoLxyB8bxG99BQltLxURDT90CzM6szGcF3OG64Rbe
+    0I4lT_LAOfvhlrRbT56eK4sJNCsbVbGnDBfFmyfB_HIeBMGP0L7T5JPMOUU
+    9bjIlA",
   "iat": 1725176302,
-  "id": "https://refeds.org/sirtfi",
+  "trust_mark_id": "https://refeds.org/sirtfi",
   "sub": "https://entity.example.org",
   "exp": 1727768302,
   "iss": "https://tmi.example.org"
@@ -5714,7 +5717,7 @@ li > p:last-of-type:only-child {
 <pre>
 {
   "sub": "https://tmi.example.org",
-  "id": "https://refeds.org/sirtfi",
+  "trust_mark_id": "https://refeds.org/sirtfi",
   "iss": "https://tm_owner.example.org",
   "iat": 1725176302
 }
@@ -6337,17 +6340,18 @@ Host: openid.sunet.se
     }
   },
   "trust_marks": [
-    {"id": "https://www.spid.gov.it/certification/op/",
+    {"trust_mark_id": "https://www.spid.gov.it/certification/op/",
      "trust_mark":
        "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiOH
         hzdUtXaVZmd1NnSG9mMVRlNE9VZGN5NHE3ZEpyS2ZGUmxPNXhoSElhMCJ9.
-        eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkL
-        mdvdi5pdCIsInN1YiI6Imh0dHBzOi8vb3AuZXhhbXBsZS5pdC9zcGlkLyIsIml
-        hdCI6MTU3OTYyMTE2MCwiaWQiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZ
-        XJ0aWZpY2F0aW9uL29wLyIsImxvZ29fdXJpIjoiaHR0cHM6Ly93d3cuYWdpZC5
-        nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0c
-        HM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWN
-        uaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9"
+        eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi
+        8vb3AuZXhhbXBsZS5pdC9zcGlkLyIsImlhdCI6MTU3OTYyMTE2MCwidHJ1c3Rf
+        bWFya19pZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb2
+        4vb3AvIiwibG9nb191cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdC90aGVt
+        ZXMvY3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYiOiJodHRwczovL2RvY3MuaX
+        RhbGlhLml0L2l0YWxpYS9zcGlkL3NwaWQtcmVnb2xlLXRlY25pY2hlLW9pZGMv
+        aXQvc3RhYmlsZS9pbmRleC5odG1sIn0.
+        xyz-PDQ_..."
     }
   ],
   "trust_chain" : [
@@ -6645,7 +6649,7 @@ Content-Type: application/json
 <span id="name-trust-mark-request-2"></span><figure id="figure-39">
             <div class="alignLeft art-text artwork" id="section-8.6.1-5.1">
 <pre>
-GET /trust_mark?trust_mark_id=https%3A%2F%2Ftuber.cert.example.org%2Fnero%2Fpregiato%2Fnorcia&amp;sub=https%3A%2F%2Ftartufo.example.it HTTP/1.1
+GET /trust_mark?trust_mark_id=https%3A%2F%2Fwww.spid.gov.it%2Fcertification%2Frp&amp;sub=https%3A%2F%2Frp.example.it%2Fspid HTTP/1.1
 Host: tuber.cert.example.org
 </pre>
 </div>
@@ -6679,17 +6683,19 @@ Host: tuber.cert.example.org
 200 OK
 Content-Type: application/trust-mark+jwt
 
-eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoibVVFdHRpblI1
-M2ktb0FzUmg3aXpuVjVHWGVoWHdDNnVpNFJwbVB5S3lkOCJ9.
-eyJpc3MiOiJodHRwczovL3R1YmVyLmNlcnQuZXhhbXBsZS5vcmciL
-CJzdWIiOiJodHRwczovL3RhcnR1Zm8uZXhhbXBsZS5pdCIsImlhdCI6MTU3OTYyMTE2MCwiZ
-XhwIjoxNTc5NzIxMTYwLCJpZCI6Imh0dHBzOi8vdHViZXIuY2VydC5leGFtcGxlLm9yZy9uZ
-XJvL3ByZWdpYXRvL25vcmNpYSJ9.HwzNAJVPDYC9AM-ILWfgmT5YDz-pjtklQhtEQbqhC7P0
-nv88W8Wx74oE5IR5WgJP9Q3xPD-UO7o6O_Z0PMR186TzcBnaXtogn6-QxHRomCPwytviVGyk
-XE1MkOnf9wTYWb5q13A53w8y0vUTlwZhBHt9qYNp3t4XwjR8eEZTptHeI_NHkaOsknT3cI16
-FbxqXVdTudQCfPJEYKGGL1QDg2EdVGFgjq4V-2UTKlBQvnorNUmfNOxgRT0DR37ZezluvGJ5
-NjK15h2rrJRN4e_8favIJNTNO8fhK7bjyUFJlVGYmLUpfCuJmxBv-EMhiAkeoDtk71Tc6ou6
-2rxqFCU3LQ
+eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia29zR20yd3Va
+aDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.eyJpc3MiOiJodHRwczovL3d
+3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF
+0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYXJrX2lkIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQ
+vY2VydGlmaWNhdGlvbi9ycCIsImxvZ29fdXJpIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQ
+vdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWx
+pYS5pdC9kb2NzL3NwaWQtY2llLW9pZGMtZG9jcy9pdC92ZXJzaW9uZS1jb3JyZW50ZS8ifQ.
+L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJWQBdZpjxnH
+BBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzSan5nOmkxuAtMinU8k_
+-aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0YAvbMlq2pPWO5OWKdZhiFRMSprwh
+0GYluQkK0j1aLNMGXD3keMJd2zEoWX9D7w2fXShAA48W3cNhuXyBVnCoum1K4IWK3s_fx4nI
+kp6W-V4jCBOpxp7Yo8LZ30o_xpEOzGTIECGWVR86azOAlwVC8XSiAA
+
 </pre>
 </div>
 <figcaption><a href="#figure-40" class="selfRef">Figure 40</a>:
@@ -9012,8 +9018,8 @@ HTTP/1.1 302 Found
 </div>
 <div id="idClaim">
 <section id="section-13.5">
-        <h3 id="name-id-identifier-claim">
-<a href="#section-13.5" class="section-number selfRef">13.5. </a><a href="#name-id-identifier-claim" class="section-name selfRef">"id" (Identifier) Claim</a>
+        <h3 id="name-trust_mark_id-identifier-cl">
+<a href="#section-13.5" class="section-number selfRef">13.5. </a><a href="#name-trust_mark_id-identifier-cl" class="section-name selfRef">"trust_mark_id" (Identifier) Claim</a>
         </h3>
 <p id="section-13.5-1">
    The <code>id</code> (identifier) claim
@@ -9023,7 +9029,7 @@ HTTP/1.1 302 Found
    Use of this claim is OPTIONAL.<a href="#section-13.5-1" class="pilcrow">¶</a></p>
 <p id="section-13.5-2">
    For instance, an enterprise application might use
-   the <code>id</code> (identifier) claim
+   the <code>trust_mark_id</code> (identifier) claim
    to convey an employee ID value.
    Note that this is different than
    the <code>jti</code> (JWT ID) claim,
@@ -12498,6 +12504,13 @@ Host: op.umu.se
      Also corrected the <code>authority_hints</code> value
      in the Explicit Registration response to be the Immediate Superior
      of the RP in the Trust Chain selected for it by the OP.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.3">
+          <p id="appendix-C-3.3.1">
+     Fixed #162: Trust Mark claim <code>id</code> 
+      renamed to <code>trust_mark_id</code>.
+      Other more specific Trust Mark JWT <code>typ</code> header parameter values
+      can be used if defined by trust frameworks in use and understood by the implementation.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
