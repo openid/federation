@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="10" month="December" year="2024"/>
+    <date day="18" month="December" year="2024"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -659,10 +659,10 @@
               contained in the Trust Mark JWT.
 
               <list style="hanging">
-                <t hangText="id">
+                <t hangText="trust_mark_id">
                   The Trust Mark identifier.
                   It MUST be the same value as the
-                  <spanx style="verb">id</spanx>
+                  <spanx style="verb">trust_mark_id</spanx>
                   claim contained in the
                   Trust Mark JWT.
                 </t>
@@ -3276,7 +3276,7 @@
                 <vspace/>
 		REQUIRED.
 		The <spanx style="verb">trust_mark_id</spanx> (identifier) claim
-		defined in <xref target="idClaim"/> is used in Trust Marks
+		defined in <xref target="trust_mark_claims"/> is used in Trust Marks
 		to provide the identifier of the Trust Mark.
                 The Trust Mark identifier
                 MUST be collision-resistant
@@ -3728,7 +3728,7 @@
 {
   "typ": "trust-mark-delegation+jwt",
   "alg": "RS256",
-  "kid": "TjNZeEdqdDRPSXpoUlhLOUZjcXNJb2xjci02VGxCMWRkVUUxMGhjNjd0MA"
+  "kid": "kosGm2wuZh9DGmNxAtkuO40pPjpL3-jCf1N-qPO-YeU"
 }
             ]]></artwork>
           </figure>
@@ -6937,26 +6937,6 @@ HTTP/1.1 302 Found
 	</t>
       </section>
 
-      <section anchor="idClaim" title='"trust_mark_id" (Identifier) Claim'>
-	<t>
-	  The <spanx style="verb">id</spanx> (identifier) claim
-	  is used for conveying an identifier that is a property of the JWT.
-	  The <spanx style="verb">id</spanx> value is a case-sensitive string
-	  containing a StringOrURI value.
-	  Use of this claim is OPTIONAL.
-	</t>
-	<t>
-	  For instance, an enterprise application might use
-	  the <spanx style="verb">trust_mark_id</spanx> (identifier) claim
-	  to convey an employee ID value.
-	  Note that this is different than
-	  the <spanx style="verb">jti</spanx> (JWT ID) claim,
-	  which contains a unique identifier for the individual JWT itself.
-	  This claim is used in this specification in <xref target="trust_mark_claims"/>
-	  to provide the identifier of the Trust Mark.
-	</t>
-      </section>
-
       <section anchor="refClaim" title='"ref" (Reference) Claim'>
 	<t>
 	  The <spanx style="verb">ref</spanx> (reference) claim
@@ -8275,22 +8255,6 @@ HTTP/1.1 302 Found
 	  <t>
 	    <list style="symbols">
 	      <t>
-		Claim Name: <spanx style="verb">id</spanx>
-	      </t>
-	      <t>
-		Claim Description: Identifier
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="idClaim"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
 		Claim Name: <spanx style="verb">ref</spanx>
 	      </t>
 	      <t>
@@ -8477,6 +8441,22 @@ HTTP/1.1 302 Found
 	      </t>
 	      <t>
 		Specification Document(s): <xref target="common_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_mark_id</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Mark Identifier
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="trust_mark_claims"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -10065,9 +10045,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #162: Trust Mark claim <spanx style="verb">id</spanx> 
-      renamed to <spanx style="verb">trust_mark_id</spanx>.
-      Other more specific Trust Mark JWT <spanx style="verb">typ</spanx> header parameter values
-      can be used if defined by trust frameworks in use and understood by the implementation.
+	    renamed to <spanx style="verb">trust_mark_id</spanx>.
+	    Other more specific Trust Mark JWT <spanx style="verb">typ</spanx> header parameter values
+	    can be used if defined by trust frameworks in use and understood by the implementation.
 	  </t>
 	</list>
       </t>
