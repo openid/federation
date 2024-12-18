@@ -2045,8 +2045,7 @@
                 Metadata parameters and policies that conform to the JSON 
                 grammar but do not represent interoperable uses of JSON,
                 as per Sections 4 and 8 of <xref target="RFC8259"/>, 
-                may cause unpredictable
-                behavior.
+                can cause unpredictable behavior.
               </t>
 
             </list>
@@ -4163,6 +4162,11 @@ Content-Type: application/json
                 REQUIRED. The Trust Anchor that the resolve endpoint
                 MUST use when resolving the metadata.
 		The value is an Entity identifier.
+		<vspace blankLine="1"/>
+		The <spanx style="verb">trust_anchor</spanx> request parameter
+		MAY occur multiple times, in which case,
+		the resolver MAY return a successful resolve response
+		using any of the Trust Anchor values provided.
               </t>
               <t hangText="entity_type">
                 <vspace/>
@@ -4223,7 +4227,7 @@ Host: openid.sunet.se
 	    with its value being the Key ID of the signing key used.
 	  </t>
           <t>
-            The resolve response JWT MAY return the Trust Chain
+            The resolve response JWT MUST return the Trust Chain
 	    from the subject to the Trust Anchor
 	    in its <spanx style="verb">trust_chain</spanx> parameter,
             sorted as shown in <xref target="trust_chain"/>.
@@ -4292,6 +4296,13 @@ Host: openid.sunet.se
                 and expressed in the <spanx style="verb">metadata</spanx> format
                 defined in <xref target="entity-statement"/>.
               </t>
+              <t hangText="trust_chain">
+                <vspace/>
+                REQUIRED. Array containing the sequence of Entity Statements
+                that compose the Trust Chain, starting with the subject and
+                ending with the selected Trust Anchor,
+                sorted as shown in <xref target="trust_chain"/>.
+              </t>
               <t hangText="trust_marks">
                 <vspace/>
                 OPTIONAL. Array of objects, each representing a Trust Mark,
@@ -4299,14 +4310,6 @@ Host: openid.sunet.se
 		Only valid Trust Marks that have been issued by Trust Mark
                 issuers trusted by the Trust Anchor to issue such Trust Marks
 		MAY appear in the resolver response.
-              </t>
-              <t hangText="trust_chain">
-                <vspace/>
-                OPTIONAL. Array containing the sequence of Entity Statements
-                that compose
-                the Trust Chain, starting with the subject and
-                ending with the selected Trust Anchor,
-                sorted as shown in <xref target="trust_chain"/>.
               </t>
             </list>
           </t>
@@ -10048,6 +10051,12 @@ Host: op.umu.se
 	-42
 	<list style="symbols">
 	  <t>
+	    Fixed #130: Allow multiple Trust Anchor values to be passed in resolve requests.
+	  </t>
+	  <t>
+	    Require <spanx style="verb">trust_chain</spanx> claim in resolve response.
+	  </t>
+	  <t>
 	    Fixed #161: Prohibit loops in Trust Chains.
 	  </t>
 	  <t>
@@ -10061,9 +10070,9 @@ Host: op.umu.se
 	    of the RP in the Trust Chain selected for it by the OP.
 	  </t>
 	  <t>
-	    Fixed #35: Clarified that using non-interoperable JSON, as per sections
-        4 and 8 of RFC 8259, may result in unpredictable metadata and metadata
-        policy behavior.
+	    Fixed #35: Clarified that using non-interoperable JSON, as per Sections
+	    4 and 8 of RFC 8259, can result in unpredictable metadata and metadata
+	    policy behavior.
 	  </t>
 	  <t>
 	    Fixed #162: Trust Mark claim <spanx style="verb">id</spanx> 
