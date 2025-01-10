@@ -53,7 +53,7 @@
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
-    Jinja2 3.1.4
+    Jinja2 3.1.5
     lxml 5.3.0
     platformdirs 4.3.6
     pycountry 24.6.1
@@ -1260,7 +1260,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-12-04" class="published">4 December 2024</time>
+<time datetime="2024-12-18" class="published">18 December 2024</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -1752,16 +1752,13 @@ li > p:last-of-type:only-child {
                 <p id="section-toc.1-1.13.2.4.1"><a href="#section-13.4" class="auto internal xref">13.4</a>.  <a href="#name-crit-critical-claim" class="internal xref">"crit" (Critical) Claim</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.5">
-                <p id="section-toc.1-1.13.2.5.1"><a href="#section-13.5" class="auto internal xref">13.5</a>.  <a href="#name-id-identifier-claim" class="internal xref">"id" (Identifier) Claim</a></p>
+                <p id="section-toc.1-1.13.2.5.1"><a href="#section-13.5" class="auto internal xref">13.5</a>.  <a href="#name-ref-reference-claim" class="internal xref">"ref" (Reference) Claim</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.6">
-                <p id="section-toc.1-1.13.2.6.1"><a href="#section-13.6" class="auto internal xref">13.6</a>.  <a href="#name-ref-reference-claim" class="internal xref">"ref" (Reference) Claim</a></p>
+                <p id="section-toc.1-1.13.2.6.1"><a href="#section-13.6" class="auto internal xref">13.6</a>.  <a href="#name-delegation-claim" class="internal xref">"delegation" Claim</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.7">
-                <p id="section-toc.1-1.13.2.7.1"><a href="#section-13.7" class="auto internal xref">13.7</a>.  <a href="#name-delegation-claim" class="internal xref">"delegation" Claim</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.8">
-                <p id="section-toc.1-1.13.2.8.1"><a href="#section-13.8" class="auto internal xref">13.8</a>.  <a href="#name-logo_uri-logo-uri-claim" class="internal xref">"logo_uri" (Logo URI) Claim</a></p>
+                <p id="section-toc.1-1.13.2.7.1"><a href="#section-13.7" class="auto internal xref">13.7</a>.  <a href="#name-logo_uri-logo-uri-claim" class="internal xref">"logo_uri" (Logo URI) Claim</a></p>
 </li>
             </ul>
 </li>
@@ -2542,11 +2539,11 @@ li > p:last-of-type:only-child {
               JSON object MUST have the same values as those
               contained in the Trust Mark JWT.<a href="#section-3-6.24.1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-3-6.24.2">
-            <dt id="section-3-6.24.2.1">id</dt>
+            <dt id="section-3-6.24.2.1">trust_mark_id</dt>
             <dd style="margin-left: 1.5em" id="section-3-6.24.2.2">
                   The Trust Mark identifier.
                   It MUST be the same value as the
-                  <code>id</code>
+                  <code>trust_mark_id</code>
                   claim contained in the
                   Trust Mark JWT.<a href="#section-3-6.24.2.2" class="pilcrow">¶</a>
 </dd>
@@ -3993,6 +3990,13 @@ li > p:last-of-type:only-child {
                 An operator MUST NOT output a metadata parameter with the
                 <code>null</code> value.<a href="#section-6.1.3-2.8.1" class="pilcrow">¶</a></p>
 </li>
+            <li class="normal" id="section-6.1.3-2.9">
+              <p id="section-6.1.3-2.9.1">
+                Metadata parameters and policies that conform to the JSON 
+                grammar but do not represent interoperable uses of JSON,
+                as per Sections 4 and 8 of <span>[<a href="#RFC8259" class="cite xref">RFC8259</a>]</span>, 
+                can cause unpredictable behavior.<a href="#section-6.1.3-2.9.1" class="pilcrow">¶</a></p>
+</li>
           </ul>
 <div id="standard_metadata_policy_operators">
 <section id="section-6.1.3.1">
@@ -5204,12 +5208,15 @@ li > p:last-of-type:only-child {
           Note that a federation MAY allow an Entity to self-sign
           Trust Marks.<a href="#section-7-5" class="pilcrow">¶</a></p>
 <p id="section-7-6">
-          Trust Mark JWTs MUST be explicitly typed by setting the
-          <code>typ</code> header parameter to
-          <code>trust-mark+jwt</code> to prevent
+          Trust Mark JWTs MUST be explicitly typed by using the
+          <code>typ</code> header parameter to prevent
           cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.
+          The <code>typ</code> header parameter value MUST be
+          <code>trust-mark+jwt</code> 
+          unless the trust framework in use defines a more specific
+          media type value for the particular kind of Trust Mark.
    Trust Marks without a <code>typ</code> header parameter
-   or with a different <code>typ</code> value MUST be rejected.<a href="#section-7-6" class="pilcrow">¶</a></p>
+   or an unrecognized <code>typ</code> value MUST be rejected.<a href="#section-7-6" class="pilcrow">¶</a></p>
 <div id="trust_mark_claims">
 <section id="section-7.1">
         <h3 id="name-trust-mark-claims">
@@ -5228,11 +5235,11 @@ li > p:last-of-type:only-child {
                 REQUIRED. String. Entity this Trust Mark applies to.<a href="#section-7.1-2.4" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-7.1-2.5">id</dt>
+<dt id="section-7.1-2.5">trust_mark_id</dt>
           <dd style="margin-left: 1.5em" id="section-7.1-2.6">
  REQUIRED.
- The <code>id</code> (identifier) claim
- defined in <a href="#idClaim" class="auto internal xref">Section 13.5</a> is used in Trust Marks
+ The <code>trust_mark_id</code> (identifier) claim
+ defined in <a href="#trust_mark_claims" class="auto internal xref">Section 7.1</a> is used in Trust Marks
  to provide the identifier of the Trust Mark.
                 The Trust Mark identifier
                 MUST be collision-resistant
@@ -5256,7 +5263,7 @@ li > p:last-of-type:only-child {
           <dd class="break"></dd>
 <dt id="section-7.1-2.9">logo_uri</dt>
           <dd style="margin-left: 1.5em" id="section-7.1-2.10">
-                OPTIONAL. String. URL that references a logo for the Entity.
+                OPTIONAL. String. URL that references a logo for the issued Trust Mark.
  The value of this field MUST point to a valid image file.<a href="#section-7.1-2.10" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
@@ -5271,7 +5278,7 @@ li > p:last-of-type:only-child {
           <dd style="margin-left: 1.5em" id="section-7.1-2.14">
  OPTIONAL.
  The <code>ref</code> (reference) claim
- defined in <a href="#refClaim" class="auto internal xref">Section 13.6</a> is used in Trust Marks
+ defined in <a href="#refClaim" class="auto internal xref">Section 13.5</a> is used in Trust Marks
  to provide a URL referring to human-readable information
  about the issuance of the Trust Mark.<a href="#section-7.1-2.14" class="pilcrow">¶</a>
 </dd>
@@ -5280,7 +5287,7 @@ li > p:last-of-type:only-child {
           <dd style="margin-left: 1.5em" id="section-7.1-2.16">
  OPTIONAL.
  The <code>delegation</code> claim
- defined in <a href="#delegationClaim" class="auto internal xref">Section 13.7</a> is used in Trust Marks
+ defined in <a href="#delegationClaim" class="auto internal xref">Section 13.6</a> is used in Trust Marks
  to delegate the right to issue Trust Marks
  with a particular identifier.
  Its value is a Trust Mark delegation JWT,
@@ -5355,7 +5362,7 @@ li > p:last-of-type:only-child {
                 REQUIRED. String. The Entity this delegation applies to.<a href="#section-7.2.1-5.4" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-7.2.1-5.5">id</dt>
+<dt id="section-7.2.1-5.5">trust_mark_id</dt>
             <dd style="margin-left: 1.5em" id="section-7.2.1-5.6">
                 REQUIRED. String. The identifier of the Trust Mark.<a href="#section-7.2.1-5.6" class="pilcrow">¶</a>
 </dd>
@@ -5501,22 +5508,22 @@ li > p:last-of-type:only-child {
   "exp": 1516298022,
   "trust_marks": [
     {
-     "id": "https://www.spid.gov.it/certification/rp",
+     "trust_mark_id": "https://www.spid.gov.it/certification/rp",
      "trust_mark":
-       "eyJraWQiOiJmdWtDdUtTS3hwWWJjN09lZUk3Ynlya3N5a0E1bDhPb2RFSXVyOH
-        JoNFlBIiwidHlwIjoidHJ1c3QtbWFyaytqd3QiLCJhbGciOiJSUzI1NiJ9.eyJ
-        pc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vc
-        nAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJpZCI6Imh0dHB
-        zOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJsb2dvX3Vya
-        SI6Imh0dHBzOi8vd3d3LmFnaWQuZ292Lml0L3RoZW1lcy9jdXN0b20vYWdpZC9
-        sb2dvLnN2ZyIsInJlZiI6Imh0dHBzOi8vZG9jcy5pdGFsaWEuaXQvZG9jcy9zc
-        GlkLWNpZS1vaWRjLWRvY3MvaXQvdmVyc2lvbmUtY29ycmVudGUvIn0.AGf5Y4M
-        oJt22rznH4i7Wqpb2EF2LzE6BFEkTzY1dCBMCK-8P_vj4Boz7335pUF45XXr2j
-        x5_waDRgDoS5vOO-wfc0NWb4Zb_T1RCwcryrzV0z3jJICePMPM_1hZnBZjTNQd
-        4EsFNvKmUo_teR2yzAZjguR2Rid30O5PO8kJtGaXDmz-rWaHbmfLhlNGJnqcp9
-        Lo1bhkU_4Cjpn2bdX7RN0JyfHVY5IJXwdxUMENxZd-VtA5QYiw7kPExT53XcJO
-        89ebe_ik4D0dl-vINwYhrIz2RPnqgA1OdbK7jg0vm8Tb3aemRLG7oLntHwqLO-
-        gGYr6evM2_SgqwA0lQ9mB9yhw"
+       "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia29
+        zR20yd3VaaDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.eyJpc
+        3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAu
+        ZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYXJrX2l
+        kIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdGlvbi9ycCIsIm
+        xvZ29fdXJpIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3Rvb
+        S9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9k
+        b2NzL3NwaWQtY2llLW9pZGMtZG9jcy9pdC92ZXJzaW9uZS1jb3JyZW50ZS8ifQ.
+        L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJW
+        QBdZpjxnHBBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzS
+        an5nOmkxuAtMinU8k_-aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0Y
+        AvbMlq2pPWO5OWKdZhiFRMSprwh0GYluQkK0j1aLNMGXD3keMJd2zEoWX9D7w2f
+        XShAA48W3cNhuXyBVnCoum1K4IWK3s_fx4nIkp6W-V4jCBOpxp7Yo8LZ30o_xpE
+        OzGTIECGWVR86azOAlwVC8XSiAA"
     }
   ],
   "metadata": {
@@ -5543,7 +5550,7 @@ li > p:last-of-type:only-child {
           <div class="alignLeft art-text artwork" id="section-7.4-4.1">
 <pre>
 {
-  "id":"https://mushrooms.federation.example.com/openid_relying_party/public/",
+  "trust_mark_id":"https://mushrooms.federation.example.com/openid_relying_party/public/",
   "iss": "https://epigeo.tm-issuer.example.it",
   "sub": "https://porcino.example.com/rp",
   "iat": 1579621160,
@@ -5567,7 +5574,7 @@ li > p:last-of-type:only-child {
           <div class="alignLeft art-text artwork" id="section-7.4-6.1">
 <pre>
 {
-  "id":"https://mushrooms.federation.example.com/openid_relying_party/private/under-age",
+  "trust_mark_id":"https://mushrooms.federation.example.com/openid_relying_party/private/under-age",
   "iss": "https://trustissuer.pinarolo.example.it",
   "sub": "https://vavuso.example.com/rp",
   "iat": 1579621160,
@@ -5588,7 +5595,7 @@ li > p:last-of-type:only-child {
           <div class="alignLeft art-text artwork" id="section-7.4-8.1">
 <pre>
 {
-  "id": "https://mushrooms.federation.example.com/arrosto/agreements",
+  "trust_mark_id": "https://mushrooms.federation.example.com/arrosto/agreements",
   "iss": "https://agaricaceae.example.it",
   "sub": "https://coppolino.example.com",
   "iat": 1579621160,
@@ -5614,7 +5621,7 @@ li > p:last-of-type:only-child {
           <div class="alignLeft art-text artwork" id="section-7.4-10.1">
 <pre>
 {
-  "id": "https://mushrooms.federation.example.com/ottimo/commestibile",
+  "trust_mark_id": "https://mushrooms.federation.example.com/ottimo/commestibile",
   "iss": "https://cantharellus.cibarius.example.org",
   "sub": "https://gallinaccio.example.com/op",
   "iat": 1579621160,
@@ -5631,7 +5638,7 @@ li > p:last-of-type:only-child {
           <div class="alignLeft art-text artwork" id="section-7.4-12.1">
 <pre>
 {
-  "id": "https://mushrooms.federation.example.com/trust-marks/self-signed",
+  "trust_mark_id": "https://mushrooms.federation.example.com/trust-marks/self-signed",
   "iss": "https://amanita.muscaria.example.com",
   "sub": "https://amanita.muscaria.example.com",
   "iat": 1579621160,
@@ -5653,7 +5660,7 @@ li > p:last-of-type:only-child {
   "sub": "https://umu.se/op",
   "iat": 1577833200,
   "exp": 1609369200,
-  "id": "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf"
+  "trust_mark_id": "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf"
 }
 </pre>
 </div>
@@ -5681,20 +5688,20 @@ li > p:last-of-type:only-child {
 <pre>
 {
   "delegation":
-    "eyJ0eXAiOiJ0cnVzdC1tYXJrLWRlbGVnYXRpb24rand0IiwiYWxnIjoiUlMyNTYiL
-     CJraWQiOiJUak5aZUVkcWREUlBTWHBvVWxoTE9VWmpjWE5KYjJ4amNpMDJWR3hDTV
-     dSa1ZVVXhNR2hqTmpkME1BIn0.
-     eyJzdWIiOiAiaHR0cHM
-     6Ly90bWkuZXhhbXBsZS5vcmciLCAiaWQiOiAiaHR0cHM6Ly9yZWZlZHMub3JnL3Np
-     cnRmaSIsICJpc3MiOiAiaHR0cHM6Ly90bV9vd25lci5leGFtcGxlLm9yZyIsICJpY
-     XQiOiAxNzI1MTc2MzAyfQ.MTPri3aSN4vxUL_yzZ16He2UsNAWE6u9u59oRl-u8kq
-     JFY95UZZxsZrCeSjLDJAclQmDfe2xHdV-UGI-zOu3wkeCW-AuIH6f8J-e_4pSHLzT
-     caZd8PvCbab2bZuQes5FYQ6xhpAQWPkry0TtHic5iN-0CZ5a1s1r3YCbj72_kicMz
-     F7WlLkMVgXDIA5TwQNuAwWavhh2c1faVYEV56uG-n_-bekIb3br6uuPtlMpRVUkoi
-     eKpwDcGxyJct-g0H436gvIm7lyKfvi0SmKxKK0AbL48-yRi1LSOXLx_60alAGHzQ-
-     XlnuREVu8VWgIPHelsyPHJPc6hQDuchyu52Nupg",
+    "eyJ0eXAiOiJ0cnVzdC1tYXJrLWRlbGVnYXRpb24rand0IiwiYWxnIjoiUl
+    MyNTYiLCJraWQiOiJrb3NHbTJ3dVpoOURHbU54QXRrdU80MHBQanBMMy1qQ
+    2YxTi1xUE8tWWVVIn0.eyJzdWIiOiJodHRwczovL3RtaS5leGFtcGxlLm9y
+    ZyIsInRydXN0X21hcmtfaWQiOiJodHRwczovL3JlZmVkcy5vcmcvc2lydGZ
+    pIiwiaXNzIjoiaHR0cHM6Ly90bV9vd25lci5leGFtcGxlLm9yZyIsImlhdC
+    I6MTcyNTE3NjMwMn0.ao0rWGpVjEgpNyFxsKawps8q71eYnp78TzRdY4P52
+    CT8QX6etXt-2L2Z1Vw5A6jx2mhjpPwWi_sOxfiOSA5TugJfN0Gbwj7teTzM
+    0IMciuasCWgnLrKyLZjS147ZE50I9e9P8Ot8UQwhmXcLiuwsbDxSdqM4pVp
+    75lfWnmzPH0L2pDZG5COFgIgSOAlK3TVMBOR8fziF-VmWNPzAfB0lSc-hjH
+    -7q66GyT43o3Exnm6DsoLxyB8bxG99BQltLxURDT90CzM6szGcF3OG64Rbe
+    0I4lT_LAOfvhlrRbT56eK4sJNCsbVbGnDBfFmyfB_HIeBMGP0L7T5JPMOUU
+    9bjIlA",
   "iat": 1725176302,
-  "id": "https://refeds.org/sirtfi",
+  "trust_mark_id": "https://refeds.org/sirtfi",
   "sub": "https://entity.example.org",
   "exp": 1727768302,
   "iss": "https://tmi.example.org"
@@ -5714,7 +5721,7 @@ li > p:last-of-type:only-child {
 {
   "typ": "trust-mark-delegation+jwt",
   "alg": "RS256",
-  "kid": "TjNZeEdqdDRPSXpoUlhLOUZjcXNJb2xjci02VGxCMWRkVUUxMGhjNjd0MA"
+  "kid": "kosGm2wuZh9DGmNxAtkuO40pPjpL3-jCf1N-qPO-YeU"
 }
 </pre>
 </div>
@@ -5728,7 +5735,7 @@ li > p:last-of-type:only-child {
 <pre>
 {
   "sub": "https://tmi.example.org",
-  "id": "https://refeds.org/sirtfi",
+  "trust_mark_id": "https://refeds.org/sirtfi",
   "iss": "https://tm_owner.example.org",
   "iat": 1725176302
 }
@@ -6146,9 +6153,15 @@ Content-Type: application/json
             <dd class="break"></dd>
 <dt id="section-8.3.1-2.3">trust_anchor</dt>
             <dd style="margin-left: 1.5em" id="section-8.3.1-2.4">
+              <p id="section-8.3.1-2.4.1">
                 REQUIRED. The Trust Anchor that the resolve endpoint
                 MUST use when resolving the metadata.
- The value is an Entity identifier.<a href="#section-8.3.1-2.4" class="pilcrow">¶</a>
+ The value is an Entity identifier.<a href="#section-8.3.1-2.4.1" class="pilcrow">¶</a></p>
+<p id="section-8.3.1-2.4.2">
+ The <code>trust_anchor</code> request parameter
+ MAY occur multiple times, in which case,
+ the resolver MAY return a successful resolve response
+ using any of the Trust Anchor values provided.<a href="#section-8.3.1-2.4.2" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-8.3.1-2.5">entity_type</dt>
@@ -6211,7 +6224,7 @@ Host: openid.sunet.se
      <code>kid</code> (Key ID) header parameter
      with its value being the Key ID of the signing key used.<a href="#section-8.3.2-3" class="pilcrow">¶</a></p>
 <p id="section-8.3.2-4">
-            The resolve response JWT MAY return the Trust Chain
+            The resolve response JWT MUST return the Trust Chain
      from the subject to the Trust Anchor
      in its <code>trust_chain</code> parameter,
             sorted as shown in <a href="#trust_chain" class="auto internal xref">Section 4</a>.<a href="#section-8.3.2-4" class="pilcrow">¶</a></p>
@@ -6279,22 +6292,21 @@ Host: openid.sunet.se
                 defined in <a href="#entity-statement" class="auto internal xref">Section 3</a>.<a href="#section-8.3.2-9.10" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-8.3.2-9.11">trust_marks</dt>
+<dt id="section-8.3.2-9.11">trust_chain</dt>
             <dd style="margin-left: 1.5em" id="section-8.3.2-9.12">
+                REQUIRED. Array containing the sequence of Entity Statements
+                that compose the Trust Chain, starting with the subject and
+                ending with the selected Trust Anchor,
+                sorted as shown in <a href="#trust_chain" class="auto internal xref">Section 4</a>.<a href="#section-8.3.2-9.12" class="pilcrow">¶</a>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-8.3.2-9.13">trust_marks</dt>
+            <dd style="margin-left: 1.5em" id="section-8.3.2-9.14">
                 OPTIONAL. Array of objects, each representing a Trust Mark,
                 as defined in <a href="#entity-statement" class="auto internal xref">Section 3</a>.
  Only valid Trust Marks that have been issued by Trust Mark
                 issuers trusted by the Trust Anchor to issue such Trust Marks
- MAY appear in the resolver response.<a href="#section-8.3.2-9.12" class="pilcrow">¶</a>
-</dd>
-            <dd class="break"></dd>
-<dt id="section-8.3.2-9.13">trust_chain</dt>
-            <dd style="margin-left: 1.5em" id="section-8.3.2-9.14">
-                OPTIONAL. Array containing the sequence of Entity Statements
-                that compose
-                the Trust Chain, starting with the subject and
-                ending with the selected Trust Anchor,
-                sorted as shown in <a href="#trust_chain" class="auto internal xref">Section 4</a>.<a href="#section-8.3.2-9.14" class="pilcrow">¶</a>
+ MAY appear in the resolver response.<a href="#section-8.3.2-9.14" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 </dl>
@@ -6351,17 +6363,18 @@ Host: openid.sunet.se
     }
   },
   "trust_marks": [
-    {"id": "https://www.spid.gov.it/certification/op/",
+    {"trust_mark_id": "https://www.spid.gov.it/certification/op/",
      "trust_mark":
        "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiOH
         hzdUtXaVZmd1NnSG9mMVRlNE9VZGN5NHE3ZEpyS2ZGUmxPNXhoSElhMCJ9.
-        eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkL
-        mdvdi5pdCIsInN1YiI6Imh0dHBzOi8vb3AuZXhhbXBsZS5pdC9zcGlkLyIsIml
-        hdCI6MTU3OTYyMTE2MCwiaWQiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZ
-        XJ0aWZpY2F0aW9uL29wLyIsImxvZ29fdXJpIjoiaHR0cHM6Ly93d3cuYWdpZC5
-        nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0c
-        HM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWN
-        uaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9"
+        eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi
+        8vb3AuZXhhbXBsZS5pdC9zcGlkLyIsImlhdCI6MTU3OTYyMTE2MCwidHJ1c3Rf
+        bWFya19pZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb2
+        4vb3AvIiwibG9nb191cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdC90aGVt
+        ZXMvY3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYiOiJodHRwczovL2RvY3MuaX
+        RhbGlhLml0L2l0YWxpYS9zcGlkL3NwaWQtcmVnb2xlLXRlY25pY2hlLW9pZGMv
+        aXQvc3RhYmlsZS9pbmRleC5odG1sIn0.
+        xyz-PDQ_..."
     }
   ],
   "trust_chain" : [
@@ -6659,7 +6672,7 @@ Content-Type: application/json
 <span id="name-trust-mark-request-2"></span><figure id="figure-39">
             <div class="alignLeft art-text artwork" id="section-8.6.1-5.1">
 <pre>
-GET /trust_mark?trust_mark_id=https%3A%2F%2Ftuber.cert.example.org%2Fnero%2Fpregiato%2Fnorcia&amp;sub=https%3A%2F%2Ftartufo.example.it HTTP/1.1
+GET /trust_mark?trust_mark_id=https%3A%2F%2Fwww.spid.gov.it%2Fcertification%2Frp&amp;sub=https%3A%2F%2Frp.example.it%2Fspid HTTP/1.1
 Host: tuber.cert.example.org
 </pre>
 </div>
@@ -6693,17 +6706,19 @@ Host: tuber.cert.example.org
 200 OK
 Content-Type: application/trust-mark+jwt
 
-eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoibVVFdHRpblI1
-M2ktb0FzUmg3aXpuVjVHWGVoWHdDNnVpNFJwbVB5S3lkOCJ9.
-eyJpc3MiOiJodHRwczovL3R1YmVyLmNlcnQuZXhhbXBsZS5vcmciL
-CJzdWIiOiJodHRwczovL3RhcnR1Zm8uZXhhbXBsZS5pdCIsImlhdCI6MTU3OTYyMTE2MCwiZ
-XhwIjoxNTc5NzIxMTYwLCJpZCI6Imh0dHBzOi8vdHViZXIuY2VydC5leGFtcGxlLm9yZy9uZ
-XJvL3ByZWdpYXRvL25vcmNpYSJ9.HwzNAJVPDYC9AM-ILWfgmT5YDz-pjtklQhtEQbqhC7P0
-nv88W8Wx74oE5IR5WgJP9Q3xPD-UO7o6O_Z0PMR186TzcBnaXtogn6-QxHRomCPwytviVGyk
-XE1MkOnf9wTYWb5q13A53w8y0vUTlwZhBHt9qYNp3t4XwjR8eEZTptHeI_NHkaOsknT3cI16
-FbxqXVdTudQCfPJEYKGGL1QDg2EdVGFgjq4V-2UTKlBQvnorNUmfNOxgRT0DR37ZezluvGJ5
-NjK15h2rrJRN4e_8favIJNTNO8fhK7bjyUFJlVGYmLUpfCuJmxBv-EMhiAkeoDtk71Tc6ou6
-2rxqFCU3LQ
+eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia29zR20yd3Va
+aDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.eyJpc3MiOiJodHRwczovL3d
+3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF
+0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYXJrX2lkIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQ
+vY2VydGlmaWNhdGlvbi9ycCIsImxvZ29fdXJpIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQ
+vdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWx
+pYS5pdC9kb2NzL3NwaWQtY2llLW9pZGMtZG9jcy9pdC92ZXJzaW9uZS1jb3JyZW50ZS8ifQ.
+L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJWQBdZpjxnH
+BBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzSan5nOmkxuAtMinU8k_
+-aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0YAvbMlq2pPWO5OWKdZhiFRMSprwh
+0GYluQkK0j1aLNMGXD3keMJd2zEoWX9D7w2fXShAA48W3cNhuXyBVnCoum1K4IWK3s_fx4nI
+kp6W-V4jCBOpxp7Yo8LZ30o_xpEOzGTIECGWVR86azOAlwVC8XSiAA
+
 </pre>
 </div>
 <figcaption><a href="#figure-40" class="selfRef">Figure 40</a>:
@@ -7437,9 +7452,11 @@ Content-Type: application/json
           fetch endpoints, as defined in <a href="#fetch_endpoint" class="auto internal xref">Section 8.1</a>, are used to fetch
           Entity Statements about the Intermediates and Party B.<a href="#section-10.1-3" class="pilcrow">¶</a></p>
 <p id="section-10.1-4">
-          Note: Federation participants SHOULD NOT attempt to fetch
+          Federation participants MUST NOT attempt to fetch
           Entity Statements they already have obtained during this
-          process to prevent loops.<a href="#section-10.1-4" class="pilcrow">¶</a></p>
+          process to prevent loops.
+   An <code>invalid_trust_chain</code> error
+   SHOULD be returned if a loop is encountered.<a href="#section-10.1-4" class="pilcrow">¶</a></p>
 <p id="section-10.1-5">
           A successful operation will return one or more lists of
           Entity Statements. Each of the lists terminating in a self-signed
@@ -7793,7 +7810,7 @@ Content-Type: application/json
               Since there is no registration step prior to the Authentication Request,
        asymmetric cryptography MUST be used to authenticate requests
        when using Automatic Registration.
-       asymmetric cryptography is used to authenticate requests;
+       Asymmetric cryptography is used to authenticate requests;
        therefore, the OP neither assigns a Client Secret to the RP
        nor returns it as a result of the registration process.<a href="#section-12.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
@@ -8034,24 +8051,25 @@ GET /authorize?
                 Trust Chain as a hint for which path to take from the
                 RP's Entity to the Trust Anchor.
                 The OP MAY evaluate the statements in the
-                <code>trust_chain</code>
+                provided Trust Chain
                 to make its Federation Entity Discovery procedure more efficient,
                 especially if the RP contains multiple authority hints in
-                its Entity Configuration.<a href="#section-12.1.1.1.2-2" class="pilcrow">¶</a></p>
+                its Entity Configuration.
+ If the OP already has a valid registration for the RP, it MAY
+ use the received Trust Chain to update the RP's registration.<a href="#section-12.1.1.1.2-2" class="pilcrow">¶</a></p>
 <p id="section-12.1.1.1.2-3">
-                If the OP already has a valid registration for the RP, it MAY
-                use the received Trust Chain to update the RP's registration.
-                Whenever the OP uses a Trust Chain submitted by an RP, the
-                OP MUST fully verify it, including every Entity Statement contained in it.
                 A Trust Chain may be relied upon by the OP because it has validated
                 all of its statements. This is true whether these statements
                 are retrieved from their URLs or whether they
                 are provided via the <code>trust_chain</code>
-                request parameter in the Request Object.<a href="#section-12.1.1.1.2-3" class="pilcrow">¶</a></p>
+                request parameter in the Request Object.
+ In both cases, the OP MUST fully verify the Trust Chain
+ including every Entity Statement contained in it.<a href="#section-12.1.1.1.2-3" class="pilcrow">¶</a></p>
 <p id="section-12.1.1.1.2-4">
                 If the RP does not include the
                 <code>trust_chain</code>
                 request parameter in the Request Object,
+ the OP for some reason decides not to use the provided Trust Chain,
                 or the OP does not support this feature, it then MUST
                 validate the possible Trust Chains, starting with the RP's Entity Configuration,
                 as described in <a href="#fetching-es" class="auto internal xref">Section 10.1</a>,
@@ -8507,8 +8525,8 @@ HTTP/1.1 302 Found
                     Entity Configuration of the RP. After validating at least
                     one Trust Chain, the OP MUST verify the signature of the
                     received Entity Configuration. If the OP finds more than
-                    one acceptable Trust Chain, it MUST choose one Trust Anchor
-                    from those chains as the one to proceed with.<a href="#section-12.2.2-2.3.1" class="pilcrow">¶</a></p>
+                    one acceptable Trust Chain, it MUST choose one Trust Chain
+                    from among them as the one to proceed with.<a href="#section-12.2.2-2.3.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-12.2.2-2.4">
               <p id="section-12.2.2-2.4.1">
@@ -8604,7 +8622,7 @@ HTTP/1.1 302 Found
                     claim of the Entity Statement to the Trust Anchor it
                     selected to process the request. The
                     <code>authority_hints</code> claim MUST be
-                    set to the OP's Immediate Superior in the
+                    set to the RP's Immediate Superior in the
                     selected Trust Chain.<a href="#section-12.2.3-2" class="pilcrow">¶</a></p>
 <p id="section-12.2.3-3">
                     The OP MUST set the <code>exp</code> claim
@@ -8633,37 +8651,33 @@ HTTP/1.1 302 Found
                     The OP MUST sign the registration Entity Statement with a
                     current Federation Entity Key in its possession.<a href="#section-12.2.3-6" class="pilcrow">¶</a></p>
 <p id="section-12.2.3-7">
-                The following Entity Statement claims are used in
-                Explicit Registration responses:<a href="#section-12.2.3-7" class="pilcrow">¶</a></p>
+ The following Entity Statement claims
+ are used in Explicit Registration responses,
+ as specified in <a href="#entity-statement" class="auto internal xref">Section 3</a>:<a href="#section-12.2.3-7" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-12.2.3-8">
             <dt id="section-12.2.3-8.1">iss</dt>
             <dd style="margin-left: 1.5em" id="section-12.2.3-8.2">
                     REQUIRED.
-                    Its value MUST be the Entity Identifier of the OP. See
-                    <a href="#entity-statement" class="auto internal xref">Section 3</a> for the full
-                    specification.<a href="#section-12.2.3-8.2" class="pilcrow">¶</a>
+                    Its value MUST be the Entity Identifier of the OP.<a href="#section-12.2.3-8.2" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-12.2.3-8.3">sub</dt>
             <dd style="margin-left: 1.5em" id="section-12.2.3-8.4">
                     REQUIRED.
-                    Its value MUST be the Entity Identifier of the RP. See
-                    <a href="#entity-statement" class="auto internal xref">Section 3</a> for the full
-                    specification.<a href="#section-12.2.3-8.4" class="pilcrow">¶</a>
+                    Its value MUST be the Entity Identifier of the RP.<a href="#section-12.2.3-8.4" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-12.2.3-8.5">iat</dt>
             <dd style="margin-left: 1.5em" id="section-12.2.3-8.6">
                     REQUIRED.
-                    See <a href="#entity-statement" class="auto internal xref">Section 3</a> for the full
-                    specification.<a href="#section-12.2.3-8.6" class="pilcrow">¶</a>
+     Time when this statement was issued.<a href="#section-12.2.3-8.6" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-12.2.3-8.7">exp</dt>
             <dd style="margin-left: 1.5em" id="section-12.2.3-8.8">
                     REQUIRED.
-                    See <a href="#entity-statement" class="auto internal xref">Section 3</a> for the full
-                    specification.<a href="#section-12.2.3-8.8" class="pilcrow">¶</a>
+     Expiration time after which the statement MUST NOT be
+     accepted for processing.<a href="#section-12.2.3-8.8" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-12.2.3-8.9">jwks</dt>
@@ -8672,7 +8686,6 @@ HTTP/1.1 302 Found
      If present, it MUST be a verbatim copy of the
      <code>jwks</code> Entity Statement claim
                     from the received Entity Configuration of the RP.
-     This claim is defined at <a href="#entity-statement" class="auto internal xref">Section 3</a>.
      Note that this is distinct from the identically named RP metadata parameter.<a href="#section-12.2.3-8.10" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
@@ -8681,7 +8694,6 @@ HTTP/1.1 302 Found
                     REQUIRED.
                     Its value MUST be the RP's Entity Identifier
      and MUST NOT include any other values.
-     See <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span> for the full specification.
      This claim is used in Explicit Registration responses
      but is not a general Entity Statement claim.<a href="#section-12.2.3-8.12" class="pilcrow">¶</a>
 </dd>
@@ -8699,10 +8711,8 @@ HTTP/1.1 302 Found
             <dd style="margin-left: 1.5em" id="section-12.2.3-8.16">
                     REQUIRED.
                     It MUST be a single-element array, whose value references
-                    the Immediate Superior of the OP in the Trust Chain
-                    that the OP selected to process the request. See
-                    <a href="#entity-statement" class="auto internal xref">Section 3</a> for the full
-                    specification.<a href="#section-12.2.3-8.16" class="pilcrow">¶</a>
+                    the Immediate Superior of the RP in the Trust Chain
+                    that the OP selected to process the request.<a href="#section-12.2.3-8.16" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-12.2.3-8.17">metadata</dt>
@@ -8710,16 +8720,14 @@ HTTP/1.1 302 Found
                     REQUIRED.
                     It MUST contain the registered RP metadata under the
                     <code>openid_relying_party</code>
-     Entity Type Identifier.
-     See <a href="#entity-statement" class="auto internal xref">Section 3</a> for the
-                    full specification.<a href="#section-12.2.3-8.18" class="pilcrow">¶</a>
+     Entity Type Identifier.<a href="#section-12.2.3-8.18" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-12.2.3-8.19">crit</dt>
             <dd style="margin-left: 1.5em" id="section-12.2.3-8.20">
                     OPTIONAL.
-                    See <a href="#entity-statement" class="auto internal xref">Section 3</a> for the full
-                    specification.<a href="#section-12.2.3-8.20" class="pilcrow">¶</a>
+     Set of claims that MUST be understood and processed,
+     as specified in <a href="#entity-statement" class="auto internal xref">Section 3</a>.<a href="#section-12.2.3-8.20" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 </dl>
@@ -9033,34 +9041,12 @@ HTTP/1.1 302 Found
    when used in Entity Statements.<a href="#section-13.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="idClaim">
+<div id="refClaim">
 <section id="section-13.5">
-        <h3 id="name-id-identifier-claim">
-<a href="#section-13.5" class="section-number selfRef">13.5. </a><a href="#name-id-identifier-claim" class="section-name selfRef">"id" (Identifier) Claim</a>
+        <h3 id="name-ref-reference-claim">
+<a href="#section-13.5" class="section-number selfRef">13.5. </a><a href="#name-ref-reference-claim" class="section-name selfRef">"ref" (Reference) Claim</a>
         </h3>
 <p id="section-13.5-1">
-   The <code>id</code> (identifier) claim
-   is used for conveying an identifier that is a property of the JWT.
-   The <code>id</code> value is a case-sensitive string
-   containing a StringOrURI value.
-   Use of this claim is OPTIONAL.<a href="#section-13.5-1" class="pilcrow">¶</a></p>
-<p id="section-13.5-2">
-   For instance, an enterprise application might use
-   the <code>id</code> (identifier) claim
-   to convey an employee ID value.
-   Note that this is different than
-   the <code>jti</code> (JWT ID) claim,
-   which contains a unique identifier for the individual JWT itself.
-   This claim is used in this specification in <a href="#trust_mark_claims" class="auto internal xref">Section 7.1</a>
-   to provide the identifier of the Trust Mark.<a href="#section-13.5-2" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="refClaim">
-<section id="section-13.6">
-        <h3 id="name-ref-reference-claim">
-<a href="#section-13.6" class="section-number selfRef">13.6. </a><a href="#name-ref-reference-claim" class="section-name selfRef">"ref" (Reference) Claim</a>
-        </h3>
-<p id="section-13.6-1">
    The <code>ref</code> (reference) claim
    is used for conveying the URI for a resource pertaining to the JWT.
    It plays a similar role in a JWT as
@@ -9069,51 +9055,51 @@ HTTP/1.1 302 Found
    is generally application specific.
    The <code>ref</code> value is a case-sensitive string
    containing a URI value.
-   Use of this claim is OPTIONAL.<a href="#section-13.6-1" class="pilcrow">¶</a></p>
-<p id="section-13.6-2">
+   Use of this claim is OPTIONAL.<a href="#section-13.5-1" class="pilcrow">¶</a></p>
+<p id="section-13.5-2">
    For instance, a JWT referring to a contract between two parties might use
    the <code>ref</code> (reference) claim
    to refer to a resource at which the contract terms can be read.
    This claim is used in this specification in <a href="#trust_mark_claims" class="auto internal xref">Section 7.1</a>
    to provide a URL referring to human-readable information
-   about the issuance of the Trust Mark.<a href="#section-13.6-2" class="pilcrow">¶</a></p>
+   about the issuance of the Trust Mark.<a href="#section-13.5-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="delegationClaim">
-<section id="section-13.7">
+<section id="section-13.6">
         <h3 id="name-delegation-claim">
-<a href="#section-13.7" class="section-number selfRef">13.7. </a><a href="#name-delegation-claim" class="section-name selfRef">"delegation" Claim</a>
+<a href="#section-13.6" class="section-number selfRef">13.6. </a><a href="#name-delegation-claim" class="section-name selfRef">"delegation" Claim</a>
         </h3>
-<p id="section-13.7-1">
+<p id="section-13.6-1">
    The <code>delegation</code> claim expresses that
    authority is being delegated to the party referenced in the claim value.
    The <code>delegation</code> value is a case-sensitive string
    containing a StringOrURI value.
-   Use of this claim is OPTIONAL.<a href="#section-13.7-1" class="pilcrow">¶</a></p>
-<p id="section-13.7-2">
+   Use of this claim is OPTIONAL.<a href="#section-13.6-1" class="pilcrow">¶</a></p>
+<p id="section-13.6-2">
    For instance, the <code>delegation</code> claim
    might be used to express that the referenced party may sign
    a legal document on behalf of the subject.
    This claim is used in this specification in <a href="#trust_mark_claims" class="auto internal xref">Section 7.1</a>
    to represent delegation of the right to issue Trust Marks
-   with a particular identifier.<a href="#section-13.7-2" class="pilcrow">¶</a></p>
+   with a particular identifier.<a href="#section-13.6-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="logo_uriClaim">
-<section id="section-13.8">
+<section id="section-13.7">
         <h3 id="name-logo_uri-logo-uri-claim">
-<a href="#section-13.8" class="section-number selfRef">13.8. </a><a href="#name-logo_uri-logo-uri-claim" class="section-name selfRef">"logo_uri" (Logo URI) Claim</a>
+<a href="#section-13.7" class="section-number selfRef">13.7. </a><a href="#name-logo_uri-logo-uri-claim" class="section-name selfRef">"logo_uri" (Logo URI) Claim</a>
         </h3>
-<p id="section-13.8-1">
+<p id="section-13.7-1">
    The <code>logo_uri</code> claim
    value is a URI that references a logo pertaining to the JWT.
-   Use of this claim is OPTIONAL.<a href="#section-13.8-1" class="pilcrow">¶</a></p>
-<p id="section-13.8-2">
+   Use of this claim is OPTIONAL.<a href="#section-13.7-1" class="pilcrow">¶</a></p>
+<p id="section-13.7-2">
    For instance, the <code>logo_uri</code> claim
    might be used to represent the location from which to retrieve
    the logo of an organization to display in a user interface.
    This claim is used in this specification in <a href="#trust_mark_claims" class="auto internal xref">Section 7.1</a>
-   to convey a URL that references a logo for the Entity.<a href="#section-13.8-2" class="pilcrow">¶</a></p>
+   to convey a URL that references a logo for the Entity.<a href="#section-13.7-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -9300,6 +9286,9 @@ HTTP/1.1 302 Found
    topologies that are trees, without multiple paths between two Entities.
    Topologies that are not trees are permitted,
    but should be used consciously and with care.<a href="#section-16.1-5" class="pilcrow">¶</a></p>
+<p id="section-16.1-6">
+   Also, as described in <a href="#fetching-es" class="auto internal xref">Section 10.1</a>
+   Federation topologies MUST NOT contain loops.<a href="#section-16.1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -10696,11 +10685,11 @@ HTTP/1.1 302 Found
 <ul class="compact">
 <li class="compact" id="section-18.7.1-5.1">
               <p id="section-18.7.1-5.1.1">
- Claim Name: <code>id</code><a href="#section-18.7.1-5.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>ref</code><a href="#section-18.7.1-5.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-5.2">
               <p id="section-18.7.1-5.2.1">
- Claim Description: Identifier<a href="#section-18.7.1-5.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Reference<a href="#section-18.7.1-5.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-5.3">
               <p id="section-18.7.1-5.3.1">
@@ -10708,17 +10697,17 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-18.7.1-5.4">
               <p id="section-18.7.1-5.4.1">
- Specification Document(s): <a href="#idClaim" class="auto internal xref">Section 13.5</a> of this specification<a href="#section-18.7.1-5.4.1" class="pilcrow">¶</a></p>
+ Specification Document(s): <a href="#refClaim" class="auto internal xref">Section 13.5</a> of this specification<a href="#section-18.7.1-5.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <ul class="compact">
 <li class="compact" id="section-18.7.1-6.1">
               <p id="section-18.7.1-6.1.1">
- Claim Name: <code>ref</code><a href="#section-18.7.1-6.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>delegation</code><a href="#section-18.7.1-6.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-6.2">
               <p id="section-18.7.1-6.2.1">
- Claim Description: Reference<a href="#section-18.7.1-6.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Delegation<a href="#section-18.7.1-6.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-6.3">
               <p id="section-18.7.1-6.3.1">
@@ -10726,17 +10715,17 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-18.7.1-6.4">
               <p id="section-18.7.1-6.4.1">
- Specification Document(s): <a href="#refClaim" class="auto internal xref">Section 13.6</a> of this specification<a href="#section-18.7.1-6.4.1" class="pilcrow">¶</a></p>
+ Specification Document(s): <a href="#delegationClaim" class="auto internal xref">Section 13.6</a> of this specification<a href="#section-18.7.1-6.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <ul class="compact">
 <li class="compact" id="section-18.7.1-7.1">
               <p id="section-18.7.1-7.1.1">
- Claim Name: <code>delegation</code><a href="#section-18.7.1-7.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>logo_uri</code><a href="#section-18.7.1-7.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-7.2">
               <p id="section-18.7.1-7.2.1">
- Claim Description: Delegation<a href="#section-18.7.1-7.2.1" class="pilcrow">¶</a></p>
+ Claim Description: URI referencing a logo<a href="#section-18.7.1-7.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-7.3">
               <p id="section-18.7.1-7.3.1">
@@ -10744,17 +10733,17 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-18.7.1-7.4">
               <p id="section-18.7.1-7.4.1">
- Specification Document(s): <a href="#delegationClaim" class="auto internal xref">Section 13.7</a> of this specification<a href="#section-18.7.1-7.4.1" class="pilcrow">¶</a></p>
+ Specification Document(s): <a href="#logo_uriClaim" class="auto internal xref">Section 13.7</a> of this specification<a href="#section-18.7.1-7.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <ul class="compact">
 <li class="compact" id="section-18.7.1-8.1">
               <p id="section-18.7.1-8.1.1">
- Claim Name: <code>logo_uri</code><a href="#section-18.7.1-8.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>authority_hints</code><a href="#section-18.7.1-8.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-8.2">
               <p id="section-18.7.1-8.2.1">
- Claim Description: URI referencing a logo<a href="#section-18.7.1-8.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Authority Hints<a href="#section-18.7.1-8.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-8.3">
               <p id="section-18.7.1-8.3.1">
@@ -10762,17 +10751,17 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-18.7.1-8.4">
               <p id="section-18.7.1-8.4.1">
- Specification Document(s): <a href="#logo_uriClaim" class="auto internal xref">Section 13.8</a> of this specification<a href="#section-18.7.1-8.4.1" class="pilcrow">¶</a></p>
+ Specification Document(s): <a href="#entity-statement" class="auto internal xref">Section 3</a> of this specification<a href="#section-18.7.1-8.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <ul class="compact">
 <li class="compact" id="section-18.7.1-9.1">
               <p id="section-18.7.1-9.1.1">
- Claim Name: <code>authority_hints</code><a href="#section-18.7.1-9.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>metadata_policy</code><a href="#section-18.7.1-9.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-9.2">
               <p id="section-18.7.1-9.2.1">
- Claim Description: Authority Hints<a href="#section-18.7.1-9.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Metadata Policy object<a href="#section-18.7.1-9.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-9.3">
               <p id="section-18.7.1-9.3.1">
@@ -10786,11 +10775,11 @@ HTTP/1.1 302 Found
 <ul class="compact">
 <li class="compact" id="section-18.7.1-10.1">
               <p id="section-18.7.1-10.1.1">
- Claim Name: <code>metadata_policy</code><a href="#section-18.7.1-10.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>metadata_policy_crit</code><a href="#section-18.7.1-10.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-10.2">
               <p id="section-18.7.1-10.2.1">
- Claim Description: Metadata Policy object<a href="#section-18.7.1-10.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Critical Metadata Policy Operators<a href="#section-18.7.1-10.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-10.3">
               <p id="section-18.7.1-10.3.1">
@@ -10804,11 +10793,11 @@ HTTP/1.1 302 Found
 <ul class="compact">
 <li class="compact" id="section-18.7.1-11.1">
               <p id="section-18.7.1-11.1.1">
- Claim Name: <code>metadata_policy_crit</code><a href="#section-18.7.1-11.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>trust_marks</code><a href="#section-18.7.1-11.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-11.2">
               <p id="section-18.7.1-11.2.1">
- Claim Description: Critical Metadata Policy Operators<a href="#section-18.7.1-11.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Trust Marks<a href="#section-18.7.1-11.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-11.3">
               <p id="section-18.7.1-11.3.1">
@@ -10822,11 +10811,11 @@ HTTP/1.1 302 Found
 <ul class="compact">
 <li class="compact" id="section-18.7.1-12.1">
               <p id="section-18.7.1-12.1.1">
- Claim Name: <code>trust_marks</code><a href="#section-18.7.1-12.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>trust_mark_issuers</code><a href="#section-18.7.1-12.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-12.2">
               <p id="section-18.7.1-12.2.1">
- Claim Description: Trust Marks<a href="#section-18.7.1-12.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Trust Mark Issuers<a href="#section-18.7.1-12.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-12.3">
               <p id="section-18.7.1-12.3.1">
@@ -10840,11 +10829,11 @@ HTTP/1.1 302 Found
 <ul class="compact">
 <li class="compact" id="section-18.7.1-13.1">
               <p id="section-18.7.1-13.1.1">
- Claim Name: <code>trust_mark_issuers</code><a href="#section-18.7.1-13.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>trust_mark_owners</code><a href="#section-18.7.1-13.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-13.2">
               <p id="section-18.7.1-13.2.1">
- Claim Description: Trust Mark Issuers<a href="#section-18.7.1-13.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Trust Mark Owners<a href="#section-18.7.1-13.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-13.3">
               <p id="section-18.7.1-13.3.1">
@@ -10858,11 +10847,11 @@ HTTP/1.1 302 Found
 <ul class="compact">
 <li class="compact" id="section-18.7.1-14.1">
               <p id="section-18.7.1-14.1.1">
- Claim Name: <code>trust_mark_owners</code><a href="#section-18.7.1-14.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>source_endpoint</code><a href="#section-18.7.1-14.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-14.2">
               <p id="section-18.7.1-14.2.1">
- Claim Description: Trust Mark Owners<a href="#section-18.7.1-14.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Source Endpoint URL<a href="#section-18.7.1-14.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-14.3">
               <p id="section-18.7.1-14.3.1">
@@ -10876,11 +10865,11 @@ HTTP/1.1 302 Found
 <ul class="compact">
 <li class="compact" id="section-18.7.1-15.1">
               <p id="section-18.7.1-15.1.1">
- Claim Name: <code>source_endpoint</code><a href="#section-18.7.1-15.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>trust_chain</code><a href="#section-18.7.1-15.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-15.2">
               <p id="section-18.7.1-15.2.1">
- Claim Description: Source Endpoint URL<a href="#section-18.7.1-15.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Trust Chain<a href="#section-18.7.1-15.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-15.3">
               <p id="section-18.7.1-15.3.1">
@@ -10888,17 +10877,17 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-18.7.1-15.4">
               <p id="section-18.7.1-15.4.1">
- Specification Document(s): <a href="#entity-statement" class="auto internal xref">Section 3</a> of this specification<a href="#section-18.7.1-15.4.1" class="pilcrow">¶</a></p>
+ Specification Document(s): <a href="#trust_chain" class="auto internal xref">Section 4</a> of this specification<a href="#section-18.7.1-15.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <ul class="compact">
 <li class="compact" id="section-18.7.1-16.1">
               <p id="section-18.7.1-16.1.1">
- Claim Name: <code>trust_chain</code><a href="#section-18.7.1-16.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>keys</code><a href="#section-18.7.1-16.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-16.2">
               <p id="section-18.7.1-16.2.1">
- Claim Description: Trust Chain<a href="#section-18.7.1-16.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Array of JWK values in a JWK Set<a href="#section-18.7.1-16.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-16.3">
               <p id="section-18.7.1-16.3.1">
@@ -10906,17 +10895,17 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-18.7.1-16.4">
               <p id="section-18.7.1-16.4.1">
- Specification Document(s): <a href="#trust_chain" class="auto internal xref">Section 4</a> of this specification<a href="#section-18.7.1-16.4.1" class="pilcrow">¶</a></p>
+ Specification Document(s): <a href="#common_metadata" class="auto internal xref">Section 5.2</a> of this specification<a href="#section-18.7.1-16.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <ul class="compact">
 <li class="compact" id="section-18.7.1-17.1">
               <p id="section-18.7.1-17.1.1">
- Claim Name: <code>keys</code><a href="#section-18.7.1-17.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>trust_mark_id</code><a href="#section-18.7.1-17.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-17.2">
               <p id="section-18.7.1-17.2.1">
- Claim Description: Array of JWK values in a JWK Set<a href="#section-18.7.1-17.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Trust Mark Identifier<a href="#section-18.7.1-17.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-18.7.1-17.3">
               <p id="section-18.7.1-17.3.1">
@@ -10924,7 +10913,7 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-18.7.1-17.4">
               <p id="section-18.7.1-17.4.1">
- Specification Document(s): <a href="#common_metadata" class="auto internal xref">Section 5.2</a> of this specification<a href="#section-18.7.1-17.4.1" class="pilcrow">¶</a></p>
+ Specification Document(s): <a href="#trust_mark_claims" class="auto internal xref">Section 7.1</a> of this specification<a href="#section-18.7.1-17.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <ul class="compact">
@@ -11185,6 +11174,10 @@ HTTP/1.1 302 Found
 <dt id="RFC8174">[RFC8174]</dt>
         <dd>
 <span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8174">https://www.rfc-editor.org/info/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8259">[RFC8259]</dt>
+        <dd>
+<span class="refAuthor">Bray, T., Ed.</span>, <span class="refTitle">"The JavaScript Object Notation (JSON) Data Interchange Format"</span>, <span class="seriesInfo">STD 90</span>, <span class="seriesInfo">RFC 8259</span>, <span class="seriesInfo">DOI 10.17487/RFC8259</span>, <time datetime="2017-12" class="refDate">December 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8259">https://www.rfc-editor.org/info/rfc8259</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8414">[RFC8414]</dt>
         <dd>
@@ -12513,6 +12506,43 @@ Host: op.umu.se
 <li class="normal" id="appendix-C-3.1">
           <p id="appendix-C-3.1.1">
      Fixed #127: Explained Trust Mark Issuer validation in more detail.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.2">
+          <p id="appendix-C-3.2.1">
+     Fixed #130: Allow multiple Trust Anchor values to be passed in resolve requests.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.3">
+          <p id="appendix-C-3.3.1">
+     Require <code>trust_chain</code> claim in resolve response.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.4">
+          <p id="appendix-C-3.4.1">
+     Fixed #161: Prohibit loops in Trust Chains.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.5">
+          <p id="appendix-C-3.5.1">
+     Fixed #47: Described using and not using a provided Trust Chain
+     during Automatic Registration.<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.6">
+          <p id="appendix-C-3.6.1">
+     Fixed #85: Clarified Trust Chain selection during Explicit Registration.
+     Also corrected the <code>authority_hints</code> value
+     in the Explicit Registration response to be the Immediate Superior
+     of the RP in the Trust Chain selected for it by the OP.<a href="#appendix-C-3.6.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.7">
+          <p id="appendix-C-3.7.1">
+     Fixed #35: Clarified that using non-interoperable JSON, as per Sections
+     4 and 8 of RFC 8259, can result in unpredictable metadata and metadata
+     policy behavior.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.8">
+          <p id="appendix-C-3.8.1">
+     Fixed #162: Trust Mark claim <code>id</code> 
+     renamed to <code>trust_mark_id</code>.
+     Other more specific Trust Mark JWT <code>typ</code> header parameter values
+     can be used if defined by trust frameworks in use and understood by the implementation.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
