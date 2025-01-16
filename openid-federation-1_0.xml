@@ -118,12 +118,10 @@
         and that it adheres to the federation's policies.
           </t>
       <t>
-        This specification defines basic components used to build
-        multilateral federations and describes how to apply them when
-        the underlying authentication protocol used is OpenID Connect or
-        the underlying authorization protocol is OAuth 2.0.
-        However, these components can also be
-        used for trust establishment with other application protocols.
+        This specification defines basic components to build multilateral
+        federations and describes how to apply them in the contexts of OpenID
+        Connect and OAuth 2.0. These components can be used by other application
+        protocols for the purpose of establishing trust.
       </t>
     </abstract>
   </front>
@@ -437,7 +435,7 @@
         OpenID Connect is used in many of the examples in this
         specification, however this does not mean that this specification can only be used
         with OpenID Connect. On the contrary, it can also be
-        used to build federations for any other protocols.
+        used to build federations for other protocols.
       </t>
 
       <section title="Cryptographic Trust Mechanism" anchor="CryptographicTrustMechanism">
@@ -1408,8 +1406,8 @@
           <list style="hanging">
             <t hangText="client_registration_types_supported">
               <vspace/>
-              REQUIRED. Array specifying the federation types supported.
-              Federation-type values defined by this specification are
+              REQUIRED. An array of strings specifying the client registration
+              types the OP supports. Values defined by this specification are
               <spanx style="verb">automatic</spanx>
               and <spanx style="verb">explicit</spanx>.
 	      Additional values MAY be defined and used, without restriction by this specification.
@@ -5740,22 +5738,15 @@ Content-Type: application/json
 
     <section title="OpenID Connect Client Registration" anchor="client_registration">
       <t>
-        This section describes how the mechanisms defined in this specification
-        are used to establish trust between an RP and an OP
-        that have no explicit configuration or registration between them in advance.
+        This section describes two client registration methods, Automatic
+        Registration and Explicit Registration, that use Trust Chains, per
+        <xref target="resolving_trust"/>, to establish trust between an RP and
+        an OP. Federations can use other appropriate methods for client
+        registration that utilise Trust Chains.
       </t>
       <t>
-        There are two alternative approaches to establish trust between an
-        RP and an OP: Automatic Registration and Explicit Registration.
-        Members of a federation or a community
-        SHOULD agree upon which one to use. While implementations should
-        support both methods, deployments MAY choose to use one or the other of them.
-      </t>
-      <t>
-        Independent of whether the RP uses Automatic or Explicit Registration,
-        the way that the RP establishes trust with the OP is the same:
-        it uses Trust Chains, as
-        described in <xref target="resolving_trust"/>.
+        Federations with OpenID Connect Entities SHOULD agree on the supported
+        client registration methods.
       </t>
       <t>
 	Note that both Automatic Registration and Explicit Registration
@@ -10050,6 +10041,9 @@ Host: op.umu.se
       <t>
 	-42
 	<list style="symbols">
+      <t>
+        Fixed #178: Clarify that other client methods (than automatic and explicit) are allowed.
+      </t>
 	  <t>
 	    Fixed #130: Allow multiple Trust Anchor values to be passed in resolve requests.
 	  </t>
