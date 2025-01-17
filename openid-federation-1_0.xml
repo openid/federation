@@ -2120,7 +2120,9 @@
                     <spanx style="verb">superset_of</spanx>.
                   </t>
                   <t>
-                    MAY be combined with <spanx style="verb">essential</spanx>.
+                    MAY be combined with <spanx style="verb">essential</spanx>,
+                    except when <spanx style="verb">value</spanx> is null and
+                    <spanx style="verb">essential</spanx> is true.
                   </t>
                 </list>
               </t>
@@ -2493,6 +2495,11 @@
               <t>
                 Combination with other operators in a metadata parameter policy:
                 <list style="symbols">
+                  <t>
+                    MAY be combined with <spanx style="verb">value</spanx>,
+                    except when <spanx style="verb">value</spanx> is null and
+                    <spanx style="verb">essential</spanx> is true.
+                  </t>
                   <t>
                     MAY be combined with any other operator.
                   </t>
@@ -10090,13 +10097,16 @@ Host: op.umu.se
 	-42
 	<list style="symbols">
       <t>
-       Addresses #11:
+       Addresses #11, #180:
 
        Allows the following unconditional operator combinations:
        add + superset_of.
 
        Makes the following previously conditional operator combinations unconditional:
        default + one_of, default + subset_of, default + superset_of.
+
+       Makes the following previously unconditional operator combination conditional:
+       value + essential.
 
        Allows the following conditional operator combinations:
        value + add, value + default, value + one_of, value + subset_of, value + superset_of.
