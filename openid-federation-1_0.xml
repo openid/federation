@@ -2325,14 +2325,13 @@
                 Name: <spanx style="verb">subset_of</spanx>
               </t>
               <t>
-                Action: If the metadata parameter is present, this operator
-                computes the intersection between the values of the operator and
-                the metadata parameter. If the intersection is non-empty, the
-                metadata parameter is set to the values in the intersection. If
-                the intersection is empty, the metadata parameter MUST be
-                removed. Note that this behavior makes
-                <spanx style="verb">subset_of</spanx> a potential value modifier
-                in addition to it being a value check.
+                Action: If the metadata parameter is present, it is assigned the
+                intersection between the values of the operator and the
+                metadata parameter. Note that the resulting intersection may
+                thus be an empty array <spanx style="verb">[]</spanx>. Also note
+                that this behavior makes <spanx style="verb">subset_of</spanx>
+                a potential value modifier in addition to it being a value
+                check.
               </t>
               <t>
                 Metadata parameter JSON values:
@@ -10110,6 +10109,13 @@ Host: op.umu.se
 
        Allows the following conditional operator combinations:
        value + add, value + default, value + one_of, value + subset_of, value + superset_of.
+      </t>
+      <t>
+      Addresses #182: When applying the subset_of operator on a metadata
+      parameter, if the resulting intersection is empty, then the metadata is
+      made empty. Previously it was removed, which may lead to policy override
+      for metadata parameters that a have default value, for instance
+      grant_types RP metadata or grant_types_supported OP metadata.
       </t>
       <t>
        Addresses #129: Clarifies that the combination rules for a metadata
