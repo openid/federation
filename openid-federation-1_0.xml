@@ -2390,8 +2390,9 @@
               <t>
                 Operator value merge: The result of merging the values of two
                 <spanx style="verb">subset_of</spanx> operators is the
-                intersection of the operator values. If the intersection is
-                empty, this MUST produce a policy error.
+                intersection of the operator values. Note that the resulting
+                intersection may thus be an empty array
+                <spanx style="verb">[]</spanx>.
               </t>
             </section>
 
@@ -10115,7 +10116,8 @@ Host: op.umu.se
       parameter, if the resulting intersection is empty, then the metadata is
       made empty. Previously it was removed, which may lead to policy override
       for metadata parameters that a have default value, for instance
-      grant_types RP metadata or grant_types_supported OP metadata.
+      grant_types RP metadata or grant_types_supported OP metadata. The merge of
+      two subset_of operators is changed to allow empty intersection as well.
       </t>
       <t>
        Addresses #129: Clarifies that the combination rules for a metadata
