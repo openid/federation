@@ -34,7 +34,7 @@
         protocols for the purpose of establishing trust.
        
     " name="description">
-<meta content="xml2rfc 3.27.0" name="generator">
+<meta content="xml2rfc 3.28.0" name="generator">
 <meta content="OpenID" name="keyword">
 <meta content="Connect" name="keyword">
 <meta content="Federation" name="keyword">
@@ -46,7 +46,7 @@
 <meta content="Trust Establishment" name="keyword">
 <meta content="openid-federation-1_0" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.27.0
+  xml2rfc 3.28.0
     Python 3.12.3
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
@@ -3960,9 +3960,14 @@ li > p:last-of-type:only-child {
 </li>
             <li class="normal" id="section-6.1.3-2.5">
               <p id="section-6.1.3-2.5.1">
-                MUST declare what other operators it may be combined within a
-                metadata parameter policy. Combinations that are not allowed
-                MUST result in a policy error.<a href="#section-6.1.3-2.5.1" class="pilcrow">¶</a></p>
+                MUST declare what other operators it may be combined with,
+                which applies to both individual as well as merged metadata
+                parameter policies, as described in
+                <a href="#metadata_policy_structure" class="auto internal xref">Section 6.1.2</a> and
+                <a href="#metadata_policy_enforcement" class="auto internal xref">Section 6.1.4</a>. A combination may
+                be unconditional, or conditional, requiring the configured
+                values of the two operators to meet certain criteria.
+                Combinations that are not allowed MUST produce a policy error.<a href="#section-6.1.3-2.5.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-6.1.3-2.6">
               <p id="section-6.1.3-2.6.1">
@@ -4035,14 +4040,49 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-6.1.3.1.1-8.1">
                   <p id="section-6.1.3.1.1-8.1.1">
-                    MAY be combined with <code>essential</code>.<a href="#section-6.1.3.1.1-8.1.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>add</code>,
+                    in which case the values of <code>add</code>
+                    MUST be a subset of the values of
+                    <code>value</code>.<a href="#section-6.1.3.1.1-8.1.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-6.1.3.1.1-8.2">
+                  <p id="section-6.1.3.1.1-8.2.1">
+                    MAY be combined with <code>default</code>
+                    if the value of <code>value</code> is not
+                    null.<a href="#section-6.1.3.1.1-8.2.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-6.1.3.1.1-8.3">
+                  <p id="section-6.1.3.1.1-8.3.1">
+                    MAY be combined with <code>one_of</code>,
+                    in which case the value of <code>value</code>
+                    MUST be among the <code>one_of</code> values.<a href="#section-6.1.3.1.1-8.3.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-6.1.3.1.1-8.4">
+                  <p id="section-6.1.3.1.1-8.4.1">
+                    MAY be combined with <code>subset_of</code>,
+                    in which case the values of <code>value</code>
+                    MUST be a subset of the values of
+                    <code>subset_of</code>.<a href="#section-6.1.3.1.1-8.4.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-6.1.3.1.1-8.5">
+                  <p id="section-6.1.3.1.1-8.5.1">
+                    MAY be combined with <code>superset_of</code>,
+                    in which case the values of <code>value</code>
+                    MUST be a superset of the values of
+                    <code>superset_of</code>.<a href="#section-6.1.3.1.1-8.5.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-6.1.3.1.1-8.6">
+                  <p id="section-6.1.3.1.1-8.6.1">
+                    MAY be combined with <code>essential</code>,
+                    except when <code>value</code> is null and
+                    <code>essential</code> is true.<a href="#section-6.1.3.1.1-8.6.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-6.1.3.1.1-9">
                 Order of application: First<a href="#section-6.1.3.1.1-9" class="pilcrow">¶</a></p>
 <p id="section-6.1.3.1.1-10">
                 Operator value merge: Allowed only when the operator values are
-                equal. If not, this MUST result in a policy error.<a href="#section-6.1.3.1.1-10" class="pilcrow">¶</a></p>
+                equal. If not, this MUST produce a policy error.<a href="#section-6.1.3.1.1-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="add_operator">
@@ -4087,25 +4127,29 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-6.1.3.1.2-8.1">
                   <p id="section-6.1.3.1.2-8.1.1">
-                    MAY be combined with <code>default</code>.<a href="#section-6.1.3.1.2-8.1.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>value</code>,
+                    in which case the values of <code>add</code>
+                    MUST be a subset of the values of
+                    <code>value</code>.<a href="#section-6.1.3.1.2-8.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-6.1.3.1.2-8.2">
                   <p id="section-6.1.3.1.2-8.2.1">
-                    MAY be combined with <code>subset_of</code>,
-                    in which case the values of <code>add</code>
-                    MUST be a subset of the values of
-                    <code>subset_of</code>.<a href="#section-6.1.3.1.2-8.2.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>default</code>.<a href="#section-6.1.3.1.2-8.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-6.1.3.1.2-8.3">
                   <p id="section-6.1.3.1.2-8.3.1">
-                    MAY be combined with <code>superset_of</code>,
+                    MAY be combined with <code>subset_of</code>,
                     in which case the values of <code>add</code>
-                    MUST be a superset of the values of
-                    <code>superset_of</code>.<a href="#section-6.1.3.1.2-8.3.1" class="pilcrow">¶</a></p>
+                    MUST be a subset of the values of
+                    <code>subset_of</code>.<a href="#section-6.1.3.1.2-8.3.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-6.1.3.1.2-8.4">
                   <p id="section-6.1.3.1.2-8.4.1">
-                    MAY be combined with <code>essential</code>.<a href="#section-6.1.3.1.2-8.4.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>superset_of</code>.<a href="#section-6.1.3.1.2-8.4.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-6.1.3.1.2-8.5">
+                  <p id="section-6.1.3.1.2-8.5.1">
+                    MAY be combined with <code>essential</code>.<a href="#section-6.1.3.1.2-8.5.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-6.1.3.1.2-9">
@@ -4148,38 +4192,36 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-6.1.3.1.3-8.1">
                   <p id="section-6.1.3.1.3-8.1.1">
-                    MAY be combined with <code>add</code>.<a href="#section-6.1.3.1.3-8.1.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>value</code>
+                    if the value  of <code>value</code> is not
+                    null.<a href="#section-6.1.3.1.3-8.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-6.1.3.1.3-8.2">
                   <p id="section-6.1.3.1.3-8.2.1">
-                    MAY be combined with <code>one_of</code>, in
-                    which case the <code>default</code> value
-                    MUST be among the <code>one_of</code> values.<a href="#section-6.1.3.1.3-8.2.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>add</code>.<a href="#section-6.1.3.1.3-8.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-6.1.3.1.3-8.3">
                   <p id="section-6.1.3.1.3-8.3.1">
-                    MAY be combined with <code>subset_of</code>,
-                    in which case the <code>default</code> values
-                    MUST be a subset of the <code>subset_of</code>
-                    values.<a href="#section-6.1.3.1.3-8.3.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>one_of</code>.<a href="#section-6.1.3.1.3-8.3.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-6.1.3.1.3-8.4">
                   <p id="section-6.1.3.1.3-8.4.1">
-                    MAY be combined with <code>superset_of</code>,
-                    in which case the <code>default</code> values
-                    MUST be a superset of the
-                    <code>superset_of</code> values.<a href="#section-6.1.3.1.3-8.4.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>subset_of</code>.<a href="#section-6.1.3.1.3-8.4.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-6.1.3.1.3-8.5">
                   <p id="section-6.1.3.1.3-8.5.1">
-                    MAY be combined with <code>essential</code>.<a href="#section-6.1.3.1.3-8.5.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>superset_of</code>.<a href="#section-6.1.3.1.3-8.5.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-6.1.3.1.3-8.6">
+                  <p id="section-6.1.3.1.3-8.6.1">
+                    MAY be combined with <code>essential</code>.<a href="#section-6.1.3.1.3-8.6.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-6.1.3.1.3-9">
                 Order of application: After <code>add</code>.<a href="#section-6.1.3.1.3-9" class="pilcrow">¶</a></p>
 <p id="section-6.1.3.1.3-10">
                 Operator value merge: The operator values MUST be equal. If the
-                values are not equal this MUST result in a policy error.<a href="#section-6.1.3.1.3-10" class="pilcrow">¶</a></p>
+                values are not equal this MUST produce a policy error.<a href="#section-6.1.3.1.3-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="one_of_operator">
@@ -4221,13 +4263,17 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-6.1.3.1.4-8.1">
                   <p id="section-6.1.3.1.4-8.1.1">
-                    MAY be combined with <code>default</code>,
-                    in which case the value of default MUST be among the
-                    <code>one_of</code> values.<a href="#section-6.1.3.1.4-8.1.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>value</code>,
+                    in which case the value of <code>value</code>
+                    MUST be among the <code>one_of</code> values.<a href="#section-6.1.3.1.4-8.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-6.1.3.1.4-8.2">
                   <p id="section-6.1.3.1.4-8.2.1">
-                    MAY be combined with <code>essential</code>.<a href="#section-6.1.3.1.4-8.2.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>default</code>.<a href="#section-6.1.3.1.4-8.2.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-6.1.3.1.4-8.3">
+                  <p id="section-6.1.3.1.4-8.3.1">
+                    MAY be combined with <code>essential</code>.<a href="#section-6.1.3.1.4-8.3.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-6.1.3.1.4-9">
@@ -4247,14 +4293,12 @@ li > p:last-of-type:only-child {
 <p id="section-6.1.3.1.5-1">
                 Name: <code>subset_of</code><a href="#section-6.1.3.1.5-1" class="pilcrow">¶</a></p>
 <p id="section-6.1.3.1.5-2">
-                Action: If the metadata parameter is present, this operator
-                computes the intersection between the values of the operator and
-                the metadata parameter. If the intersection is non-empty, the
-                metadata parameter is set to the values in the intersection. If
-                the intersection is empty, the metadata parameter MUST be
-                removed. Note that this behavior makes
-                <code>subset_of</code> a potential value modifier
-                in addition to it being a value check.<a href="#section-6.1.3.1.5-2" class="pilcrow">¶</a></p>
+                Action: If the metadata parameter is present, it is assigned the
+                intersection between the values of the operator and the
+                metadata parameter. Note that the resulting intersection may
+                thus be an empty array <code>[]</code>. Also note
+                that <code>subset_of</code> is a potential value
+                modifier in addition to it being a value check.<a href="#section-6.1.3.1.5-2" class="pilcrow">¶</a></p>
 <p id="section-6.1.3.1.5-3">
                 Metadata parameter JSON values:<a href="#section-6.1.3.1.5-3" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -4284,28 +4328,32 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-6.1.3.1.5-8.1">
                   <p id="section-6.1.3.1.5-8.1.1">
-                    MAY be combined with <code>add</code>, in
-                    which case the values of <code>add</code>
+                    MAY be combined with <code>value</code>,
+                    in which case the values of <code>value</code>
                     MUST be a subset of the values of
                     <code>subset_of</code>.<a href="#section-6.1.3.1.5-8.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-6.1.3.1.5-8.2">
                   <p id="section-6.1.3.1.5-8.2.1">
-                    MAY be combined with <code>default</code>, in
-                    which case the values of <code>default</code>
+                    MAY be combined with <code>add</code>, in
+                    which case the values of <code>add</code>
                     MUST be a subset of the values of
                     <code>subset_of</code>.<a href="#section-6.1.3.1.5-8.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-6.1.3.1.5-8.3">
                   <p id="section-6.1.3.1.5-8.3.1">
-                    MAY be combined with <code>superset_of</code>,
-                    in which case the values of
-                    <code>subset_of</code> MUST be a superset of
-                    the values of <code>superset_of</code>.<a href="#section-6.1.3.1.5-8.3.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>default</code>.<a href="#section-6.1.3.1.5-8.3.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-6.1.3.1.5-8.4">
                   <p id="section-6.1.3.1.5-8.4.1">
-                    MAY be combined with <code>essential</code>.<a href="#section-6.1.3.1.5-8.4.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>superset_of</code>,
+                    in which case the values of
+                    <code>subset_of</code> MUST be a superset of
+                    the values of <code>superset_of</code>.<a href="#section-6.1.3.1.5-8.4.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-6.1.3.1.5-8.5">
+                  <p id="section-6.1.3.1.5-8.5.1">
+                    MAY be combined with <code>essential</code>.<a href="#section-6.1.3.1.5-8.5.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-6.1.3.1.5-9">
@@ -4313,8 +4361,9 @@ li > p:last-of-type:only-child {
 <p id="section-6.1.3.1.5-10">
                 Operator value merge: The result of merging the values of two
                 <code>subset_of</code> operators is the
-                intersection of the operator values. If the intersection is
-                empty, this MUST result in a policy error.<a href="#section-6.1.3.1.5-10" class="pilcrow">¶</a></p>
+                intersection of the operator values. Note that the resulting
+                intersection may thus be an empty array
+                <code>[]</code>.<a href="#section-6.1.3.1.5-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="superset_of_operator">
@@ -4357,28 +4406,29 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-6.1.3.1.6-8.1">
                   <p id="section-6.1.3.1.6-8.1.1">
-                    MAY be combined with <code>add</code>, in
-                    which case the values of <code>add</code>
+                    MAY be combined with <code>value</code>,
+                    in which case the values of <code>value</code>
                     MUST be a superset of the values of
                     <code>superset_of</code>.<a href="#section-6.1.3.1.6-8.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-6.1.3.1.6-8.2">
                   <p id="section-6.1.3.1.6-8.2.1">
-                    MAY be combined with <code>default</code>, in
-                    which case the values of <code>default</code>
-                    MUST be a superset of the values of
-                    <code>superset_of</code>.<a href="#section-6.1.3.1.6-8.2.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>add</code>.<a href="#section-6.1.3.1.6-8.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-6.1.3.1.6-8.3">
                   <p id="section-6.1.3.1.6-8.3.1">
-                    MAY be combined with <code>subset_of</code>,
-                    in which case the values of
-                    <code>subset_of</code> MUST be a superset of
-                    the values of <code>superset_of</code>.<a href="#section-6.1.3.1.6-8.3.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>default</code>.<a href="#section-6.1.3.1.6-8.3.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-6.1.3.1.6-8.4">
                   <p id="section-6.1.3.1.6-8.4.1">
-                    MAY be combined with <code>essential</code>.<a href="#section-6.1.3.1.6-8.4.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>subset_of</code>,
+                    in which case the values of
+                    <code>subset_of</code> MUST be a superset of
+                    the values of <code>superset_of</code>.<a href="#section-6.1.3.1.6-8.4.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-6.1.3.1.6-8.5">
+                  <p id="section-6.1.3.1.6-8.5.1">
+                    MAY be combined with <code>essential</code>.<a href="#section-6.1.3.1.6-8.5.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-6.1.3.1.6-9">
@@ -4425,7 +4475,13 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-6.1.3.1.7-8.1">
                   <p id="section-6.1.3.1.7-8.1.1">
-                    MAY be combined with any other operator.<a href="#section-6.1.3.1.7-8.1.1" class="pilcrow">¶</a></p>
+                    MAY be combined with <code>value</code>,
+                    except when <code>value</code> is null and
+                    <code>essential</code> is true.<a href="#section-6.1.3.1.7-8.1.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-6.1.3.1.7-8.2">
+                  <p id="section-6.1.3.1.7-8.2.1">
+                    MAY be combined with any other operator.<a href="#section-6.1.3.1.7-8.2.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-6.1.3.1.7-9">
@@ -4565,8 +4621,8 @@ li > p:last-of-type:only-child {
               Statement claim, in which case the operator MUST be understood
               and processed. If an additional operator listed in
               <code>metadata_policy_crit</code> is not understood
-              or cannot be processed, then this MUST result in a policy error
-              and the Trust Chain MUST be considered invalid.<a href="#section-6.1.3.2-4" class="pilcrow">¶</a></p>
+              or cannot be processed, then this MUST produce a policy error and
+              the Trust Chain MUST be considered invalid.<a href="#section-6.1.3.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -4609,7 +4665,7 @@ li > p:last-of-type:only-child {
                 the most Superior Entity and end with the Subordinate Statement
                 issued by the Immediate Superior of the Trust Chain subject.<a href="#section-6.1.4.1-3" class="pilcrow">¶</a></p>
 <p id="section-6.1.4.1-4">
-                An important procedure during the iteration is the
+                An important task during the iteration is the
                 <code>metadata_policy</code> validation. It MUST
                 ensure the data structure is compliant and that every metadata
                 parameter policy contains only allowed operator combinations, as
@@ -4619,7 +4675,7 @@ li > p:last-of-type:only-child {
                 contains no operators that cannot be understood and processed
                 whose names are among the collected
                 <code>metadata_policy_crit</code> values. An
-                unsuccessful validation MUST result in a policy error.<a href="#section-6.1.4.1-4" class="pilcrow">¶</a></p>
+                unsuccessful validation MUST produce a policy error.<a href="#section-6.1.4.1-4" class="pilcrow">¶</a></p>
 <p id="section-6.1.4.1-5">
                 At each iteration step, the Subordinate Statement MUST be checked
                 for the presence of a <code>metadata_policy</code>
@@ -4633,7 +4689,7 @@ li > p:last-of-type:only-child {
                 validated as described above, then merged into the current
                 metadata policy.<a href="#section-6.1.4.1-6" class="pilcrow">¶</a></p>
 <p id="section-6.1.4.1-7">
-                The merge is performed at all three levels of the
+                The merge is performed at each of the three levels of the
                 <code>metadata_policy</code> data structure
                 described in <a href="#metadata_policy_structure" class="auto internal xref">Section 6.1.2</a>, by
                 starting from the top level:<a href="#section-6.1.4.1-7" class="pilcrow">¶</a></p>
@@ -4687,7 +4743,7 @@ li > p:last-of-type:only-child {
                       that are not allowed, as described in
                       <a href="#metadata_policy_operators" class="auto internal xref">Section 6.1.3</a> and in
                       accordance with the specifications of the operators, this
-                      MUST result in a policy error.<a href="#section-6.1.4.1-12.1.1" class="pilcrow">¶</a></p>
+                      MUST produce a policy error.<a href="#section-6.1.4.1-12.1.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-6.1.4.1-12.2">
                 <p id="section-6.1.4.1-12.2.1">
@@ -4707,7 +4763,7 @@ li > p:last-of-type:only-child {
                       <a href="#metadata_policy_operators" class="auto internal xref">Section 6.1.3</a> and in
                       accordance with the operator specification. If an operator
                       value merge is not allowed or otherwise unsuccessful this
-                      MUST result in a policy error.<a href="#section-6.1.4.1-14.1.1" class="pilcrow">¶</a></p>
+                      MUST produce a policy error.<a href="#section-6.1.4.1-14.1.1" class="pilcrow">¶</a></p>
 </li>
               <li class="normal" id="section-6.1.4.1-14.2">
                 <p id="section-6.1.4.1-14.2.1">
@@ -12485,48 +12541,79 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-C-3.1">
           <p id="appendix-C-3.1.1">
-     Fixed #184: Clarified that Request Objects can be passed by value or by reference.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+       Addresses #11, #180:
+
+       Allows the following unconditional operator combinations:
+       add + superset_of.
+
+       Makes the following previously conditional operator combinations unconditional:
+       default + one_of, default + subset_of, default + superset_of.
+
+       Makes the following previously unconditional operator combination conditional:
+       value + essential.
+
+       Allows the following conditional operator combinations:
+       value + add, value + default, value + one_of, value + subset_of, value + superset_of.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.2">
           <p id="appendix-C-3.2.1">
-        Fixed #178: Clarify that other client methods (than automatic and explicit) are allowed.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
+      Addresses #182: When applying the subset_of operator on a metadata
+      parameter, if the resulting intersection is empty, then the metadata is
+      made empty. Previously it was removed, which may lead to policy override
+      for metadata parameters that a have default value, for instance
+      grant_types RP metadata or grant_types_supported OP metadata. The merge of
+      two subset_of operators is changed to allow empty intersection as well.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.3">
           <p id="appendix-C-3.3.1">
-     Fixed #130: Allow multiple Trust Anchor values to be passed in resolve requests.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
+       Addresses #129: Clarifies that the combination rules for a metadata
+       policy operator apply to both individual as well as merged metadata
+       parameter policies.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.4">
           <p id="appendix-C-3.4.1">
-     Require <code>trust_chain</code> claim in resolve response.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
+     Fixed #184: Clarified that Request Objects can be passed by value or by reference.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.5">
           <p id="appendix-C-3.5.1">
-     Fixed #161: Prohibit loops in Trust Chains.<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
+        Fixed #178: Clarify that other client methods (than automatic and explicit) are allowed.<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.6">
           <p id="appendix-C-3.6.1">
-     Fixed #47: Described using and not using a provided Trust Chain
-     during Automatic Registration.<a href="#appendix-C-3.6.1" class="pilcrow">¶</a></p>
+     Fixed #130: Allow multiple Trust Anchor values to be passed in resolve requests.<a href="#appendix-C-3.6.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.7">
           <p id="appendix-C-3.7.1">
-     Fixed #85: Clarified Trust Chain selection during Explicit Registration.
-     Also corrected the <code>authority_hints</code> value
-     in the Explicit Registration response to be the Immediate Superior
-     of the RP in the Trust Chain selected for it by the OP.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
+     Require <code>trust_chain</code> claim in resolve response.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.8">
           <p id="appendix-C-3.8.1">
-     Fixed #35: Clarified that using non-interoperable JSON, as per Sections
-     4 and 8 of RFC 8259, can result in unpredictable metadata and metadata
-     policy behavior.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
+     Fixed #161: Prohibit loops in Trust Chains.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.9">
           <p id="appendix-C-3.9.1">
+     Fixed #47: Described using and not using a provided Trust Chain
+     during Automatic Registration.<a href="#appendix-C-3.9.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.10">
+          <p id="appendix-C-3.10.1">
+     Fixed #85: Clarified Trust Chain selection during Explicit Registration.
+     Also corrected the <code>authority_hints</code> value
+     in the Explicit Registration response to be the Immediate Superior
+     of the RP in the Trust Chain selected for it by the OP.<a href="#appendix-C-3.10.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.11">
+          <p id="appendix-C-3.11.1">
+     Fixed #35: Clarified that using non-interoperable JSON, as per Sections
+     4 and 8 of RFC 8259, can result in unpredictable metadata and metadata
+     policy behavior.<a href="#appendix-C-3.11.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.12">
+          <p id="appendix-C-3.12.1">
      Fixed #162: Trust Mark claim <code>id</code> 
      renamed to <code>trust_mark_id</code>.
      Other more specific Trust Mark JWT <code>typ</code> header parameter values
-     can be used if defined by trust frameworks in use and understood by the implementation.<a href="#appendix-C-3.9.1" class="pilcrow">¶</a></p>
+     can be used if defined by trust frameworks in use and understood by the implementation.<a href="#appendix-C-3.12.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
