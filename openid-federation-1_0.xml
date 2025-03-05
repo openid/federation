@@ -2016,9 +2016,14 @@
                 a policy error.
               </t>
               <t>
-                MUST declare what other operators it may be combined within a
-                metadata parameter policy. Combinations that are not allowed
-                MUST result in a policy error.
+                MUST declare what other operators it may be combined with,
+                which applies to both individual as well as merged metadata
+                parameter policies, as described in
+                <xref target="metadata_policy_structure"/> and
+                <xref target="metadata_policy_enforcement"/>. A combination may
+                be unconditional, or conditional, requiring the configured
+                values of the two operators to meet certain criteria.
+                Combinations that are not allowed MUST produce a policy error.
               </t>
               <t>
                 MUST declare in what order it is to be applied to a metadata
@@ -2085,7 +2090,37 @@
                 Combination with other operators in a metadata parameter policy:
                 <list style="symbols">
                   <t>
-                    MAY be combined with <spanx style="verb">essential</spanx>.
+                    MAY be combined with <spanx style="verb">add</spanx>,
+                    in which case the values of <spanx style="verb">add</spanx>
+                    MUST be a subset of the values of
+                    <spanx style="verb">value</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">default</spanx>
+                    if the value of <spanx style="verb">value</spanx> is not
+                    null.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">one_of</spanx>,
+                    in which case the value of <spanx style="verb">value</spanx>
+                    MUST be among the <spanx style="verb">one_of</spanx> values.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">subset_of</spanx>,
+                    in which case the values of <spanx style="verb">value</spanx>
+                    MUST be a subset of the values of
+                    <spanx style="verb">subset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">superset_of</spanx>,
+                    in which case the values of <spanx style="verb">value</spanx>
+                    MUST be a superset of the values of
+                    <spanx style="verb">superset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">essential</spanx>,
+                    except when <spanx style="verb">value</spanx> is null and
+                    <spanx style="verb">essential</spanx> is true.
                   </t>
                 </list>
               </t>
@@ -2094,7 +2129,7 @@
               </t>
               <t>
                 Operator value merge: Allowed only when the operator values are
-                equal. If not, this MUST result in a policy error.
+                equal. If not, this MUST produce a policy error.
               </t>
             </section>
 
@@ -2135,6 +2170,12 @@
                 Combination with other operators in a metadata parameter policy:
                 <list style="symbols">
                   <t>
+                    MAY be combined with <spanx style="verb">value</spanx>,
+                    in which case the values of <spanx style="verb">add</spanx>
+                    MUST be a subset of the values of
+                    <spanx style="verb">value</spanx>.
+                  </t>
+                  <t>
                     MAY be combined with <spanx style="verb">default</spanx>.
                   </t>
                   <t>
@@ -2144,10 +2185,7 @@
                     <spanx style="verb">subset_of</spanx>.
                   </t>
                   <t>
-                    MAY be combined with <spanx style="verb">superset_of</spanx>,
-                    in which case the values of <spanx style="verb">add</spanx>
-                    MUST be a superset of the values of
-                    <spanx style="verb">superset_of</spanx>.
+                    MAY be combined with <spanx style="verb">superset_of</spanx>.
                   </t>
                   <t>
                     MAY be combined with <spanx style="verb">essential</spanx>.
@@ -2193,24 +2231,21 @@
                 Combination with other operators in a metadata parameter policy:
                 <list style="symbols">
                   <t>
+                    MAY be combined with <spanx style="verb">value</spanx>
+                    if the value  of <spanx style="verb">value</spanx> is not
+                    null.
+                  </t>
+                  <t>
                     MAY be combined with <spanx style="verb">add</spanx>.
                   </t>
                   <t>
-                    MAY be combined with <spanx style="verb">one_of</spanx>, in
-                    which case the <spanx style="verb">default</spanx> value
-                    MUST be among the <spanx style="verb">one_of</spanx> values.
+                    MAY be combined with <spanx style="verb">one_of</spanx>.
                   </t>
                   <t>
-                    MAY be combined with <spanx style="verb">subset_of</spanx>,
-                    in which case the <spanx style="verb">default</spanx> values
-                    MUST be a subset of the <spanx style="verb">subset_of</spanx>
-                    values.
+                    MAY be combined with <spanx style="verb">subset_of</spanx>.
                   </t>
                   <t>
-                    MAY be combined with <spanx style="verb">superset_of</spanx>,
-                    in which case the <spanx style="verb">default</spanx> values
-                    MUST be a superset of the
-                    <spanx style="verb">superset_of</spanx> values.
+                    MAY be combined with <spanx style="verb">superset_of</spanx>.
                   </t>
                   <t>
                     MAY be combined with <spanx style="verb">essential</spanx>.
@@ -2222,7 +2257,7 @@
               </t>
               <t>
                 Operator value merge: The operator values MUST be equal. If the
-                values are not equal this MUST result in a policy error.
+                values are not equal this MUST produce a policy error.
               </t>
             </section>
 
@@ -2260,9 +2295,12 @@
                 Combination with other operators in a metadata parameter policy:
                 <list style="symbols">
                   <t>
-                    MAY be combined with <spanx style="verb">default</spanx>,
-                    in which case the value of default MUST be among the
-                    <spanx style="verb">one_of</spanx> values.
+                    MAY be combined with <spanx style="verb">value</spanx>,
+                    in which case the value of <spanx style="verb">value</spanx>
+                    MUST be among the <spanx style="verb">one_of</spanx> values.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">default</spanx>.
                   </t>
                   <t>
                     MAY be combined with <spanx style="verb">essential</spanx>.
@@ -2285,14 +2323,12 @@
                 Name: <spanx style="verb">subset_of</spanx>
               </t>
               <t>
-                Action: If the metadata parameter is present, this operator
-                computes the intersection between the values of the operator and
-                the metadata parameter. If the intersection is non-empty, the
-                metadata parameter is set to the values in the intersection. If
-                the intersection is empty, the metadata parameter MUST be
-                removed. Note that this behavior makes
-                <spanx style="verb">subset_of</spanx> a potential value modifier
-                in addition to it being a value check.
+                Action: If the metadata parameter is present, it is assigned the
+                intersection between the values of the operator and the
+                metadata parameter. Note that the resulting intersection may
+                thus be an empty array <spanx style="verb">[]</spanx>. Also note
+                that <spanx style="verb">subset_of</spanx> is a potential value
+                modifier in addition to it being a value check.
               </t>
               <t>
                 Metadata parameter JSON values:
@@ -2320,16 +2356,19 @@
                 Combination with other operators in a metadata parameter policy:
                 <list style="symbols">
                   <t>
+                    MAY be combined with <spanx style="verb">value</spanx>,
+                    in which case the values of <spanx style="verb">value</spanx>
+                    MUST be a subset of the values of
+                    <spanx style="verb">subset_of</spanx>.
+                  </t>
+                  <t>
                     MAY be combined with <spanx style="verb">add</spanx>, in
                     which case the values of <spanx style="verb">add</spanx>
                     MUST be a subset of the values of
                     <spanx style="verb">subset_of</spanx>.
                   </t>
                   <t>
-                    MAY be combined with <spanx style="verb">default</spanx>, in
-                    which case the values of <spanx style="verb">default</spanx>
-                    MUST be a subset of the values of
-                    <spanx style="verb">subset_of</spanx>.
+                    MAY be combined with <spanx style="verb">default</spanx>.
                   </t>
                   <t>
                     MAY be combined with <spanx style="verb">superset_of</spanx>,
@@ -2348,8 +2387,9 @@
               <t>
                 Operator value merge: The result of merging the values of two
                 <spanx style="verb">subset_of</spanx> operators is the
-                intersection of the operator values. If the intersection is
-                empty, this MUST result in a policy error.
+                intersection of the operator values. Note that the resulting
+                intersection may thus be an empty array
+                <spanx style="verb">[]</spanx>.
               </t>
             </section>
 
@@ -2388,16 +2428,16 @@
                 Combination with other operators in a metadata parameter policy:
                 <list style="symbols">
                   <t>
-                    MAY be combined with <spanx style="verb">add</spanx>, in
-                    which case the values of <spanx style="verb">add</spanx>
+                    MAY be combined with <spanx style="verb">value</spanx>,
+                    in which case the values of <spanx style="verb">value</spanx>
                     MUST be a superset of the values of
                     <spanx style="verb">superset_of</spanx>.
                   </t>
                   <t>
-                    MAY be combined with <spanx style="verb">default</spanx>, in
-                    which case the values of <spanx style="verb">default</spanx>
-                    MUST be a superset of the values of
-                    <spanx style="verb">superset_of</spanx>.
+                    MAY be combined with <spanx style="verb">add</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">default</spanx>.
                   </t>
                   <t>
                     MAY be combined with <spanx style="verb">subset_of</spanx>,
@@ -2452,6 +2492,11 @@
               <t>
                 Combination with other operators in a metadata parameter policy:
                 <list style="symbols">
+                  <t>
+                    MAY be combined with <spanx style="verb">value</spanx>,
+                    except when <spanx style="verb">value</spanx> is null and
+                    <spanx style="verb">essential</spanx> is true.
+                  </t>
                   <t>
                     MAY be combined with any other operator.
                   </t>
@@ -2602,8 +2647,8 @@
               Statement claim, in which case the operator MUST be understood
               and processed. If an additional operator listed in
               <spanx style="verb">metadata_policy_crit</spanx> is not understood
-              or cannot be processed, then this MUST result in a policy error
-              and the Trust Chain MUST be considered invalid.
+              or cannot be processed, then this MUST produce a policy error and
+              the Trust Chain MUST be considered invalid.
             </t>
 
           </section>
@@ -2652,7 +2697,7 @@
               </t>
 
               <t>
-                An important procedure during the iteration is the
+                An important task during the iteration is the
                 <spanx style="verb">metadata_policy</spanx> validation. It MUST
                 ensure the data structure is compliant and that every metadata
                 parameter policy contains only allowed operator combinations, as
@@ -2662,7 +2707,7 @@
                 contains no operators that cannot be understood and processed
                 whose names are among the collected
                 <spanx style="verb">metadata_policy_crit</spanx> values. An
-                unsuccessful validation MUST result in a policy error.
+                unsuccessful validation MUST produce a policy error.
               </t>
 
               <t>
@@ -2682,7 +2727,7 @@
               </t>
 
               <t>
-                The merge is performed at all three levels of the
+                The merge is performed at each of the three levels of the
                 <spanx style="verb">metadata_policy</spanx> data structure
                 described in <xref target="metadata_policy_structure"/>, by
                 starting from the top level:
@@ -2739,7 +2784,7 @@
                       that are not allowed, as described in
                       <xref target="metadata_policy_operators"/> and in
                       accordance with the specifications of the operators, this
-                      MUST result in a policy error.
+                      MUST produce a policy error.
                     </t>
                     <t>
                       Subordinate metadata parameter policies that are not
@@ -2761,7 +2806,7 @@
                       <xref target="metadata_policy_operators"/> and in
                       accordance with the operator specification. If an operator
                       value merge is not allowed or otherwise unsuccessful this
-                      MUST result in a policy error.
+                      MUST produce a policy error.
                     </t>
                     <t>
                       Subordinate operators that are not present in the current
@@ -10045,6 +10090,34 @@ Host: op.umu.se
       <t>
 	-42
 	<list style="symbols">
+      <t>
+       Addresses #11, #180:
+
+       Allows the following unconditional operator combinations:
+       add + superset_of.
+
+       Makes the following previously conditional operator combinations unconditional:
+       default + one_of, default + subset_of, default + superset_of.
+
+       Makes the following previously unconditional operator combination conditional:
+       value + essential.
+
+       Allows the following conditional operator combinations:
+       value + add, value + default, value + one_of, value + subset_of, value + superset_of.
+      </t>
+      <t>
+      Addresses #182: When applying the subset_of operator on a metadata
+      parameter, if the resulting intersection is empty, then the metadata is
+      made empty. Previously it was removed, which may lead to policy override
+      for metadata parameters that a have default value, for instance
+      grant_types RP metadata or grant_types_supported OP metadata. The merge of
+      two subset_of operators is changed to allow empty intersection as well.
+      </t>
+      <t>
+       Addresses #129: Clarifies that the combination rules for a metadata
+       policy operator apply to both individual as well as merged metadata
+       parameter policies.
+      </t>
 	  <t>
 	    Fixed #184: Clarified that Request Objects can be passed by value or by reference.
 	  </t>
