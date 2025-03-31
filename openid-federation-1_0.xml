@@ -364,15 +364,15 @@
             <t hangText="Trust Mark">
               Statement of conformance to a
               well-scoped set of trust and/or interoperability requirements
-              as determined by an accreditation authority. 
+              as determined by an accreditation authority.
               Each Trust Mark has a Trust Mark identifier.
             </t>
             <t hangText="Trust Mark Issuer">
               A Federation Entity that issues Trust Marks.
             </t>
             <t hangText="Trust Mark Owner">
-              An Entity that owns the right to a Trust Mark identifier. 
-            </t>            
+              An Entity that owns the right to a Trust Mark identifier.
+            </t>
             <t hangText="Federation Entity Keys">
               Keys used for the cryptographic signatures required by
               the trust mechanisms defined in this specification.
@@ -2049,9 +2049,9 @@
                 <spanx style="verb">null</spanx> value.
               </t>
               <t>
-                Metadata parameters and policies that conform to the JSON 
+                Metadata parameters and policies that conform to the JSON
                 grammar but do not represent interoperable uses of JSON,
-                as per Sections 4 and 8 of <xref target="RFC8259"/>, 
+                as per Sections 4 and 8 of <xref target="RFC8259"/>,
                 can cause unpredictable behavior.
               </t>
 
@@ -2510,8 +2510,8 @@
                 Order of application: Last
               </t>
               <t>
-                Operator value merge: The result of merging the values of two 
-                <spanx style="verb">essential</spanx> operators is the logical 
+                Operator value merge: The result of merging the values of two
+                <spanx style="verb">essential</spanx> operators is the logical
                 disjunction (<spanx style="verb">OR</spanx>) of the operator values.
               </t>
             </section>
@@ -3304,7 +3304,7 @@
           <spanx style="verb">typ</spanx> header parameter to prevent
           cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
           The <spanx style="verb">typ</spanx> header parameter value MUST be
-          <spanx style="verb">trust-mark+jwt</spanx> 
+          <spanx style="verb">trust-mark+jwt</spanx>
           unless the trust framework in use defines a more specific
           media type value for the particular kind of Trust Mark.
 	  Trust Marks without a <spanx style="verb">typ</spanx> header parameter
@@ -6766,16 +6766,16 @@ HTTP/1.1 302 Found
                     <spanx style="verb">trust_anchor</spanx> claim.
                   </t>
                   <t>
-                    The RP MUST ensure that the metadata it was registered with
-                    at the OP complies with the Trust Chain
-                    <spanx style="verb">openid_relying_party</spanx> policies,
-                    which Trust Chain is resolved using the
-                    <spanx style="verb">trust_anchor</spanx> and
-                    <spanx style="verb">authority_hints</spanx> claims of the
-                    received registration Entity Statement. The RP SHOULD perform this check
-                    by applying the resolved policies to the metadata as
-                    specified in <xref target="metadata_policy_resolution"/>, or
-                    utilize another equivalent method.
+                    The RP MUST first ensure that the information it was registered with
+                    at the OP contains the same set of entity_types as the request does.
+                    After having collected a Trust Chain using the response claim
+                    <spanx style="verb">trust_anchor_id</spanx> as the
+                    <spanx style="verb">entity_id</spanx> for the Trust Anchor and
+                    <spanx style="verb">authority_hints</spanx> as starting points
+                    for the Trust Chain collection,
+                    the RP SHOULD verify that the response metadata for each entity type is valid
+                    by applying the resolved policies to the received metadata, as
+                    specified in <xref target="metadata_policy_resolution"/>.
                   </t>
                   <t>
                     If the received registration Entity Statement does not pass the above
@@ -10166,7 +10166,7 @@ Host: op.umu.se
 	    policy behavior.
 	  </t>
 	  <t>
-	    Fixed #162: Trust Mark claim <spanx style="verb">id</spanx> 
+	    Fixed #162: Trust Mark claim <spanx style="verb">id</spanx>
 	    renamed to <spanx style="verb">trust_mark_id</spanx>.
 	    Other more specific Trust Mark JWT <spanx style="verb">typ</spanx> header parameter values
 	    can be used if defined by trust frameworks in use and understood by the implementation.
