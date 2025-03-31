@@ -53,7 +53,7 @@
     intervaltree 3.1.0
     Jinja2 3.1.2
     lxml 5.3.1
-    platformdirs 4.3.6
+    platformdirs 4.3.7
     pycountry 24.6.1
     PyYAML 6.0.1
     requests 2.31.0
@@ -2223,7 +2223,7 @@ li > p:last-of-type:only-child {
           <dd style="margin-left: 1.5em" id="section-1.2-3.38">
               Statement of conformance to a
               well-scoped set of trust and/or interoperability requirements
-              as determined by an accreditation authority. 
+              as determined by an accreditation authority.
               Each Trust Mark has a Trust Mark identifier.<a href="#section-1.2-3.38" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
@@ -3997,9 +3997,9 @@ li > p:last-of-type:only-child {
 </li>
             <li class="normal" id="section-6.1.3-2.9">
               <p id="section-6.1.3-2.9.1">
-                Metadata parameters and policies that conform to the JSON 
+                Metadata parameters and policies that conform to the JSON
                 grammar but do not represent interoperable uses of JSON,
-                as per Sections 4 and 8 of <span>[<a href="#RFC8259" class="cite xref">RFC8259</a>]</span>, 
+                as per Sections 4 and 8 of <span>[<a href="#RFC8259" class="cite xref">RFC8259</a>]</span>,
                 can cause unpredictable behavior.<a href="#section-6.1.3-2.9.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
@@ -4491,8 +4491,8 @@ li > p:last-of-type:only-child {
 <p id="section-6.1.3.1.7-9">
                 Order of application: Last<a href="#section-6.1.3.1.7-9" class="pilcrow">¶</a></p>
 <p id="section-6.1.3.1.7-10">
-                Operator value merge: The result of merging the values of two 
-                <code>essential</code> operators is the logical 
+                Operator value merge: The result of merging the values of two
+                <code>essential</code> operators is the logical
                 disjunction (<code>OR</code>) of the operator values.<a href="#section-6.1.3.1.7-10" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -5268,7 +5268,7 @@ li > p:last-of-type:only-child {
           <code>typ</code> header parameter to prevent
           cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.
           The <code>typ</code> header parameter value MUST be
-          <code>trust-mark+jwt</code> 
+          <code>trust-mark+jwt</code>
           unless the trust framework in use defines a more specific
           media type value for the particular kind of Trust Mark.
    Trust Marks without a <code>typ</code> header parameter
@@ -8832,16 +8832,16 @@ HTTP/1.1 302 Found
 </li>
             <li id="section-12.2.5-1.5">
               <p id="section-12.2.5-1.5.1">
-                    The RP MUST ensure that the metadata it was registered with
-                    at the OP complies with the Trust Chain
-                    <code>openid_relying_party</code> policies,
-                    which Trust Chain is resolved using the
-                    <code>trust_anchor</code> and
-                    <code>authority_hints</code> claims of the
-                    received registration Entity Statement. The RP SHOULD perform this check
-                    by applying the resolved policies to the metadata as
-                    specified in <a href="#metadata_policy_resolution" class="auto internal xref">Section 6.1.4.1</a>, or
-                    utilize another equivalent method.<a href="#section-12.2.5-1.5.1" class="pilcrow">¶</a></p>
+                    The RP MUST first ensure that the information it was registered with
+                    at the OP contains the same set of entity_types as the request does.
+                    After having collected a Trust Chain using the response claim
+                    <code>trust_anchor_id</code> as the
+                    <code>entity_id</code> for the Trust Anchor and
+                    <code>authority_hints</code> as starting points
+                    for the Trust Chain collection,
+                    the RP SHOULD verify that the response metadata for each entity type is valid
+                    by applying the resolved policies to the received metadata, as
+                    specified in <a href="#metadata_policy_resolution" class="auto internal xref">Section 6.1.4.1</a>.<a href="#section-12.2.5-1.5.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-12.2.5-1.6">
               <p id="section-12.2.5-1.6.1">
@@ -12627,7 +12627,7 @@ Host: op.umu.se
 </li>
         <li class="normal" id="appendix-C-5.13">
           <p id="appendix-C-5.13.1">
-     Fixed #162: Trust Mark claim <code>id</code> 
+     Fixed #162: Trust Mark claim <code>id</code>
      renamed to <code>trust_mark_id</code>.
      Other more specific Trust Mark JWT <code>typ</code> header parameter values
      can be used if defined by trust frameworks in use and understood by the implementation.<a href="#appendix-C-5.13.1" class="pilcrow">¶</a></p>
