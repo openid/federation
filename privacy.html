@@ -2535,9 +2535,9 @@ li > p:last-of-type:only-child {
               OPTIONAL. An array of JSON objects, each representing
               a Trust Mark.
               Each JSON object MUST contain the following two claims
-              and MAY contain other claims. All the claims in the
-              JSON object MUST have the same values as those
-              contained in the Trust Mark JWT.<a href="#section-3-6.24.1" class="pilcrow">¶</a></p>
+              and MAY contain other claims. The <code>trust_mark_id</code>
+                claim in this object MUST have the same value as the
+              <code>trust_mark_id</code> claim in the Trust Mark JWT.<a href="#section-3-6.24.1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-3-6.24.2">
             <dt id="section-3-6.24.2.1">trust_mark_id</dt>
             <dd style="margin-left: 1.5em" id="section-3-6.24.2.2">
@@ -2624,6 +2624,14 @@ li > p:last-of-type:only-child {
        the current <code>federation_fetch_endpoint</code>
        location can be determined by retrieving
        the Entity Configuration of the issuer.<a href="#section-3-6.30" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-3-6.31">trust_anchor</dt>
+        <dd style="margin-left: 1.5em" id="section-3-6.32">
+              OPTIONAL.  Its value MUST be the Entity Identifier of the Trust Anchor
+                that the OP selected to process the Explicit Registration request.
+                This claim is specific to Explicit Registration responses and is not a
+                general Entity Statement claim.<a href="#section-3-6.32" class="pilcrow">¶</a>
 </dd>
       <dd class="break"></dd>
 </dl>
@@ -4566,13 +4574,13 @@ li > p:last-of-type:only-child {
                     <td class="text-left" rowspan="1" colspan="1">true</td>
                     <td class="text-left" rowspan="1" colspan="1">[a,b,c]</td>
                     <td class="text-left" rowspan="1" colspan="1">[d,e]</td>
-                    <td class="text-left" rowspan="1" colspan="1">error</td>
+                    <td class="text-left" rowspan="1" colspan="1">[]</td>
                   </tr>
                   <tr>
                     <td class="text-left" rowspan="1" colspan="1">false</td>
                     <td class="text-left" rowspan="1" colspan="1">[a,b,c]</td>
                     <td class="text-left" rowspan="1" colspan="1">[d,e]</td>
-                    <td class="text-left" rowspan="1" colspan="1">no parameter</td>
+                    <td class="text-left" rowspan="1" colspan="1">[]</td>
                   </tr>
                   <tr>
                     <td class="text-left" rowspan="1" colspan="1">true</td>
@@ -12574,7 +12582,13 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-C-3.1">
           <p id="appendix-C-3.1.1">
-     Added privacy considerations section.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+     Fixed #167: Added privacy considerations section.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.2">
+          <p id="appendix-C-3.2.1">
+          Fixed #196: The output of rows 3 and 4 in Table 1: Examples of
+          Outputs with Combinations of essential and subset_of for Different
+          Inputs must be empty JSON array [].<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
