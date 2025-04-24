@@ -653,9 +653,9 @@
               OPTIONAL. An array of JSON objects, each representing
               a Trust Mark.
               Each JSON object MUST contain the following two claims
-              and MAY contain other claims. All the claims in the
-              JSON object MUST have the same values as those
-              contained in the Trust Mark JWT.
+              and MAY contain other claims. The <spanx style="verb">trust_mark_id</spanx>
+                claim in this object MUST have the same value as the
+              <spanx style="verb">trust_mark_id</spanx> claim in the Trust Mark JWT.
 
               <list style="hanging">
                 <t hangText="trust_mark_id">
@@ -731,6 +731,13 @@
 	      the current <spanx style="verb">federation_fetch_endpoint</spanx>
 	      location can be determined by retrieving
 	      the Entity Configuration of the issuer.
+            </t>
+            <t hangText="trust_anchor">
+              <vspace/>
+              OPTIONAL.  Its value MUST be the Entity Identifier of the Trust Anchor
+                that the OP selected to process the Explicit Registration request.
+                This claim is specific to Explicit Registration responses and is not a
+                general Entity Statement claim.
             </t>
           </list>
         </t>
@@ -2587,14 +2594,14 @@
                     <td>true</td>
                     <td>[a,b,c]</td>
                     <td>[d,e]</td>
-                    <td>error</td>
+                    <td>[]</td>
                   </tr>
 
                   <tr>
                     <td>false</td>
                     <td>[a,b,c]</td>
                     <td>[d,e]</td>
-                    <td>no parameter</td>
+                    <td>[]</td>
                   </tr>
 
                   <tr>
@@ -10118,8 +10125,13 @@ Host: op.umu.se
 	-43
 	<list style="symbols">
 	  <t>
-	    Added privacy considerations section.
+	    Fixed #167: Added privacy considerations section.
 	  </t>
+      <t>
+          Fixed #196: The output of rows 3 and 4 in Table 1: Examples of
+          Outputs with Combinations of essential and subset_of for Different
+          Inputs must be empty JSON array [].
+      </t>
 	</list>
       </t>
 
