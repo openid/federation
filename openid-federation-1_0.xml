@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="31" month="March" year="2025"/>
+    <date day="24" month="April" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -1560,7 +1560,7 @@
 	  The parameters defined in <xref target="common_metadata"/> are applicable.
 	  In addition, while it is not yet a standard,
 	  deployments MAY use the protected resource metadata parameters
-	  defined in <xref target="I-D.ietf-oauth-resource-metadata"/>.
+	  defined in <xref target="RFC9728"/>.
         </t>
       </section>
 
@@ -8717,6 +8717,7 @@ HTTP/1.1 302 Found
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8705.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9101.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9126.xml"/>
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9728.xml"/>
 
       <reference anchor="OpenID.Core" target="https://openid.net/specs/openid-connect-core-1_0.html">
         <front>
@@ -8817,11 +8818,16 @@ HTTP/1.1 302 Found
 	    </address>
 	  </author>
 
-          <date day="25" month="November" year="2024"/>
+	  <author fullname="Filip Skokan" initials="F." surname="Skokan">
+	    <organization>Okta</organization>
+	    <address>
+	      <email>panva.ip@gmail.com</email>
+	    </address>
+	  </author>
+
+          <date day="24" month="April" year="2025"/>
 	</front>
       </reference>
-
-      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-13.xml" />
 
     </references>
 
@@ -9862,6 +9868,8 @@ Host: op.umu.se
       "authorization_code",
       "refresh_token"
     ],
+    "id_token_signing_alg_values_supported":
+      ["ES256", "PS256", "RS256"],
     "id_token_signed_response_alg": "RS256",
     "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
     "redirect_uris": [
@@ -9871,9 +9879,7 @@ Host: op.umu.se
       "code"
     ],
     "subject_type": "public",
-    "token_endpoint_auth_methods_supported": [
-      "private_key_jwt"
-    ]
+    "token_endpoint_auth_method": "private_key_jwt"
   }
 }
 ]]></artwork>
@@ -9899,6 +9905,8 @@ Host: op.umu.se
       "refresh_token",
       "authorization_code"
     ],
+    "id_token_signing_alg_values_supported":
+      ["ES256", "PS256", "RS256"],
     "id_token_signed_response_alg": "RS256",
     "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
     "redirect_uris": [
@@ -9908,9 +9916,7 @@ Host: op.umu.se
       "code"
     ],
     "subject_type": "public",
-    "token_endpoint_auth_methods_supported": [
-      "private_key_jwt"
-    ]
+    "token_endpoint_auth_method": "private_key_jwt"
   }
 }
 ]]></artwork>
@@ -10124,13 +10130,19 @@ Host: op.umu.se
 	-43
 	<list style="symbols">
 	  <t>
-	    Fixed #167: Added privacy considerations section.
+	    Fixed #167: Added Privacy Considerations section.
 	  </t>
-      <t>
-          Fixed #196: The output of rows 3 and 4 in Table 1: Examples of
-          Outputs with Combinations of essential and subset_of for Different
-          Inputs must be empty JSON array [].
-      </t>
+	  <t>
+	    Fixed #196: The output of rows 3 and 4 in Table 1: Examples of
+	    Outputs with Combinations of essential and subset_of for Different
+	    Inputs must be empty JSON array [].
+	  </t>
+	  <t>
+	    OAuth 2.0 Protected Resource Metadata is now RFC 9728.
+	  </t>
+	  <t>
+	    Follow Implementation Considerations in <xref target="OpenID.RP.Choices"/>.
+	  </t>
 	</list>
       </t>
 
