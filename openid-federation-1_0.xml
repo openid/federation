@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="24" month="April" year="2025"/>
+    <date day="13" month="May" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -2541,7 +2541,22 @@
                 <spanx style="verb">superset_of</spanx> with identical array
                 values.
               </t>
-
+	      <t>
+		Some JSON libraries may have issues comparing JSON objects.
+		For this reason, support for applying metadata policy to
+		metadata values that are JSON objects is mandatory only for the
+		<spanx style="verb">value</spanx>,
+		<spanx style="verb">default</spanx>, and
+		<spanx style="verb">essential</spanx>
+		operators, which do not require comparison of values.
+		It is optional for the
+		<spanx style="verb">add</spanx>,
+		<spanx style="verb">one_of</spanx>,
+		<spanx style="verb">subset_of</spanx>, and
+		<spanx style="verb">superset_of</spanx>
+		operators, which operate on JSON arrays
+		and therefore require comparison of values.
+	      </t>
               <t>
                 The <spanx style="verb">scope</spanx> OAuth 2.0 client metadata
                 parameter, defined in <xref target="RFC7591"/> and represented by
@@ -10160,6 +10175,9 @@ Host: op.umu.se
      </t>
 	   <t>
 	     Fixed #172: Added Resolved Metadata as defined term.
+	  </t>
+	  <t>
+	    Fixed #35: Added note about metadata policy and comparing JSON objects.
 	  </t>
 	</list>
       </t>
