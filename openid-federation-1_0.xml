@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="8" month="May" year="2025"/>
+    <date day="15" month="May" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -2880,19 +2880,19 @@
 
               <t>
                 If the application of metadata policies results in illegal or
-                otherwise incorrect resolved metadata, then the metadata MUST be regarded
+                otherwise incorrect Resolved Metadata, then the metadata MUST be regarded
                 as broken and MUST NOT be used.
               </t>
 
               <t>
                 The Trust Chain subject is responsible to verify that it is
-                able to support and comply with the resolved metadata that results from
+                able to support and comply with the Resolved Metadata that results from
                 the application of federation metadata policies. For instance,
                 this may involve a check that cryptographic algorithms required
-                by the resulting resolved metadata are supported.
+                by the resulting Resolved Metadata are supported.
 		Likewise, the Trust Chain subject MUST verify that
 		all the required metadata parameters for its Entity Types are present
-		and all the metadata values in the resolved metadata are valid.
+		and all the metadata values in the Resolved Metadata are valid.
 		When metadata policies
                 change, Trust Chain subjects may need to reevaluate their
                 support and compliance.
@@ -4187,7 +4187,7 @@ Content-Type: application/json
       <section title="Resolve Entity" anchor="resolve">
         <t>
           An Entity MAY use a resolve endpoint to fetch
-          resolved metadata and Trust Marks for an Entity.
+          Resolved Metadata and Trust Marks for an Entity.
           The resolver fetches the subject's
           Entity Configuration, assembles a Trust Chain that starts
           with the subject's Entity Configuration and ends with the specified
@@ -4275,7 +4275,7 @@ Host: openid.sunet.se
             A successful response MUST use the HTTP status code 200
             with the content type
             <spanx style="verb">application/resolve-response+jwt</spanx>,
-            containing resolved metadata and
+            containing Resolved Metadata and
             verified Trust Marks.
           </t>
           <t>
@@ -6107,7 +6107,7 @@ GET /authorize?
                 <spanx style="verb">openid_relying_party</spanx>.
               </t>
               <t>
-                The OP SHOULD furthermore verify that the resolved metadata of the RP
+                The OP SHOULD furthermore verify that the Resolved Metadata of the RP
                 complies with the client metadata specification
                 <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>.
               </t>
@@ -6561,7 +6561,7 @@ HTTP/1.1 302 Found
                     past RP data.
                   </t>
                   <t>
-                    The OP will now use the RP metadata to create a client
+                    The OP uses the Resolved Metadata for the RP to create a client
                     registration compliant with its own OP metadata and other
                     applicable policies.
                     <vspace blankLine="1"/>
@@ -7214,7 +7214,7 @@ HTTP/1.1 302 Found
 	  the RP and the Trust Anchor, meaning that
 	  multiple different Trust Chains could be built between them.
 	  If the metadata policies of Intermediate 1 and Intermediate 2 are different,
-	  this could result in the resolved metadata for the RP differing,
+	  this could result in the Resolved Metadata for the RP differing,
 	  depending upon which Intermediate is used when building the Trust Chain.
 	  Some such differences will be innocuous and some can cause failures.
 	</t>
@@ -10160,6 +10160,9 @@ Host: op.umu.se
      </t>
 	   <t>
 	     Fixed #172: Added Resolved Metadata as defined term.
+	  </t>
+	  <t>
+	    Fixed #173: Use Resolved Metadata term in Explicit Registration.
 	  </t>
 	</list>
       </t>
