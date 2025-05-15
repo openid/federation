@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="8" month="May" year="2025"/>
+    <date day="14" month="May" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -365,13 +365,13 @@
               Statement of conformance to a
               well-scoped set of trust and/or interoperability requirements
               as determined by an accreditation authority.
-              Each Trust Mark has a Trust Mark identifier.
+              Each Trust Mark has a Trust Mark type identifier.
             </t>
             <t hangText="Trust Mark Issuer">
               A Federation Entity that issues Trust Marks.
             </t>
             <t hangText="Trust Mark Owner">
-              An Entity that owns the right to a Trust Mark identifier.
+              An Entity that owns the right to a Trust Mark type identifier.
             </t>
             <t hangText="Federation Entity Keys">
               Keys used for the cryptographic signatures required by
@@ -663,15 +663,15 @@
               OPTIONAL. An array of JSON objects, each representing
               a Trust Mark.
               Each JSON object MUST contain the following two claims
-              and MAY contain other claims. The <spanx style="verb">trust_mark_id</spanx>
-                claim in this object MUST have the same value as the
-              <spanx style="verb">trust_mark_id</spanx> claim in the Trust Mark JWT.
+              and MAY contain other claims. The <spanx style="verb">trust_mark_type</spanx>
+              claim in this object MUST have the same value as the
+              <spanx style="verb">trust_mark_type</spanx> claim in the Trust Mark JWT.
 
               <list style="hanging">
-                <t hangText="trust_mark_id">
-                  The Trust Mark identifier.
+                <t hangText="trust_mark_type">
+                  Identifier for the type of the Trust Mark.
                   It MUST be the same value as the
-                  <spanx style="verb">trust_mark_id</spanx>
+                  <spanx style="verb">trust_mark_type</spanx>
                   claim contained in the
                   Trust Mark JWT.
                 </t>
@@ -686,27 +686,27 @@
               <vspace/>
               OPTIONAL.
               A Trust Anchor MAY use this claim to tell which combination of
-              Trust Mark identifiers and issuers are trusted by the federation.
+              Trust Mark type identifiers and issuers are trusted by the federation.
               This claim MUST be ignored if present in an Entity Configuration
               for an Entity that is not a Trust Anchor.
-              It is a JSON object with member names that are Trust Mark identifiers and
+              It is a JSON object with member names that are Trust Mark type identifiers and
               each corresponding value being an array of Entity Identifiers
-	            that are trusted to represent the accreditation authority
-	            for Trust Marks with that identifier.
-              If the array following a Trust Mark identifier is empty,
+	      that are trusted to represent the accreditation authority
+	      for Trust Marks with that identifier.
+              If the array following a Trust Mark type identifier is empty,
               anyone MAY issue Trust Marks with that identifier.
-	            This claim MUST NOT be present in Subordinate Statements.
+	      This claim MUST NOT be present in Subordinate Statements.
               Trust Marks are described in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_mark_owners">
               <vspace/>
               OPTIONAL.
-              If a Federation Operator knows that a Trust Mark identifier is owned
+              If a Federation Operator knows that a Trust Mark type identifier is owned
               by an Entity different from the Trust Mark Issuer, then that
               knowledge MUST be expressed in this claim.
               This claim MUST be ignored if present in an Entity Configuration
               for an Entity that is not a Trust Anchor.
-              It is a JSON object with member names that are Trust Mark identifiers and
+              It is a JSON object with member names that are Trust Mark type identifiers and
               each corresponding value being a JSON object with these members:
               <list style="hanging">
                 <t hangText="sub">
@@ -3342,13 +3342,13 @@
                 <vspace/>
                 REQUIRED. String. Entity this Trust Mark applies to.
               </t>
-              <t hangText="trust_mark_id">
+              <t hangText="trust_mark_type">
                 <vspace/>
 		REQUIRED.
-		The <spanx style="verb">trust_mark_id</spanx> (identifier) claim
+		The <spanx style="verb">trust_mark_type</spanx> claim
 		defined in <xref target="trust_mark_claims"/> is used in Trust Marks
-		to provide the identifier of the Trust Mark.
-                The Trust Mark identifier
+		to provide the identifier of the type of the Trust Mark.
+                The Trust Mark type identifier
                 MUST be collision-resistant
                 across multiple federations.
                 It is RECOMMENDED that the
@@ -3423,9 +3423,9 @@
           </t>
           <t>
             If the Federation Operator knows that Trust Marks with a
-            certain Trust Mark identifier may legitimately be issued by Trust Mark Issuers
-            that are not the owner of the Trust Mark identifier, then information
-            about the owner and the Trust Mark identifier MUST be included in the
+            certain Trust Mark type identifier may legitimately be issued by Trust Mark Issuers
+            that are not the owner of the Trust Mark type identifier, then information
+            about the owner and the Trust Mark type identifier MUST be included in the
             <spanx style="verb">trust_mark_owners</spanx> claim in
 	    the Trust Anchor's Entity Configuration.
           </t>
@@ -3464,9 +3464,9 @@
                 <vspace/>
                 REQUIRED. String. The Entity this delegation applies to.
               </t>
-              <t hangText="trust_mark_id">
+              <t hangText="trust_mark_type">
                 <vspace/>
-                REQUIRED. String. The identifier of the Trust Mark.
+                REQUIRED. String. The identifier for the type of the Trust Mark.
               </t>
               <t hangText="iat">
                 <vspace/>
@@ -3506,13 +3506,13 @@
                 it has not expired.
               </t>
               <t>
-                If the Trust Mark identifier appears in the
+                If the Trust Mark type identifier appears in the
                 <spanx style="verb">trust_mark_owners</spanx> claim
 		of the Trust Anchor's Entity Configuration,
                 verify that the Trust Mark contains
                 a <spanx style="verb">delegation</spanx>
                 claim.
-                The claims for the Trust Mark identifier
+                The claims for the Trust Mark type identifier
                 in the <spanx style="verb">trust_mark_owners</spanx> value
                 are used in the following way:
                 <list style="symbols">
@@ -3539,7 +3539,7 @@
           </t>
           <t>
             Note that the Entity representing the accreditation authority
-            SHOULD be well known and trusted for a given Trust Mark identifier.
+            SHOULD be well known and trusted for a given Trust Mark type identifier.
             A Trust Anchor MAY publish a list of accreditation authorities
             of Trust Marks that SHOULD be trusted by other Entities.
             A Trust Anchor uses the <spanx style="verb">trust_mark_issuers</spanx> claim
@@ -3547,14 +3547,14 @@
           </t>
           <t>
             If a Trust Mark is issued on behalf of a Trust Mark Owner, then the Trust Anchor SHOULD
-            publish the connection between the Trust Mark identifier
-	          and the corresponding Trust Mark Issuer in the
+            publish the connection between the Trust Mark type identifier
+	    and the corresponding Trust Mark Issuer in the
             <spanx style="verb">trust_mark_issuers</spanx> claim. This
             signifies that the Trust Anchor has validated
             the Trust Mark Owner and that the
             Trust Mark Owner has delegated the right to issue Trust Marks
-            with a designated Trust Mark identifier to a specified Trust Mark Issuer.
-            Also, the Trust Anchor MAY provide an empty array following the Trust Mark Identifier
+            with a designated Trust Mark type identifier to a specified Trust Mark Issuer.
+            Also, the Trust Anchor MAY provide an empty array following the Trust Mark type identifier
             to signal that this Trust Mark can be issued by any Trust Mark Issuer to which the
             Trust Mark Owner has delegated the right to do so.
           </t>
@@ -3588,7 +3588,7 @@
   "exp": 1516298022,
   "trust_marks": [
     {
-     "trust_mark_id": "https://www.spid.gov.it/certification/rp",
+     "trust_mark_type": "https://www.spid.gov.it/certification/rp",
      "trust_mark":
        "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia29
         zR20yd3VaaDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.eyJpc
@@ -3631,7 +3631,7 @@
 	    </name>
             <artwork><![CDATA[
 {
-  "trust_mark_id":"https://mushrooms.federation.example.com/openid_relying_party/public/",
+  "trust_mark_type":"https://mushrooms.federation.example.com/openid_relying_party/public/",
   "iss": "https://epigeo.tm-issuer.example.it",
   "sub": "https://porcino.example.com/rp",
   "iat": 1579621160,
@@ -3656,7 +3656,7 @@
 	    </name>
             <artwork><![CDATA[
 {
-  "trust_mark_id":"https://mushrooms.federation.example.com/openid_relying_party/private/under-age",
+  "trust_mark_type":"https://mushrooms.federation.example.com/openid_relying_party/private/under-age",
   "iss": "https://trustissuer.pinarolo.example.it",
   "sub": "https://vavuso.example.com/rp",
   "iat": 1579621160,
@@ -3678,7 +3678,7 @@
 	    </name>
             <artwork><![CDATA[
 {
-  "trust_mark_id": "https://mushrooms.federation.example.com/arrosto/agreements",
+  "trust_mark_type": "https://mushrooms.federation.example.com/arrosto/agreements",
   "iss": "https://agaricaceae.example.it",
   "sub": "https://coppolino.example.com",
   "iat": 1579621160,
@@ -3704,7 +3704,7 @@
             </name>
             <artwork><![CDATA[
 {
-  "trust_mark_id": "https://mushrooms.federation.example.com/ottimo/commestibile",
+  "trust_mark_type": "https://mushrooms.federation.example.com/ottimo/commestibile",
   "iss": "https://cantharellus.cibarius.example.org",
   "sub": "https://gallinaccio.example.com/op",
   "iat": 1579621160,
@@ -3721,7 +3721,7 @@
 	    </name>
             <artwork><![CDATA[
 {
-  "trust_mark_id": "https://mushrooms.federation.example.com/trust-marks/self-signed",
+  "trust_mark_type": "https://mushrooms.federation.example.com/trust-marks/self-signed",
   "iss": "https://amanita.muscaria.example.com",
   "sub": "https://amanita.muscaria.example.com",
   "iat": 1579621160,
@@ -3744,7 +3744,7 @@
   "sub": "https://umu.se/op",
   "iat": 1577833200,
   "exp": 1609369200,
-  "trust_mark_id": "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf"
+  "trust_mark_type": "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf"
 }
 ]]></artwork>
           </figure>
@@ -3781,7 +3781,7 @@
     0I4lT_LAOfvhlrRbT56eK4sJNCsbVbGnDBfFmyfB_HIeBMGP0L7T5JPMOUU
     9bjIlA",
   "iat": 1725176302,
-  "trust_mark_id": "https://refeds.org/sirtfi",
+  "trust_mark_type": "https://refeds.org/sirtfi",
   "sub": "https://entity.example.org",
   "exp": 1727768302,
   "iss": "https://tmi.example.org"
@@ -3814,7 +3814,7 @@
             <artwork><![CDATA[
 {
   "sub": "https://tmi.example.org",
-  "trust_mark_id": "https://refeds.org/sirtfi",
+  "trust_mark_type": "https://refeds.org/sirtfi",
   "iss": "https://tm_owner.example.org",
   "iat": 1725176302
 }
@@ -4100,13 +4100,13 @@ Host: edugain.org
                 the error code
                 <spanx style="verb">unsupported_parameter</spanx>.
 			  </t>
-              <t hangText="trust_mark_id">
+              <t hangText="trust_mark_type">
                 <vspace/>
-                OPTIONAL. The value of this parameter is a Trust Mark identifier.
+                OPTIONAL. The value of this parameter is the identifier for the type of the Trust Mark.
 		If the responder has issued Trust Marks with the
-                specified Trust Mark identifier,
+                specified Trust Mark type identifier,
                 the list in the response is filtered to include only
-                the Immediate Subordinates for which that Trust Mark identifier has been
+                the Immediate Subordinates for which that Trust Mark type identifier has been
                 issued and is still valid.
                 If the responder does not support this feature, it MUST
                 use the HTTP status code 400 and set the content type to
@@ -4439,7 +4439,7 @@ Host: openid.sunet.se
     }
   },
   "trust_marks": [
-    {"trust_mark_id": "https://www.spid.gov.it/certification/op/",
+    {"trust_mark_type": "https://www.spid.gov.it/certification/op/",
      "trust_mark":
        "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiOH
         hzdUtXaVZmd1NnSG9mMVRlNE9VZGN5NHE3ZEpyS2ZGUmxPNXhoSElhMCJ9.
@@ -4508,9 +4508,9 @@ Host: openid.sunet.se
                 REQUIRED. The Entity Identifier of the Entity to which the Trust Mark
                 was issued.
               </t>
-              <t hangText="trust_mark_id">
+              <t hangText="trust_mark_type">
                 <vspace/>
-                REQUIRED. Identifier of the Trust Mark.
+                REQUIRED. Identifier for the type of the Trust Mark.
               </t>
               <t hangText="iat">
                 <vspace/>
@@ -4540,7 +4540,7 @@ Host: openid.sunet.se
               <artwork><![CDATA[
 GET /federation_trust_mark_status_endpoint?
 sub=https%3A%2F%2Fopenid.sunet.se%2FRP&
-trust_mark_id=https%3A%2F%2Frefeds.org%2Fsirtfi HTTP/1.1
+trust_mark_type=https%3A%2F%2Frefeds.org%2Fsirtfi HTTP/1.1
 Host: op.example.org
 ]]></artwork>
             </figure>
@@ -4614,13 +4614,13 @@ Content-Type: application/json
           </t>
           <t>
             <list style="hanging">
-              <t hangText="trust_mark_id">
+              <t hangText="trust_mark_type">
                 <vspace/>
-                REQUIRED. The value of this parameter is a Trust Mark identifier.
+                REQUIRED. Identifier for the type of the Trust Mark.
                 If the responder has issued Trust Marks with the
-                specified Trust Mark identifier,
+                specified Trust Mark type identifier,
                 the list in the response is filtered to include only
-                the Entities for which that Trust Mark identifier has been
+                the Entities for which that Trust Mark type identifier has been
                 issued and is still valid.
               </t>
               <t hangText="sub">
@@ -4645,7 +4645,7 @@ Content-Type: application/json
               Trust Marked Entities Listing Request
             </name>
             <artwork><![CDATA[
-GET /trust_marked_list?trust_mark_id=https%3A%2F%2Ffederation.example.org%2Fopenid_relying_party%2Fprivate%2Funder-age HTTP/1.1
+GET /trust_marked_list?trust_mark_type=https%3A%2F%2Ffederation.example.org%2Fopenid_relying_party%2Fprivate%2Funder-age HTTP/1.1
 Host: trust-mark-issuer.example.org
 ]]></artwork>
           </figure>
@@ -4707,9 +4707,9 @@ Content-Type: application/json
           </t>
           <t>
             <list style="hanging">
-              <t hangText="trust_mark_id">
+              <t hangText="trust_mark_type">
                 <vspace/>
-                REQUIRED. Trust Mark identifier.
+                REQUIRED. Identifier for the type of the Trust Mark.
               </t>
               <t hangText="sub">
                 <vspace/>
@@ -4730,13 +4730,13 @@ Content-Type: application/json
           <figure>
             <preamble>
               The following is a non-normative example of an HTTP
-              request for a Trust Mark with a specific Trust Mark ID and subject:
+              request for a Trust Mark with a specific Trust Mark type identifier and subject:
             </preamble>
             <name>
               Trust Mark Request
             </name>
             <artwork><![CDATA[
-GET /trust_mark?trust_mark_id=https%3A%2F%2Fwww.spid.gov.it%2Fcertification%2Frp&sub=https%3A%2F%2Frp.example.it%2Fspid HTTP/1.1
+GET /trust_mark?trust_mark_type=https%3A%2F%2Fwww.spid.gov.it%2Fcertification%2Frp&sub=https%3A%2F%2Frp.example.it%2Fspid HTTP/1.1
 Host: tuber.cert.example.org
 ]]></artwork>
           </figure>
@@ -7339,7 +7339,23 @@ HTTP/1.1 302 Found
           </t>
           <t hangText="Trust Mark Status">
             <vspace/>
-            The Trust Mark Status endpoint enables querying the status of Trust Marks in real time. Similar to the Federation Fetch endpoint, in cases where the Trust Mark Status endpoint is not protected by any client authentication method, requests to validate Trust Marks may not necessarily indicate an actual interaction or relationship between Entities, as they could simply be part of routine network inspection or discovery processes. This could potentially enable Trust Mark issuers to track Entities evaluating Trust Marks about other Entities through standard network diagnostic tools like IPv4/IPv6 addresses and DNS Whois entries. To mitigate tracking risks, implementers can use short-lived Trust Marks, or using the Trust Marked Entities Listing (<xref target="tm_listing"/>) using only the <spanx style="verb">trust_mark_id</spanx> parameter and not the <spanx style="verb">sub</spanx> parameter, reducing the need to use the Trust Mark Status endpoint.
+	    The Trust Mark Status endpoint enables querying the status
+	    of Trust Marks in real time.
+	    Similar to the Federation Fetch endpoint,
+	    in cases where the Trust Mark Status endpoint is not protected
+	    by any client authentication method,
+	    requests to validate Trust Marks may not necessarily indicate
+	    an actual interaction or relationship between Entities, as they could
+	    simply be part of routine network inspection or discovery processes.
+	    This could potentially enable Trust Mark issuers to track Entities
+	    evaluating Trust Marks about other Entities
+	    through standard network diagnostic tools like
+	    IPv4/IPv6 addresses and DNS Whois entries.
+	    To mitigate tracking risks, implementers can use short-lived Trust Marks,
+	    or use the Trust Marked Entities Listing (<xref target="tm_listing"/>)
+	    with only the <spanx style="verb">trust_mark_type</spanx> parameter
+	    and not the <spanx style="verb">sub</spanx> parameter,
+	    reducing the need to use the Trust Mark Status endpoint.
           </t>
           <t hangText="Federation Fetch Endpoint">
             <vspace/>
@@ -8545,10 +8561,10 @@ HTTP/1.1 302 Found
 	  <t>
 	    <list style="symbols">
 	      <t>
-		Claim Name: <spanx style="verb">trust_mark_id</spanx>
+		Claim Name: <spanx style="verb">trust_mark_type</spanx>
 	      </t>
 	      <t>
-		Claim Description: Trust Mark Identifier
+		Claim Description: Trust Mark Type Identifier
 	      </t>
 	      <t>
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
@@ -10160,6 +10176,10 @@ Host: op.umu.se
      </t>
 	   <t>
 	     Fixed #172: Added Resolved Metadata as defined term.
+	  </t>
+	  <t>
+	    Fixed #194: Renamed <spanx style="verb">trust_mark_id</spanx>
+	    to <spanx style="verb">trust_mark_type</spanx>.
 	  </t>
 	</list>
       </t>
