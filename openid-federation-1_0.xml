@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="8" month="May" year="2025"/>
+    <date day="15" month="May" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -5351,6 +5351,9 @@ Content-Type: application/json
 	For instance, the configuration endpoint for the Entity Identifier
 	<spanx style="verb">https://entity.example</spanx> is the URL
 	<spanx style="verb">https://entity.example/.well-known/openid-federation</spanx>.
+	If the Entity Identifier contains a trailing "/" character,
+	it MUST be removed before concatenating
+	<spanx style="verb">/.well-known/openid-federation</spanx>.
       </t>
       <t>
         Federation Entities MUST make an Entity Configuration document
@@ -7167,6 +7170,42 @@ HTTP/1.1 302 Found
 
     </section>
 
+    <section anchor="StringOps" title="String Operations">
+      <t>
+	Processing some OpenID Federation messages requires comparing
+	values in the messages to other values.
+	For example, the Entity Identifier in
+	an <spanx style="verb">iss</spanx> claim might be compared to
+	the Entity Identifier in a <spanx style="verb">sub</spanx> claim.
+	Comparing Unicode <xref target="UNICODE"/> strings,
+	however, has significant security implications.
+      </t>
+      <t>
+	Therefore, comparisons between JSON strings and other Unicode
+	strings MUST be performed as specified below:
+
+	<list style="numbers">
+	  <t>
+	    Remove any JSON applied escaping to produce an array of
+	    Unicode code points.
+	  </t>
+	  <t>
+	    Unicode Normalization <xref target="USA15"/> MUST NOT
+	    be applied at any point to either the JSON string or to
+	    the string it is to be compared against.
+	  </t>
+	  <t>
+	    Comparisons between the two strings MUST be performed as a
+	    Unicode code point to code point equality comparison.
+	  </t>
+	</list>
+      </t>
+      <t>
+	Note that this is the same comparison procedure as specified in
+	Section 14 of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
+      </t>
+    </section>
+
     <section anchor="Implementation" title="Implementation Considerations">
       <t>
 	This section provides guidance to implementers and deployers of Federations
@@ -8841,6 +8880,30 @@ HTTP/1.1 302 Found
 	</front>
       </reference>
 
+      <reference anchor="UNICODE" target="http://www.unicode.org/versions/latest/">
+	<front>
+	  <title abbrev="Unicode">The Unicode Standard</title>
+	  <author>
+	    <organization>The Unicode Consortium</organization>
+	    <address />
+	  </author>
+	  <date />
+	</front>
+      </reference>
+
+      <reference anchor="USA15" target="https://www.unicode.org/reports/tr15/">
+	<front>
+	  <title>Unicode Normalization Forms</title>
+
+	  <author fullname="Ken Whistler" initials="K." surname="Whistler">
+	  </author>
+
+	  <date day="12" month="August" year="2023" />
+	</front>
+
+	<seriesInfo name="Unicode Standard Annex" value="15" />
+      </reference>
+
     </references>
 
     <references title="Informative References">
@@ -10160,6 +10223,9 @@ Host: op.umu.se
      </t>
 	   <t>
 	     Fixed #172: Added Resolved Metadata as defined term.
+	  </t>
+	  <t>
+	    Fixed #202: Added String Operations section.
 	  </t>
 	</list>
       </t>
