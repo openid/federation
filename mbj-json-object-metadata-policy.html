@@ -53,7 +53,7 @@
     intervaltree 3.1.0
     Jinja2 3.1.2
     lxml 5.4.0
-    platformdirs 4.3.7
+    platformdirs 4.3.8
     pycountry 24.6.1
     PyYAML 6.0.1
     requests 2.31.0
@@ -1258,7 +1258,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-05-13" class="published">13 May 2025</time>
+<time datetime="2025-05-17" class="published">17 May 2025</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -4050,7 +4050,7 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-6.1.3.1.1-4.1">
                   <p id="section-6.1.3.1.1-4.1.1">
-                    Mandatory to support: string, number, boolean, object, array<a href="#section-6.1.3.1.1-4.1.1" class="pilcrow">¶</a></p>
+                    Mandatory to support: string, number, boolean, array<a href="#section-6.1.3.1.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-6.1.3.1.1-5">
@@ -4058,8 +4058,7 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-6.1.3.1.1-6.1">
                   <p id="section-6.1.3.1.1-6.1.1">
-                    Mandatory to support: string, number, boolean, object,
-                    array, null<a href="#section-6.1.3.1.1-6.1.1" class="pilcrow">¶</a></p>
+                    Mandatory to support: string, number, boolean, array, null<a href="#section-6.1.3.1.1-6.1.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-6.1.3.1.1-7">
@@ -4203,7 +4202,7 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-6.1.3.1.3-4.1">
                   <p id="section-6.1.3.1.3-4.1.1">
-                    Mandatory to support: string, number, boolean, object, array<a href="#section-6.1.3.1.3-4.1.1" class="pilcrow">¶</a></p>
+                    Mandatory to support: string, number, boolean, array<a href="#section-6.1.3.1.3-4.1.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-6.1.3.1.3-5">
@@ -4211,7 +4210,7 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-6.1.3.1.3-6.1">
                   <p id="section-6.1.3.1.3-6.1.1">
-                    Mandatory to support: string, number, boolean, object, array<a href="#section-6.1.3.1.3-6.1.1" class="pilcrow">¶</a></p>
+                    Mandatory to support: string, number, boolean, array<a href="#section-6.1.3.1.3-6.1.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-6.1.3.1.3-7">
@@ -4533,17 +4532,20 @@ li > p:last-of-type:only-child {
  Some JSON libraries may have issues comparing JSON objects.
  For this reason, support for applying metadata policy to
  metadata values that are JSON objects is mandatory only for the
- <code>value</code>,
- <code>default</code>, and
  <code>essential</code>
- operators, which do not require comparison of values.
+ operator, which does not require comparison of values.
  It is optional for the
  <code>add</code>,
  <code>one_of</code>,
  <code>subset_of</code>, and
  <code>superset_of</code>
  operators, which operate on JSON arrays
- and therefore require comparison of values.<a href="#section-6.1.3.1.8-2" class="pilcrow">¶</a></p>
+ and therefore require comparison of values.
+ And it optional for the
+ <code>value</code> and
+ <code>default</code> operators,
+ since merging values and defaults requires comparing
+ the operators' values with existing ones.<a href="#section-6.1.3.1.8-2" class="pilcrow">¶</a></p>
 <p id="section-6.1.3.1.8-3">
                 The <code>scope</code> OAuth 2.0 client metadata
                 parameter, defined in <span>[<a href="#RFC7591" class="cite xref">RFC7591</a>]</span> and represented by
@@ -12636,7 +12638,10 @@ Host: op.umu.se
 </li>
         <li class="normal" id="appendix-C-3.7">
           <p id="appendix-C-3.7.1">
-     Fixed #35: Added note about metadata policy and comparing JSON objects.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
+     Fixed #35: Removed requirement for the <code>value</code>
+     and <code>default</code> operators to support
+     JSON object values, since merging them requires comparison.
+     Added note about metadata policy and comparing JSON objects.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
