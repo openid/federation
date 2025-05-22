@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="14" month="May" year="2025"/>
+    <date day="21" month="May" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -2094,7 +2094,7 @@
                 Metadata parameter JSON values:
                 <list style="symbols">
                   <t>
-                    Mandatory to support: string, number, boolean, object, array
+                    Mandatory to support: string, number, boolean, array
                   </t>
                 </list>
               </t>
@@ -2102,8 +2102,7 @@
                 Operator JSON values:
                 <list style="symbols">
                   <t>
-                    Mandatory to support: string, number, boolean, object,
-                    array, null
+                    Mandatory to support: string, number, boolean, array, null
                   </t>
                 </list>
               </t>
@@ -2236,7 +2235,7 @@
                 Metadata parameter JSON values:
                 <list style="symbols">
                   <t>
-                    Mandatory to support: string, number, boolean, object, array
+                    Mandatory to support: string, number, boolean, array
                   </t>
                 </list>
               </t>
@@ -2244,7 +2243,7 @@
                 Operator JSON values:
                 <list style="symbols">
                   <t>
-                    Mandatory to support: string, number, boolean, object, array
+                    Mandatory to support: string, number, boolean, array
                   </t>
                 </list>
               </t>
@@ -2541,7 +2540,25 @@
                 <spanx style="verb">superset_of</spanx> with identical array
                 values.
               </t>
-
+	      <t>
+		Some JSON libraries may have issues comparing JSON objects.
+		For this reason, support for applying metadata policy to
+		metadata values that are JSON objects is mandatory only for the
+		<spanx style="verb">essential</spanx>
+		operator, which does not require comparison of values.
+		It is OPTIONAL for the
+		<spanx style="verb">add</spanx>,
+		<spanx style="verb">one_of</spanx>,
+		<spanx style="verb">subset_of</spanx>, and
+		<spanx style="verb">superset_of</spanx>
+		operators, which operate on JSON arrays
+		and therefore require comparison of values.
+		And it is OPTIONAL for the
+		<spanx style="verb">value</spanx> and
+		<spanx style="verb">default</spanx> operators,
+		since merging values and defaults requires comparing
+		the operators' values with existing ones.
+	      </t>
               <t>
                 The <spanx style="verb">scope</spanx> OAuth 2.0 client metadata
                 parameter, defined in <xref target="RFC7591"/> and represented by
@@ -10176,6 +10193,12 @@ Host: op.umu.se
      </t>
 	   <t>
 	     Fixed #172: Added Resolved Metadata as defined term.
+	  </t>
+	  <t>
+	    Fixed #35: Removed requirement for the <spanx style="verb">value</spanx>
+	    and <spanx style="verb">default</spanx> operators to support
+	    JSON object values, since merging them requires comparison.
+	    Added note about metadata policy and comparing JSON objects.
 	  </t>
 	  <t>
 	    Fixed #194: Renamed <spanx style="verb">trust_mark_id</spanx>
