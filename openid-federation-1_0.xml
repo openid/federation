@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Federation">OpenID Federation 1.0 -
-      draft 42
+      draft 43
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="4" month="December" year="2024"/>
+    <date day="22" month="May" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -118,12 +118,10 @@
         and that it adheres to the federation's policies.
           </t>
       <t>
-        This specification defines basic components used to build
-        multilateral federations and describes how to apply them when
-        the underlying authentication protocol used is OpenID Connect or
-        the underlying authorization protocol is OAuth 2.0.
-        However, these components can also be
-        used for trust establishment with other application protocols.
+        This specification defines basic components to build multilateral
+        federations. It also defines how to apply them in the contexts of OpenID
+        Connect and OAuth 2.0. These components can be used by other application
+        protocols for the purpose of establishing trust.
       </t>
     </abstract>
   </front>
@@ -215,9 +213,10 @@
       <section anchor="requirements-language" title="Requirements Notation and Conventions">
         <t>
           The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-          "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this
-          document are to be interpreted as described in
-          BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/>.
+          "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL"
+          in this document are to be interpreted as described in
+          BCP 14 <xref target="RFC2119"/> <xref target="RFC8174"/>
+	  when, and only when, they appear in all capitals, as shown here.
         </t>
 	<t>
 	  All uses of JSON Web Signature (JWS) <xref target="RFC7515"/>
@@ -365,20 +364,27 @@
             <t hangText="Trust Mark">
               Statement of conformance to a
               well-scoped set of trust and/or interoperability requirements
-              as determined by an accreditation authority. 
-              Each Trust Mark has a Trust Mark identifier.
+              as determined by an accreditation authority.
+              Each Trust Mark has a Trust Mark type identifier.
             </t>
             <t hangText="Trust Mark Issuer">
               A Federation Entity that issues Trust Marks.
             </t>
             <t hangText="Trust Mark Owner">
-              An Entity that owns the right to a Trust Mark identifier. 
-            </t>            
+              An Entity that owns the right to a Trust Mark type identifier.
+            </t>
             <t hangText="Federation Entity Keys">
               Keys used for the cryptographic signatures required by
               the trust mechanisms defined in this specification.
               Every participant in a Federation publishes its public
               Federation Entity Keys in its Entity Configuration.
+            </t>
+            <t hangText="Resolved Metadata">
+              The metadata that results from applying the metadata policy
+              in the Trust Chain to the metadata in the Entity Configuration 
+              for the subject of the Trust Chain. The Resolved Metadata
+              is the metadata that is used when interacting with
+              the Entity.
             </t>
           </list>
         </t>
@@ -437,7 +443,7 @@
         OpenID Connect is used in many of the examples in this
         specification, however this does not mean that this specification can only be used
         with OpenID Connect. On the contrary, it can also be
-        used to build federations for any other protocols.
+        used to build federations for other protocols.
       </t>
 
       <section title="Cryptographic Trust Mechanism" anchor="CryptographicTrustMechanism">
@@ -493,6 +499,9 @@
           requires support for it (<spanx style="verb">alg</spanx>
           value of <spanx style="verb">RS256</spanx>).
           Federations MAY also specify different mandatory-to-implement algorithms.
+          Note that a Trust Chain can contain Entity Statements signed using different
+          signing algorithms, as long as each signature uses a signature algorithm
+          supported by the trust framework and implementations in use.
         </t>
 	<t>
 	  Entity Statement JWTs MUST include the
@@ -654,15 +663,15 @@
               OPTIONAL. An array of JSON objects, each representing
               a Trust Mark.
               Each JSON object MUST contain the following two claims
-              and MAY contain other claims. All the claims in the
-              JSON object MUST have the same values as those
-              contained in the Trust Mark JWT.
+              and MAY contain other claims. The <spanx style="verb">trust_mark_type</spanx>
+              claim in this object MUST have the same value as the
+              <spanx style="verb">trust_mark_type</spanx> claim in the Trust Mark JWT.
 
               <list style="hanging">
-                <t hangText="id">
-                  The Trust Mark identifier.
+                <t hangText="trust_mark_type">
+                  Identifier for the type of the Trust Mark.
                   It MUST be the same value as the
-                  <spanx style="verb">id</spanx>
+                  <spanx style="verb">trust_mark_type</spanx>
                   claim contained in the
                   Trust Mark JWT.
                 </t>
@@ -677,27 +686,27 @@
               <vspace/>
               OPTIONAL.
               A Trust Anchor MAY use this claim to tell which combination of
-              Trust Mark identifiers and issuers are trusted by the federation.
+              Trust Mark type identifiers and issuers are trusted by the federation.
               This claim MUST be ignored if present in an Entity Configuration
               for an Entity that is not a Trust Anchor.
-              It is a JSON object with member names that are Trust Mark identifiers and
+              It is a JSON object with member names that are Trust Mark type identifiers and
               each corresponding value being an array of Entity Identifiers
-	            that are trusted to represent the accreditation authority
-	            for Trust Marks with that identifier.
-              If the array following a Trust Mark identifier is empty,
+	      that are trusted to represent the accreditation authority
+	      for Trust Marks with that identifier.
+              If the array following a Trust Mark type identifier is empty,
               anyone MAY issue Trust Marks with that identifier.
-	            This claim MUST NOT be present in Subordinate Statements.
+	      This claim MUST NOT be present in Subordinate Statements.
               Trust Marks are described in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_mark_owners">
               <vspace/>
               OPTIONAL.
-              If a Federation Operator knows that a Trust Mark identifier is owned
+              If a Federation Operator knows that a Trust Mark type identifier is owned
               by an Entity different from the Trust Mark Issuer, then that
               knowledge MUST be expressed in this claim.
               This claim MUST be ignored if present in an Entity Configuration
               for an Entity that is not a Trust Anchor.
-              It is a JSON object with member names that are Trust Mark identifiers and
+              It is a JSON object with member names that are Trust Mark type identifiers and
               each corresponding value being a JSON object with these members:
               <list style="hanging">
                 <t hangText="sub">
@@ -732,6 +741,13 @@
 	      the current <spanx style="verb">federation_fetch_endpoint</spanx>
 	      location can be determined by retrieving
 	      the Entity Configuration of the issuer.
+            </t>
+            <t hangText="trust_anchor">
+              <vspace/>
+              OPTIONAL.  Its value MUST be the Entity Identifier of the Trust Anchor
+                that the OP selected to process the Explicit Registration request.
+                This claim is specific to Explicit Registration responses and is not a
+                general Entity Statement claim.
             </t>
           </list>
         </t>
@@ -1408,8 +1424,8 @@
           <list style="hanging">
             <t hangText="client_registration_types_supported">
               <vspace/>
-              REQUIRED. Array specifying the federation types supported.
-              Federation-type values defined by this specification are
+              REQUIRED. An array of strings specifying the client registration
+              types the OP supports. Values defined by this specification are
               <spanx style="verb">automatic</spanx>
               and <spanx style="verb">explicit</spanx>.
 	      Additional values MAY be defined and used, without restriction by this specification.
@@ -1554,7 +1570,7 @@
 	  The parameters defined in <xref target="common_metadata"/> are applicable.
 	  In addition, while it is not yet a standard,
 	  deployments MAY use the protected resource metadata parameters
-	  defined in <xref target="I-D.ietf-oauth-resource-metadata"/>.
+	  defined in <xref target="RFC9728"/>.
         </t>
       </section>
 
@@ -1830,10 +1846,13 @@
 
 	      <t hangText="Equal Opportunity">
 		<vspace/>
-		All Superior Entities in a Trust Chain can contribute to metadata policies
-		of the Trust Chain subject on an equal basis.
+		All Superior Entities in a Trust Chain can contribute metadata policies
+		on an equal basis, provided their contributions result in a combined
+        metadata policy that is logically sound.
 		For instance, any Intermediate can further restrict the metadata
 		of its Subordinates relative to what its Superiors specified.
+        An Intermediate that introduces a conflict among the metadata policies
+        causes the Trust Chain to be deemed invalid.
 	      </t>
 
               <t hangText="Specificity and Granularity">
@@ -2018,9 +2037,14 @@
                 a policy error.
               </t>
               <t>
-                MUST declare what other operators it may be combined within a
-                metadata parameter policy. Combinations that are not allowed
-                MUST result in a policy error.
+                MUST declare what other operators it may be combined with,
+                which applies to both individual as well as merged metadata
+                parameter policies, as described in
+                <xref target="metadata_policy_structure"/> and
+                <xref target="metadata_policy_enforcement"/>. A combination may
+                be unconditional, or conditional, requiring the configured
+                values of the two operators to meet certain criteria.
+                Combinations that are not allowed MUST produce a policy error.
               </t>
               <t>
                 MUST declare in what order it is to be applied to a metadata
@@ -2040,6 +2064,12 @@
               <t>
                 An operator MUST NOT output a metadata parameter with the
                 <spanx style="verb">null</spanx> value.
+              </t>
+              <t>
+                Metadata parameters and policies that conform to the JSON
+                grammar but do not represent interoperable uses of JSON,
+                as per Sections 4 and 8 of <xref target="RFC8259"/>,
+                can cause unpredictable behavior.
               </t>
 
             </list>
@@ -2064,7 +2094,7 @@
                 Metadata parameter JSON values:
                 <list style="symbols">
                   <t>
-                    Mandatory to support: string, number, boolean, object, array
+                    Mandatory to support: string, number, boolean, array
                   </t>
                 </list>
               </t>
@@ -2072,8 +2102,7 @@
                 Operator JSON values:
                 <list style="symbols">
                   <t>
-                    Mandatory to support: string, number, boolean, object,
-                    array, null
+                    Mandatory to support: string, number, boolean, array, null
                   </t>
                 </list>
               </t>
@@ -2081,7 +2110,37 @@
                 Combination with other operators in a metadata parameter policy:
                 <list style="symbols">
                   <t>
-                    MAY be combined with <spanx style="verb">essential</spanx>.
+                    MAY be combined with <spanx style="verb">add</spanx>,
+                    in which case the values of <spanx style="verb">add</spanx>
+                    MUST be a subset of the values of
+                    <spanx style="verb">value</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">default</spanx>
+                    if the value of <spanx style="verb">value</spanx> is not
+                    null.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">one_of</spanx>,
+                    in which case the value of <spanx style="verb">value</spanx>
+                    MUST be among the <spanx style="verb">one_of</spanx> values.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">subset_of</spanx>,
+                    in which case the values of <spanx style="verb">value</spanx>
+                    MUST be a subset of the values of
+                    <spanx style="verb">subset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">superset_of</spanx>,
+                    in which case the values of <spanx style="verb">value</spanx>
+                    MUST be a superset of the values of
+                    <spanx style="verb">superset_of</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">essential</spanx>,
+                    except when <spanx style="verb">value</spanx> is null and
+                    <spanx style="verb">essential</spanx> is true.
                   </t>
                 </list>
               </t>
@@ -2090,7 +2149,7 @@
               </t>
               <t>
                 Operator value merge: Allowed only when the operator values are
-                equal. If not, this MUST result in a policy error.
+                equal. If not, this MUST produce a policy error.
               </t>
             </section>
 
@@ -2131,6 +2190,12 @@
                 Combination with other operators in a metadata parameter policy:
                 <list style="symbols">
                   <t>
+                    MAY be combined with <spanx style="verb">value</spanx>,
+                    in which case the values of <spanx style="verb">add</spanx>
+                    MUST be a subset of the values of
+                    <spanx style="verb">value</spanx>.
+                  </t>
+                  <t>
                     MAY be combined with <spanx style="verb">default</spanx>.
                   </t>
                   <t>
@@ -2140,10 +2205,7 @@
                     <spanx style="verb">subset_of</spanx>.
                   </t>
                   <t>
-                    MAY be combined with <spanx style="verb">superset_of</spanx>,
-                    in which case the values of <spanx style="verb">add</spanx>
-                    MUST be a superset of the values of
-                    <spanx style="verb">superset_of</spanx>.
+                    MAY be combined with <spanx style="verb">superset_of</spanx>.
                   </t>
                   <t>
                     MAY be combined with <spanx style="verb">essential</spanx>.
@@ -2173,7 +2235,7 @@
                 Metadata parameter JSON values:
                 <list style="symbols">
                   <t>
-                    Mandatory to support: string, number, boolean, object, array
+                    Mandatory to support: string, number, boolean, array
                   </t>
                 </list>
               </t>
@@ -2181,7 +2243,7 @@
                 Operator JSON values:
                 <list style="symbols">
                   <t>
-                    Mandatory to support: string, number, boolean, object, array
+                    Mandatory to support: string, number, boolean, array
                   </t>
                 </list>
               </t>
@@ -2189,24 +2251,21 @@
                 Combination with other operators in a metadata parameter policy:
                 <list style="symbols">
                   <t>
+                    MAY be combined with <spanx style="verb">value</spanx>
+                    if the value  of <spanx style="verb">value</spanx> is not
+                    null.
+                  </t>
+                  <t>
                     MAY be combined with <spanx style="verb">add</spanx>.
                   </t>
                   <t>
-                    MAY be combined with <spanx style="verb">one_of</spanx>, in
-                    which case the <spanx style="verb">default</spanx> value
-                    MUST be among the <spanx style="verb">one_of</spanx> values.
+                    MAY be combined with <spanx style="verb">one_of</spanx>.
                   </t>
                   <t>
-                    MAY be combined with <spanx style="verb">subset_of</spanx>,
-                    in which case the <spanx style="verb">default</spanx> values
-                    MUST be a subset of the <spanx style="verb">subset_of</spanx>
-                    values.
+                    MAY be combined with <spanx style="verb">subset_of</spanx>.
                   </t>
                   <t>
-                    MAY be combined with <spanx style="verb">superset_of</spanx>,
-                    in which case the <spanx style="verb">default</spanx> values
-                    MUST be a superset of the
-                    <spanx style="verb">superset_of</spanx> values.
+                    MAY be combined with <spanx style="verb">superset_of</spanx>.
                   </t>
                   <t>
                     MAY be combined with <spanx style="verb">essential</spanx>.
@@ -2218,7 +2277,7 @@
               </t>
               <t>
                 Operator value merge: The operator values MUST be equal. If the
-                values are not equal this MUST result in a policy error.
+                values are not equal this MUST produce a policy error.
               </t>
             </section>
 
@@ -2256,9 +2315,12 @@
                 Combination with other operators in a metadata parameter policy:
                 <list style="symbols">
                   <t>
-                    MAY be combined with <spanx style="verb">default</spanx>,
-                    in which case the value of default MUST be among the
-                    <spanx style="verb">one_of</spanx> values.
+                    MAY be combined with <spanx style="verb">value</spanx>,
+                    in which case the value of <spanx style="verb">value</spanx>
+                    MUST be among the <spanx style="verb">one_of</spanx> values.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">default</spanx>.
                   </t>
                   <t>
                     MAY be combined with <spanx style="verb">essential</spanx>.
@@ -2281,14 +2343,12 @@
                 Name: <spanx style="verb">subset_of</spanx>
               </t>
               <t>
-                Action: If the metadata parameter is present, this operator
-                computes the intersection between the values of the operator and
-                the metadata parameter. If the intersection is non-empty, the
-                metadata parameter is set to the values in the intersection. If
-                the intersection is empty, the metadata parameter MUST be
-                removed. Note that this behavior makes
-                <spanx style="verb">subset_of</spanx> a potential value modifier
-                in addition to it being a value check.
+                Action: If the metadata parameter is present, it is assigned the
+                intersection between the values of the operator and the
+                metadata parameter. Note that the resulting intersection may
+                thus be an empty array <spanx style="verb">[]</spanx>. Also note
+                that <spanx style="verb">subset_of</spanx> is a potential value
+                modifier in addition to it being a value check.
               </t>
               <t>
                 Metadata parameter JSON values:
@@ -2316,16 +2376,19 @@
                 Combination with other operators in a metadata parameter policy:
                 <list style="symbols">
                   <t>
+                    MAY be combined with <spanx style="verb">value</spanx>,
+                    in which case the values of <spanx style="verb">value</spanx>
+                    MUST be a subset of the values of
+                    <spanx style="verb">subset_of</spanx>.
+                  </t>
+                  <t>
                     MAY be combined with <spanx style="verb">add</spanx>, in
                     which case the values of <spanx style="verb">add</spanx>
                     MUST be a subset of the values of
                     <spanx style="verb">subset_of</spanx>.
                   </t>
                   <t>
-                    MAY be combined with <spanx style="verb">default</spanx>, in
-                    which case the values of <spanx style="verb">default</spanx>
-                    MUST be a subset of the values of
-                    <spanx style="verb">subset_of</spanx>.
+                    MAY be combined with <spanx style="verb">default</spanx>.
                   </t>
                   <t>
                     MAY be combined with <spanx style="verb">superset_of</spanx>,
@@ -2344,8 +2407,9 @@
               <t>
                 Operator value merge: The result of merging the values of two
                 <spanx style="verb">subset_of</spanx> operators is the
-                intersection of the operator values. If the intersection is
-                empty, this MUST result in a policy error.
+                intersection of the operator values. Note that the resulting
+                intersection may thus be an empty array
+                <spanx style="verb">[]</spanx>.
               </t>
             </section>
 
@@ -2384,16 +2448,16 @@
                 Combination with other operators in a metadata parameter policy:
                 <list style="symbols">
                   <t>
-                    MAY be combined with <spanx style="verb">add</spanx>, in
-                    which case the values of <spanx style="verb">add</spanx>
+                    MAY be combined with <spanx style="verb">value</spanx>,
+                    in which case the values of <spanx style="verb">value</spanx>
                     MUST be a superset of the values of
                     <spanx style="verb">superset_of</spanx>.
                   </t>
                   <t>
-                    MAY be combined with <spanx style="verb">default</spanx>, in
-                    which case the values of <spanx style="verb">default</spanx>
-                    MUST be a superset of the values of
-                    <spanx style="verb">superset_of</spanx>.
+                    MAY be combined with <spanx style="verb">add</spanx>.
+                  </t>
+                  <t>
+                    MAY be combined with <spanx style="verb">default</spanx>.
                   </t>
                   <t>
                     MAY be combined with <spanx style="verb">subset_of</spanx>,
@@ -2449,6 +2513,11 @@
                 Combination with other operators in a metadata parameter policy:
                 <list style="symbols">
                   <t>
+                    MAY be combined with <spanx style="verb">value</spanx>,
+                    except when <spanx style="verb">value</spanx> is null and
+                    <spanx style="verb">essential</spanx> is true.
+                  </t>
+                  <t>
                     MAY be combined with any other operator.
                   </t>
                 </list>
@@ -2457,8 +2526,8 @@
                 Order of application: Last
               </t>
               <t>
-                Operator value merge: The result of merging the values of two 
-                <spanx style="verb">essential</spanx> operators is the logical 
+                Operator value merge: The result of merging the values of two
+                <spanx style="verb">essential</spanx> operators is the logical
                 disjunction (<spanx style="verb">OR</spanx>) of the operator values.
               </t>
             </section>
@@ -2471,7 +2540,25 @@
                 <spanx style="verb">superset_of</spanx> with identical array
                 values.
               </t>
-
+	      <t>
+		Some JSON libraries may have issues comparing JSON objects.
+		For this reason, support for applying metadata policy to
+		metadata values that are JSON objects is mandatory only for the
+		<spanx style="verb">essential</spanx>
+		operator, which does not require comparison of values.
+		It is OPTIONAL for the
+		<spanx style="verb">add</spanx>,
+		<spanx style="verb">one_of</spanx>,
+		<spanx style="verb">subset_of</spanx>, and
+		<spanx style="verb">superset_of</spanx>
+		operators, which operate on JSON arrays
+		and therefore require comparison of values.
+		And it is OPTIONAL for the
+		<spanx style="verb">value</spanx> and
+		<spanx style="verb">default</spanx> operators,
+		since merging values and defaults requires comparing
+		the operators' values with existing ones.
+	      </t>
               <t>
                 The <spanx style="verb">scope</spanx> OAuth 2.0 client metadata
                 parameter, defined in <xref target="RFC7591"/> and represented by
@@ -2534,14 +2621,14 @@
                     <td>true</td>
                     <td>[a,b,c]</td>
                     <td>[d,e]</td>
-                    <td>error</td>
+                    <td>[]</td>
                   </tr>
 
                   <tr>
                     <td>false</td>
                     <td>[a,b,c]</td>
                     <td>[d,e]</td>
-                    <td>no parameter</td>
+                    <td>[]</td>
                   </tr>
 
                   <tr>
@@ -2598,8 +2685,8 @@
               Statement claim, in which case the operator MUST be understood
               and processed. If an additional operator listed in
               <spanx style="verb">metadata_policy_crit</spanx> is not understood
-              or cannot be processed, then this MUST result in a policy error
-              and the Trust Chain MUST be considered invalid.
+              or cannot be processed, then this MUST produce a policy error and
+              the Trust Chain MUST be considered invalid.
             </t>
 
           </section>
@@ -2648,7 +2735,7 @@
               </t>
 
               <t>
-                An important procedure during the iteration is the
+                An important task during the iteration is the
                 <spanx style="verb">metadata_policy</spanx> validation. It MUST
                 ensure the data structure is compliant and that every metadata
                 parameter policy contains only allowed operator combinations, as
@@ -2658,7 +2745,7 @@
                 contains no operators that cannot be understood and processed
                 whose names are among the collected
                 <spanx style="verb">metadata_policy_crit</spanx> values. An
-                unsuccessful validation MUST result in a policy error.
+                unsuccessful validation MUST produce a policy error.
               </t>
 
               <t>
@@ -2678,7 +2765,7 @@
               </t>
 
               <t>
-                The merge is performed at all three levels of the
+                The merge is performed at each of the three levels of the
                 <spanx style="verb">metadata_policy</spanx> data structure
                 described in <xref target="metadata_policy_structure"/>, by
                 starting from the top level:
@@ -2735,7 +2822,7 @@
                       that are not allowed, as described in
                       <xref target="metadata_policy_operators"/> and in
                       accordance with the specifications of the operators, this
-                      MUST result in a policy error.
+                      MUST produce a policy error.
                     </t>
                     <t>
                       Subordinate metadata parameter policies that are not
@@ -2757,7 +2844,7 @@
                       <xref target="metadata_policy_operators"/> and in
                       accordance with the operator specification. If an operator
                       value merge is not allowed or otherwise unsuccessful this
-                      MUST result in a policy error.
+                      MUST produce a policy error.
                     </t>
                     <t>
                       Subordinate operators that are not present in the current
@@ -2810,19 +2897,19 @@
 
               <t>
                 If the application of metadata policies results in illegal or
-                otherwise incorrect resolved metadata, then the metadata MUST be regarded
+                otherwise incorrect Resolved Metadata, then the metadata MUST be regarded
                 as broken and MUST NOT be used.
               </t>
 
               <t>
                 The Trust Chain subject is responsible to verify that it is
-                able to support and comply with the resolved metadata that results from
+                able to support and comply with the Resolved Metadata that results from
                 the application of federation metadata policies. For instance,
                 this may involve a check that cryptographic algorithms required
-                by the resulting resolved metadata are supported.
+                by the resulting Resolved Metadata are supported.
 		Likewise, the Trust Chain subject MUST verify that
 		all the required metadata parameters for its Entity Types are present
-		and all the metadata values in the resolved metadata are valid.
+		and all the metadata values in the Resolved Metadata are valid.
 		When metadata policies
                 change, Trust Chain subjects may need to reevaluate their
                 support and compliance.
@@ -3083,10 +3170,10 @@
   "max_path_length": 2,
   "naming_constraints": {
     "permitted": [
-      "https://.example.com"
+      ".example.com"
     ],
     "excluded": [
-      "https://east.example.com"
+      "east.example.com"
     ]
   },
   "allowed_entity_types": [
@@ -3247,12 +3334,15 @@
           Trust Marks.
         </t>
         <t>
-          Trust Mark JWTs MUST be explicitly typed by setting the
-          <spanx style="verb">typ</spanx> header parameter to
-          <spanx style="verb">trust-mark+jwt</spanx> to prevent
+          Trust Mark JWTs MUST be explicitly typed by using the
+          <spanx style="verb">typ</spanx> header parameter to prevent
           cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+          The <spanx style="verb">typ</spanx> header parameter value MUST be
+          <spanx style="verb">trust-mark+jwt</spanx>
+          unless the trust framework in use defines a more specific
+          media type value for the particular kind of Trust Mark.
 	  Trust Marks without a <spanx style="verb">typ</spanx> header parameter
-	  or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
+	  or an unrecognized <spanx style="verb">typ</spanx> value MUST be rejected.
         </t>
 
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
@@ -3269,13 +3359,13 @@
                 <vspace/>
                 REQUIRED. String. Entity this Trust Mark applies to.
               </t>
-              <t hangText="id">
+              <t hangText="trust_mark_type">
                 <vspace/>
 		REQUIRED.
-		The <spanx style="verb">id</spanx> (identifier) claim
-		defined in <xref target="idClaim"/> is used in Trust Marks
-		to provide the identifier of the Trust Mark.
-                The Trust Mark identifier
+		The <spanx style="verb">trust_mark_type</spanx> claim
+		defined in <xref target="trust_mark_claims"/> is used in Trust Marks
+		to provide the identifier of the type of the Trust Mark.
+                The Trust Mark type identifier
                 MUST be collision-resistant
                 across multiple federations.
                 It is RECOMMENDED that the
@@ -3295,7 +3385,7 @@
               </t>
               <t hangText="logo_uri">
                 <vspace/>
-                OPTIONAL. String. URL that references a logo for the Entity.
+                OPTIONAL. String. URL that references a logo for the issued Trust Mark.
 		The value of this field MUST point to a valid image file.
               </t>
               <t hangText="exp">
@@ -3350,9 +3440,9 @@
           </t>
           <t>
             If the Federation Operator knows that Trust Marks with a
-            certain Trust Mark identifier may legitimately be issued by Trust Mark Issuers
-            that are not the owner of the Trust Mark identifier, then information
-            about the owner and the Trust Mark identifier MUST be included in the
+            certain Trust Mark type identifier may legitimately be issued by Trust Mark Issuers
+            that are not the owner of the Trust Mark type identifier, then information
+            about the owner and the Trust Mark type identifier MUST be included in the
             <spanx style="verb">trust_mark_owners</spanx> claim in
 	    the Trust Anchor's Entity Configuration.
           </t>
@@ -3391,9 +3481,9 @@
                 <vspace/>
                 REQUIRED. String. The Entity this delegation applies to.
               </t>
-              <t hangText="id">
+              <t hangText="trust_mark_type">
                 <vspace/>
-                REQUIRED. String. The identifier of the Trust Mark.
+                REQUIRED. String. The identifier for the type of the Trust Mark.
               </t>
               <t hangText="iat">
                 <vspace/>
@@ -3447,20 +3537,20 @@
 	      <t>
 		If delegation is not being used (TBD HOW TO DETERMINE THIS?),
 		validate that the Trust Mark Issuer is entitled to issue Trust Marks
-		with the given Trust Mark identifier (TBD HOW TO DETERMINE THIS?).
+		with the given Trust Mark type identifier (TBD HOW TO DETERMINE THIS?).
 	      </t>
               <t>
                 Validate the signature of the Trust Mark JWT and verify that
                 it has not expired.
               </t>
               <t>
-                If the Trust Mark identifier appears in the
+                If the Trust Mark type identifier appears in the
                 <spanx style="verb">trust_mark_owners</spanx> claim
 		of the Trust Anchor's Entity Configuration,
                 verify that the Trust Mark contains
                 a <spanx style="verb">delegation</spanx>
                 claim.  (TBD WHAT TO DO IF IT DOESN'T?)
-                The claims for the Trust Mark identifier
+                The claims for the Trust Mark type identifier
                 in the <spanx style="verb">trust_mark_owners</spanx> value
                 are used in the following way:
                 <list style="symbols">
@@ -3479,22 +3569,24 @@
 	  </t>
           <t>
             Note that the Entity representing the accreditation authority
-            SHOULD be well known and trusted for a given Trust Mark identifier.
+            SHOULD be well known and trusted for a given Trust Mark type identifier.
             A Trust Anchor MAY publish a list of accreditation authorities
             of Trust Marks that SHOULD be trusted by other Entities.
             A Trust Anchor uses the <spanx style="verb">trust_mark_issuers</spanx> claim
             in its Entity Configuration to publish this information.
           </t>
           <t>
-            If a Trust Mark Issuer is issuing Trust Marks on behalf of a
-            Trust Mark Owner, then the Trust Anchor MUST publish the
-            connection between the Trust Mark identifier
+            If a Trust Mark is issued on behalf of a Trust Mark Owner, then the Trust Anchor SHOULD
+            publish the connection between the Trust Mark type identifier
 	    and the corresponding Trust Mark Issuer in the
             <spanx style="verb">trust_mark_issuers</spanx> claim. This
             signifies that the Trust Anchor has validated
             the Trust Mark Owner and that the
             Trust Mark Owner has delegated the right to issue Trust Marks
-            with a designated Trust Mark identifier to a specified Trust Mark Issuer.
+            with a designated Trust Mark type identifier to a specified Trust Mark Issuer.
+            Also, the Trust Anchor MAY provide an empty array following the Trust Mark type identifier
+            to signal that this Trust Mark can be issued by any Trust Mark Issuer to which the
+            Trust Mark Owner has delegated the right to do so.
           </t>
           <t>
             Trust Marks that are not recognized within a federation SHOULD be ignored when
@@ -3526,22 +3618,23 @@
   "exp": 1516298022,
   "trust_marks": [
     {
-     "id": "https://www.spid.gov.it/certification/rp",
+     "trust_mark_type": "https://www.spid.gov.it/certification/rp",
      "trust_mark":
-       "eyJraWQiOiJmdWtDdUtTS3hwWWJjN09lZUk3Ynlya3N5a0E1bDhPb2RFSXVyOH
-        JoNFlBIiwidHlwIjoidHJ1c3QtbWFyaytqd3QiLCJhbGciOiJSUzI1NiJ9.eyJ
-        pc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vc
-        nAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJpZCI6Imh0dHB
-        zOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb24vcnAiLCJsb2dvX3Vya
-        SI6Imh0dHBzOi8vd3d3LmFnaWQuZ292Lml0L3RoZW1lcy9jdXN0b20vYWdpZC9
-        sb2dvLnN2ZyIsInJlZiI6Imh0dHBzOi8vZG9jcy5pdGFsaWEuaXQvZG9jcy9zc
-        GlkLWNpZS1vaWRjLWRvY3MvaXQvdmVyc2lvbmUtY29ycmVudGUvIn0.AGf5Y4M
-        oJt22rznH4i7Wqpb2EF2LzE6BFEkTzY1dCBMCK-8P_vj4Boz7335pUF45XXr2j
-        x5_waDRgDoS5vOO-wfc0NWb4Zb_T1RCwcryrzV0z3jJICePMPM_1hZnBZjTNQd
-        4EsFNvKmUo_teR2yzAZjguR2Rid30O5PO8kJtGaXDmz-rWaHbmfLhlNGJnqcp9
-        Lo1bhkU_4Cjpn2bdX7RN0JyfHVY5IJXwdxUMENxZd-VtA5QYiw7kPExT53XcJO
-        89ebe_ik4D0dl-vINwYhrIz2RPnqgA1OdbK7jg0vm8Tb3aemRLG7oLntHwqLO-
-        gGYr6evM2_SgqwA0lQ9mB9yhw"
+       "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia29
+        zR20yd3VaaDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.
+        eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8
+        vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYX
+        JrX3R5cGUiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZXJ0aWZpY2F0aW9uL
+        3JwIiwibG9nb191cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdC90aGVtZXMv
+        Y3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYiOiJodHRwczovL2RvY3MuaXRhbGl
+        hLml0L2RvY3Mvc3BpZC1jaWUtb2lkYy1kb2NzL2l0L3ZlcnNpb25lLWNvcnJlbn
+        RlLyJ9.
+        L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJW
+        QBdZpjxnHBBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzS
+        an5nOmkxuAtMinU8k_-aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0Y
+        AvbMlq2pPWO5OWKdZhiFRMSprwh0GYluQkK0j1aLNMGXD3keMJd2zEoWX9D7w2f
+        XShAA48W3cNhuXyBVnCoum1K4IWK3s_fx4nIkp6W-V4jCBOpxp7Yo8LZ30o_xpE
+        OzGTIECGWVR86azOAlwVC8XSiAA"
     }
   ],
   "metadata": {
@@ -3569,7 +3662,7 @@
 	    </name>
             <artwork><![CDATA[
 {
-  "id":"https://mushrooms.federation.example.com/openid_relying_party/public/",
+  "trust_mark_type":"https://mushrooms.federation.example.com/openid_relying_party/public/",
   "iss": "https://epigeo.tm-issuer.example.it",
   "sub": "https://porcino.example.com/rp",
   "iat": 1579621160,
@@ -3594,7 +3687,7 @@
 	    </name>
             <artwork><![CDATA[
 {
-  "id":"https://mushrooms.federation.example.com/openid_relying_party/private/under-age",
+  "trust_mark_type":"https://mushrooms.federation.example.com/openid_relying_party/private/under-age",
   "iss": "https://trustissuer.pinarolo.example.it",
   "sub": "https://vavuso.example.com/rp",
   "iat": 1579621160,
@@ -3616,7 +3709,7 @@
 	    </name>
             <artwork><![CDATA[
 {
-  "id": "https://mushrooms.federation.example.com/arrosto/agreements",
+  "trust_mark_type": "https://mushrooms.federation.example.com/arrosto/agreements",
   "iss": "https://agaricaceae.example.it",
   "sub": "https://coppolino.example.com",
   "iat": 1579621160,
@@ -3642,7 +3735,7 @@
             </name>
             <artwork><![CDATA[
 {
-  "id": "https://mushrooms.federation.example.com/ottimo/commestibile",
+  "trust_mark_type": "https://mushrooms.federation.example.com/ottimo/commestibile",
   "iss": "https://cantharellus.cibarius.example.org",
   "sub": "https://gallinaccio.example.com/op",
   "iat": 1579621160,
@@ -3659,7 +3752,7 @@
 	    </name>
             <artwork><![CDATA[
 {
-  "id": "https://mushrooms.federation.example.com/trust-marks/self-signed",
+  "trust_mark_type": "https://mushrooms.federation.example.com/trust-marks/self-signed",
   "iss": "https://amanita.muscaria.example.com",
   "sub": "https://amanita.muscaria.example.com",
   "iat": 1579621160,
@@ -3682,7 +3775,7 @@
   "sub": "https://umu.se/op",
   "iat": 1577833200,
   "exp": 1609369200,
-  "id": "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf"
+  "trust_mark_type": "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf"
 }
 ]]></artwork>
           </figure>
@@ -3706,20 +3799,21 @@
             <artwork><![CDATA[
 {
   "delegation":
-    "eyJ0eXAiOiJ0cnVzdC1tYXJrLWRlbGVnYXRpb24rand0IiwiYWxnIjoiUlMyNTYiL
-     CJraWQiOiJUak5aZUVkcWREUlBTWHBvVWxoTE9VWmpjWE5KYjJ4amNpMDJWR3hDTV
-     dSa1ZVVXhNR2hqTmpkME1BIn0.
-     eyJzdWIiOiAiaHR0cHM
-     6Ly90bWkuZXhhbXBsZS5vcmciLCAiaWQiOiAiaHR0cHM6Ly9yZWZlZHMub3JnL3Np
-     cnRmaSIsICJpc3MiOiAiaHR0cHM6Ly90bV9vd25lci5leGFtcGxlLm9yZyIsICJpY
-     XQiOiAxNzI1MTc2MzAyfQ.MTPri3aSN4vxUL_yzZ16He2UsNAWE6u9u59oRl-u8kq
-     JFY95UZZxsZrCeSjLDJAclQmDfe2xHdV-UGI-zOu3wkeCW-AuIH6f8J-e_4pSHLzT
-     caZd8PvCbab2bZuQes5FYQ6xhpAQWPkry0TtHic5iN-0CZ5a1s1r3YCbj72_kicMz
-     F7WlLkMVgXDIA5TwQNuAwWavhh2c1faVYEV56uG-n_-bekIb3br6uuPtlMpRVUkoi
-     eKpwDcGxyJct-g0H436gvIm7lyKfvi0SmKxKK0AbL48-yRi1LSOXLx_60alAGHzQ-
-     XlnuREVu8VWgIPHelsyPHJPc6hQDuchyu52Nupg",
+    "eyJ0eXAiOiJ0cnVzdC1tYXJrLWRlbGVnYXRpb24rand0IiwiYWxnIjoiUl
+    MyNTYiLCJraWQiOiJrb3NHbTJ3dVpoOURHbU54QXRrdU80MHBQanBMMy1qQ
+    2YxTi1xUE8tWWVVIn0.
+    eyJzdWIiOiJodHRwczovL3RtaS5leGFtcGxlLm9yZyIsInRydXN0X21hcmt
+    fdHlwZSI6Imh0dHBzOi8vcmVmZWRzLm9yZy9zaXJ0ZmkiLCJpc3MiOiJodH
+    RwczovL3RtX293bmVyLmV4YW1wbGUub3JnIiwiaWF0IjoxNzI1MTc2MzAyfQ.
+    ao0rWGpVjEgpNyFxsKawps8q71eYnp78TzRdY4P52
+    CT8QX6etXt-2L2Z1Vw5A6jx2mhjpPwWi_sOxfiOSA5TugJfN0Gbwj7teTzM
+    0IMciuasCWgnLrKyLZjS147ZE50I9e9P8Ot8UQwhmXcLiuwsbDxSdqM4pVp
+    75lfWnmzPH0L2pDZG5COFgIgSOAlK3TVMBOR8fziF-VmWNPzAfB0lSc-hjH
+    -7q66GyT43o3Exnm6DsoLxyB8bxG99BQltLxURDT90CzM6szGcF3OG64Rbe
+    0I4lT_LAOfvhlrRbT56eK4sJNCsbVbGnDBfFmyfB_HIeBMGP0L7T5JPMOUU
+    9bjIlA",
   "iat": 1725176302,
-  "id": "https://refeds.org/sirtfi",
+  "trust_mark_type": "https://refeds.org/sirtfi",
   "sub": "https://entity.example.org",
   "exp": 1727768302,
   "iss": "https://tmi.example.org"
@@ -3738,7 +3832,7 @@
 {
   "typ": "trust-mark-delegation+jwt",
   "alg": "RS256",
-  "kid": "TjNZeEdqdDRPSXpoUlhLOUZjcXNJb2xjci02VGxCMWRkVUUxMGhjNjd0MA"
+  "kid": "kosGm2wuZh9DGmNxAtkuO40pPjpL3-jCf1N-qPO-YeU"
 }
             ]]></artwork>
           </figure>
@@ -3752,7 +3846,7 @@
             <artwork><![CDATA[
 {
   "sub": "https://tmi.example.org",
-  "id": "https://refeds.org/sirtfi",
+  "trust_mark_type": "https://refeds.org/sirtfi",
   "iss": "https://tm_owner.example.org",
   "iat": 1725176302
 }
@@ -4038,13 +4132,13 @@ Host: edugain.org
                 the error code
                 <spanx style="verb">unsupported_parameter</spanx>.
 			  </t>
-              <t hangText="trust_mark_id">
+              <t hangText="trust_mark_type">
                 <vspace/>
-                OPTIONAL. The value of this parameter is a Trust Mark identifier.
+                OPTIONAL. The value of this parameter is the identifier for the type of the Trust Mark.
 		If the responder has issued Trust Marks with the
-                specified Trust Mark identifier,
+                specified Trust Mark type identifier,
                 the list in the response is filtered to include only
-                the Immediate Subordinates for which that Trust Mark identifier has been
+                the Immediate Subordinates for which that Trust Mark type identifier has been
                 issued and is still valid.
                 If the responder does not support this feature, it MUST
                 use the HTTP status code 400 and set the content type to
@@ -4125,7 +4219,7 @@ Content-Type: application/json
       <section title="Resolve Entity" anchor="resolve">
         <t>
           An Entity MAY use a resolve endpoint to fetch
-          resolved metadata and Trust Marks for an Entity.
+          Resolved Metadata and Trust Marks for an Entity.
           The resolver fetches the subject's
           Entity Configuration, assembles a Trust Chain that starts
           with the subject's Entity Configuration and ends with the specified
@@ -4166,6 +4260,11 @@ Content-Type: application/json
                 REQUIRED. The Trust Anchor that the resolve endpoint
                 MUST use when resolving the metadata.
 		The value is an Entity identifier.
+		<vspace blankLine="1"/>
+		The <spanx style="verb">trust_anchor</spanx> request parameter
+		MAY occur multiple times, in which case,
+		the resolver MAY return a successful resolve response
+		using any of the Trust Anchor values provided.
               </t>
               <t hangText="entity_type">
                 <vspace/>
@@ -4208,7 +4307,7 @@ Host: openid.sunet.se
             A successful response MUST use the HTTP status code 200
             with the content type
             <spanx style="verb">application/resolve-response+jwt</spanx>,
-            containing resolved metadata and
+            containing Resolved Metadata and
             verified Trust Marks.
           </t>
           <t>
@@ -4226,7 +4325,7 @@ Host: openid.sunet.se
 	    with its value being the Key ID of the signing key used.
 	  </t>
           <t>
-            The resolve response JWT MAY return the Trust Chain
+            The resolve response JWT MUST return the Trust Chain
 	    from the subject to the Trust Anchor
 	    in its <spanx style="verb">trust_chain</spanx> parameter,
             sorted as shown in <xref target="trust_chain"/>.
@@ -4295,6 +4394,13 @@ Host: openid.sunet.se
                 and expressed in the <spanx style="verb">metadata</spanx> format
                 defined in <xref target="entity-statement"/>.
               </t>
+              <t hangText="trust_chain">
+                <vspace/>
+                REQUIRED. Array containing the sequence of Entity Statements
+                that compose the Trust Chain, starting with the subject and
+                ending with the selected Trust Anchor,
+                sorted as shown in <xref target="trust_chain"/>.
+              </t>
               <t hangText="trust_marks">
                 <vspace/>
                 OPTIONAL. Array of objects, each representing a Trust Mark,
@@ -4302,14 +4408,6 @@ Host: openid.sunet.se
 		Only valid Trust Marks that have been issued by Trust Mark
                 issuers trusted by the Trust Anchor to issue such Trust Marks
 		MAY appear in the resolver response.
-              </t>
-              <t hangText="trust_chain">
-                <vspace/>
-                OPTIONAL. Array containing the sequence of Entity Statements
-                that compose
-                the Trust Chain, starting with the subject and
-                ending with the selected Trust Anchor,
-                sorted as shown in <xref target="trust_chain"/>.
               </t>
             </list>
           </t>
@@ -4373,17 +4471,18 @@ Host: openid.sunet.se
     }
   },
   "trust_marks": [
-    {"id": "https://www.spid.gov.it/certification/op/",
+    {"trust_mark_type": "https://www.spid.gov.it/certification/op/",
      "trust_mark":
        "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiOH
         hzdUtXaVZmd1NnSG9mMVRlNE9VZGN5NHE3ZEpyS2ZGUmxPNXhoSElhMCJ9.
-        eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkL
-        mdvdi5pdCIsInN1YiI6Imh0dHBzOi8vb3AuZXhhbXBsZS5pdC9zcGlkLyIsIml
-        hdCI6MTU3OTYyMTE2MCwiaWQiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZ
-        XJ0aWZpY2F0aW9uL29wLyIsImxvZ29fdXJpIjoiaHR0cHM6Ly93d3cuYWdpZC5
-        nb3YuaXQvdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0c
-        HM6Ly9kb2NzLml0YWxpYS5pdC9pdGFsaWEvc3BpZC9zcGlkLXJlZ29sZS10ZWN
-        uaWNoZS1vaWRjL2l0L3N0YWJpbGUvaW5kZXguaHRtbCJ9"
+        eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi
+        8vb3AuZXhhbXBsZS5pdC9zcGlkLyIsImlhdCI6MTU3OTYyMTE2MCwidHJ1c3Rf
+        bWFya190eXBlIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdG
+        lvbi9vcC8iLCJsb2dvX3VyaSI6Imh0dHBzOi8vd3d3LmFnaWQuZ292Lml0L3Ro
+        ZW1lcy9jdXN0b20vYWdpZC9sb2dvLnN2ZyIsInJlZiI6Imh0dHBzOi8vZG9jcy
+        5pdGFsaWEuaXQvaXRhbGlhL3NwaWQvc3BpZC1yZWdvbGUtdGVjbmljaGUtb2lk
+        Yy9pdC9zdGFiaWxlL2luZGV4Lmh0bWwifQ.
+        xyz-PDQ_..."
     }
   ],
   "trust_chain" : [
@@ -4441,9 +4540,9 @@ Host: openid.sunet.se
                 REQUIRED. The Entity Identifier of the Entity to which the Trust Mark
                 was issued.
               </t>
-              <t hangText="trust_mark_id">
+              <t hangText="trust_mark_type">
                 <vspace/>
-                REQUIRED. Identifier of the Trust Mark.
+                REQUIRED. Identifier for the type of the Trust Mark.
               </t>
               <t hangText="iat">
                 <vspace/>
@@ -4473,7 +4572,7 @@ Host: openid.sunet.se
               <artwork><![CDATA[
 GET /federation_trust_mark_status_endpoint?
 sub=https%3A%2F%2Fopenid.sunet.se%2FRP&
-trust_mark_id=https%3A%2F%2Frefeds.org%2Fsirtfi HTTP/1.1
+trust_mark_type=https%3A%2F%2Frefeds.org%2Fsirtfi HTTP/1.1
 Host: op.example.org
 ]]></artwork>
             </figure>
@@ -4547,13 +4646,13 @@ Content-Type: application/json
           </t>
           <t>
             <list style="hanging">
-              <t hangText="trust_mark_id">
+              <t hangText="trust_mark_type">
                 <vspace/>
-                REQUIRED. The value of this parameter is a Trust Mark identifier.
+                REQUIRED. Identifier for the type of the Trust Mark.
                 If the responder has issued Trust Marks with the
-                specified Trust Mark identifier,
+                specified Trust Mark type identifier,
                 the list in the response is filtered to include only
-                the Entities for which that Trust Mark identifier has been
+                the Entities for which that Trust Mark type identifier has been
                 issued and is still valid.
               </t>
               <t hangText="sub">
@@ -4578,7 +4677,7 @@ Content-Type: application/json
               Trust Marked Entities Listing Request
             </name>
             <artwork><![CDATA[
-GET /trust_marked_list?trust_mark_id=https%3A%2F%2Ffederation.example.org%2Fopenid_relying_party%2Fprivate%2Funder-age HTTP/1.1
+GET /trust_marked_list?trust_mark_type=https%3A%2F%2Ffederation.example.org%2Fopenid_relying_party%2Fprivate%2Funder-age HTTP/1.1
 Host: trust-mark-issuer.example.org
 ]]></artwork>
           </figure>
@@ -4640,9 +4739,9 @@ Content-Type: application/json
           </t>
           <t>
             <list style="hanging">
-              <t hangText="trust_mark_id">
+              <t hangText="trust_mark_type">
                 <vspace/>
-                REQUIRED. Trust Mark identifier.
+                REQUIRED. Identifier for the type of the Trust Mark.
               </t>
               <t hangText="sub">
                 <vspace/>
@@ -4663,13 +4762,13 @@ Content-Type: application/json
           <figure>
             <preamble>
               The following is a non-normative example of an HTTP
-              request for a Trust Mark with a specific Trust Mark ID and subject:
+              request for a Trust Mark with a specific Trust Mark type identifier and subject:
             </preamble>
             <name>
               Trust Mark Request
             </name>
             <artwork><![CDATA[
-GET /trust_mark?trust_mark_id=https%3A%2F%2Ftuber.cert.example.org%2Fnero%2Fpregiato%2Fnorcia&sub=https%3A%2F%2Ftartufo.example.it HTTP/1.1
+GET /trust_mark?trust_mark_type=https%3A%2F%2Fwww.spid.gov.it%2Fcertification%2Frp&sub=https%3A%2F%2Frp.example.it%2Fspid HTTP/1.1
 Host: tuber.cert.example.org
 ]]></artwork>
           </figure>
@@ -4703,17 +4802,19 @@ Host: tuber.cert.example.org
 200 OK
 Content-Type: application/trust-mark+jwt
 
-eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoibVVFdHRpblI1
-M2ktb0FzUmg3aXpuVjVHWGVoWHdDNnVpNFJwbVB5S3lkOCJ9.
-eyJpc3MiOiJodHRwczovL3R1YmVyLmNlcnQuZXhhbXBsZS5vcmciL
-CJzdWIiOiJodHRwczovL3RhcnR1Zm8uZXhhbXBsZS5pdCIsImlhdCI6MTU3OTYyMTE2MCwiZ
-XhwIjoxNTc5NzIxMTYwLCJpZCI6Imh0dHBzOi8vdHViZXIuY2VydC5leGFtcGxlLm9yZy9uZ
-XJvL3ByZWdpYXRvL25vcmNpYSJ9.HwzNAJVPDYC9AM-ILWfgmT5YDz-pjtklQhtEQbqhC7P0
-nv88W8Wx74oE5IR5WgJP9Q3xPD-UO7o6O_Z0PMR186TzcBnaXtogn6-QxHRomCPwytviVGyk
-XE1MkOnf9wTYWb5q13A53w8y0vUTlwZhBHt9qYNp3t4XwjR8eEZTptHeI_NHkaOsknT3cI16
-FbxqXVdTudQCfPJEYKGGL1QDg2EdVGFgjq4V-2UTKlBQvnorNUmfNOxgRT0DR37ZezluvGJ5
-NjK15h2rrJRN4e_8favIJNTNO8fhK7bjyUFJlVGYmLUpfCuJmxBv-EMhiAkeoDtk71Tc6ou6
-2rxqFCU3LQ
+eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia29zR20yd3Va
+aDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.
+eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAuZXhh
+bXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYXJrX3R5cGUiOiJodHRw
+czovL3d3dy5zcGlkLmdvdi5pdC9jZXJ0aWZpY2F0aW9uL3JwIiwibG9nb191cmkiOiJodHRw
+czovL3d3dy5hZ2lkLmdvdi5pdC90aGVtZXMvY3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYi
+OiJodHRwczovL2RvY3MuaXRhbGlhLml0L2RvY3Mvc3BpZC1jaWUtb2lkYy1kb2NzL2l0L3Zl
+cnNpb25lLWNvcnJlbnRlLyJ9.
+L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJWQBdZpjxnH
+BBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzSan5nOmkxuAtMinU8k_
+-aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0YAvbMlq2pPWO5OWKdZhiFRMSprwh
+0GYluQkK0j1aLNMGXD3keMJd2zEoWX9D7w2fXShAA48W3cNhuXyBVnCoum1K4IWK3s_fx4nI
+kp6W-V4jCBOpxp7Yo8LZ30o_xpEOzGTIECGWVR86azOAlwVC8XSiAA
 ]]></artwork>
           </figure>
         </section>
@@ -5282,6 +5383,9 @@ Content-Type: application/json
 	For instance, the configuration endpoint for the Entity Identifier
 	<spanx style="verb">https://entity.example</spanx> is the URL
 	<spanx style="verb">https://entity.example/.well-known/openid-federation</spanx>.
+	If the Entity Identifier contains a trailing "/" character,
+	it MUST be removed before concatenating
+	<spanx style="verb">/.well-known/openid-federation</spanx>.
       </t>
       <t>
         Federation Entities MUST make an Entity Configuration document
@@ -5455,9 +5559,11 @@ Content-Type: application/json
           Entity Statements about the Intermediates and Party B.
         </t>
         <t>
-          Note: Federation participants SHOULD NOT attempt to fetch
+          Federation participants MUST NOT attempt to fetch
           Entity Statements they already have obtained during this
           process to prevent loops.
+	  An <spanx style="verb">invalid_trust_chain</spanx> error
+	  SHOULD be returned if a loop is encountered.
         </t>
         <t>
           A successful operation will return one or more lists of
@@ -5678,11 +5784,10 @@ Content-Type: application/json
       <section title="Key Rollover for a Trust Anchor"
                anchor="key_rollover_anchor">
         <t>
-          A Trust Anchor MUST publish an Entity Configuration about
-          itself. The Trust Anchor SHOULD set an expiration
-          time on its Entity Configuration,
-	  such that federation participants will re-fetch it at reasonable intervals.
-	  When a Trust Anchor rolls over its signing keys, it needs to:
+          A Trust Anchor MUST publish an Entity Configuration about itself.
+          The expiration time (exp) set on this Entity Configuration should be chosen
+          such that it ensures that federation participants re-fetch it at reasonable intervals.
+          When a Trust Anchor rolls over its signing keys, it needs to:
         </t>
         <t>
           <list style="numbers">
@@ -5736,21 +5841,15 @@ Content-Type: application/json
     <section title="OpenID Connect Client Registration" anchor="client_registration">
       <t>
         This section describes how the mechanisms defined in this specification
-        are used to establish trust between an RP and an OP
-        that have no explicit configuration or registration between them in advance.
+        can be used to establish trust between an RP and an OP that have no
+        prior explicit configuration or registration between them. It defines
+        two client registration methods, Automatic Registration and Explicit
+        Registration, that use Trust Chains, per <xref target="resolving_trust"/>.
+        Federations can use other appropriate methods for client registration.
       </t>
       <t>
-        There are two alternative approaches to establish trust between an
-        RP and an OP: Automatic Registration and Explicit Registration.
-        Members of a federation or a community
-        SHOULD agree upon which one to use. While implementations should
-        support both methods, deployments MAY choose to use one or the other of them.
-      </t>
-      <t>
-        Independent of whether the RP uses Automatic or Explicit Registration,
-        the way that the RP establishes trust with the OP is the same:
-        it uses Trust Chains, as
-        described in <xref target="resolving_trust"/>.
+        Federations with OpenID Connect Entities SHOULD agree on the supported
+        client registration methods.
       </t>
       <t>
 	Note that both Automatic Registration and Explicit Registration
@@ -5785,7 +5884,7 @@ Content-Type: application/json
               Since there is no registration step prior to the Authentication Request,
 	      asymmetric cryptography MUST be used to authenticate requests
 	      when using Automatic Registration.
-	      asymmetric cryptography is used to authenticate requests;
+	      Asymmetric cryptography is used to authenticate requests;
 	      therefore, the OP neither assigns a Client Secret to the RP
 	      nor returns it as a result of the registration process.
             </t>
@@ -5801,9 +5900,9 @@ Content-Type: application/json
         <section anchor="authn-request" title="Authentication Request">
           <t>
             The Authentication Request is performed by passing a
-            signed Request Object by value as described in Section 6.1 of
+            Request Object by value or by reference, as described in Section 6 of
             <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>
-	    and <xref target="RFC9101">The OAuth 2.0 Authorization Framework: JWT-Secured Authorization Request (JAR)</xref>
+	    and <xref target="RFC9101">The OAuth 2.0 Authorization Framework: JWT-Secured Authorization Request (JAR)</xref>,
             or using a pushed authorization request, as described in
             <xref target="RFC9126">Pushed Authorization Requests</xref>.
 	  </t>
@@ -5817,7 +5916,7 @@ Content-Type: application/json
 	    by reference
 	    (using the <spanx style="verb">request_uri</spanx> request parameter)
 	    because allowing this would make it easier for attackers
-	    to mount denial of service attacks against 
+	    to mount denial of service attacks against
 	    OAuth 2.0 Authorization Servers or OpenID Providers.
 	    They can do this by using the
 	    <spanx style="verb">request_uri_parameter_supported</spanx>
@@ -6015,26 +6114,27 @@ GET /authorize?
                 Trust Chain as a hint for which path to take from the
                 RP's Entity to the Trust Anchor.
                 The OP MAY evaluate the statements in the
-                <spanx style="verb">trust_chain</spanx>
+                provided Trust Chain
                 to make its Federation Entity Discovery procedure more efficient,
                 especially if the RP contains multiple authority hints in
                 its Entity Configuration.
+		If the OP already has a valid registration for the RP, it MAY
+		use the received Trust Chain to update the RP's registration.
 	      </t>
 	      <t>
-                If the OP already has a valid registration for the RP, it MAY
-                use the received Trust Chain to update the RP's registration.
-                Whenever the OP uses a Trust Chain submitted by an RP, the
-                OP MUST fully verify it, including every Entity Statement contained in it.
                 A Trust Chain may be relied upon by the OP because it has validated
                 all of its statements. This is true whether these statements
                 are retrieved from their URLs or whether they
                 are provided via the <spanx style="verb">trust_chain</spanx>
                 request parameter in the Request Object.
+		In both cases, the OP MUST fully verify the Trust Chain
+		including every Entity Statement contained in it.
               </t>
               <t>
                 If the RP does not include the
                 <spanx style="verb">trust_chain</spanx>
                 request parameter in the Request Object,
+		the OP for some reason decides not to use the provided Trust Chain,
                 or the OP does not support this feature, it then MUST
                 validate the possible Trust Chains, starting with the RP's Entity Configuration,
                 as described in <xref target="fetching-es"/>,
@@ -6042,7 +6142,7 @@ GET /authorize?
                 <spanx style="verb">openid_relying_party</spanx>.
               </t>
               <t>
-                The OP SHOULD furthermore verify that the resolved metadata of the RP
+                The OP SHOULD furthermore verify that the Resolved Metadata of the RP
                 complies with the client metadata specification
                 <xref target="OpenID.Registration">OpenID Connect Dynamic Client Registration 1.0</xref>.
               </t>
@@ -6467,8 +6567,8 @@ HTTP/1.1 302 Found
                     Entity Configuration of the RP. After validating at least
                     one Trust Chain, the OP MUST verify the signature of the
                     received Entity Configuration. If the OP finds more than
-                    one acceptable Trust Chain, it MUST choose one Trust Anchor
-                    from those chains as the one to proceed with.
+                    one acceptable Trust Chain, it MUST choose one Trust Chain
+                    from among them as the one to proceed with.
                   </t>
                   <t>
                     If the request contains a Trust Chain, the OP MAY evaluate
@@ -6496,7 +6596,7 @@ HTTP/1.1 302 Found
                     past RP data.
                   </t>
                   <t>
-                    The OP will now use the RP metadata to create a client
+                    The OP uses the Resolved Metadata for the RP to create a client
                     registration compliant with its own OP metadata and other
                     applicable policies.
                     <vspace blankLine="1"/>
@@ -6558,7 +6658,7 @@ HTTP/1.1 302 Found
                     claim of the Entity Statement to the Trust Anchor it
                     selected to process the request. The
                     <spanx style="verb">authority_hints</spanx> claim MUST be
-                    set to the OP's Immediate Superior in the
+                    set to the RP's Immediate Superior in the
                     selected Trust Chain.
 		  </t>
 		  <t>
@@ -6592,36 +6692,32 @@ HTTP/1.1 302 Found
                     current Federation Entity Key in its possession.
                   </t>
               <t>
-                The following Entity Statement claims are used in
-                Explicit Registration responses:
+		The following Entity Statement claims
+		are used in Explicit Registration responses,
+		as specified in <xref target="entity-statement"/>:
               </t>
               <t>
                 <list style="hanging">
                   <t hangText="iss">
                     <vspace/>
                     REQUIRED.
-                    Its value MUST be the Entity Identifier of the OP. See
-                    <xref target="entity-statement"/> for the full
-                    specification.
+                    Its value MUST be the Entity Identifier of the OP.
                   </t>
                   <t hangText="sub">
                     <vspace/>
                     REQUIRED.
-                    Its value MUST be the Entity Identifier of the RP. See
-                    <xref target="entity-statement"/> for the full
-                    specification.
+                    Its value MUST be the Entity Identifier of the RP.
                   </t>
                   <t hangText="iat">
                     <vspace/>
                     REQUIRED.
-                    See <xref target="entity-statement"/> for the full
-                    specification.
+		    Time when this statement was issued.
                   </t>
                   <t hangText="exp">
                     <vspace/>
                     REQUIRED.
-                    See <xref target="entity-statement"/> for the full
-                    specification.
+		    Expiration time after which the statement MUST NOT be
+		    accepted for processing.
                   </t>
                   <t hangText="jwks">
                     <vspace/>
@@ -6629,7 +6725,6 @@ HTTP/1.1 302 Found
 		    If present, it MUST be a verbatim copy of the
 		    <spanx style="verb">jwks</spanx> Entity Statement claim
                     from the received Entity Configuration of the RP.
-		    This claim is defined at <xref target="entity-statement"/>.
 		    Note that this is distinct from the identically named RP metadata parameter.
                   </t>
                   <t hangText="aud">
@@ -6637,7 +6732,6 @@ HTTP/1.1 302 Found
                     REQUIRED.
                     Its value MUST be the RP's Entity Identifier
 		    and MUST NOT include any other values.
-		    See <xref target="RFC7519"/> for the full specification.
 		    This claim is used in Explicit Registration responses
 		    but is not a general Entity Statement claim.
                   </t>
@@ -6653,10 +6747,8 @@ HTTP/1.1 302 Found
                     <vspace/>
                     REQUIRED.
                     It MUST be a single-element array, whose value references
-                    the Immediate Superior of the OP in the Trust Chain
-                    that the OP selected to process the request. See
-                    <xref target="entity-statement"/> for the full
-                    specification.
+                    the Immediate Superior of the RP in the Trust Chain
+                    that the OP selected to process the request.
                   </t>
                   <t hangText="metadata">
                     <vspace/>
@@ -6664,14 +6756,12 @@ HTTP/1.1 302 Found
                     It MUST contain the registered RP metadata under the
                     <spanx style="verb">openid_relying_party</spanx>
 		    Entity Type Identifier.
-		    See <xref target="entity-statement"/> for the
-                    full specification.
                   </t>
                   <t hangText="crit">
                     <vspace/>
                     OPTIONAL.
-                    See <xref target="entity-statement"/> for the full
-                    specification.
+		    Set of claims that MUST be understood and processed,
+		    as specified in <xref target="entity-statement"/>.
                   </t>
                 </list>
               </t>
@@ -6729,16 +6819,16 @@ HTTP/1.1 302 Found
                     <spanx style="verb">trust_anchor</spanx> claim.
                   </t>
                   <t>
-                    The RP MUST ensure that the metadata it was registered with
-                    at the OP complies with the Trust Chain
-                    <spanx style="verb">openid_relying_party</spanx> policies,
-                    which Trust Chain is resolved using the
-                    <spanx style="verb">trust_anchor</spanx> and
-                    <spanx style="verb">authority_hints</spanx> claims of the
-                    received registration Entity Statement. The RP SHOULD perform this check
-                    by applying the resolved policies to the metadata as
-                    specified in <xref target="metadata_policy_resolution"/>, or
-                    utilize another equivalent method.
+                    The RP MUST first ensure that the information it was registered with
+                    at the OP contains the same set of entity_types as the request does.
+                    After having collected a Trust Chain using the response claim
+                    <spanx style="verb">trust_anchor_id</spanx> as the
+                    <spanx style="verb">entity_id</spanx> for the Trust Anchor and
+                    <spanx style="verb">authority_hints</spanx> as starting points
+                    for the Trust Chain collection,
+                    the RP SHOULD verify that the response metadata for each entity type is valid
+                    by applying the resolved policies to the received metadata, as
+                    specified in <xref target="metadata_policy_resolution"/>.
                   </t>
                   <t>
                     If the received registration Entity Statement does not pass the above
@@ -6953,26 +7043,6 @@ HTTP/1.1 302 Found
 	</t>
       </section>
 
-      <section anchor="idClaim" title='"id" (Identifier) Claim'>
-	<t>
-	  The <spanx style="verb">id</spanx> (identifier) claim
-	  is used for conveying an identifier that is a property of the JWT.
-	  The <spanx style="verb">id</spanx> value is a case-sensitive string
-	  containing a StringOrURI value.
-	  Use of this claim is OPTIONAL.
-	</t>
-	<t>
-	  For instance, an enterprise application might use
-	  the <spanx style="verb">id</spanx> (identifier) claim
-	  to convey an employee ID value.
-	  Note that this is different than
-	  the <spanx style="verb">jti</spanx> (JWT ID) claim,
-	  which contains a unique identifier for the individual JWT itself.
-	  This claim is used in this specification in <xref target="trust_mark_claims"/>
-	  to provide the identifier of the Trust Mark.
-	</t>
-      </section>
-
       <section anchor="refClaim" title='"ref" (Reference) Claim'>
 	<t>
 	  The <spanx style="verb">ref</spanx> (reference) claim
@@ -7132,6 +7202,42 @@ HTTP/1.1 302 Found
 
     </section>
 
+    <section anchor="StringOps" title="String Operations">
+      <t>
+	Processing some OpenID Federation messages requires comparing
+	values in the messages to other values.
+	For example, the Entity Identifier in
+	an <spanx style="verb">iss</spanx> claim might be compared to
+	the Entity Identifier in a <spanx style="verb">sub</spanx> claim.
+	Comparing Unicode <xref target="UNICODE"/> strings,
+	however, has significant security implications.
+      </t>
+      <t>
+	Therefore, comparisons between JSON strings and other Unicode
+	strings MUST be performed as specified below:
+
+	<list style="numbers">
+	  <t>
+	    Remove any JSON applied escaping to produce an array of
+	    Unicode code points.
+	  </t>
+	  <t>
+	    Unicode Normalization <xref target="USA15"/> MUST NOT
+	    be applied at any point to either the JSON string or to
+	    the string it is to be compared against.
+	  </t>
+	  <t>
+	    Comparisons between the two strings MUST be performed as a
+	    Unicode code point to code point equality comparison.
+	  </t>
+	</list>
+      </t>
+      <t>
+	Note that this is the same comparison procedure as specified in
+	Section 14 of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
+      </t>
+    </section>
+
     <section anchor="Implementation" title="Implementation Considerations">
       <t>
 	This section provides guidance to implementers and deployers of Federations
@@ -7179,7 +7285,7 @@ HTTP/1.1 302 Found
 	  the RP and the Trust Anchor, meaning that
 	  multiple different Trust Chains could be built between them.
 	  If the metadata policies of Intermediate 1 and Intermediate 2 are different,
-	  this could result in the resolved metadata for the RP differing,
+	  this could result in the Resolved Metadata for the RP differing,
 	  depending upon which Intermediate is used when building the Trust Chain.
 	  Some such differences will be innocuous and some can cause failures.
 	</t>
@@ -7191,6 +7297,10 @@ HTTP/1.1 302 Found
 	  topologies that are trees, without multiple paths between two Entities.
 	  Topologies that are not trees are permitted,
 	  but should be used consciously and with care.
+	</t>
+	<t>
+	  Even when a Federation topology contains loops, Trust Chains built from them MUST NOT contain loops,
+          as mandated in <xref target="fetching-es"/>.
 	</t>
       </section>
 
@@ -7287,6 +7397,45 @@ HTTP/1.1 302 Found
         </t>
       </section>
     </section>
+
+    <section anchor="privacy" title="Privacy Considerations">
+      <t>
+        Implementers should be aware of these privacy considerations:
+      </t>
+      <t>
+        <list style="hanging">
+          <t hangText="Entity Statements">
+            <vspace/>
+            Entity Statements are designed to establish trust relationships between organizational entities within a federation, rather than between individuals or for specific business applications. Trust and reputation assessments for individuals or legal entities, such as those required for Know Your Customer and Anti-Money Laundering processes, should be managed through specialized platforms tailored for those purposes. Given that Entity Statements facilitate trust relationships using a public infrastructure, they should be limited to the essential information necessary for federation operations and organizational trust establishment.
+          </t>
+          <t hangText="Trust Mark Status">
+            <vspace/>
+	    The Trust Mark Status endpoint enables querying the status
+	    of Trust Marks in real time.
+	    Similar to the Federation Fetch endpoint,
+	    in cases where the Trust Mark Status endpoint is not protected
+	    by any client authentication method,
+	    requests to validate Trust Marks may not necessarily indicate
+	    an actual interaction or relationship between Entities, as they could
+	    simply be part of routine network inspection or discovery processes.
+	    This could potentially enable Trust Mark issuers to track Entities
+	    evaluating Trust Marks about other Entities
+	    through standard network diagnostic tools like
+	    IPv4/IPv6 addresses and DNS Whois entries.
+	    To mitigate tracking risks, implementers can use short-lived Trust Marks,
+	    or use the Trust Marked Entities Listing (<xref target="tm_listing"/>)
+	    with only the <spanx style="verb">trust_mark_type</spanx> parameter
+	    and not the <spanx style="verb">sub</spanx> parameter,
+	    reducing the need to use the Trust Mark Status endpoint.
+          </t>
+          <t hangText="Federation Fetch Endpoint">
+            <vspace/>
+            The Federation Fetch endpoint enables querying Subordinate Statements in real time. Similar to Trust Mark Status validation, in the cases where the federation infrastructure is public and widely browsable and endpoints are not protected by any client authentication method, requests to fetch Subordinate Statements may not necessarily indicate an actual interaction or relationship between Entities, as they could simply be part of routine network inspection or discovery processes. However, this could potentially enable Trust Anchors or Intermediates to track Entities evaluating trust relationships with other Entities through standard network diagnostic tools like IPv4/IPv6 addresses and DNS Whois entries. To mitigate tracking risks around Entities inspecting and interacting with other Entities, implementers should consider using static and short-lived Trust Chains where appropriate, which can reduce the need for real-time fetching of Subordinate Statements.
+          </t>
+        </list>
+      </t>
+    </section>
+
 
     <section anchor="IANA" title="IANA Considerations">
 
@@ -8291,22 +8440,6 @@ HTTP/1.1 302 Found
 	  <t>
 	    <list style="symbols">
 	      <t>
-		Claim Name: <spanx style="verb">id</spanx>
-	      </t>
-	      <t>
-		Claim Description: Identifier
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="idClaim"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
 		Claim Name: <spanx style="verb">ref</spanx>
 	      </t>
 	      <t>
@@ -8499,6 +8632,22 @@ HTTP/1.1 302 Found
 	  <t>
 	    <list style="symbols">
 	      <t>
+		Claim Name: <spanx style="verb">trust_mark_type</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Mark Type Identifier
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="trust_mark_claims"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
 		Claim Name: <spanx style="verb">trust_anchor</spanx>
 	      </t>
 	      <t>
@@ -8662,10 +8811,12 @@ HTTP/1.1 302 Found
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7591.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.7638.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8174.xml"/>
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8259.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8414.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8705.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9101.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9126.xml"/>
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9728.xml"/>
 
       <reference anchor="OpenID.Core" target="https://openid.net/specs/openid-connect-core-1_0.html">
         <front>
@@ -8766,11 +8917,40 @@ HTTP/1.1 302 Found
 	    </address>
 	  </author>
 
-          <date day="25" month="November" year="2024"/>
+	  <author fullname="Filip Skokan" initials="F." surname="Skokan">
+	    <organization>Okta</organization>
+	    <address>
+	      <email>panva.ip@gmail.com</email>
+	    </address>
+	  </author>
+
+          <date day="24" month="April" year="2025"/>
 	</front>
       </reference>
 
-      <xi:include href="https://bib.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-resource-metadata-13.xml" />
+      <reference anchor="UNICODE" target="http://www.unicode.org/versions/latest/">
+	<front>
+	  <title abbrev="Unicode">The Unicode Standard</title>
+	  <author>
+	    <organization>The Unicode Consortium</organization>
+	    <address />
+	  </author>
+	  <date />
+	</front>
+      </reference>
+
+      <reference anchor="USA15" target="https://www.unicode.org/reports/tr15/">
+	<front>
+	  <title>Unicode Normalization Forms</title>
+
+	  <author fullname="Ken Whistler" initials="K." surname="Whistler">
+	  </author>
+
+	  <date day="12" month="August" year="2023" />
+	</front>
+
+	<seriesInfo name="Unicode Standard Annex" value="15" />
+      </reference>
 
     </references>
 
@@ -9811,7 +9991,8 @@ Host: op.umu.se
       "authorization_code",
       "refresh_token"
     ],
-    "id_token_signed_response_alg": "RS256",
+    "id_token_signing_alg_values_supported":
+      ["ES256", "PS256", "RS256"],
     "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
     "redirect_uris": [
       "https://wiki.ligo.org/openid/callback"
@@ -9820,9 +10001,7 @@ Host: op.umu.se
       "code"
     ],
     "subject_type": "public",
-    "token_endpoint_auth_methods_supported": [
-      "private_key_jwt"
-    ]
+    "token_endpoint_auth_method": "private_key_jwt"
   }
 }
 ]]></artwork>
@@ -9848,7 +10027,8 @@ Host: op.umu.se
       "refresh_token",
       "authorization_code"
     ],
-    "id_token_signed_response_alg": "RS256",
+    "id_token_signing_alg_values_supported":
+      ["ES256", "PS256", "RS256"],
     "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
     "redirect_uris": [
       "https://wiki.ligo.org/openid/callback"
@@ -9857,9 +10037,7 @@ Host: op.umu.se
       "code"
     ],
     "subject_type": "public",
-    "token_endpoint_auth_methods_supported": [
-      "private_key_jwt"
-    ]
+    "token_endpoint_auth_method": "private_key_jwt"
   }
 }
 ]]></artwork>
@@ -10024,15 +10202,17 @@ Host: op.umu.se
 
     <section anchor="Notices" title="Notices">
       <t>
-        Copyright (c) 2024 The OpenID Foundation.
+        Copyright (c) 2025 The OpenID Foundation.
       </t>
       <t>
         The OpenID Foundation (OIDF) grants to any Contributor, developer,
         implementer, or other interested party a non-exclusive, royalty free,
         worldwide copyright license to reproduce, prepare derivative works from,
-        distribute, perform and display, this Implementers Draft or Final
-        Specification solely for the purposes of (i) developing specifications,
-        and (ii) implementing Implementers Drafts and Final Specifications based
+        distribute, perform and display, this Implementers Draft, Final
+        Specification, or Final Specification Incorporating Errata Corrections
+        solely for the purposes of (i) developing specifications,
+        and (ii) implementing Implementers Drafts, Final Specifications,
+        and Final Specification Incorporating Errata Corrections based
         on such documents, provided that attribution be made to the OIDF as the
         source of the material, but that such attribution does not indicate an
         endorsement by the OIDF.
@@ -10053,12 +10233,13 @@ Host: op.umu.se
         warranties of merchantability, non-infringement, fitness for a
         particular purpose, or title, related to this specification, and the
         entire risk as to implementing this specification is assumed by the
-        implementer. The OpenID Intellectual Property Rights policy requires
+        implementer. The OpenID Intellectual Property Rights policy
+        (found at openid.net) requires
         contributors to offer a patent promise not to assert certain patent
-        claims against other contributors and against implementers. The OpenID
-        Foundation invites any interested party to bring to its attention any
+        claims against other contributors and against implementers.
+        OpenID invites any interested party to bring to its attention any
         copyrights, patents, patent applications, or other proprietary rights
-        that MAY cover technology that MAY be required to practice this
+        that may cover technology that may be required to practice this
         specification.
       </t>
     </section>
@@ -10067,10 +10248,120 @@ Host: op.umu.se
       <t>[[ To be removed from the final specification ]]</t>
 
       <t>
-	-42
+	-43
 	<list style="symbols">
 	  <t>
 	    Fixed #127: Explained Trust Mark Issuer validation in more detail.
+	  </t>
+	  <t>
+	    Fixed #167: Added Privacy Considerations section.
+	  </t>
+	  <t>
+	    Fixed #196: The output of rows 3 and 4 in Table 1: Examples of
+	    Outputs with Combinations of essential and subset_of for Different
+	    Inputs must be empty JSON array [].
+	  </t>
+	  <t>
+	    OAuth 2.0 Protected Resource Metadata is now RFC 9728.
+	  </t>
+    <t>
+      Follow Implementation Considerations in <xref target="OpenID.RP.Choices"/>.
+     </t>
+     <t>
+       Added note about using different signing algorithms for different Entity Statements in a Trust Chain.
+     </t>
+	   <t>
+	     Fixed #172: Added Resolved Metadata as defined term.
+	  </t>
+	  <t>
+	    Fixed #202: Added String Operations section.
+	  </t>
+	  <t>
+	    Fixed #173: Use Resolved Metadata term in Explicit Registration.
+	  </t>
+	  <t>
+	    Fixed #35: Removed requirement for the <spanx style="verb">value</spanx>
+	    and <spanx style="verb">default</spanx> operators to support
+	    JSON object values, since merging them requires comparison.
+	    Added note about metadata policy and comparing JSON objects.
+	  </t>
+	  <t>
+	    Fixed #194: Renamed <spanx style="verb">trust_mark_id</spanx>
+	    to <spanx style="verb">trust_mark_type</spanx>.
+	  </t>
+	</list>
+      </t>
+
+      <t>
+	-42
+	<list style="symbols">
+      <t>
+       Addresses #11, #180:
+
+       Allows the following unconditional operator combinations:
+       add + superset_of.
+
+       Makes the following previously conditional operator combinations unconditional:
+       default + one_of, default + subset_of, default + superset_of.
+
+       Makes the following previously unconditional operator combination conditional:
+       value + essential.
+
+       Allows the following conditional operator combinations:
+       value + add, value + default, value + one_of, value + subset_of, value + superset_of.
+      </t>
+      <t>
+      Addresses #182: When applying the subset_of operator on a metadata
+      parameter, if the resulting intersection is empty, then the metadata is
+      made empty. Previously it was removed, which may lead to policy override
+      for metadata parameters that a have default value, for instance
+      grant_types RP metadata or grant_types_supported OP metadata. The merge of
+      two subset_of operators is changed to allow empty intersection as well.
+      </t>
+      <t>
+       Addresses #129: Clarifies that the combination rules for a metadata
+       policy operator apply to both individual as well as merged metadata
+       parameter policies.
+      </t>
+	  <t>
+	    Fixed #184: Clarified that Request Objects can be passed by value or by reference.
+	  </t>
+      <t>
+        Fixed #178: Clarify that other client methods (than automatic and explicit) are allowed.
+      </t>
+	  <t>
+	    Fixed #181: Contributed metadata policies must be logically sound and
+        consistent with one another.
+	  </t>
+	  <t>
+	    Fixed #130: Allow multiple Trust Anchor values to be passed in resolve requests.
+	  </t>
+	  <t>
+	    Require <spanx style="verb">trust_chain</spanx> claim in resolve response.
+	  </t>
+	  <t>
+	    Fixed #161: Prohibit loops in Trust Chains.
+	  </t>
+	  <t>
+	    Fixed #47: Described using and not using a provided Trust Chain
+	    during Automatic Registration.
+	  </t>
+	  <t>
+	    Fixed #85: Clarified Trust Chain selection during Explicit Registration.
+	    Also corrected the <spanx style="verb">authority_hints</spanx> value
+	    in the Explicit Registration response to be the Immediate Superior
+	    of the RP in the Trust Chain selected for it by the OP.
+	  </t>
+	  <t>
+	    Fixed #35: Clarified that using non-interoperable JSON, as per Sections
+	    4 and 8 of RFC 8259, can result in unpredictable metadata and metadata
+	    policy behavior.
+	  </t>
+	  <t>
+	    Fixed #162: Trust Mark claim <spanx style="verb">id</spanx>
+	    renamed to <spanx style="verb">trust_mark_id</spanx>.
+	    Other more specific Trust Mark JWT <spanx style="verb">typ</spanx> header parameter values
+	    can be used if defined by trust frameworks in use and understood by the implementation.
 	  </t>
 	</list>
       </t>
