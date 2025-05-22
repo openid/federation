@@ -53,7 +53,7 @@
     intervaltree 3.1.0
     Jinja2 3.1.2
     lxml 5.4.0
-    platformdirs 4.3.7
+    platformdirs 4.3.8
     pycountry 24.6.1
     PyYAML 6.0.1
     requests 2.31.0
@@ -1258,7 +1258,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-05-15" class="published">15 May 2025</time>
+<time datetime="2025-05-21" class="published">21 May 2025</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -2227,7 +2227,7 @@ li > p:last-of-type:only-child {
               Statement of conformance to a
               well-scoped set of trust and/or interoperability requirements
               as determined by an accreditation authority.
-              Each Trust Mark has a Trust Mark identifier.<a href="#section-1.2-3.38" class="pilcrow">¶</a>
+              Each Trust Mark has a Trust Mark type identifier.<a href="#section-1.2-3.38" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 <dt id="section-1.2-3.39">Trust Mark Issuer</dt>
@@ -2237,7 +2237,7 @@ li > p:last-of-type:only-child {
           <dd class="break"></dd>
 <dt id="section-1.2-3.41">Trust Mark Owner</dt>
           <dd style="margin-left: 1.5em" id="section-1.2-3.42">
-              An Entity that owns the right to a Trust Mark identifier.<a href="#section-1.2-3.42" class="pilcrow">¶</a>
+              An Entity that owns the right to a Trust Mark type identifier.<a href="#section-1.2-3.42" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 <dt id="section-1.2-3.43">Federation Entity Keys</dt>
@@ -2547,15 +2547,15 @@ li > p:last-of-type:only-child {
               OPTIONAL. An array of JSON objects, each representing
               a Trust Mark.
               Each JSON object MUST contain the following two claims
-              and MAY contain other claims. The <code>trust_mark_id</code>
-                claim in this object MUST have the same value as the
-              <code>trust_mark_id</code> claim in the Trust Mark JWT.<a href="#section-3-6.24.1" class="pilcrow">¶</a></p>
+              and MAY contain other claims. The <code>trust_mark_type</code>
+              claim in this object MUST have the same value as the
+              <code>trust_mark_type</code> claim in the Trust Mark JWT.<a href="#section-3-6.24.1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-3-6.24.2">
-            <dt id="section-3-6.24.2.1">trust_mark_id</dt>
+            <dt id="section-3-6.24.2.1">trust_mark_type</dt>
             <dd style="margin-left: 1.5em" id="section-3-6.24.2.2">
-                  The Trust Mark identifier.
+                  Identifier for the type of the Trust Mark.
                   It MUST be the same value as the
-                  <code>trust_mark_id</code>
+                  <code>trust_mark_type</code>
                   claim contained in the
                   Trust Mark JWT.<a href="#section-3-6.24.2.2" class="pilcrow">¶</a>
 </dd>
@@ -2575,16 +2575,16 @@ li > p:last-of-type:only-child {
         <dd style="margin-left: 1.5em" id="section-3-6.26">
               OPTIONAL.
               A Trust Anchor MAY use this claim to tell which combination of
-              Trust Mark identifiers and issuers are trusted by the federation.
+              Trust Mark type identifiers and issuers are trusted by the federation.
               This claim MUST be ignored if present in an Entity Configuration
               for an Entity that is not a Trust Anchor.
-              It is a JSON object with member names that are Trust Mark identifiers and
+              It is a JSON object with member names that are Trust Mark type identifiers and
               each corresponding value being an array of Entity Identifiers
-             that are trusted to represent the accreditation authority
-             for Trust Marks with that identifier.
-              If the array following a Trust Mark identifier is empty,
+       that are trusted to represent the accreditation authority
+       for Trust Marks with that identifier.
+              If the array following a Trust Mark type identifier is empty,
               anyone MAY issue Trust Marks with that identifier.
-             This claim MUST NOT be present in Subordinate Statements.
+       This claim MUST NOT be present in Subordinate Statements.
               Trust Marks are described in <a href="#trust_marks" class="auto internal xref">Section 7</a>.<a href="#section-3-6.26" class="pilcrow">¶</a>
 </dd>
         <dd class="break"></dd>
@@ -2592,12 +2592,12 @@ li > p:last-of-type:only-child {
         <dd style="margin-left: 1.5em" id="section-3-6.28">
           <p id="section-3-6.28.1">
               OPTIONAL.
-              If a Federation Operator knows that a Trust Mark identifier is owned
+              If a Federation Operator knows that a Trust Mark type identifier is owned
               by an Entity different from the Trust Mark Issuer, then that
               knowledge MUST be expressed in this claim.
               This claim MUST be ignored if present in an Entity Configuration
               for an Entity that is not a Trust Anchor.
-              It is a JSON object with member names that are Trust Mark identifiers and
+              It is a JSON object with member names that are Trust Mark type identifiers and
               each corresponding value being a JSON object with these members:<a href="#section-3-6.28.1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-3-6.28.2">
             <dt id="section-3-6.28.2.1">sub</dt>
@@ -4050,7 +4050,7 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-6.1.3.1.1-4.1">
                   <p id="section-6.1.3.1.1-4.1.1">
-                    Mandatory to support: string, number, boolean, object, array<a href="#section-6.1.3.1.1-4.1.1" class="pilcrow">¶</a></p>
+                    Mandatory to support: string, number, boolean, array<a href="#section-6.1.3.1.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-6.1.3.1.1-5">
@@ -4058,8 +4058,7 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-6.1.3.1.1-6.1">
                   <p id="section-6.1.3.1.1-6.1.1">
-                    Mandatory to support: string, number, boolean, object,
-                    array, null<a href="#section-6.1.3.1.1-6.1.1" class="pilcrow">¶</a></p>
+                    Mandatory to support: string, number, boolean, array, null<a href="#section-6.1.3.1.1-6.1.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-6.1.3.1.1-7">
@@ -4203,7 +4202,7 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-6.1.3.1.3-4.1">
                   <p id="section-6.1.3.1.3-4.1.1">
-                    Mandatory to support: string, number, boolean, object, array<a href="#section-6.1.3.1.3-4.1.1" class="pilcrow">¶</a></p>
+                    Mandatory to support: string, number, boolean, array<a href="#section-6.1.3.1.3-4.1.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-6.1.3.1.3-5">
@@ -4211,7 +4210,7 @@ li > p:last-of-type:only-child {
 <ul class="normal">
 <li class="normal" id="section-6.1.3.1.3-6.1">
                   <p id="section-6.1.3.1.3-6.1.1">
-                    Mandatory to support: string, number, boolean, object, array<a href="#section-6.1.3.1.3-6.1.1" class="pilcrow">¶</a></p>
+                    Mandatory to support: string, number, boolean, array<a href="#section-6.1.3.1.3-6.1.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 <p id="section-6.1.3.1.3-7">
@@ -4530,6 +4529,24 @@ li > p:last-of-type:only-child {
                 <code>superset_of</code> with identical array
                 values.<a href="#section-6.1.3.1.8-1" class="pilcrow">¶</a></p>
 <p id="section-6.1.3.1.8-2">
+ Some JSON libraries may have issues comparing JSON objects.
+ For this reason, support for applying metadata policy to
+ metadata values that are JSON objects is mandatory only for the
+ <code>essential</code>
+ operator, which does not require comparison of values.
+ It is OPTIONAL for the
+ <code>add</code>,
+ <code>one_of</code>,
+ <code>subset_of</code>, and
+ <code>superset_of</code>
+ operators, which operate on JSON arrays
+ and therefore require comparison of values.
+ And it is OPTIONAL for the
+ <code>value</code> and
+ <code>default</code> operators,
+ since merging values and defaults requires comparing
+ the operators' values with existing ones.<a href="#section-6.1.3.1.8-2" class="pilcrow">¶</a></p>
+<p id="section-6.1.3.1.8-3">
                 The <code>scope</code> OAuth 2.0 client metadata
                 parameter, defined in <span>[<a href="#RFC7591" class="cite xref">RFC7591</a>]</span> and represented by
                 a string of space-separated string values, is to be regarded and
@@ -4541,15 +4558,15 @@ li > p:last-of-type:only-child {
                 space-separated string of individual scope values, where the
                 scope values present are taken from the array of values produced
                 by applying the metadata operators to the
-                <code>scope</code> parameter.<a href="#section-6.1.3.1.8-2" class="pilcrow">¶</a></p>
-<p id="section-6.1.3.1.8-3" class="keepWithNext">
+                <code>scope</code> parameter.<a href="#section-6.1.3.1.8-3" class="pilcrow">¶</a></p>
+<p id="section-6.1.3.1.8-4" class="keepWithNext">
                   The following table is a map of the outputs produced by
                   combinations of the <code>essential</code> and
                   <code>subset_of</code> policy operators with
                   different input metadata parameter values.
                   Note, the <code>subset_of</code> check is skipped
                   when the metadata parameter is absent and designated as
-                  voluntary, as shown in the last row.<a href="#section-6.1.3.1.8-3" class="pilcrow">¶</a></p>
+                  voluntary, as shown in the last row.<a href="#section-6.1.3.1.8-4" class="pilcrow">¶</a></p>
 <span id="name-examples-of-outputs-with-co"></span><table class="center" id="table-1">
                 <caption>
 <a href="#table-1" class="selfRef">Table 1</a>:
@@ -5314,13 +5331,13 @@ li > p:last-of-type:only-child {
                 REQUIRED. String. Entity this Trust Mark applies to.<a href="#section-7.1-2.4" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
-<dt id="section-7.1-2.5">trust_mark_id</dt>
+<dt id="section-7.1-2.5">trust_mark_type</dt>
           <dd style="margin-left: 1.5em" id="section-7.1-2.6">
  REQUIRED.
- The <code>trust_mark_id</code> (identifier) claim
+ The <code>trust_mark_type</code> claim
  defined in <a href="#trust_mark_claims" class="auto internal xref">Section 7.1</a> is used in Trust Marks
- to provide the identifier of the Trust Mark.
-                The Trust Mark identifier
+ to provide the identifier of the type of the Trust Mark.
+                The Trust Mark type identifier
                 MUST be collision-resistant
                 across multiple federations.
                 It is RECOMMENDED that the
@@ -5401,9 +5418,9 @@ li > p:last-of-type:only-child {
      as defined in <a href="#delegation_jwt" class="auto internal xref">Section 7.2.1</a>.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
 <p id="section-7.2-3">
             If the Federation Operator knows that Trust Marks with a
-            certain Trust Mark identifier may legitimately be issued by Trust Mark Issuers
-            that are not the owner of the Trust Mark identifier, then information
-            about the owner and the Trust Mark identifier MUST be included in the
+            certain Trust Mark type identifier may legitimately be issued by Trust Mark Issuers
+            that are not the owner of the Trust Mark type identifier, then information
+            about the owner and the Trust Mark type identifier MUST be included in the
             <code>trust_mark_owners</code> claim in
      the Trust Anchor's Entity Configuration.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
 <div id="delegation_jwt">
@@ -5441,9 +5458,9 @@ li > p:last-of-type:only-child {
                 REQUIRED. String. The Entity this delegation applies to.<a href="#section-7.2.1-5.4" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-7.2.1-5.5">trust_mark_id</dt>
+<dt id="section-7.2.1-5.5">trust_mark_type</dt>
             <dd style="margin-left: 1.5em" id="section-7.2.1-5.6">
-                REQUIRED. String. The identifier of the Trust Mark.<a href="#section-7.2.1-5.6" class="pilcrow">¶</a>
+                REQUIRED. String. The identifier for the type of the Trust Mark.<a href="#section-7.2.1-5.6" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-7.2.1-5.7">iat</dt>
@@ -5492,13 +5509,13 @@ li > p:last-of-type:only-child {
 </li>
           <li class="normal" id="section-7.3-2.2">
             <p id="section-7.3-2.2.1">
-                If the Trust Mark identifier appears in the
+                If the Trust Mark type identifier appears in the
                 <code>trust_mark_owners</code> claim
  of the Trust Anchor's Entity Configuration,
                 verify that the Trust Mark contains
                 a <code>delegation</code>
                 claim.
-                The claims for the Trust Mark identifier
+                The claims for the Trust Mark type identifier
                 in the <code>trust_mark_owners</code> value
                 are used in the following way:<a href="#section-7.3-2.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -5528,21 +5545,21 @@ li > p:last-of-type:only-child {
         </ul>
 <p id="section-7.3-5">
             Note that the Entity representing the accreditation authority
-            SHOULD be well known and trusted for a given Trust Mark identifier.
+            SHOULD be well known and trusted for a given Trust Mark type identifier.
             A Trust Anchor MAY publish a list of accreditation authorities
             of Trust Marks that SHOULD be trusted by other Entities.
             A Trust Anchor uses the <code>trust_mark_issuers</code> claim
             in its Entity Configuration to publish this information.<a href="#section-7.3-5" class="pilcrow">¶</a></p>
 <p id="section-7.3-6">
             If a Trust Mark is issued on behalf of a Trust Mark Owner, then the Trust Anchor SHOULD
-            publish the connection between the Trust Mark identifier
-           and the corresponding Trust Mark Issuer in the
+            publish the connection between the Trust Mark type identifier
+     and the corresponding Trust Mark Issuer in the
             <code>trust_mark_issuers</code> claim. This
             signifies that the Trust Anchor has validated
             the Trust Mark Owner and that the
             Trust Mark Owner has delegated the right to issue Trust Marks
-            with a designated Trust Mark identifier to a specified Trust Mark Issuer.
-            Also, the Trust Anchor MAY provide an empty array following the Trust Mark Identifier
+            with a designated Trust Mark type identifier to a specified Trust Mark Issuer.
+            Also, the Trust Anchor MAY provide an empty array following the Trust Mark type identifier
             to signal that this Trust Mark can be issued by any Trust Mark Issuer to which the
             Trust Mark Owner has delegated the right to do so.<a href="#section-7.3-6" class="pilcrow">¶</a></p>
 <p id="section-7.3-7">
@@ -5575,7 +5592,7 @@ li > p:last-of-type:only-child {
   "exp": 1516298022,
   "trust_marks": [
     {
-     "trust_mark_id": "https://www.spid.gov.it/certification/rp",
+     "trust_mark_type": "https://www.spid.gov.it/certification/rp",
      "trust_mark":
        "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia29
         zR20yd3VaaDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.eyJpc
@@ -5617,7 +5634,7 @@ li > p:last-of-type:only-child {
           <div class="alignLeft art-text artwork" id="section-7.4-4.1">
 <pre>
 {
-  "trust_mark_id":"https://mushrooms.federation.example.com/openid_relying_party/public/",
+  "trust_mark_type":"https://mushrooms.federation.example.com/openid_relying_party/public/",
   "iss": "https://epigeo.tm-issuer.example.it",
   "sub": "https://porcino.example.com/rp",
   "iat": 1579621160,
@@ -5641,7 +5658,7 @@ li > p:last-of-type:only-child {
           <div class="alignLeft art-text artwork" id="section-7.4-6.1">
 <pre>
 {
-  "trust_mark_id":"https://mushrooms.federation.example.com/openid_relying_party/private/under-age",
+  "trust_mark_type":"https://mushrooms.federation.example.com/openid_relying_party/private/under-age",
   "iss": "https://trustissuer.pinarolo.example.it",
   "sub": "https://vavuso.example.com/rp",
   "iat": 1579621160,
@@ -5662,7 +5679,7 @@ li > p:last-of-type:only-child {
           <div class="alignLeft art-text artwork" id="section-7.4-8.1">
 <pre>
 {
-  "trust_mark_id": "https://mushrooms.federation.example.com/arrosto/agreements",
+  "trust_mark_type": "https://mushrooms.federation.example.com/arrosto/agreements",
   "iss": "https://agaricaceae.example.it",
   "sub": "https://coppolino.example.com",
   "iat": 1579621160,
@@ -5688,7 +5705,7 @@ li > p:last-of-type:only-child {
           <div class="alignLeft art-text artwork" id="section-7.4-10.1">
 <pre>
 {
-  "trust_mark_id": "https://mushrooms.federation.example.com/ottimo/commestibile",
+  "trust_mark_type": "https://mushrooms.federation.example.com/ottimo/commestibile",
   "iss": "https://cantharellus.cibarius.example.org",
   "sub": "https://gallinaccio.example.com/op",
   "iat": 1579621160,
@@ -5705,7 +5722,7 @@ li > p:last-of-type:only-child {
           <div class="alignLeft art-text artwork" id="section-7.4-12.1">
 <pre>
 {
-  "trust_mark_id": "https://mushrooms.federation.example.com/trust-marks/self-signed",
+  "trust_mark_type": "https://mushrooms.federation.example.com/trust-marks/self-signed",
   "iss": "https://amanita.muscaria.example.com",
   "sub": "https://amanita.muscaria.example.com",
   "iat": 1579621160,
@@ -5727,7 +5744,7 @@ li > p:last-of-type:only-child {
   "sub": "https://umu.se/op",
   "iat": 1577833200,
   "exp": 1609369200,
-  "trust_mark_id": "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf"
+  "trust_mark_type": "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf"
 }
 </pre>
 </div>
@@ -5768,7 +5785,7 @@ li > p:last-of-type:only-child {
     0I4lT_LAOfvhlrRbT56eK4sJNCsbVbGnDBfFmyfB_HIeBMGP0L7T5JPMOUU
     9bjIlA",
   "iat": 1725176302,
-  "trust_mark_id": "https://refeds.org/sirtfi",
+  "trust_mark_type": "https://refeds.org/sirtfi",
   "sub": "https://entity.example.org",
   "exp": 1727768302,
   "iss": "https://tmi.example.org"
@@ -5802,7 +5819,7 @@ li > p:last-of-type:only-child {
 <pre>
 {
   "sub": "https://tmi.example.org",
-  "trust_mark_id": "https://refeds.org/sirtfi",
+  "trust_mark_type": "https://refeds.org/sirtfi",
   "iss": "https://tm_owner.example.org",
   "iat": 1725176302
 }
@@ -6091,13 +6108,13 @@ Host: edugain.org
                 <code>unsupported_parameter</code>.<a href="#section-8.2.1-2.4" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-8.2.1-2.5">trust_mark_id</dt>
+<dt id="section-8.2.1-2.5">trust_mark_type</dt>
             <dd style="margin-left: 1.5em" id="section-8.2.1-2.6">
-                OPTIONAL. The value of this parameter is a Trust Mark identifier.
+                OPTIONAL. The value of this parameter is the identifier for the type of the Trust Mark.
  If the responder has issued Trust Marks with the
-                specified Trust Mark identifier,
+                specified Trust Mark type identifier,
                 the list in the response is filtered to include only
-                the Immediate Subordinates for which that Trust Mark identifier has been
+                the Immediate Subordinates for which that Trust Mark type identifier has been
                 issued and is still valid.
                 If the responder does not support this feature, it MUST
                 use the HTTP status code 400 and set the content type to
@@ -6430,7 +6447,7 @@ Host: openid.sunet.se
     }
   },
   "trust_marks": [
-    {"trust_mark_id": "https://www.spid.gov.it/certification/op/",
+    {"trust_mark_type": "https://www.spid.gov.it/certification/op/",
      "trust_mark":
        "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiOH
         hzdUtXaVZmd1NnSG9mMVRlNE9VZGN5NHE3ZEpyS2ZGUmxPNXhoSElhMCJ9.
@@ -6510,9 +6527,9 @@ Host: openid.sunet.se
                 was issued.<a href="#section-8.4.1-2.2" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-8.4.1-2.3">trust_mark_id</dt>
+<dt id="section-8.4.1-2.3">trust_mark_type</dt>
             <dd style="margin-left: 1.5em" id="section-8.4.1-2.4">
-                REQUIRED. Identifier of the Trust Mark.<a href="#section-8.4.1-2.4" class="pilcrow">¶</a>
+                REQUIRED. Identifier for the type of the Trust Mark.<a href="#section-8.4.1-2.4" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-8.4.1-2.5">iat</dt>
@@ -6539,7 +6556,7 @@ Host: openid.sunet.se
 <pre>
 GET /federation_trust_mark_status_endpoint?
 sub=https%3A%2F%2Fopenid.sunet.se%2FRP&amp;
-trust_mark_id=https%3A%2F%2Frefeds.org%2Fsirtfi HTTP/1.1
+trust_mark_type=https%3A%2F%2Frefeds.org%2Fsirtfi HTTP/1.1
 Host: op.example.org
 </pre>
 </div>
@@ -6616,13 +6633,13 @@ Content-Type: application/json
             following query parameters, encoded in
             <code>application/x-www-form-urlencoded</code> format.<a href="#section-8.5.1-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-8.5.1-2">
-            <dt id="section-8.5.1-2.1">trust_mark_id</dt>
+            <dt id="section-8.5.1-2.1">trust_mark_type</dt>
             <dd style="margin-left: 1.5em" id="section-8.5.1-2.2">
-                REQUIRED. The value of this parameter is a Trust Mark identifier.
+                REQUIRED. Identifier for the type of the Trust Mark.
                 If the responder has issued Trust Marks with the
-                specified Trust Mark identifier,
+                specified Trust Mark type identifier,
                 the list in the response is filtered to include only
-                the Entities for which that Trust Mark identifier has been
+                the Entities for which that Trust Mark type identifier has been
                 issued and is still valid.<a href="#section-8.5.1-2.2" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
@@ -6644,7 +6661,7 @@ Content-Type: application/json
 <span id="name-trust-marked-entities-listing"></span><figure id="figure-37">
             <div class="alignLeft art-text artwork" id="section-8.5.1-5.1">
 <pre>
-GET /trust_marked_list?trust_mark_id=https%3A%2F%2Ffederation.example.org%2Fopenid_relying_party%2Fprivate%2Funder-age HTTP/1.1
+GET /trust_marked_list?trust_mark_type=https%3A%2F%2Ffederation.example.org%2Fopenid_relying_party%2Fprivate%2Funder-age HTTP/1.1
 Host: trust-mark-issuer.example.org
 </pre>
 </div>
@@ -6713,9 +6730,9 @@ Content-Type: application/json
             with the following query parameters, encoded in
             <code>application/x-www-form-urlencoded</code> format.<a href="#section-8.6.1-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-8.6.1-2">
-            <dt id="section-8.6.1-2.1">trust_mark_id</dt>
+            <dt id="section-8.6.1-2.1">trust_mark_type</dt>
             <dd style="margin-left: 1.5em" id="section-8.6.1-2.2">
-                REQUIRED. Trust Mark identifier.<a href="#section-8.6.1-2.2" class="pilcrow">¶</a>
+                REQUIRED. Identifier for the type of the Trust Mark.<a href="#section-8.6.1-2.2" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-8.6.1-2.3">sub</dt>
@@ -6735,11 +6752,11 @@ Content-Type: application/json
         let a Federation Entity retrieve the Trust Mark for another Entity.<a href="#section-8.6.1-3" class="pilcrow">¶</a></p>
 <p id="section-8.6.1-4" class="keepWithNext">
               The following is a non-normative example of an HTTP
-              request for a Trust Mark with a specific Trust Mark ID and subject:<a href="#section-8.6.1-4" class="pilcrow">¶</a></p>
+              request for a Trust Mark with a specific Trust Mark type identifier and subject:<a href="#section-8.6.1-4" class="pilcrow">¶</a></p>
 <span id="name-trust-mark-request-2"></span><figure id="figure-39">
             <div class="alignLeft art-text artwork" id="section-8.6.1-5.1">
 <pre>
-GET /trust_mark?trust_mark_id=https%3A%2F%2Fwww.spid.gov.it%2Fcertification%2Frp&amp;sub=https%3A%2F%2Frp.example.it%2Fspid HTTP/1.1
+GET /trust_mark?trust_mark_type=https%3A%2F%2Fwww.spid.gov.it%2Fcertification%2Frp&amp;sub=https%3A%2F%2Frp.example.it%2Fspid HTTP/1.1
 Host: tuber.cert.example.org
 </pre>
 </div>
@@ -9466,7 +9483,23 @@ HTTP/1.1 302 Found
         <dd class="break"></dd>
 <dt id="section-18-2.3">Trust Mark Status</dt>
         <dd style="margin-left: 1.5em" id="section-18-2.4">
-            The Trust Mark Status endpoint enables querying the status of Trust Marks in real time. Similar to the Federation Fetch endpoint, in cases where the Trust Mark Status endpoint is not protected by any client authentication method, requests to validate Trust Marks may not necessarily indicate an actual interaction or relationship between Entities, as they could simply be part of routine network inspection or discovery processes. This could potentially enable Trust Mark issuers to track Entities evaluating Trust Marks about other Entities through standard network diagnostic tools like IPv4/IPv6 addresses and DNS Whois entries. To mitigate tracking risks, implementers can use short-lived Trust Marks, or using the Trust Marked Entities Listing (<a href="#tm_listing" class="auto internal xref">Section 8.5</a>) using only the <code>trust_mark_id</code> parameter and not the <code>sub</code> parameter, reducing the need to use the Trust Mark Status endpoint.<a href="#section-18-2.4" class="pilcrow">¶</a>
+     The Trust Mark Status endpoint enables querying the status
+     of Trust Marks in real time.
+     Similar to the Federation Fetch endpoint,
+     in cases where the Trust Mark Status endpoint is not protected
+     by any client authentication method,
+     requests to validate Trust Marks may not necessarily indicate
+     an actual interaction or relationship between Entities, as they could
+     simply be part of routine network inspection or discovery processes.
+     This could potentially enable Trust Mark issuers to track Entities
+     evaluating Trust Marks about other Entities
+     through standard network diagnostic tools like
+     IPv4/IPv6 addresses and DNS Whois entries.
+     To mitigate tracking risks, implementers can use short-lived Trust Marks,
+     or use the Trust Marked Entities Listing (<a href="#tm_listing" class="auto internal xref">Section 8.5</a>)
+     with only the <code>trust_mark_type</code> parameter
+     and not the <code>sub</code> parameter,
+     reducing the need to use the Trust Mark Status endpoint.<a href="#section-18-2.4" class="pilcrow">¶</a>
 </dd>
         <dd class="break"></dd>
 <dt id="section-18-2.5">Federation Fetch Endpoint</dt>
@@ -10988,11 +11021,11 @@ HTTP/1.1 302 Found
 <ul class="compact">
 <li class="compact" id="section-19.7.1-17.1">
               <p id="section-19.7.1-17.1.1">
- Claim Name: <code>trust_mark_id</code><a href="#section-19.7.1-17.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>trust_mark_type</code><a href="#section-19.7.1-17.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-19.7.1-17.2">
               <p id="section-19.7.1-17.2.1">
- Claim Description: Trust Mark Identifier<a href="#section-19.7.1-17.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Trust Mark Type Identifier<a href="#section-19.7.1-17.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-19.7.1-17.3">
               <p id="section-19.7.1-17.3.1">
@@ -12622,6 +12655,18 @@ Host: op.umu.se
         <li class="normal" id="appendix-C-3.7">
           <p id="appendix-C-3.7.1">
      Fixed #173: Use Resolved Metadata term in Explicit Registration.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.8">
+          <p id="appendix-C-3.8.1">
+     Fixed #35: Removed requirement for the <code>value</code>
+     and <code>default</code> operators to support
+     JSON object values, since merging them requires comparison.
+     Added note about metadata policy and comparing JSON objects.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.9">
+          <p id="appendix-C-3.9.1">
+     Fixed #194: Renamed <code>trust_mark_id</code>
+     to <code>trust_mark_type</code>.<a href="#appendix-C-3.9.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
