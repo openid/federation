@@ -87,12 +87,12 @@
       </address>
     </author>
 
-    <date day="22" month="May" year="2025"/>
+    <date day="23" month="May" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
     <keyword>OpenID</keyword>
-    <keyword>Connect</keyword>
+    <keyword>OpenID Connect</keyword>
     <keyword>Federation</keyword>
     <keyword>Multilateral Federation</keyword>
     <keyword>Federation Entity</keyword>
@@ -100,6 +100,7 @@
     <keyword>Trust Anchor</keyword>
     <keyword>Trust Chain</keyword>
     <keyword>Trust Establishment</keyword>
+    <keyword>Trust Mark</keyword>
 
     <abstract>
       <t>
@@ -583,8 +584,10 @@
             </t>
             <t hangText="metadata">
               <vspace/>
-              OPTIONAL. JSON object that represents the Entity's Types and the
-              metadata for those Entity Types. Each member name of the JSON
+              OPTIONAL.
+	      JSON object that declares roles that the Entity plays -
+	      its Entity Types - and that contains metadata for those Entity Types.
+	      Each member name of the JSON
               object is an Entity Type Identifier, and each value MUST be a JSON
               object containing metadata parameters according to the metadata
               schema of the Entity Type.
@@ -1226,7 +1229,7 @@
             <t hangText="federation_trust_mark_status_endpoint">
               <vspace/>
               OPTIONAL.
-              The Trust Mark status endpoint described in
+              The Trust Mark Status endpoint described in
               <xref target="status_endpoint"/>. Trust Mark Issuers SHOULD
               publish a
               <spanx style="verb">federation_trust_mark_status_endpoint</spanx>.
@@ -3599,9 +3602,16 @@
           <t>
             An Entity MAY choose, at its own discretion, to utilize Trust Marks presented
             to it that are not recognized within the federation, and where the
-            accreditation authority is established by some out-of-band mechanism.
+            accreditation authority is established by an out-of-band mechanism.
           </t>
+	  <t>
+	    If trust marks are issued without an expiration time,
+	    it is RECOMMENDED that a mechanism be provided to validate them,
+	    such as the Trust Mark Status endpoint
+	    and/or the Trust Marked Entities Listing endpoint.
+	  </t>
         </section>
+
         <section title="Trust Mark Examples" anchor="trust_example">
           <figure>
             <preamble>
@@ -4519,7 +4529,7 @@ Host: openid.sunet.se
           an Entity and is still active. The query MUST be sent to the Trust Mark Issuer.
         </t>
 	<t>
-	  The Trust Mark status endpoint location is published in
+	  The Trust Mark Status endpoint location is published in
 	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
 	  in the <spanx style="verb">federation_trust_mark_status_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
@@ -4530,7 +4540,7 @@ Host: openid.sunet.se
         <section anchor="tm-status-request" title="Trust Mark Status Request">
           <t>
             The request MUST be an HTTP request using the GET method
-            to a Trust Mark status endpoint
+            to a Trust Mark Status endpoint
             with the following query parameters, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
@@ -4565,7 +4575,7 @@ Host: openid.sunet.se
 	  </t>
             <figure>
               <preamble>
-                The following is a non-normative example of a Trust Mark status request:
+                The following is a non-normative example of a Trust Mark Status request:
               </preamble>
 	      <name>
 		Trust Mark Status Request
@@ -4625,13 +4635,13 @@ Content-Type: application/json
 
      <section title="Trust Marked Entities Listing" anchor="tm_listing">
         <t>
-		  The Trust Marked Entities listing endpoint is exposed by
+		  The Trust Marked Entities Listing endpoint is exposed by
           Trust Mark Issuers
           and lists all the Entities for which Trust Marks
           have been issued and are still valid.
         </t>
 	<t>
-	  The Trust Marked Entities listing endpoint location is published in
+	  The Trust Marked Entities Listing endpoint location is published in
 	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
 	  in the <spanx style="verb">federation_trust_mark_list_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
@@ -10251,6 +10261,16 @@ Host: op.umu.se
       <t>
 	-43
 	<list style="symbols">
+    <t>
+	    Fixed #194: Renamed <spanx style="verb">trust_mark_id</spanx>
+	    to <spanx style="verb">trust_mark_type</spanx>.
+	  </t>
+	  <t>
+	    Fixed #35: Removed requirement for the <spanx style="verb">value</spanx>
+	    and <spanx style="verb">default</spanx> operators to support
+	    JSON object values, since merging them requires comparison.
+	    Added note about metadata policy and comparing JSON objects.
+	  </t>
 	  <t>
 	    Fixed #127: Explained Trust Mark Issuer validation in more detail.
 	  </t>
@@ -10275,20 +10295,17 @@ Host: op.umu.se
 	     Fixed #172: Added Resolved Metadata as defined term.
 	  </t>
 	  <t>
+	    Fixed #166: Recommend way to validate non-expiring Trust Marks.
+     </t>
+	   <t>
+	    Fixed #193: Clarified that "metadata" declarations declare
+	    the roles that the Entity plays - its Entity Types.
+	  </t>
+	  <t>
 	    Fixed #202: Added String Operations section.
 	  </t>
 	  <t>
 	    Fixed #173: Use Resolved Metadata term in Explicit Registration.
-	  </t>
-	  <t>
-	    Fixed #35: Removed requirement for the <spanx style="verb">value</spanx>
-	    and <spanx style="verb">default</spanx> operators to support
-	    JSON object values, since merging them requires comparison.
-	    Added note about metadata policy and comparing JSON objects.
-	  </t>
-	  <t>
-	    Fixed #194: Renamed <spanx style="verb">trust_mark_id</spanx>
-	    to <spanx style="verb">trust_mark_type</spanx>.
 	  </t>
 	</list>
       </t>
