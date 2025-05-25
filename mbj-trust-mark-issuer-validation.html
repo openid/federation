@@ -36,7 +36,7 @@
     " name="description">
 <meta content="xml2rfc 3.28.1" name="generator">
 <meta content="OpenID" name="keyword">
-<meta content="Connect" name="keyword">
+<meta content="OpenID Connect" name="keyword">
 <meta content="Federation" name="keyword">
 <meta content="Multilateral Federation" name="keyword">
 <meta content="Federation Entity" name="keyword">
@@ -44,11 +44,12 @@
 <meta content="Trust Anchor" name="keyword">
 <meta content="Trust Chain" name="keyword">
 <meta content="Trust Establishment" name="keyword">
+<meta content="Trust Mark" name="keyword">
 <meta content="openid-federation-1_0" name="ietf.draft">
 <!-- Generator version information:
   xml2rfc 3.28.1
     Python 3.12.3
-    ConfigArgParse 1.7
+    ConfigArgParse 1.7.1
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.2
@@ -1258,7 +1259,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-05-22" class="published">22 May 2025</time>
+<time datetime="2025-05-23" class="published">23 May 2025</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -2464,8 +2465,10 @@ li > p:last-of-type:only-child {
 <dt id="section-3-6.13">metadata</dt>
         <dd style="margin-left: 1.5em" id="section-3-6.14">
           <p id="section-3-6.14.1">
-              OPTIONAL. JSON object that represents the Entity's Types and the
-              metadata for those Entity Types. Each member name of the JSON
+              OPTIONAL.
+       JSON object that declares roles that the Entity plays -
+       its Entity Types - and that contains metadata for those Entity Types.
+       Each member name of the JSON
               object is an Entity Type Identifier, and each value MUST be a JSON
               object containing metadata parameters according to the metadata
               schema of the Entity Type.<a href="#section-3-6.14.1" class="pilcrow">¶</a></p>
@@ -3133,7 +3136,7 @@ li > p:last-of-type:only-child {
 <dt id="section-5.1.1-4.7">federation_trust_mark_status_endpoint</dt>
             <dd style="margin-left: 1.5em" id="section-5.1.1-4.8">
               OPTIONAL.
-              The Trust Mark status endpoint described in
+              The Trust Mark Status endpoint described in
               <a href="#status_endpoint" class="auto internal xref">Section 8.4</a>. Trust Mark Issuers SHOULD
               publish a
               <code>federation_trust_mark_status_endpoint</code>.
@@ -5589,7 +5592,12 @@ li > p:last-of-type:only-child {
 <p id="section-7.3-9">
             An Entity MAY choose, at its own discretion, to utilize Trust Marks presented
             to it that are not recognized within the federation, and where the
-            accreditation authority is established by some out-of-band mechanism.<a href="#section-7.3-9" class="pilcrow">¶</a></p>
+            accreditation authority is established by an out-of-band mechanism.<a href="#section-7.3-9" class="pilcrow">¶</a></p>
+<p id="section-7.3-10">
+     If trust marks are issued without an expiration time,
+     it is RECOMMENDED that a mechanism be provided to validate them,
+     such as the Trust Mark Status endpoint
+     and/or the Trust Marked Entities Listing endpoint.<a href="#section-7.3-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="trust_example">
@@ -6524,7 +6532,7 @@ Host: openid.sunet.se
           This enables an Entity to check whether a Trust Mark has been issued to
           an Entity and is still active. The query MUST be sent to the Trust Mark Issuer.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
 <p id="section-8.4-2">
-   The Trust Mark status endpoint location is published in
+   The Trust Mark Status endpoint location is published in
    the Entity's <code>federation_entity</code> metadata
    in the <code>federation_trust_mark_status_endpoint</code> parameter
    defined in <a href="#federation_entity" class="auto internal xref">Section 5.1.1</a>.
@@ -6537,7 +6545,7 @@ Host: openid.sunet.se
           </h4>
 <p id="section-8.4.1-1">
             The request MUST be an HTTP request using the GET method
-            to a Trust Mark status endpoint
+            to a Trust Mark Status endpoint
             with the following query parameters, encoded in
             <code>application/x-www-form-urlencoded</code> format.<a href="#section-8.4.1-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-8.4.1-2">
@@ -6570,7 +6578,7 @@ Host: openid.sunet.se
      the request MUST be an HTTP request using the POST method,
      with the parameters passed in the POST body.<a href="#section-8.4.1-3" class="pilcrow">¶</a></p>
 <p id="section-8.4.1-4" class="keepWithNext">
-                The following is a non-normative example of a Trust Mark status request:<a href="#section-8.4.1-4" class="pilcrow">¶</a></p>
+                The following is a non-normative example of a Trust Mark Status request:<a href="#section-8.4.1-4" class="pilcrow">¶</a></p>
 <span id="name-trust-mark-status-request-2"></span><figure id="figure-35">
             <div class="alignLeft art-text artwork" id="section-8.4.1-5.1">
 <pre>
@@ -6632,12 +6640,12 @@ Content-Type: application/json
 <a href="#section-8.5" class="section-number selfRef">8.5. </a><a href="#name-trust-marked-entities-listi" class="section-name selfRef">Trust Marked Entities Listing</a>
         </h3>
 <p id="section-8.5-1">
-   The Trust Marked Entities listing endpoint is exposed by
+   The Trust Marked Entities Listing endpoint is exposed by
           Trust Mark Issuers
           and lists all the Entities for which Trust Marks
           have been issued and are still valid.<a href="#section-8.5-1" class="pilcrow">¶</a></p>
 <p id="section-8.5-2">
-   The Trust Marked Entities listing endpoint location is published in
+   The Trust Marked Entities Listing endpoint location is published in
    the Entity's <code>federation_entity</code> metadata
    in the <code>federation_trust_mark_list_endpoint</code> parameter
    defined in <a href="#federation_entity" class="auto internal xref">Section 5.1.1</a>.<a href="#section-8.5-2" class="pilcrow">¶</a></p>
@@ -12696,53 +12704,62 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-C-3.1">
           <p id="appendix-C-3.1.1">
-     Fixed #127: Explained Trust Mark Issuer validation in more detail.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+     Fixed #194: Renamed <code>trust_mark_id</code>
+     to <code>trust_mark_type</code>.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.2">
           <p id="appendix-C-3.2.1">
-     Fixed #167: Added Privacy Considerations section.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-C-3.3">
-          <p id="appendix-C-3.3.1">
-     Fixed #196: The output of rows 3 and 4 in Table 1: Examples of
-     Outputs with Combinations of essential and subset_of for Different
-     Inputs must be empty JSON array [].<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-C-3.4">
-          <p id="appendix-C-3.4.1">
-     OAuth 2.0 Protected Resource Metadata is now RFC 9728.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-C-3.5">
-          <p id="appendix-C-3.5.1">
-      Follow Implementation Considerations in <span>[<a href="#OpenID.RP.Choices" class="cite xref">OpenID.RP.Choices</a>]</span>.<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-C-3.6">
-          <p id="appendix-C-3.6.1">
-       Added note about using different signing algorithms for different Entity Statements in a Trust Chain.<a href="#appendix-C-3.6.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-C-3.7">
-          <p id="appendix-C-3.7.1">
-      Fixed #172: Added Resolved Metadata as defined term.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-C-3.8">
-          <p id="appendix-C-3.8.1">
-     Fixed #202: Added String Operations section.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-C-3.9">
-          <p id="appendix-C-3.9.1">
-     Fixed #173: Use Resolved Metadata term in Explicit Registration.<a href="#appendix-C-3.9.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-C-3.10">
-          <p id="appendix-C-3.10.1">
      Fixed #35: Removed requirement for the <code>value</code>
      and <code>default</code> operators to support
      JSON object values, since merging them requires comparison.
-     Added note about metadata policy and comparing JSON objects.<a href="#appendix-C-3.10.1" class="pilcrow">¶</a></p>
+     Added note about metadata policy and comparing JSON objects.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.3">
+          <p id="appendix-C-3.3.1">
+     Fixed #127: Explained Trust Mark Issuer validation in more detail.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.4">
+          <p id="appendix-C-3.4.1">
+     Fixed #167: Added Privacy Considerations section.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.5">
+          <p id="appendix-C-3.5.1">
+     Fixed #196: The output of rows 3 and 4 in Table 1: Examples of
+     Outputs with Combinations of essential and subset_of for Different
+     Inputs must be empty JSON array [].<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.6">
+          <p id="appendix-C-3.6.1">
+     OAuth 2.0 Protected Resource Metadata is now RFC 9728.<a href="#appendix-C-3.6.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.7">
+          <p id="appendix-C-3.7.1">
+      Follow Implementation Considerations in <span>[<a href="#OpenID.RP.Choices" class="cite xref">OpenID.RP.Choices</a>]</span>.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.8">
+          <p id="appendix-C-3.8.1">
+       Added note about using different signing algorithms for different Entity Statements in a Trust Chain.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.9">
+          <p id="appendix-C-3.9.1">
+      Fixed #172: Added Resolved Metadata as defined term.<a href="#appendix-C-3.9.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.10">
+          <p id="appendix-C-3.10.1">
+     Fixed #166: Recommend way to validate non-expiring Trust Marks.<a href="#appendix-C-3.10.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.11">
           <p id="appendix-C-3.11.1">
-     Fixed #194: Renamed <code>trust_mark_id</code>
-     to <code>trust_mark_type</code>.<a href="#appendix-C-3.11.1" class="pilcrow">¶</a></p>
+     Fixed #193: Clarified that "metadata" declarations declare
+     the roles that the Entity plays - its Entity Types.<a href="#appendix-C-3.11.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.12">
+          <p id="appendix-C-3.12.1">
+     Fixed #202: Added String Operations section.<a href="#appendix-C-3.12.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.13">
+          <p id="appendix-C-3.13.1">
+     Fixed #173: Use Resolved Metadata term in Explicit Registration.<a href="#appendix-C-3.13.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
