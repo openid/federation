@@ -24,7 +24,7 @@
 
   <front>
     <title abbrev="OpenID Federation">OpenID Federation 1.0 -
-      draft 43
+      draft 44
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -781,7 +781,7 @@
 	      </t>
 	      <t>
 		The Entity Identifier of the Entity
-		MUST exactly match the value of the
+		MUST match the value of the
 		<spanx style="verb">sub</spanx> (subject) Claim.
 	      </t>
 	      <t>
@@ -790,14 +790,16 @@
 		with a value that is a valid Entity Identifier.
 	      </t>
 	      <t>
-		Either the <spanx style="verb">iss</spanx> (issuer) Claim value
-		MUST exactly match
-		the <spanx style="verb">sub</spanx> (subject) Claim value,
-		in which case the Entity Statement is this Entity's Entity Configuration,
-		or it MUST exactly match one of the values in the
-		<spanx style="verb">authority_hints</spanx> array,
-		which MUST be present when the <spanx style="verb">iss</spanx>
-		and <spanx style="verb">sub</spanx> Claim values differ
+		When the <spanx style="verb">iss</spanx> (issuer) Claim value
+		matches the <spanx style="verb">sub</spanx> (subject) Claim value,
+		then the Entity Statement is this Entity's Entity Configuration.
+		When they do not match, the Entity Statement is a Subordinate Statement.
+		When the Entity Statement is a Subordinate Statement,
+		the <spanx style="verb">iss</spanx> Claim value MUST match
+		one of the values in the
+		<spanx style="verb">authority_hints</spanx> array
+		in the Entity Configuration for the Entity whose Entity Identifier
+		is the value of the <spanx style="verb">sub</spanx> Claim.
 	      </t>
 	      <t>
 		The current time MUST be after the time represented by the
@@ -813,7 +815,7 @@
 		JWK Set <xref target="RFC7517"/>.
 	      </t>
 	      <t>
-		If the <spanx style="verb">jwks</spanx> (critical) Claim is present,
+		If the <spanx style="verb">critical</spanx> Claim is present,
 		then each array element in this claim's value
 		MUST be a string representing an Entity Statement claim
 		and that claim MUST be understood
@@ -10414,6 +10416,15 @@ Host: op.umu.se
       <t>[[ To be removed from the final specification ]]</t>
 
       <t>
+	-44
+	<list style="symbols">
+	  <t>
+	    Fixed #84: Added sections on validating Entity Statements.
+	  </t>
+	</list>
+      </t>
+
+      <t>
 	-43
 	<list style="symbols">
 	  <t>
@@ -10465,9 +10476,6 @@ Host: op.umu.se
 	    <spanx style="verb">description</spanx>,
 	    <spanx style="verb">keywords</spanx>, and
 	    <spanx style="verb">information_uri</spanx>.
-	  </t>
-	  <t>
-	    Fixed #84: Added sections on validating Entity Statements.
 	  </t>
 	</list>
       </t>
