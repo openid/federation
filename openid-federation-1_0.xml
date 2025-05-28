@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="27" month="May" year="2025"/>
+    <date day="28" month="May" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -814,10 +814,38 @@
 	      </t>
 	      <t>
 		If the <spanx style="verb">jwks</spanx> (critical) Claim is present,
-		then for each array element in this claim's value,
-		the Entity Statement MUST contain a claim with the same name
-		as the array element, and that claim MUST be understood
+		then each array element in this claim's value
+		MUST be a string representing an Entity Statement claim
+		and that claim MUST be understood
 		and be able to be processed by the implementation.
+	      </t>
+	      <t>
+		If the <spanx style="verb">metadata</spanx> Claim is present,
+		verify that its value is syntactially correct,
+		not using <spanx style="verb">null</spanx> as metadata values,
+		as specified in <xref target="metadata"/>.
+	      </t>
+	      <t>
+		If the <spanx style="verb">metadata_policy</spanx> Claim is present,
+		the Entity Statement MUST NOT be an Entity Configuration
+		(the <spanx style="verb">iss</spanx> and
+		<spanx style="verb">sub</spanx> Claim values MUST NOT match).
+		Verify that its value is syntactially correct,
+		as specified in <xref target="metadata_policy"/>.
+	      </t>
+	      <t>
+		If the <spanx style="verb">metadata_policy_crit</spanx> Claim is present,
+		the Entity Statement MUST NOT be an Entity Configuration.
+		Each array element in this claim's value
+		MUST be a string representing a Metadata Policy operator
+		and that operator MUST be understood
+		and be able to be processed by the implementation.
+	      </t>
+	      <t>
+		If the <spanx style="verb">constraints</spanx> Claim is present,
+		the Entity Statement MUST NOT be an Entity Configuration.
+		Verify that its value is syntactically correct,
+		as specified in <xref target="chain_constraints"/>.
 	      </t>
 	      <t>
 		Obtain the Entity Configuration for the issuing Entity -
@@ -842,6 +870,31 @@
 		The Entity Statement's signature MUST validate using
 		the issuing Entity's key identified by the
 		<spanx style="verb">kid</spanx> value.
+	      </t>
+	      <t>
+		If the <spanx style="verb">trust_marks</spanx> Claim is present,
+		for each element of the array, validate that the
+		<spanx style="verb">trust_mark_type</spanx> member value matches the
+		<spanx style="verb">trust_mark_type</spanx> Claim value in the
+		Trust Mark JWT that is the value of the
+		<spanx style="verb">trust_mark</spanx> member.
+		Validate each Trust Mark as described in TBD.
+	      </t>
+	      <t>
+		If the <spanx style="verb">trust_mark issuers</spanx> Claim is present,
+		TBD
+	      </t>
+	      <t>
+		If the <spanx style="verb">trust_mark_owners</spanx> Claim is present,
+		TBD
+	      </t>
+	      <t>
+		If the <spanx style="verb">source_endpoint</spanx> Claim is present,
+		TBD
+	      </t>
+	      <t>
+		If the <spanx style="verb">trust_anchor</spanx> Claim is present,
+		TBD
 	      </t>
 	    </list>
 	  </t>
