@@ -1259,7 +1259,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-05-27" class="published">27 May 2025</time>
+<time datetime="2025-05-28" class="published">28 May 2025</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -2733,13 +2733,45 @@ li > p:last-of-type:only-child {
           <li id="section-3.1-2.10">
             <p id="section-3.1-2.10.1">
  If the <code>jwks</code> (critical) Claim is present,
- then for each array element in this claim's value,
- the Entity Statement MUST contain a claim with the same name
- as the array element, and that claim MUST be understood
+ then each array element in this claim's value
+ MUST be a string representing an Entity Statement claim
+ and that claim MUST be understood
  and be able to be processed by the implementation.<a href="#section-3.1-2.10.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.1-2.11">
             <p id="section-3.1-2.11.1">
+ If the <code>metadata</code> Claim is present,
+ verify that its value is syntactially correct,
+ not using <code>null</code> as metadata values,
+ as specified in <a href="#metadata" class="auto internal xref">Section 5</a>.<a href="#section-3.1-2.11.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-3.1-2.12">
+            <p id="section-3.1-2.12.1">
+ If the <code>metadata_policy</code> Claim is present,
+ the Entity Statement MUST NOT be an Entity Configuration
+ (the <code>iss</code> and
+ <code>sub</code> Claim values MUST NOT match).
+ Verify that its value is syntactially correct,
+ as specified in <a href="#metadata_policy" class="auto internal xref">Section 6.1</a>.<a href="#section-3.1-2.12.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-3.1-2.13">
+            <p id="section-3.1-2.13.1">
+ If the <code>metadata_policy_crit</code> Claim is present,
+ the Entity Statement MUST NOT be an Entity Configuration.
+ Each array element in this claim's value
+ MUST be a string representing a Metadata Policy operator
+ and that operator MUST be understood
+ and be able to be processed by the implementation.<a href="#section-3.1-2.13.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-3.1-2.14">
+            <p id="section-3.1-2.14.1">
+ If the <code>constraints</code> Claim is present,
+ the Entity Statement MUST NOT be an Entity Configuration.
+ Verify that its value is syntactically correct,
+ as specified in <a href="#chain_constraints" class="auto internal xref">Section 6.2</a>.<a href="#section-3.1-2.14.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-3.1-2.15">
+            <p id="section-3.1-2.15.1">
  Obtain the Entity Configuration for the issuing Entity -
  the Entity with the Issuer Identifer found in the Entity Statement's
  <code>iss</code> (issuer) Claim.
@@ -2748,22 +2780,52 @@ li > p:last-of-type:only-child {
  the Entity Statement being validated itself.
  Otherwise, this can be obtained either from a Trust Chain or
  by retrieving it as described in
- <a href="#federation_configuration" class="auto internal xref">Section 9</a>.<a href="#section-3.1-2.11.1" class="pilcrow">¶</a></p>
+ <a href="#federation_configuration" class="auto internal xref">Section 9</a>.<a href="#section-3.1-2.15.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-3.1-2.12">
-            <p id="section-3.1-2.12.1">
+          <li id="section-3.1-2.16">
+            <p id="section-3.1-2.16.1">
  The Entity Statement's
  <code>kid</code> (Key ID) header parameter value
  MUST be a non-zero length string and
  MUST exactly match the <code>kid</code> value
  for a key in the <code>jwks</code> (JWK Set) Claim
- of the issuing Entity's Entity Configuration.<a href="#section-3.1-2.12.1" class="pilcrow">¶</a></p>
+ of the issuing Entity's Entity Configuration.<a href="#section-3.1-2.16.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-3.1-2.13">
-            <p id="section-3.1-2.13.1">
+          <li id="section-3.1-2.17">
+            <p id="section-3.1-2.17.1">
  The Entity Statement's signature MUST validate using
  the issuing Entity's key identified by the
- <code>kid</code> value.<a href="#section-3.1-2.13.1" class="pilcrow">¶</a></p>
+ <code>kid</code> value.<a href="#section-3.1-2.17.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-3.1-2.18">
+            <p id="section-3.1-2.18.1">
+ If the <code>trust_marks</code> Claim is present,
+ for each element of the array, validate that the
+ <code>trust_mark_type</code> member value matches the
+ <code>trust_mark_type</code> Claim value in the
+ Trust Mark JWT that is the value of the
+ <code>trust_mark</code> member.
+ Validate each Trust Mark as described in TBD.<a href="#section-3.1-2.18.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-3.1-2.19">
+            <p id="section-3.1-2.19.1">
+ If the <code>trust_mark issuers</code> Claim is present,
+ TBD<a href="#section-3.1-2.19.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-3.1-2.20">
+            <p id="section-3.1-2.20.1">
+ If the <code>trust_mark_owners</code> Claim is present,
+ TBD<a href="#section-3.1-2.20.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-3.1-2.21">
+            <p id="section-3.1-2.21.1">
+ If the <code>source_endpoint</code> Claim is present,
+ TBD<a href="#section-3.1-2.21.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-3.1-2.22">
+            <p id="section-3.1-2.22.1">
+ If the <code>trust_anchor</code> Claim is present,
+ TBD<a href="#section-3.1-2.22.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
 <p id="section-3.1-3">
