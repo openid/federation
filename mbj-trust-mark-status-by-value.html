@@ -36,7 +36,7 @@
     " name="description">
 <meta content="xml2rfc 3.28.1" name="generator">
 <meta content="OpenID" name="keyword">
-<meta content="Connect" name="keyword">
+<meta content="OpenID Connect" name="keyword">
 <meta content="Federation" name="keyword">
 <meta content="Multilateral Federation" name="keyword">
 <meta content="Federation Entity" name="keyword">
@@ -44,11 +44,12 @@
 <meta content="Trust Anchor" name="keyword">
 <meta content="Trust Chain" name="keyword">
 <meta content="Trust Establishment" name="keyword">
+<meta content="Trust Mark" name="keyword">
 <meta content="openid-federation-1_0" name="ietf.draft">
 <!-- Generator version information:
   xml2rfc 3.28.1
     Python 3.12.3
-    ConfigArgParse 1.7
+    ConfigArgParse 1.7.1
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.2
@@ -1258,7 +1259,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-05-22" class="published">22 May 2025</time>
+<time datetime="2025-05-29" class="published">29 May 2025</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -2464,8 +2465,10 @@ li > p:last-of-type:only-child {
 <dt id="section-3-6.13">metadata</dt>
         <dd style="margin-left: 1.5em" id="section-3-6.14">
           <p id="section-3-6.14.1">
-              OPTIONAL. JSON object that represents the Entity's Types and the
-              metadata for those Entity Types. Each member name of the JSON
+              OPTIONAL.
+       JSON object that declares roles that the Entity plays -
+       its Entity Types - and that contains metadata for those Entity Types.
+       Each member name of the JSON
               object is an Entity Type Identifier, and each value MUST be a JSON
               object containing metadata parameters according to the metadata
               schema of the Entity Type.<a href="#section-3-6.14.1" class="pilcrow">¶</a></p>
@@ -3133,7 +3136,7 @@ li > p:last-of-type:only-child {
 <dt id="section-5.1.1-4.7">federation_trust_mark_status_endpoint</dt>
             <dd style="margin-left: 1.5em" id="section-5.1.1-4.8">
               OPTIONAL.
-              The Trust Mark status endpoint described in
+              The Trust Mark Status endpoint described in
               <a href="#status_endpoint" class="auto internal xref">Section 8.4</a>. Trust Mark Issuers SHOULD
               publish a
               <code>federation_trust_mark_status_endpoint</code>.
@@ -3705,30 +3708,54 @@ li > p:last-of-type:only-child {
               that this information will be publicly available.<a href="#section-5.2.2-2.2" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.2.2-2.3">contacts</dt>
+<dt id="section-5.2.2-2.3">display_name</dt>
             <dd style="margin-left: 1.5em" id="section-5.2.2-2.4">
+              OPTIONAL. A human-readable
+              name of the Entity to be presented to the End-User.<a href="#section-5.2.2-2.4" class="pilcrow">¶</a>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-5.2.2-2.5">description</dt>
+            <dd style="margin-left: 1.5em" id="section-5.2.2-2.6">
+              OPTIONAL. A human-readable, brief description of this Entity
+              presentable to the End-User.<a href="#section-5.2.2-2.6" class="pilcrow">¶</a>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-5.2.2-2.7">keywords</dt>
+            <dd style="margin-left: 1.5em" id="section-5.2.2-2.8">
+              OPTIONAL. JSON array with one or more
+              strings representing search keywords, tags, categories, or labels that apply to this Entity.<a href="#section-5.2.2-2.8" class="pilcrow">¶</a>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-5.2.2-2.9">contacts</dt>
+            <dd style="margin-left: 1.5em" id="section-5.2.2-2.10">
               OPTIONAL. JSON array with one or more
               strings representing contact persons at the Entity.
               These MAY contain names, e-mail addresses, descriptions, phone
-              numbers, etc.<a href="#section-5.2.2-2.4" class="pilcrow">¶</a>
+              numbers, etc.<a href="#section-5.2.2-2.10" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.2.2-2.5">logo_uri</dt>
-            <dd style="margin-left: 1.5em" id="section-5.2.2-2.6">
+<dt id="section-5.2.2-2.11">logo_uri</dt>
+            <dd style="margin-left: 1.5em" id="section-5.2.2-2.12">
               OPTIONAL. String. A URL that points to the logo of this Entity.
               The file containing the logo SHOULD be published
-              in a format that can be viewed via the web.<a href="#section-5.2.2-2.6" class="pilcrow">¶</a>
+              in a format that can be viewed via the web.<a href="#section-5.2.2-2.12" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.2.2-2.7">policy_uri</dt>
-            <dd style="margin-left: 1.5em" id="section-5.2.2-2.8">
+<dt id="section-5.2.2-2.13">policy_uri</dt>
+            <dd style="margin-left: 1.5em" id="section-5.2.2-2.14">
               OPTIONAL. URL of the documentation of
-              conditions and policies relevant to this Entity.<a href="#section-5.2.2-2.8" class="pilcrow">¶</a>
+              conditions and policies relevant to this Entity.<a href="#section-5.2.2-2.14" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.2.2-2.9">homepage_uri</dt>
-            <dd style="margin-left: 1.5em" id="section-5.2.2-2.10">
-              OPTIONAL. URL of a Web page for the organization owning this Entity.<a href="#section-5.2.2-2.10" class="pilcrow">¶</a>
+<dt id="section-5.2.2-2.15">information_uri</dt>
+            <dd style="margin-left: 1.5em" id="section-5.2.2-2.16">
+              OPTIONAL. URL of the documentation of
+              additional information about this Entity meant to be viewed by the End-User.<a href="#section-5.2.2-2.16" class="pilcrow">¶</a>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-5.2.2-2.17">homepage_uri</dt>
+            <dd style="margin-left: 1.5em" id="section-5.2.2-2.18">
+              OPTIONAL. URL of a Web page for the organization owning this Entity.<a href="#section-5.2.2-2.18" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 </dl>
@@ -5574,7 +5601,12 @@ li > p:last-of-type:only-child {
 <p id="section-7.3-8">
             An Entity MAY choose, at its own discretion, to utilize Trust Marks presented
             to it that are not recognized within the federation, and where the
-            accreditation authority is established by some out-of-band mechanism.<a href="#section-7.3-8" class="pilcrow">¶</a></p>
+            accreditation authority is established by an out-of-band mechanism.<a href="#section-7.3-8" class="pilcrow">¶</a></p>
+<p id="section-7.3-9">
+     If trust marks are issued without an expiration time,
+     it is RECOMMENDED that a mechanism be provided to validate them,
+     such as the Trust Mark Status endpoint
+     and/or the Trust Marked Entities Listing endpoint.<a href="#section-7.3-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="trust_example">
@@ -5598,13 +5630,14 @@ li > p:last-of-type:only-child {
      "trust_mark_type": "https://www.spid.gov.it/certification/rp",
      "trust_mark":
        "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia29
-        zR20yd3VaaDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.eyJpc
-        3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAu
-        ZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYXJrX2l
-        kIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdGlvbi9ycCIsIm
-        xvZ29fdXJpIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3Rvb
-        S9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9k
-        b2NzL3NwaWQtY2llLW9pZGMtZG9jcy9pdC92ZXJzaW9uZS1jb3JyZW50ZS8ifQ.
+        zR20yd3VaaDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.
+        eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8
+        vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYX
+        JrX3R5cGUiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZXJ0aWZpY2F0aW9uL
+        3JwIiwibG9nb191cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdC90aGVtZXMv
+        Y3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYiOiJodHRwczovL2RvY3MuaXRhbGl
+        hLml0L2RvY3Mvc3BpZC1jaWUtb2lkYy1kb2NzL2l0L3ZlcnNpb25lLWNvcnJlbn
+        RlLyJ9.
         L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJW
         QBdZpjxnHBBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzS
         an5nOmkxuAtMinU8k_-aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0Y
@@ -5777,10 +5810,11 @@ li > p:last-of-type:only-child {
   "delegation":
     "eyJ0eXAiOiJ0cnVzdC1tYXJrLWRlbGVnYXRpb24rand0IiwiYWxnIjoiUl
     MyNTYiLCJraWQiOiJrb3NHbTJ3dVpoOURHbU54QXRrdU80MHBQanBMMy1qQ
-    2YxTi1xUE8tWWVVIn0.eyJzdWIiOiJodHRwczovL3RtaS5leGFtcGxlLm9y
-    ZyIsInRydXN0X21hcmtfaWQiOiJodHRwczovL3JlZmVkcy5vcmcvc2lydGZ
-    pIiwiaXNzIjoiaHR0cHM6Ly90bV9vd25lci5leGFtcGxlLm9yZyIsImlhdC
-    I6MTcyNTE3NjMwMn0.ao0rWGpVjEgpNyFxsKawps8q71eYnp78TzRdY4P52
+    2YxTi1xUE8tWWVVIn0.
+    eyJzdWIiOiJodHRwczovL3RtaS5leGFtcGxlLm9yZyIsInRydXN0X21hcmt
+    fdHlwZSI6Imh0dHBzOi8vcmVmZWRzLm9yZy9zaXJ0ZmkiLCJpc3MiOiJodH
+    RwczovL3RtX293bmVyLmV4YW1wbGUub3JnIiwiaWF0IjoxNzI1MTc2MzAyfQ.
+    ao0rWGpVjEgpNyFxsKawps8q71eYnp78TzRdY4P52
     CT8QX6etXt-2L2Z1Vw5A6jx2mhjpPwWi_sOxfiOSA5TugJfN0Gbwj7teTzM
     0IMciuasCWgnLrKyLZjS147ZE50I9e9P8Ot8UQwhmXcLiuwsbDxSdqM4pVp
     75lfWnmzPH0L2pDZG5COFgIgSOAlK3TVMBOR8fziF-VmWNPzAfB0lSc-hjH
@@ -6456,11 +6490,11 @@ Host: openid.sunet.se
         hzdUtXaVZmd1NnSG9mMVRlNE9VZGN5NHE3ZEpyS2ZGUmxPNXhoSElhMCJ9.
         eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi
         8vb3AuZXhhbXBsZS5pdC9zcGlkLyIsImlhdCI6MTU3OTYyMTE2MCwidHJ1c3Rf
-        bWFya19pZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb2
-        4vb3AvIiwibG9nb191cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdC90aGVt
-        ZXMvY3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYiOiJodHRwczovL2RvY3MuaX
-        RhbGlhLml0L2l0YWxpYS9zcGlkL3NwaWQtcmVnb2xlLXRlY25pY2hlLW9pZGMv
-        aXQvc3RhYmlsZS9pbmRleC5odG1sIn0.
+        bWFya190eXBlIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdG
+        lvbi9vcC8iLCJsb2dvX3VyaSI6Imh0dHBzOi8vd3d3LmFnaWQuZ292Lml0L3Ro
+        ZW1lcy9jdXN0b20vYWdpZC9sb2dvLnN2ZyIsInJlZiI6Imh0dHBzOi8vZG9jcy
+        5pdGFsaWEuaXQvaXRhbGlhL3NwaWQvc3BpZC1yZWdvbGUtdGVjbmljaGUtb2lk
+        Yy9pdC9zdGFiaWxlL2luZGV4Lmh0bWwifQ.
         xyz-PDQ_..."
     }
   ],
@@ -6507,7 +6541,7 @@ Host: openid.sunet.se
           This enables determining whether a Trust Mark that has been issued to
           an Entity is still active. The query MUST be sent to the Trust Mark Issuer.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
 <p id="section-8.4-2">
-   The Trust Mark status endpoint location is published in
+   The Trust Mark Status endpoint location is published in
    the Entity's <code>federation_entity</code> metadata
    in the <code>federation_trust_mark_status_endpoint</code> parameter
    defined in <a href="#federation_entity" class="auto internal xref">Section 5.1.1</a>.
@@ -6520,7 +6554,7 @@ Host: openid.sunet.se
           </h4>
 <p id="section-8.4.1-1">
             The request MUST be an HTTP request using the POST method
-            to a Trust Mark status endpoint
+            to a Trust Mark Status endpoint
             with the following parameter, encoded in
             <code>application/x-www-form-urlencoded</code> format.<a href="#section-8.4.1-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlNewline" id="section-8.4.1-2">
@@ -6535,7 +6569,7 @@ Host: openid.sunet.se
      the request MUST be an HTTP request using the POST method,
      with the parameters passed in the POST body.<a href="#section-8.4.1-3" class="pilcrow">¶</a></p>
 <p id="section-8.4.1-4" class="keepWithNext">
-                The following is a non-normative example of a Trust Mark status request:<a href="#section-8.4.1-4" class="pilcrow">¶</a></p>
+                The following is a non-normative example of a Trust Mark Status request:<a href="#section-8.4.1-4" class="pilcrow">¶</a></p>
 <span id="name-trust-mark-status-request-2"></span><figure id="figure-35">
             <div class="alignLeft art-text artwork" id="section-8.4.1-5.1">
 <pre>
@@ -6598,12 +6632,12 @@ Content-Type: application/json
 <a href="#section-8.5" class="section-number selfRef">8.5. </a><a href="#name-trust-marked-entities-listi" class="section-name selfRef">Trust Marked Entities Listing</a>
         </h3>
 <p id="section-8.5-1">
-   The Trust Marked Entities listing endpoint is exposed by
+   The Trust Marked Entities Listing endpoint is exposed by
           Trust Mark Issuers
           and lists all the Entities for which Trust Marks
           have been issued and are still valid.<a href="#section-8.5-1" class="pilcrow">¶</a></p>
 <p id="section-8.5-2">
-   The Trust Marked Entities listing endpoint location is published in
+   The Trust Marked Entities Listing endpoint location is published in
    the Entity's <code>federation_entity</code> metadata
    in the <code>federation_trust_mark_list_endpoint</code> parameter
    defined in <a href="#federation_entity" class="auto internal xref">Section 5.1.1</a>.<a href="#section-8.5-2" class="pilcrow">¶</a></p>
@@ -6777,18 +6811,18 @@ Host: tuber.cert.example.org
 Content-Type: application/trust-mark+jwt
 
 eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia29zR20yd3Va
-aDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.eyJpc3MiOiJodHRwczovL3d
-3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF
-0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYXJrX2lkIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQ
-vY2VydGlmaWNhdGlvbi9ycCIsImxvZ29fdXJpIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQ
-vdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWx
-pYS5pdC9kb2NzL3NwaWQtY2llLW9pZGMtZG9jcy9pdC92ZXJzaW9uZS1jb3JyZW50ZS8ifQ.
+aDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.
+eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAuZXhh
+bXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYXJrX3R5cGUiOiJodHRw
+czovL3d3dy5zcGlkLmdvdi5pdC9jZXJ0aWZpY2F0aW9uL3JwIiwibG9nb191cmkiOiJodHRw
+czovL3d3dy5hZ2lkLmdvdi5pdC90aGVtZXMvY3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYi
+OiJodHRwczovL2RvY3MuaXRhbGlhLml0L2RvY3Mvc3BpZC1jaWUtb2lkYy1kb2NzL2l0L3Zl
+cnNpb25lLWNvcnJlbnRlLyJ9.
 L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJWQBdZpjxnH
 BBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzSan5nOmkxuAtMinU8k_
 -aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0YAvbMlq2pPWO5OWKdZhiFRMSprwh
 0GYluQkK0j1aLNMGXD3keMJd2zEoWX9D7w2fXShAA48W3cNhuXyBVnCoum1K4IWK3s_fx4nI
 kp6W-V4jCBOpxp7Yo8LZ30o_xpEOzGTIECGWVR86azOAlwVC8XSiAA
-
 </pre>
 </div>
 <figcaption><a href="#figure-40" class="selfRef">Figure 40</a>:
@@ -12395,7 +12429,6 @@ Host: op.umu.se
     ],
     "id_token_signing_alg_values_supported":
       ["ES256", "PS256", "RS256"],
-    "id_token_signed_response_alg": "RS256",
     "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
     "redirect_uris": [
       "https://wiki.ligo.org/openid/callback"
@@ -12432,7 +12465,6 @@ Host: op.umu.se
     ],
     "id_token_signing_alg_values_supported":
       ["ES256", "PS256", "RS256"],
-    "id_token_signed_response_alg": "RS256",
     "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
     "redirect_uris": [
       "https://wiki.ligo.org/openid/callback"
@@ -12664,54 +12696,71 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-C-3.1">
           <p id="appendix-C-3.1.1">
-     Fixed #167: Added Privacy Considerations section.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+     Fixed #194: Renamed <code>trust_mark_id</code>
+     to <code>trust_mark_type</code>.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.2">
           <p id="appendix-C-3.2.1">
-     Fixed #196: The output of rows 3 and 4 in Table 1: Examples of
-     Outputs with Combinations of essential and subset_of for Different
-     Inputs must be empty JSON array [].<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
+     Fixed #24, #25, #212: Simplified Trust Mark Status endpoint
+     by having it take the Trust Mark to be validated as a parameter.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.3">
           <p id="appendix-C-3.3.1">
-     OAuth 2.0 Protected Resource Metadata is now RFC 9728.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-C-3.4">
-          <p id="appendix-C-3.4.1">
-     Follow Implementation Considerations in <span>[<a href="#OpenID.RP.Choices" class="cite xref">OpenID.RP.Choices</a>]</span>.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-C-3.5">
-          <p id="appendix-C-3.5.1">
-     Added note about using different signing algorithms for different Entity Statements in a Trust Chain.<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-C-3.6">
-          <p id="appendix-C-3.6.1">
-     Fixed #172: Added Resolved Metadata as defined term.<a href="#appendix-C-3.6.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-C-3.7">
-          <p id="appendix-C-3.7.1">
-     Fixed #202: Added String Operations section.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-C-3.8">
-          <p id="appendix-C-3.8.1">
-     Fixed #173: Use Resolved Metadata term in Explicit Registration.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="appendix-C-3.9">
-          <p id="appendix-C-3.9.1">
      Fixed #35: Removed requirement for the <code>value</code>
      and <code>default</code> operators to support
      JSON object values, since merging them requires comparison.
-     Added note about metadata policy and comparing JSON objects.<a href="#appendix-C-3.9.1" class="pilcrow">¶</a></p>
+     Added note about metadata policy and comparing JSON objects.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.4">
+          <p id="appendix-C-3.4.1">
+     Fixed #167: Added Privacy Considerations section.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.5">
+          <p id="appendix-C-3.5.1">
+     Fixed #196: The output of rows 3 and 4 in Table 1: Examples of
+     Outputs with Combinations of essential and subset_of for Different
+     Inputs must be empty JSON array [].<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.6">
+          <p id="appendix-C-3.6.1">
+     OAuth 2.0 Protected Resource Metadata is now RFC 9728.<a href="#appendix-C-3.6.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.7">
+          <p id="appendix-C-3.7.1">
+     Follow Implementation Considerations in <span>[<a href="#OpenID.RP.Choices" class="cite xref">OpenID.RP.Choices</a>]</span>.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.8">
+          <p id="appendix-C-3.8.1">
+     Added note about using different signing algorithms for different Entity Statements in a Trust Chain.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.9">
+          <p id="appendix-C-3.9.1">
+     Fixed #172: Added Resolved Metadata as defined term.<a href="#appendix-C-3.9.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.10">
           <p id="appendix-C-3.10.1">
-     Fixed #194: Renamed <code>trust_mark_id</code>
-     to <code>trust_mark_type</code>.<a href="#appendix-C-3.10.1" class="pilcrow">¶</a></p>
+     Fixed #166: Recommend way to validate non-expiring Trust Marks.<a href="#appendix-C-3.10.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.11">
           <p id="appendix-C-3.11.1">
-     Fixed #24, #25, #212: Simplified Trust Mark Status endpoint
-     by having it take the Trust Mark to be validated as a parameter.<a href="#appendix-C-3.11.1" class="pilcrow">¶</a></p>
+     Fixed #193: Clarified that "metadata" declarations declare
+     the roles that the Entity plays - its Entity Types.<a href="#appendix-C-3.11.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.12">
+          <p id="appendix-C-3.12.1">
+     Fixed #202: Added String Operations section.<a href="#appendix-C-3.12.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.13">
+          <p id="appendix-C-3.13.1">
+     Fixed #173: Use Resolved Metadata term in Explicit Registration.<a href="#appendix-C-3.13.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.14">
+          <p id="appendix-C-3.14.1">
+     Added informational metadata parameters
+     <code>display_name</code>,
+     <code>description</code>,
+     <code>keywords</code>, and
+     <code>information_uri</code>.<a href="#appendix-C-3.14.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
