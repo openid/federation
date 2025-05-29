@@ -87,7 +87,7 @@
       </address>
     </author>
 
-    <date day="26" month="May" year="2025"/>
+    <date day="29" month="May" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -3959,7 +3959,7 @@ Host: edugain.org
             with the content type
             <spanx style="verb">application/entity-statement+jwt</spanx>,
             to make it clear that the response contains an Entity Statement.
-            If it is a negative response, it will be a JSON object and the
+            If it is an error response, it will be a JSON object and the
             content type MUST be
             <spanx style="verb">application/json</spanx>.
 	    If the fetch endpoint cannot provide data for the requested
@@ -4206,7 +4206,7 @@ Host: openid.sunet.se
           </t>
 
           <t>
-            If the response is negative, the response
+            An error response
             is as defined in
             <xref target="error_response"/>.
           </t>
@@ -4433,7 +4433,7 @@ Host: openid.sunet.se
             Additional claims MAY be defined and used in conjunction with the claims above.
           </t>
           <t>
-            If the response is negative, the response
+            An error response
             is as defined in
             <xref target="error_response"/>.
           </t>
@@ -4531,8 +4531,8 @@ Host: openid.sunet.se
 
       <section title="Trust Mark Status" anchor="status_endpoint">
         <t>
-          This enables an Entity to check whether a Trust Mark has been issued to
-          an Entity and is still active. The query MUST be sent to the Trust Mark Issuer.
+          This enables determining whether a Trust Mark that has been issued to
+          an Entity is still active. The query MUST be sent to the Trust Mark Issuer.
         </t>
 	<t>
 	  The Trust Mark Status endpoint location is published in
@@ -4545,32 +4545,16 @@ Host: openid.sunet.se
 
         <section anchor="tm-status-request" title="Trust Mark Status Request">
           <t>
-            The request MUST be an HTTP request using the GET method
+            The request MUST be an HTTP request using the POST method
             to a Trust Mark Status endpoint
-            with the following query parameters, encoded in
+            with the following parameter, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
           <t>
             <list style="hanging">
-              <t hangText="sub">
+              <t hangText="trust_mark">
                 <vspace/>
-                REQUIRED. The Entity Identifier of the Entity to which the Trust Mark
-                was issued.
-              </t>
-              <t hangText="trust_mark_type">
-                <vspace/>
-                REQUIRED. Identifier for the type of the Trust Mark.
-              </t>
-              <t hangText="iat">
-                <vspace/>
-                OPTIONAL. Number. Time when this Trust Mark was issued.
-                This is expressed as Seconds Since the Epoch, per
-                <xref target="RFC7519"/>. If
-                <spanx style="verb">iat</spanx> is not specified and the
-                Trust Mark Issuer has issued several Trust Marks with the
-                identifier specified in the request to the
-                Entity identified by <spanx style="verb">sub</spanx>, the
-                most recent one is assumed.
+                REQUIRED. The Trust Mark to be validated.
               </t>
             </list>
           </t>
@@ -4587,10 +4571,11 @@ Host: openid.sunet.se
 		Trust Mark Status Request
 	      </name>
               <artwork><![CDATA[
-GET /federation_trust_mark_status_endpoint?
-sub=https%3A%2F%2Fopenid.sunet.se%2FRP&
-trust_mark_type=https%3A%2F%2Frefeds.org%2Fsirtfi HTTP/1.1
+POST /federation_trust_mark_status_endpoint HTTP/1.1
 Host: op.example.org
+Content-Type: application/x-www-form-urlencoded
+
+trust_mark=eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6 ...
 ]]></artwork>
             </figure>
         </section>
@@ -4613,7 +4598,7 @@ Host: op.example.org
           </t>
 
           <t>
-            If the response is negative, the response
+            An error response
             is as defined in
             <xref target="error_response"/>.
           </t>
@@ -4641,7 +4626,7 @@ Content-Type: application/json
 
      <section title="Trust Marked Entities Listing" anchor="tm_listing">
         <t>
-		  The Trust Marked Entities Listing endpoint is exposed by
+	  The Trust Marked Entities Listing endpoint is exposed by
           Trust Mark Issuers
           and lists all the Entities for which Trust Marks
           have been issued and are still valid.
@@ -4708,7 +4693,7 @@ Host: trust-mark-issuer.example.org
           </t>
 
           <t>
-            If the response is negative, the response
+            An error response
             is as defined in
             <xref target="error_response"/>.
           </t>
@@ -4802,7 +4787,7 @@ Host: tuber.cert.example.org
           <t>
             If the specified Entity doesn't have
             the specified Trust Mark, the
-            response is negative and
+            response is an error response and
             MUST use the HTTP status code 404.
           </t>
 
@@ -10270,6 +10255,10 @@ Host: op.umu.se
 	  <t>
 	    Fixed #194: Renamed <spanx style="verb">trust_mark_id</spanx>
 	    to <spanx style="verb">trust_mark_type</spanx>.
+	  </t>
+	  <t>
+	    Fixed #24, #25, #212: Simplified Trust Mark Status endpoint
+	    by having it take the Trust Mark to be validated as a parameter.
 	  </t>
 	  <t>
 	    Fixed #35: Removed requirement for the <spanx style="verb">value</spanx>
