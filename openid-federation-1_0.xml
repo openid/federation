@@ -87,12 +87,12 @@
       </address>
     </author>
 
-    <date day="22" month="May" year="2025"/>
+    <date day="29" month="May" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
     <keyword>OpenID</keyword>
-    <keyword>Connect</keyword>
+    <keyword>OpenID Connect</keyword>
     <keyword>Federation</keyword>
     <keyword>Multilateral Federation</keyword>
     <keyword>Federation Entity</keyword>
@@ -100,6 +100,7 @@
     <keyword>Trust Anchor</keyword>
     <keyword>Trust Chain</keyword>
     <keyword>Trust Establishment</keyword>
+    <keyword>Trust Mark</keyword>
 
     <abstract>
       <t>
@@ -583,8 +584,10 @@
             </t>
             <t hangText="metadata">
               <vspace/>
-              OPTIONAL. JSON object that represents the Entity's Types and the
-              metadata for those Entity Types. Each member name of the JSON
+              OPTIONAL.
+	      JSON object that declares roles that the Entity plays -
+	      its Entity Types - and that contains metadata for those Entity Types.
+	      Each member name of the JSON
               object is an Entity Type Identifier, and each value MUST be a JSON
               object containing metadata parameters according to the metadata
               schema of the Entity Type.
@@ -1226,7 +1229,7 @@
             <t hangText="federation_trust_mark_status_endpoint">
               <vspace/>
               OPTIONAL.
-              The Trust Mark status endpoint described in
+              The Trust Mark Status endpoint described in
               <xref target="status_endpoint"/>. Trust Mark Issuers SHOULD
               publish a
               <spanx style="verb">federation_trust_mark_status_endpoint</spanx>.
@@ -1769,6 +1772,21 @@
               this MAY be, for example, the person's name. Note
               that this information will be publicly available.
             </t>
+            <t hangText="display_name">
+              <vspace/>
+              OPTIONAL. A human-readable
+              name of the Entity to be presented to the End-User.
+            </t>
+            <t hangText="description">
+              <vspace/>
+              OPTIONAL. A human-readable, brief description of this Entity
+              presentable to the End-User.
+            </t>
+            <t hangText="keywords">
+              <vspace/>
+              OPTIONAL. JSON array with one or more
+              strings representing search keywords, tags, categories, or labels that apply to this Entity.
+            </t>
             <t hangText="contacts">
               <vspace/>
               OPTIONAL. JSON array with one or more
@@ -1786,6 +1804,11 @@
               <vspace/>
               OPTIONAL. URL of the documentation of
               conditions and policies relevant to this Entity.
+            </t>
+            <t hangText="information_uri">
+              <vspace/>
+              OPTIONAL. URL of the documentation of
+              additional information about this Entity meant to be viewed by the End-User.
             </t>
             <t hangText="homepage_uri">
               <vspace/>
@@ -3585,9 +3608,16 @@
           <t>
             An Entity MAY choose, at its own discretion, to utilize Trust Marks presented
             to it that are not recognized within the federation, and where the
-            accreditation authority is established by some out-of-band mechanism.
+            accreditation authority is established by an out-of-band mechanism.
           </t>
+	  <t>
+	    If trust marks are issued without an expiration time,
+	    it is RECOMMENDED that a mechanism be provided to validate them,
+	    such as the Trust Mark Status endpoint
+	    and/or the Trust Marked Entities Listing endpoint.
+	  </t>
         </section>
+
         <section title="Trust Mark Examples" anchor="trust_example">
           <figure>
             <preamble>
@@ -3608,13 +3638,14 @@
      "trust_mark_type": "https://www.spid.gov.it/certification/rp",
      "trust_mark":
        "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia29
-        zR20yd3VaaDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.eyJpc
-        3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAu
-        ZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYXJrX2l
-        kIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdGlvbi9ycCIsIm
-        xvZ29fdXJpIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQvdGhlbWVzL2N1c3Rvb
-        S9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWxpYS5pdC9k
-        b2NzL3NwaWQtY2llLW9pZGMtZG9jcy9pdC92ZXJzaW9uZS1jb3JyZW50ZS8ifQ.
+        zR20yd3VaaDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.
+        eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8
+        vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYX
+        JrX3R5cGUiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZXJ0aWZpY2F0aW9uL
+        3JwIiwibG9nb191cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdC90aGVtZXMv
+        Y3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYiOiJodHRwczovL2RvY3MuaXRhbGl
+        hLml0L2RvY3Mvc3BpZC1jaWUtb2lkYy1kb2NzL2l0L3ZlcnNpb25lLWNvcnJlbn
+        RlLyJ9.
         L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJW
         QBdZpjxnHBBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzS
         an5nOmkxuAtMinU8k_-aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0Y
@@ -3787,10 +3818,11 @@
   "delegation":
     "eyJ0eXAiOiJ0cnVzdC1tYXJrLWRlbGVnYXRpb24rand0IiwiYWxnIjoiUl
     MyNTYiLCJraWQiOiJrb3NHbTJ3dVpoOURHbU54QXRrdU80MHBQanBMMy1qQ
-    2YxTi1xUE8tWWVVIn0.eyJzdWIiOiJodHRwczovL3RtaS5leGFtcGxlLm9y
-    ZyIsInRydXN0X21hcmtfaWQiOiJodHRwczovL3JlZmVkcy5vcmcvc2lydGZ
-    pIiwiaXNzIjoiaHR0cHM6Ly90bV9vd25lci5leGFtcGxlLm9yZyIsImlhdC
-    I6MTcyNTE3NjMwMn0.ao0rWGpVjEgpNyFxsKawps8q71eYnp78TzRdY4P52
+    2YxTi1xUE8tWWVVIn0.
+    eyJzdWIiOiJodHRwczovL3RtaS5leGFtcGxlLm9yZyIsInRydXN0X21hcmt
+    fdHlwZSI6Imh0dHBzOi8vcmVmZWRzLm9yZy9zaXJ0ZmkiLCJpc3MiOiJodH
+    RwczovL3RtX293bmVyLmV4YW1wbGUub3JnIiwiaWF0IjoxNzI1MTc2MzAyfQ.
+    ao0rWGpVjEgpNyFxsKawps8q71eYnp78TzRdY4P52
     CT8QX6etXt-2L2Z1Vw5A6jx2mhjpPwWi_sOxfiOSA5TugJfN0Gbwj7teTzM
     0IMciuasCWgnLrKyLZjS147ZE50I9e9P8Ot8UQwhmXcLiuwsbDxSdqM4pVp
     75lfWnmzPH0L2pDZG5COFgIgSOAlK3TVMBOR8fziF-VmWNPzAfB0lSc-hjH
@@ -4462,11 +4494,11 @@ Host: openid.sunet.se
         hzdUtXaVZmd1NnSG9mMVRlNE9VZGN5NHE3ZEpyS2ZGUmxPNXhoSElhMCJ9.
         eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi
         8vb3AuZXhhbXBsZS5pdC9zcGlkLyIsImlhdCI6MTU3OTYyMTE2MCwidHJ1c3Rf
-        bWFya19pZCI6Imh0dHBzOi8vd3d3LnNwaWQuZ292Lml0L2NlcnRpZmljYXRpb2
-        4vb3AvIiwibG9nb191cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdC90aGVt
-        ZXMvY3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYiOiJodHRwczovL2RvY3MuaX
-        RhbGlhLml0L2l0YWxpYS9zcGlkL3NwaWQtcmVnb2xlLXRlY25pY2hlLW9pZGMv
-        aXQvc3RhYmlsZS9pbmRleC5odG1sIn0.
+        bWFya190eXBlIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQvY2VydGlmaWNhdG
+        lvbi9vcC8iLCJsb2dvX3VyaSI6Imh0dHBzOi8vd3d3LmFnaWQuZ292Lml0L3Ro
+        ZW1lcy9jdXN0b20vYWdpZC9sb2dvLnN2ZyIsInJlZiI6Imh0dHBzOi8vZG9jcy
+        5pdGFsaWEuaXQvaXRhbGlhL3NwaWQvc3BpZC1yZWdvbGUtdGVjbmljaGUtb2lk
+        Yy9pdC9zdGFiaWxlL2luZGV4Lmh0bWwifQ.
         xyz-PDQ_..."
     }
   ],
@@ -4503,7 +4535,7 @@ Host: openid.sunet.se
           an Entity is still active. The query MUST be sent to the Trust Mark Issuer.
         </t>
 	<t>
-	  The Trust Mark status endpoint location is published in
+	  The Trust Mark Status endpoint location is published in
 	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
 	  in the <spanx style="verb">federation_trust_mark_status_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
@@ -4514,7 +4546,7 @@ Host: openid.sunet.se
         <section anchor="tm-status-request" title="Trust Mark Status Request">
           <t>
             The request MUST be an HTTP request using the POST method
-            to a Trust Mark status endpoint
+            to a Trust Mark Status endpoint
             with the following parameter, encoded in
             <spanx style="verb">application/x-www-form-urlencoded</spanx> format.
           </t>
@@ -4533,7 +4565,7 @@ Host: openid.sunet.se
 	  </t>
             <figure>
               <preamble>
-                The following is a non-normative example of a Trust Mark status request:
+                The following is a non-normative example of a Trust Mark Status request:
               </preamble>
 	      <name>
 		Trust Mark Status Request
@@ -4594,13 +4626,13 @@ Content-Type: application/json
 
      <section title="Trust Marked Entities Listing" anchor="tm_listing">
         <t>
-	  The Trust Marked Entities listing endpoint is exposed by
+	  The Trust Marked Entities Listing endpoint is exposed by
           Trust Mark Issuers
           and lists all the Entities for which Trust Marks
           have been issued and are still valid.
         </t>
 	<t>
-	  The Trust Marked Entities listing endpoint location is published in
+	  The Trust Marked Entities Listing endpoint location is published in
 	  the Entity's <spanx style="verb">federation_entity</spanx> metadata
 	  in the <spanx style="verb">federation_trust_mark_list_endpoint</spanx> parameter
 	  defined in <xref target="federation_entity"/>.
@@ -4773,18 +4805,18 @@ Host: tuber.cert.example.org
 Content-Type: application/trust-mark+jwt
 
 eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia29zR20yd3Va
-aDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.eyJpc3MiOiJodHRwczovL3d
-3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF
-0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYXJrX2lkIjoiaHR0cHM6Ly93d3cuc3BpZC5nb3YuaXQ
-vY2VydGlmaWNhdGlvbi9ycCIsImxvZ29fdXJpIjoiaHR0cHM6Ly93d3cuYWdpZC5nb3YuaXQ
-vdGhlbWVzL2N1c3RvbS9hZ2lkL2xvZ28uc3ZnIiwicmVmIjoiaHR0cHM6Ly9kb2NzLml0YWx
-pYS5pdC9kb2NzL3NwaWQtY2llLW9pZGMtZG9jcy9pdC92ZXJzaW9uZS1jb3JyZW50ZS8ifQ.
+aDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.
+eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8vcnAuZXhh
+bXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYXJrX3R5cGUiOiJodHRw
+czovL3d3dy5zcGlkLmdvdi5pdC9jZXJ0aWZpY2F0aW9uL3JwIiwibG9nb191cmkiOiJodHRw
+czovL3d3dy5hZ2lkLmdvdi5pdC90aGVtZXMvY3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYi
+OiJodHRwczovL2RvY3MuaXRhbGlhLml0L2RvY3Mvc3BpZC1jaWUtb2lkYy1kb2NzL2l0L3Zl
+cnNpb25lLWNvcnJlbnRlLyJ9.
 L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJWQBdZpjxnH
 BBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzSan5nOmkxuAtMinU8k_
 -aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0YAvbMlq2pPWO5OWKdZhiFRMSprwh
 0GYluQkK0j1aLNMGXD3keMJd2zEoWX9D7w2fXShAA48W3cNhuXyBVnCoum1K4IWK3s_fx4nI
 kp6W-V4jCBOpxp7Yo8LZ30o_xpEOzGTIECGWVR86azOAlwVC8XSiAA
-
 ]]></artwork>
           </figure>
         </section>
@@ -9963,7 +9995,6 @@ Host: op.umu.se
     ],
     "id_token_signing_alg_values_supported":
       ["ES256", "PS256", "RS256"],
-    "id_token_signed_response_alg": "RS256",
     "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
     "redirect_uris": [
       "https://wiki.ligo.org/openid/callback"
@@ -10000,7 +10031,6 @@ Host: op.umu.se
     ],
     "id_token_signing_alg_values_supported":
       ["ES256", "PS256", "RS256"],
-    "id_token_signed_response_alg": "RS256",
     "signed_jwks_uri": "https://wiki.ligo.org/jwks.jose",
     "redirect_uris": [
       "https://wiki.ligo.org/openid/callback"
@@ -10223,6 +10253,20 @@ Host: op.umu.se
 	-43
 	<list style="symbols">
 	  <t>
+	    Fixed #194: Renamed <spanx style="verb">trust_mark_id</spanx>
+	    to <spanx style="verb">trust_mark_type</spanx>.
+	  </t>
+	  <t>
+	    Fixed #24, #25, #212: Simplified Trust Mark Status endpoint
+	    by having it take the Trust Mark to be validated as a parameter.
+	  </t>
+	  <t>
+	    Fixed #35: Removed requirement for the <spanx style="verb">value</spanx>
+	    and <spanx style="verb">default</spanx> operators to support
+	    JSON object values, since merging them requires comparison.
+	    Added note about metadata policy and comparing JSON objects.
+	  </t>
+	  <t>
 	    Fixed #167: Added Privacy Considerations section.
 	  </t>
 	  <t>
@@ -10243,24 +10287,24 @@ Host: op.umu.se
 	    Fixed #172: Added Resolved Metadata as defined term.
 	  </t>
 	  <t>
+	    Fixed #166: Recommend way to validate non-expiring Trust Marks.
+	  </t>
+	  <t>
+	    Fixed #193: Clarified that "metadata" declarations declare
+	    the roles that the Entity plays - its Entity Types.
+	  </t>
+	  <t>
 	    Fixed #202: Added String Operations section.
 	  </t>
 	  <t>
 	    Fixed #173: Use Resolved Metadata term in Explicit Registration.
 	  </t>
 	  <t>
-	    Fixed #35: Removed requirement for the <spanx style="verb">value</spanx>
-	    and <spanx style="verb">default</spanx> operators to support
-	    JSON object values, since merging them requires comparison.
-	    Added note about metadata policy and comparing JSON objects.
-	  </t>
-	  <t>
-	    Fixed #194: Renamed <spanx style="verb">trust_mark_id</spanx>
-	    to <spanx style="verb">trust_mark_type</spanx>.
-	  </t>
-	  <t>
-	    Fixed #24, #25, #212: Simplified Trust Mark Status endpoint
-	    by having it take the Trust Mark to be validated as a parameter.
+	    Added informational metadata parameters
+	    <spanx style="verb">display_name</spanx>,
+	    <spanx style="verb">description</spanx>,
+	    <spanx style="verb">keywords</spanx>, and
+	    <spanx style="verb">information_uri</spanx>.
 	  </t>
 	</list>
       </t>
