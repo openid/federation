@@ -76,7 +76,7 @@
       </address>
     </author>
 
-    <date day="6" month="June" year="2025"/>
+    <date day="8" month="June" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -789,14 +789,17 @@
 		<spanx style="verb">authority_hints</spanx> array
 		in the Entity Configuration for the Entity whose Entity Identifier
 		is the value of the <spanx style="verb">sub</spanx> Claim.
+		<!-- TBD Review whether this statement should be a MUST. -->
 	      </t>
 	      <t>
 		The current time MUST be after the time represented by the
-		<spanx style="verb">iat</spanx> (issued at) Claim.
+		<spanx style="verb">iat</spanx> (issued at) Claim
+		(possibly allowing for some small leeway to account for clock skew).
 	      </t>
 	      <t>
 		The current time MUST be before the time represented by the
-		<spanx style="verb">exp</spanx> (expiration) Claim.
+		<spanx style="verb">exp</spanx> (expiration) Claim
+		(possibly allowing for some small leeway to account for clock skew).
 	      </t>
 	      <t>
 		The <spanx style="verb">jwks</spanx> (JWK Set) Claim
@@ -807,6 +810,7 @@
 		If the <spanx style="verb">critical</spanx> Claim is present,
 		then each array element in this claim's value
 		MUST be a string representing an Entity Statement claim
+		that is not defined by this specification
 		and that claim MUST be understood
 		and be able to be processed by the implementation.
 	      </t>
@@ -818,9 +822,7 @@
 	      </t>
 	      <t>
 		If the <spanx style="verb">metadata_policy</spanx> Claim is present,
-		the Entity Statement MUST NOT be an Entity Configuration
-		(the <spanx style="verb">iss</spanx> and
-		<spanx style="verb">sub</spanx> Claim values MUST NOT match).
+		the Entity Statement MUST NOT be an Entity Configuration.
 		Verify that its value is syntactially correct,
 		as specified in <xref target="metadata_policy"/>.
 	      </t>
@@ -829,6 +831,7 @@
 		the Entity Statement MUST NOT be an Entity Configuration.
 		Each array element in this claim's value
 		MUST be a string representing a Metadata Policy operator
+		that is not defined by this specification
 		and that operator MUST be understood
 		and be able to be processed by the implementation.
 	      </t>
@@ -855,7 +858,7 @@
 		MUST be a non-zero length string and
 		MUST exactly match the <spanx style="verb">kid</spanx> value
 		for a key in the <spanx style="verb">jwks</spanx> (JWK Set) Claim
-		of the issuing Entity's Entity Configuration.
+		of the Entity Configuration of the issuing Entity.
 	      </t>
 	      <t>
 		The Entity Statement's signature MUST validate using
