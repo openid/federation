@@ -34,7 +34,7 @@
         protocols for the purpose of establishing trust.
        
     " name="description">
-<meta content="xml2rfc 3.28.1" name="generator">
+<meta content="xml2rfc 3.29.0" name="generator">
 <meta content="OpenID" name="keyword">
 <meta content="OpenID Connect" name="keyword">
 <meta content="Federation" name="keyword">
@@ -47,13 +47,13 @@
 <meta content="Trust Mark" name="keyword">
 <meta content="openid-federation-1_0" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.28.1
+  xml2rfc 3.29.0
     Python 3.12.3
     ConfigArgParse 1.7.1
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.2
-    lxml 5.4.0
+    lxml 6.0.0
     platformdirs 4.3.8
     pycountry 24.6.1
     PyYAML 6.0.1
@@ -192,6 +192,12 @@ div {
 }
 svg {
   display: block;
+}
+@media print {
+  svg {
+    max-height: 850px;
+    max-width: 660px;
+  }
 }
 svg[font-family~="serif" i], svg [font-family~="serif" i] {
   font-family: var(--font-serif);
@@ -2946,7 +2952,6 @@ li > p:last-of-type:only-child {
 | |            | |  | | Federation Entity Keys| |         | | Federation Entity Keys| |
 | '-----.------' |  | | Metadata              | |         | | Metadata              | |
 |       |        |  | | Trust Mark Issuers    | |         | | Trust Mark Issuers    | |
-|       |        |  | | Constraints           | |         | | Constraints           | |
 |       |        |  | |                       | |         | |                       | |
 |       |        |  | '-----------------------' |         | '-----------------------' |
 |       |        |  |                           |         |                           |
@@ -2956,6 +2961,7 @@ li > p:last-of-type:only-child {
 |                |  |                           |         | | Federation Entity Keys| |
 |                |  |                           |         | | Metadata Policy       | |
 |                |  |                           |         | | Metadata              | |
+|                |  |                           |         | | Constraints           | |
 |                |  |                           |         | |                       | |
 |                |  |                           |         | '-----------.-----------' |
 | .------------. |  | .-----------------------. |         |             |             |
@@ -8907,8 +8913,8 @@ HTTP/1.1 302 Found
                     The RP MUST first ensure that the information it was registered with
                     at the OP contains the same set of entity_types as the request does.
                     After having collected a Trust Chain using the response claim
-                    <code>trust_anchor_id</code> as the
-                    <code>entity_id</code> for the Trust Anchor and
+                    <code>trust_anchor</code> as the
+                    Entity Identifier for the Trust Anchor and
                     <code>authority_hints</code> as starting points
                     for the Trust Chain collection,
                     the RP SHOULD verify that the response metadata for each entity type is valid
@@ -14827,6 +14833,7 @@ Host: op.umu.se
  Francesco Marino,
  John Melati,
  Alexey Melnikov,
+ Eduardo Perottoni,
  Roberto Polli,
  Justin Richer,
  Jouke Roorda,
