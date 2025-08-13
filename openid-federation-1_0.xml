@@ -3574,10 +3574,25 @@
                 able to validate the signature of the signed delegation JWT.
               </t>
               <t>
-                The <spanx style="verb">sub</spanx> claim MUST match the
+                The <spanx style="verb">sub</spanx> claim of MUST match the
                 issuer (<spanx style="verb">iss</spanx>) of the delegation JWT
               </t>
             </list>
+              Furthermore, the following must be valid
+              <list>
+                  <t>
+                      If the delegation jwt has an <spanx style="verb">exp</spanx> claim,
+                      the expiration time must not have been reached.
+                  </t>
+                  <t>
+                      The <spanx style="verb">sub</spanx> claim in the delegation jwt
+                      must be equal to the issuer of the instance.
+                  </t>
+                  <t>
+                      The <spanx style="verb">trust_mark_type</spanx> must be the same
+                      in the delegation jwt as in the instance.
+                  </t>
+              </list>
           </t>
         </list>
       </t>
