@@ -76,7 +76,7 @@
       </address>
     </author>
 
-    <date day="14" month="July" year="2025"/>
+    <date day="10" month="August" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -371,7 +371,7 @@
             </t>
             <t hangText="Resolved Metadata">
               The metadata that results from applying the metadata policy
-              in the Trust Chain to the metadata in the Entity Configuration 
+              in the Trust Chain to the metadata in the Entity Configuration
               for the subject of the Trust Chain. The Resolved Metadata
               is the metadata that is used when interacting with
               the Entity.
@@ -3524,69 +3524,79 @@
 
         <section title="Validating a Trust Mark" anchor="trust_valid">
           <t>
+            Validating a Trust Mark means validating a Trust Mark instance
+            represented by a specific signed JWT.
+            It is NOT about validating whether a Trust Mark of a particular kind
+            can exist or not.
+          </t>
+          <t>
 	    An Entity SHOULD NOT try to validate a Trust Mark until
 	    it knows which Trust Anchor it is using.
 	    To validate a Trust Mark Issuer, follow the procedure
 	    defined in <xref target="resolving_trust"/>.
-	    To validate a Trust Mark, either:
-            <list style="symbols">
+          </t>
+      <t>
+        Henceforth, "instance" is used as a shorthand for Trust Mark instance. An
+        instance is a signed JWT.
+        To validate an instance, the following validation steps MUST be performed.
+        Please note that if any of these validation checks fail, the entire validation
+        process fails and the instance is considered invalid.
+        <list style="numbers">
+          <t>
+            Verify that the value of the instance’s
+            <spanx style="verb">trust_mark_type</spanx> is listed in
+            the Trust Anchor's <spanx style="verb">trust_mark_issuers</spanx>, and if so,
+            that the instance's <spanx style="verb">iss</spanx> appears
+            in the corresponding list of Entity Identifiers. Note that the list may be
+            an empty list, which signifies that anyone can issue a Trust Mark
+            with the <spanx style="verb">trust_mark_type</spanx> in question.
+          </t>
+          <t>
+            Validate the signature of the instance and verify that it has not
+            expired and/or send a query to the Trust Mark Issuer's Trust Mark
+            Status endpoint. The Trust Mark Status endpoint will
+            check if the instance has been issued by itself and that it is
+            still valid, in both signature and expiration, and that it has not been revoked.
+          </t>
+          <t>
+            If the <spanx style="verb">trust_mark_type</spanx> of the instance
+            appears in the <spanx style="verb">trust_mark_owners</spanx> claim
+            of the Trust Anchor's Entity Configuration,
+            verify that the Trust Mark contains a
+            <spanx style="verb">delegation</spanx> claim. If the
+            <spanx style="verb">delegation</spanx> claim is missing, the
+            validation MUST fail. The claims
+            for the Trust Mark type identifier in
+            <spanx style="verb">trust_mark_owners</spanx> are used in
+            the following way:
+            <list style="letters">
               <t>
-                Validate the signature of the Trust Mark JWT and verify that
-                it has not expired.
+                A key from the <spanx style="verb">jwks</spanx> claim MUST be
+                able to validate the signature of the signed delegation JWT.
               </t>
               <t>
-                If the Trust Mark type identifier appears in the
-                <spanx style="verb">trust_mark_owners</spanx> claim
-		of the Trust Anchor's Entity Configuration,
-                verify that the Trust Mark contains
-                a <spanx style="verb">delegation</spanx>
-                claim.
-                The claims for the Trust Mark type identifier
-                in the <spanx style="verb">trust_mark_owners</spanx> value
-                are used in the following way:
-                <list style="symbols">
-                  <t>
-                    The signature of the <spanx style="verb">delegation</spanx> JWT
-                    MUST verify with a key from <spanx style="verb">jwks</spanx> claim.
-                  </t>
-                  <t>
-                    The issuer of the <spanx style="verb">delegation</spanx> JWT
-		    MUST match the <spanx style="verb">sub</spanx> value
-		    in this set of claims.
-                  </t>
-                </list>
-              </t>
-	    </list>
-	  or:
-            <list style="symbols">
-              <t>
-                Use the Trust Mark Issuer status endpoint to verify that the
-                Trust Mark is still active
-                as described in <xref target="status_endpoint"/>.
+                The <spanx style="verb">sub</spanx> claim of the instance MUST match the
+                issuer (<spanx style="verb">iss</spanx>) of the delegation JWT
               </t>
             </list>
+              Furthermore, the following requirements MUST be met:
+              <list>
+                  <t>
+                      If the delegation JWT has an <spanx style="verb">exp</spanx> claim,
+                      the expiration time MUST NOT have been reached.
+                  </t>
+                  <t>
+                      The <spanx style="verb">sub</spanx> claim in the delegation JWT
+                      MUST be equal to the issuer of the instance.
+                  </t>
+                  <t>
+                      The <spanx style="verb">trust_mark_type</spanx> MUST be the same
+                      in the delegation JWT as in the instance.
+                  </t>
+              </list>
           </t>
-          <t>
-            Note that the Entity representing the accreditation authority
-            SHOULD be well known and trusted for a given Trust Mark type identifier.
-            A Trust Anchor MAY publish a list of accreditation authorities
-            of Trust Marks that SHOULD be trusted by other Entities.
-            A Trust Anchor uses the <spanx style="verb">trust_mark_issuers</spanx> claim
-            in its Entity Configuration to publish this information.
-          </t>
-          <t>
-            If a Trust Mark is issued on behalf of a Trust Mark Owner, then the Trust Anchor SHOULD
-            publish the connection between the Trust Mark type identifier
-	    and the corresponding Trust Mark Issuer in the
-            <spanx style="verb">trust_mark_issuers</spanx> claim. This
-            signifies that the Trust Anchor has validated
-            the Trust Mark Owner and that the
-            Trust Mark Owner has delegated the right to issue Trust Marks
-            with a designated Trust Mark type identifier to a specified Trust Mark Issuer.
-            Also, the Trust Anchor MAY provide an empty array following the Trust Mark type identifier
-            to signal that this Trust Mark can be issued by any Trust Mark Issuer to which the
-            Trust Mark Owner has delegated the right to do so.
-          </t>
+        </list>
+      </t>
           <t>
             Trust Marks that are not recognized within a federation SHOULD be ignored when
             evaluating trust in the Entity that presented them. Such Trust Marks can
