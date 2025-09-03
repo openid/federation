@@ -76,7 +76,7 @@
       </address>
     </author>
 
-    <date day="30" month="August" year="2025"/>
+    <date day="1" month="September" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -6355,6 +6355,33 @@ HTTP/1.1 302 Found
 ]]></artwork>
           </figure>
         </section>
+
+	<section title="Automatic Registration and Client Authentication"
+		 anchor="AutoClientAuth">
+	  <t>
+	    Note that when using Automatic Registration,
+	    the client authentication methods that the client can use
+	    are declared to the OP using RP Metadata parameters: either the
+	    <spanx style="verb">token_endpoint_auth_methods_supported</spanx>
+	    parameter defined in <xref target="OpenID.RP.Choices"/> or the
+	    <spanx style="verb">token_endpoint_auth_method</spanx> parameter.
+	    Those that the OP can use are likewise
+	    declared to the RP using OP Metadata parameters.
+	    However, if there are multiple methods supported by both
+	    the RP and the OP, the OP does not know which one the RP will pick
+	    in advance of it being used,
+	    since this isn't declared at the time the Automatic Registration occurs.
+	  </t>
+	  <t>
+	    OPs SHOULD accept any client authentication method that is mutually supported
+	    and RPs MUST only use mutually supported methods.
+	    Because some OPs may be coded in such a way that
+	    they expect the RP to always the same client authentication method
+	    for subsequent interactions, note that
+	    interoperability may be improved by the RP doing so.
+	  </t>
+	</section>
+
         <section title="Possible Other Uses of Automatic Registration" anchor="AutomaticRegistrationOtherUses">
           <t>
             Automatic Registration is designed to be able to be
@@ -10532,6 +10559,10 @@ Host: op.umu.se
 	<list style="symbols">
 	  <t>
 	    Corrected location of Constraints in Trust Chain Example figure.
+    </t>
+	  <t>
+	    Fixed #147: Added a note about client authentication methods
+	    and Automatic Registration.
 	  </t>
 	</list>
       </t>
