@@ -54,7 +54,7 @@
     intervaltree 3.1.0
     Jinja2 3.1.2
     lxml 6.0.1
-    platformdirs 4.3.8
+    platformdirs 4.4.0
     pycountry 24.6.1
     PyYAML 6.0.1
     requests 2.31.0
@@ -1250,7 +1250,7 @@ li > p:last-of-type:only-child {
 <thead><tr>
 <td class="left"></td>
 <td class="center">OpenID Federation</td>
-<td class="right">August 2025</td>
+<td class="right">September 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Hedberg, et al.</td>
@@ -1265,7 +1265,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-08-30" class="published">30 August 2025</time>
+<time datetime="2025-09-01" class="published">1 September 2025</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -1701,7 +1701,10 @@ li > p:last-of-type:only-child {
                     <p id="section-toc.1-1.12.2.1.2.3.1"><a href="#section-12.1.3" class="auto internal xref">12.1.3</a>.  <a href="#name-authentication-error-respon" class="internal xref">Authentication Error Response</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1.2.4">
-                    <p id="section-toc.1-1.12.2.1.2.4.1"><a href="#section-12.1.4" class="auto internal xref">12.1.4</a>.  <a href="#name-possible-other-uses-of-auto" class="internal xref">Possible Other Uses of Automatic Registration</a></p>
+                    <p id="section-toc.1-1.12.2.1.2.4.1"><a href="#section-12.1.4" class="auto internal xref">12.1.4</a>.  <a href="#name-automatic-registration-and-" class="internal xref">Automatic Registration and Client Authentication</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1.2.5">
+                    <p id="section-toc.1-1.12.2.1.2.5.1"><a href="#section-12.1.5" class="auto internal xref">12.1.5</a>.  <a href="#name-possible-other-uses-of-auto" class="internal xref">Possible Other Uses of Automatic Registration</a></p>
 </li>
                 </ul>
 </li>
@@ -8425,18 +8428,45 @@ HTTP/1.1 302 Found
             </figcaption></figure>
 </section>
 </div>
-<div id="AutomaticRegistrationOtherUses">
+<div id="AutoClientAuth">
 <section id="section-12.1.4">
-          <h4 id="name-possible-other-uses-of-auto">
-<a href="#section-12.1.4" class="section-number selfRef">12.1.4. </a><a href="#name-possible-other-uses-of-auto" class="section-name selfRef">Possible Other Uses of Automatic Registration</a>
+          <h4 id="name-automatic-registration-and-">
+<a href="#section-12.1.4" class="section-number selfRef">12.1.4. </a><a href="#name-automatic-registration-and-" class="section-name selfRef">Automatic Registration and Client Authentication</a>
           </h4>
 <p id="section-12.1.4-1">
+     Note that when using Automatic Registration,
+     the client authentication methods that the client can use
+     are declared to the OP using RP Metadata parameters: either the
+     <code>token_endpoint_auth_methods_supported</code>
+     parameter defined in <span>[<a href="#OpenID.RP.Choices" class="cite xref">OpenID.RP.Choices</a>]</span> or the
+     <code>token_endpoint_auth_method</code> parameter.
+     Those that the OP can use are likewise
+     declared to the RP using OP Metadata parameters.
+     However, if there are multiple methods supported by both
+     the RP and the OP, the OP does not know which one the RP will pick
+     in advance of it being used,
+     since this isn't declared at the time the Automatic Registration occurs.<a href="#section-12.1.4-1" class="pilcrow">¶</a></p>
+<p id="section-12.1.4-2">
+     OPs SHOULD accept any client authentication method that is mutually supported
+     and RPs MUST only use mutually supported methods.
+     Because some OPs may be coded in such a way that
+     they expect the RP to always the same client authentication method
+     for subsequent interactions, note that
+     interoperability may be improved by the RP doing so.<a href="#section-12.1.4-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="AutomaticRegistrationOtherUses">
+<section id="section-12.1.5">
+          <h4 id="name-possible-other-uses-of-auto">
+<a href="#section-12.1.5" class="section-number selfRef">12.1.5. </a><a href="#name-possible-other-uses-of-auto" class="section-name selfRef">Possible Other Uses of Automatic Registration</a>
+          </h4>
+<p id="section-12.1.5-1">
             Automatic Registration is designed to be able to be
             employed for OAuth 2.0 use cases beyond OpenID Connect,
      as noted in <a href="#client_registration" class="auto internal xref">Section 12</a>.
             For instance, ecosystems using
             bare <span><a href="#RFC6749" class="internal xref">OAuth 2.0</a> [<a href="#RFC6749" class="cite xref">RFC6749</a>]</span> or
-            <span><a href="#FAPI" class="internal xref">FAPI</a> [<a href="#FAPI" class="cite xref">FAPI</a>]</span> can utilize Automatic Registration.<a href="#section-12.1.4-1" class="pilcrow">¶</a></p>
+            <span><a href="#FAPI" class="internal xref">FAPI</a> [<a href="#FAPI" class="cite xref">FAPI</a>]</span> can utilize Automatic Registration.<a href="#section-12.1.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -13038,6 +13068,11 @@ Host: op.umu.se
 <li class="normal" id="appendix-C-3.1">
           <p id="appendix-C-3.1.1">
      Corrected location of Constraints in Trust Chain Example figure.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.2">
+          <p id="appendix-C-3.2.1">
+     Fixed #147: Added a note about client authentication methods
+     and Automatic Registration.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
