@@ -12,7 +12,9 @@
   document and not a private document, as the private="..." declaration could
   be taken to indicate.
 -->
-<rfc category="std" docName="openid-federation-1_0" ipr="none" xmlns:xi="http://www.w3.org/2001/XInclude">
+<rfc category="std" docName="openid-federation-1_0" ipr="none"
+     submissionType="IETF" consensus="true"
+     xmlns:xi="http://www.w3.org/2001/XInclude">
 
   <?rfc toc="yes" ?>
   <?rfc tocdepth="5" ?>
@@ -76,7 +78,7 @@
       </address>
     </author>
 
-    <date day="1" month="September" year="2025"/>
+    <date day="17" month="September" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -3522,7 +3524,7 @@
 	  </section>
         </section>
 
-        <section title="Validating a Trust Mark" anchor="trust_valid">
+        <section title="Validating a Trust Mark" anchor="trust-mark-validation">
           <t>
             Validating a Trust Mark means validating a Trust Mark instance
             represented by a specific signed JWT.
@@ -3532,9 +3534,10 @@
           <t>
 	    An Entity SHOULD NOT try to validate a Trust Mark until
 	    it knows which Trust Anchor it is using.
-	    To validate a Trust Mark Issuer, follow the procedure
-	    defined in <xref target="resolving_trust"/>.
-          </t>
+	    To determine this, first resolve the Trust Chain
+	    for the Trust Mark Issuer,
+	    as described in <xref target="resolving_trust"/>.
+	  </t>
       <t>
         Henceforth, "instance" is used as a shorthand for Trust Mark instance. An
         instance is a signed JWT.
@@ -3611,10 +3614,16 @@
             In that case, validation Step 1 becomes OPTIONAL.
           </t>
 	  <t>
-	    If trust marks are issued without an expiration time,
+	    If Trust Marks are issued without an expiration time,
 	    it is RECOMMENDED that a mechanism be provided to validate them,
 	    such as the Trust Mark Status endpoint
 	    and/or the Trust Marked Entities Listing endpoint.
+	  </t>
+	  <t>
+	    As an alternative to the above procedure for validating Trust Marks,
+	    implementations MAY use the Trust Mark Status endpoint to verify that the
+	    Trust Mark is still active,
+	    as described in <xref target="status_endpoint"/>.
 	  </t>
         </section>
 
@@ -10559,8 +10568,11 @@ Host: op.umu.se
 	-44
 	<list style="symbols">
 	  <t>
+	    Fixed #127: Explained Trust Mark Issuer validation in more detail.
+	  </t>
+	  <t>
 	    Corrected location of Constraints in Trust Chain Example figure.
-    </t>
+	  </t>
 	  <t>
 	    Fixed #147: Added a note about client authentication methods
 	    and Automatic Registration.
