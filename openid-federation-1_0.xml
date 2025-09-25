@@ -654,45 +654,19 @@
               <vspace/>
               OPTIONAL. An array of JSON objects, each representing
               a Trust Mark.
-              Each JSON object the following two claims.
-              The <spanx style="verb">trust_mark_type</spanx>
-              claim in this object MUST have the same value as the
-              <spanx style="verb">trust_mark_type</spanx> claim in the Trust Mark JWT.
-
               <list style="hanging">
                 <t hangText="trust_mark_type">
                   REQUIRED. Identifier for the type of the Trust Mark.
-                  It MUST be the same value as the
+                  The value of this claim MUST be the same as the value of the
                   <spanx style="verb">trust_mark_type</spanx>
-                  claim contained in the
-                  Trust Mark JWT.
+                  claim contained in the Trust Mark JWT that is the value of the <spanx style="verb">trust_mark_jwt
+                </spanx> claim in this object.
                 </t>
                 <t hangText="trust_mark_jwt">
-                  OPTIONAL. A signed JSON Web Token that represents a Trust Mark.
+                  REQUIRED. A signed JSON Web Token that represents a Trust Mark.
                 </t>
               </list>
-              One of <spanx style="verb">trust_mark_jwt</spanx> and
-              <spanx style="verb">trust_mark_issuer</spanx> MUST be present.
               Trust Marks are described in <xref target="trust_marks"/>.
-	            This claim SHOULD only be used in Entity Configurations.
-            </t>
-            <t hangText="ephemeral_trust_marks">
-              <vspace/>
-              OPTIONAL. An array of JSON objects, each representing
-              a shortlived Trust Mark.
-              Each JSON object with the following two claims.
-              <list style="hanging">
-                <t hangText="trust_mark_type">
-                  REQUIRED. Identifier for the type of the Trust Mark.
-                  It MUST be the same value as the
-                  <spanx style="verb">trust_mark_type</spanx>
-                  claim contained in the
-                  Trust Mark JWT.
-                </t>
-                <t hangText="trust_mark_issuer">
-                  OPTIONAL. The Entity Identifier of the Trust Mark Issuer.
-                </t>
-              </list>
 	            This claim SHOULD only be used in Entity Configurations.
             </t>
             <t hangText="trust_mark_issuers">
@@ -3636,15 +3610,6 @@
 	    such as the Trust Mark Status endpoint
 	    and/or the Trust Marked Entities Listing endpoint.
 	  </t>
-        </section>
-        <section title="Validating a Ephemeral Trust Mark" anchor="ephemeral_trust_valid">
-          <t>
-            Validating an Ephemeral Trust Mark means verifying that a
-            specific Trust Mark Issuer is prepared to issue a
-            Trust Mark of a specific <spanx style="verb">trust_mark_type</spanx>
-            to a specific entity.
-          </t>
-
         </section>
         <section title="Trust Mark Examples" anchor="trust_example">
           <figure>
