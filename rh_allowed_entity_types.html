@@ -5301,7 +5301,7 @@ li > p:last-of-type:only-child {
           </h4>
 <p id="section-6.2.3-1">
             The <code>allowed_entity_types</code> constraint
-            specifies the acceptable Entity Types of Subordinate Entities in a
+            specifies the acceptable metadata Entity Types of Subordinate Entities in a
             Trust Chain. If there is no
             <code>allowed_entity_types</code> constraint, it
             means that any Entity Type is allowed. The
@@ -5310,9 +5310,37 @@ li > p:last-of-type:only-child {
             always allowed and MUST NOT be included in the constraint. If the
             constraint is the empty array <code>[]</code>, it
             means that only the <code>federation_entity</code>
-            Entity Type is allowed.
+            Entity Type is allowed.<a href="#section-6.2.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.2.3-2">
+              If the entity to which this constaint is applied is a Subordinate Statement, and
+              this entity has a <code>allowed_entity_types</code> claim, then that claim
+              is assigned the intersection between the values of the operator and the claim.<a href="#section-6.2.3-2" class="pilcrow">¶</a></p>
+<p id="section-6.2.3-3">
+              If it on the other hand is applied to an Entity Configuration then the following process should
+              be followed:<a href="#section-6.2.3-3" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-6.2.3-4">
+<li id="section-6.2.3-4.1">
+              <p id="section-6.2.3-4.1.1">
+                      Collect the set of entity_types in the metadata claim and then remove the
+                      <code>federation_entity</code> entity type.<a href="#section-6.2.3-4.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-6.2.3-4.2">
+              <p id="section-6.2.3-4.2.1">
+                      Calculate the intersection between the value of the operator and the resulting set of entity
+                      types, and then<a href="#section-6.2.3-4.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-6.2.3-4.3">
+              <p id="section-6.2.3-4.3.1">
+                      add the <code>federation_entity</code> entity type to the result.<a href="#section-6.2.3-4.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-6.2.3-4.4">
+              <p id="section-6.2.3-4.4.1">
+                      The metadata claim should then be filtered to only contain the allowed entity types.<a href="#section-6.2.3-4.4.1" class="pilcrow">¶</a></p>
+</li>
+          </ol>
+<p id="section-6.2.3-5">
               If the result of applying this constraint is the empty array <code>[]</code>
-              that is not to be regarded as an error.<a href="#section-6.2.3-1" class="pilcrow">¶</a></p>
+              that is not to be regarded as an error.<a href="#section-6.2.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
