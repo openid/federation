@@ -3298,7 +3298,7 @@
                  anchor="entity_type_constraints">
           <t>
             The <spanx style="verb">allowed_entity_types</spanx> constraint
-            specifies the acceptable Entity Types of Subordinate Entities in a
+            specifies the acceptable metadata Entity Types of Subordinate Entities in a
             Trust Chain. If there is no
             <spanx style="verb">allowed_entity_types</spanx> constraint, it
             means that any Entity Type is allowed. The
@@ -3308,6 +3308,33 @@
             constraint is the empty array <spanx style="verb">[]</spanx>, it
             means that only the <spanx style="verb">federation_entity</spanx>
             Entity Type is allowed.
+          </t>
+              <t>
+              If the entity to which this constaint is applied is a Subordinate Statement, and
+              this entity has a <spanx style="verb">allowed_entity_types</spanx> claim, then that claim
+              is assigned the intersection between the values of the operator and the claim.
+              </t>
+            <t>
+              If it on the other hand is applied to an Entity Configuration then the following process should
+              be followed:
+              <list style="numbers">
+                  <t>
+                      Collect the set of entity_types in the metadata claim and then remove the
+                      <spanx style="verb">federation_entity</spanx> entity type.
+                  </t>
+                  <t>
+                      Calculate the intersection between the value of the operator and the resulting set of entity
+                      types, and then
+                  </t>
+                  <t>
+                      add the <spanx style="verb">federation_entity</spanx> entity type to the result.
+                  </t>
+                  <t>
+                      The metadata claim should then be filtered to only contain the allowed entity types.
+                  </t>
+              </list>
+                </t>
+            <t>
               If the result of applying this constraint is the empty array <spanx style="verb">[]</spanx>
               that is not to be regarded as an error.
           </t>
