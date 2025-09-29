@@ -1265,7 +1265,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-09-01" class="published">1 September 2025</time>
+<time datetime="2025-09-17" class="published">17 September 2025</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -3497,7 +3497,7 @@ li > p:last-of-type:only-child {
           The Entity Type Identifier is
           <code>oauth_resource</code>.
    The parameters defined in <a href="#common_metadata" class="auto internal xref">Section 5.2</a> are applicable.
-   In addition, while it is not yet a standard,
+   In addition,
    deployments MAY use the protected resource metadata parameters
    defined in <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>.<a href="#section-5.1.6-1" class="pilcrow">¶</a></p>
 </section>
@@ -5366,12 +5366,12 @@ li > p:last-of-type:only-child {
 <span class="break"></span><dl class="dlNewline" id="section-7.1-2">
           <dt id="section-7.1-2.1">iss</dt>
           <dd style="margin-left: 1.5em" id="section-7.1-2.2">
-                REQUIRED. String. Issuer of the Trust Mark.<a href="#section-7.1-2.2" class="pilcrow">¶</a>
+                REQUIRED. String. The Entity Identifier of the issuer of the Trust Mark.<a href="#section-7.1-2.2" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 <dt id="section-7.1-2.3">sub</dt>
           <dd style="margin-left: 1.5em" id="section-7.1-2.4">
-                REQUIRED. String. Entity this Trust Mark applies to.<a href="#section-7.1-2.4" class="pilcrow">¶</a>
+                REQUIRED. String. The Entity Identifier of the Entity this Trust Mark applies to.<a href="#section-7.1-2.4" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 <dt id="section-7.1-2.5">trust_mark_type</dt>
@@ -5533,7 +5533,7 @@ li > p:last-of-type:only-child {
 </div>
 </section>
 </div>
-<div id="trust_valid">
+<div id="trust-mark-validation">
 <section id="section-7.3">
         <h3 id="name-validating-a-trust-mark">
 <a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-validating-a-trust-mark" class="section-name selfRef">Validating a Trust Mark</a>
@@ -5546,8 +5546,9 @@ li > p:last-of-type:only-child {
 <p id="section-7.3-2">
      An Entity SHOULD NOT try to validate a Trust Mark until
      it knows which Trust Anchor it is using.
-     To validate a Trust Mark Issuer, follow the procedure
-     defined in <a href="#resolving_trust" class="auto internal xref">Section 10</a>.<a href="#section-7.3-2" class="pilcrow">¶</a></p>
+     To determine this, first resolve the Trust Chain
+     for the Trust Mark Issuer,
+     as described in <a href="#resolving_trust" class="auto internal xref">Section 10</a>.<a href="#section-7.3-2" class="pilcrow">¶</a></p>
 <p id="section-7.3-3">
         Henceforth, "instance" is used as a shorthand for Trust Mark instance. An
         instance is a signed JWT.
@@ -5630,10 +5631,15 @@ li > p:last-of-type:only-child {
             accreditation authority is established by an out-of-band mechanism.
             In that case, validation Step 1 becomes OPTIONAL.<a href="#section-7.3-6" class="pilcrow">¶</a></p>
 <p id="section-7.3-7">
-     If trust marks are issued without an expiration time,
+     If Trust Marks are issued without an expiration time,
      it is RECOMMENDED that a mechanism be provided to validate them,
      such as the Trust Mark Status endpoint
      and/or the Trust Marked Entities Listing endpoint.<a href="#section-7.3-7" class="pilcrow">¶</a></p>
+<p id="section-7.3-8">
+     As an alternative to the above procedure for validating Trust Marks,
+     implementations MAY use the Trust Mark Status endpoint to verify that the
+     Trust Mark is still active,
+     as described in <a href="#status_endpoint" class="auto internal xref">Section 8.4</a>.<a href="#section-7.3-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="trust_example">
@@ -13064,12 +13070,16 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-C-3.1">
           <p id="appendix-C-3.1.1">
-     Corrected location of Constraints in Trust Chain Example figure.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+     Fixed #127: Explained Trust Mark Issuer validation in more detail.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.2">
           <p id="appendix-C-3.2.1">
+     Corrected location of Constraints in Trust Chain Example figure.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.3">
+          <p id="appendix-C-3.3.1">
      Fixed #147: Added a note about client authentication methods
-     and Automatic Registration.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
+     and Automatic Registration.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
