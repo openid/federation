@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="3" month="October" year="2025"/>
+    <date day="7" month="October" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -243,9 +243,12 @@
             <t hangText="Entity Identifier">
               <vspace/>
               A globally unique URL that is bound to one Entity.
-	      This URL MUST use the <spanx style="verb">https</spanx> scheme,
+	      All Entity Identifiers defined by this specification are
+	      URLs that use the <spanx style="verb">https</spanx> scheme,
 	      have a host component, and MAY contain port and path components.
 	      It MUST NOT contain query parameter or fragment components.
+	      Profiles of this specification MAY define other kinds of
+	      Entity Identifier URLs and processing rules that accompany them.
             </t>
             <t hangText="Trust Anchor">
               <vspace/>
@@ -4584,75 +4587,141 @@ trust_mark=eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6 ...
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type
-            <spanx style="verb">application/json</spanx>.
-            The response body is a JSON object containing the data below:
+            <spanx style="verb">application/trust-mark-status-response+jwt</spanx>,
+	    containing a signed JWT that is a Trust Mark Status Response.
+	  </t>
+	  <t>
+            The Trust Mark Status Response is a signed JWT that is explicitly typed by setting the
+            <spanx style="verb">typ</spanx> header parameter to
+            <spanx style="verb">trust-mark-status-response+jwt</spanx> to prevent
+            cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+	    Trust Mark Status Responses without a <spanx style="verb">typ</spanx> header parameter
+	    or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
+	    It is signed with a Federation Entity Key.
           </t>
-
+	  <t>
+	    The Trust Mark Status Response JWT MUST include the
+	    <spanx style="verb">kid</spanx> (Key ID) header parameter
+	    with its value being the Key ID of the signing key used.
+	  </t>
+          <t>
+	    The JWT Claims Set of the Trust Mark Status JWT
+	    is a JSON object containing the following claims:
+          </t>
           <t>
             <list style="hanging">
-              <t hangText="active">
+              <t hangText="iss">
                 <vspace/>
-                REQUIRED. Boolean. Whether the Trust Mark is active or not.
+                REQUIRED. String.
+                Entity Identifier of the issuer of the Trust Mark Status JWT.
               </t>
-                <t hangText="reason">
-                    OPTIONAL. String containing additional information about the error.
-                    Reasons defined by this specification:
-                    <list style="hanging">
-                        <t hangText="revoked">
-                            <vspace/>
-                            The trust mark is revoked
-                        </t>
-                        <t hangText="invalid">
-                            <vspace/>
-                            Signature validation fails or instance has expired
-                        </t>
-                    </list>
-                </t>
-            </list>
+              <t hangText="sub">
+                <vspace/>
+                REQUIRED. String.
+                Trust Mark Type of the Trust Mark.
+		<!-- Is this the right sub value?
+		     Should it be the Trust Mark JWT itself?
+		     Do we need one at all? -->
+              </t>
+              <t hangText="iat">
+                <vspace/>
+                REQUIRED. Number. Time when this Trust Mark Status JWT was issued.
+                This is expressed as Seconds Since the Epoch, per
+                <xref target="RFC7519"/>.
+              </t>
+	      <!-- Is exp meaningful here? Or can or should it be omitted?
+              <t hangText="exp">
+                <vspace/>
+                REQUIRED. Number. Time when the status may no longer be valid.
+                This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
+              </t>
+	      -->
+
+              <t hangText="status">
+                <vspace/>
+                REQUIRED. Case-sensitive string value indicating the status of the Trust Mark.
+		Values defined by this specification are:
+
+		<list style="hanging">
+		  <t hangText="active">
+		    <vspace/>
+		    The Trust Mark is active
+		  </t>
+		  <t hangText="expired">
+		    <vspace/>
+		    The Trust Mark has expired
+		  </t>
+		  <t hangText="revoked">
+		    <vspace/>
+		    The Trust Mark was revoked
+		  </t>
+		  <t hangText="invalid">
+		    <vspace/>
+		    Signature validation failed or another error was detected
+		  </t>
+		</list>
+	      </t>
+	      <t>
+		Additional status values MAY be defined and used
+		in addition to those above.
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    Additional Trust Mark Status claims MAY be defined and used
+	    in addition to the one above.
+	  </t>
+
+          <t>
+            <figure>
+              <preamble>
+                The following is a non-normative example of the JWT Claims Set for
+		a response with the status <spanx style="verb">active</spanx>:
+              </preamble>
+	      <name>
+		Active Trust Mark Status Response
+	      </name>
+              <artwork><![CDATA[
+200 OK
+Content-Type: application/json
+
+{
+  "iss": "https://tm_owner.example.org",
+  "sub": "https://refeds.org/sirtfi",
+  "iat": 1759897995,
+  "status": "active"
+}
+]]></artwork>
+            </figure>
           </t>
 
           <t>
-            An error response
+            <figure>
+              <preamble>
+                The following is a non-normative example of the JWT Claims Set for
+		a response with the status <spanx style="verb">revoked</spanx>:
+              </preamble>
+	      <name>
+		Revoked Trust Mark Status Response
+	      </name>
+              <artwork><![CDATA[
+200 OK
+Content-Type: application/json
+
+{
+  "iss": "https://tm_owner.example.org",
+  "sub": "https://refeds.org/sirtfi",
+  "iat": 1759898057,
+  "status": "revoked"
+}
+]]></artwork>
+            </figure>
+          </t>
+
+          <t>
+            An error response to a Trust Mark Status request
             is as defined in
             <xref target="error_response"/>.
-          </t>
-
-          <t>
-            <figure>
-              <preamble>
-                The following is a non-normative example of a Trust Mark positive status response:
-              </preamble>
-	      <name>
-		Trust Mark Status Response
-	      </name>
-              <artwork><![CDATA[
-200 OK
-Content-Type: application/json
-
-{
-  "active": true
-}
-]]></artwork>
-            </figure>
-          </t>
-          <t>
-            <figure>
-              <preamble>
-                The following is a non-normative example of a Trust Mark negative status response:
-              </preamble>
-	      <name>
-		Trust Mark Status Response
-	      </name>
-              <artwork><![CDATA[
-200 OK
-Content-Type: application/json
-
-{
-  "active": false,
-  "reason": "revoked"
-}
-]]></artwork>
-            </figure>
           </t>
         </section>
       </section>
@@ -5408,7 +5477,7 @@ Content-Type: application/json
             title="Obtaining Federation Entity Configuration Information"
             anchor="federation_configuration">
       <t>
-	The Entity Configuration of every Federation Entity is published
+	The Entity Configuration of every Federation Entity SHOULD be published
 	at its configuration endpoint.
 	Its location is determined by concatenating the string
 	<spanx style="verb">/.well-known/openid-federation</spanx>
@@ -5423,12 +5492,14 @@ Content-Type: application/json
 	<spanx style="verb">/.well-known/openid-federation</spanx>.
       </t>
       <t>
-        Federation Entities MUST make an Entity Configuration document
+        Federation Entities SHOULD make an Entity Configuration document
         available at their configuration endpoint.
-        The sole exception to this
-        rule is for an RP that only does Explicit Registration.
+        The sole exception to this rule defined in this specification
+	is for an RP that only does Explicit Registration.
         Since it posts the Entity Configuration to the OP during client
         registration, the OP has everything it needs from the RP.
+	Profiles of this specification MAY define other exceptions
+	and processing rules that accompany them.
       </t>
 
       <section anchor="ec-request" title="Federation Entity Configuration Request">
@@ -7272,6 +7343,17 @@ HTTP/1.1 302 Found
 	</t>
       </section>
 
+      <section anchor="trust-mark-status-response+jwt"
+	       title='"application/trust-mark-status-response+jwt" Media Type'>
+	<t>
+	  The <spanx style="verb">application/trust-mark-status-response+jwt</spanx>
+	  media type is used to specify that the associated content is
+	  a Trust Mark Status Response,
+	  as defined in <xref target="tm-status-response"/>.
+	  No parameters are used with this media type.
+	</t>
+      </section>
+
     </section>
 
     <section anchor="StringOps" title="String Operations">
@@ -8212,7 +8294,6 @@ HTTP/1.1 302 Found
             <?rfc subcompact="no"?>
           </t>
 
-
           <t>
             <?rfc subcompact="yes"?>
             <list style="symbols">
@@ -8488,6 +8569,76 @@ HTTP/1.1 302 Found
             </list>
             <?rfc subcompact="no"?>
           </t>
+
+          <t>
+            <?rfc subcompact="yes"?>
+            <list style="symbols">
+              <t>
+                Type name: application
+              </t>
+              <t>
+                Subtype name: trust-mark-status-response+jwt
+              </t>
+              <t>
+                Required parameters: n/a
+              </t>
+              <t>
+                Optional parameters: n/a
+              </t>
+              <t>
+                Encoding considerations: binary;
+                A Trust Mark Status Response is a signed JWT;
+                JWT values are encoded as a
+                series of base64url-encoded values (some of which may be the
+                empty string) separated by period ('.') characters.
+              </t>
+              <t>
+                Security considerations: See <xref target="Security"/> of this specification
+              </t>
+              <t>
+                Interoperability considerations: n/a
+              </t>
+              <t>
+                Published specification: <xref target="trust-mark-status-response+jwt"/> of this specification
+              </t>
+              <t>
+                Applications that use this media type:
+                Applications that use this specification
+              </t>
+              <t>
+                Fragment identifier considerations: n/a
+              </t>
+              <t>
+                Additional information:<list style="empty">
+                <t>Magic number(s): n/a</t>
+                <t>File extension(s): n/a</t>
+                <t>Macintosh file type code(s): n/a </t></list>
+                <vspace/>
+              </t>
+              <t>
+                Person &amp; email address to contact for further information:
+                <vspace/>
+                Michael B. Jones, michael_b_jones@hotmail.com
+              </t>
+              <t>
+                Intended usage: COMMON
+              </t>
+              <t>
+                Restrictions on usage: none
+              </t>
+              <t>
+                Author: Michael B. Jones, michael_b_jones@hotmail.com
+              </t>
+              <t>
+                Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Provisional registration? No
+              </t>
+            </list>
+            <?rfc subcompact="no"?>
+          </t>
+
         </section>
 
       </section>
@@ -10599,6 +10750,26 @@ Host: op.umu.se
 	  <t>
 	    Fixed #147: Added a note about client authentication methods
 	    and Automatic Registration.
+	  </t>
+	  <t>
+	    Applied must-have feature requests from Sweden, specifically:
+	    <list style="symbols">
+	      <t>
+		Make it optional to publish an Entity Configuration at the
+		Entity Identifier's
+		<spanx style="verb">/.well-known/openid-federation</spanx> URL
+		(which is already true when using Explicit Registration).
+	      </t>
+	      <t>
+		Allow non-https Entity Identifiers
+		(while leaving defining how to retrieve Entity Configurations
+		for them to future extensions).
+	      </t>
+	      <t>
+		Fixes #244: Sign Trust Mark Status responses
+		and extend the set of defined status values.
+	      </t>
+	    </list>
 	  </t>
 	</list>
       </t>
