@@ -34,7 +34,7 @@
         protocols for the purpose of establishing trust.
        
     " name="description">
-<meta content="xml2rfc 3.30.2" name="generator">
+<meta content="xml2rfc 3.31.0" name="generator">
 <meta content="OpenID" name="keyword">
 <meta content="OpenID Connect" name="keyword">
 <meta content="Federation" name="keyword">
@@ -47,7 +47,7 @@
 <meta content="Trust Mark" name="keyword">
 <meta content="openid-federation-1_0" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.30.2
+  xml2rfc 3.31.0
     Python 3.12.3
     ConfigArgParse 1.7.1
     google-i18n-address 3.1.1
@@ -58,7 +58,6 @@
     pycountry 24.6.1
     PyYAML 6.0.1
     requests 2.31.0
-    setuptools 68.1.2
     wcwidth 0.2.14
 -->
 <link href="openid-federation-1_0.xml" rel="alternate" type="application/rfc+xml">
@@ -77,9 +76,9 @@
 */
 
 /* fonts */
-@import url('https://fonts.googleapis.com/css?family=Noto+Sans'); /* Sans-serif */
-@import url('https://fonts.googleapis.com/css?family=Noto+Serif'); /* Serif (print) */
-@import url('https://fonts.googleapis.com/css?family=Roboto+Mono'); /* Monospace */
+@import url('https://static.ietf.org/fonts/noto-sans/import.css'); /* Sans-serif */
+@import url('https://static.ietf.org/fonts/noto-serif/import.css'); /* Serif (print) */
+@import url('https://static.ietf.org/fonts/roboto-mono/import.css'); /* Monospace */
 
 :root {
   --font-sans: 'Noto Sans', Arial, Helvetica, sans-serif;
@@ -2117,13 +2116,13 @@ li > p:last-of-type:only-child {
           <dd class="break"></dd>
 <dt id="section-1.2-3.3">Entity Identifier</dt>
           <dd style="margin-left: 1.5em" id="section-1.2-3.4">
-              A globally unique URL that is bound to one Entity.
+              A globally unique string identifier that is bound to one Entity.
        All Entity Identifiers defined by this specification are
        URLs that use the <code>https</code> scheme,
        have a host component, and MAY contain port and path components.
        It MUST NOT contain query parameter or fragment components.
        Profiles of this specification MAY define other kinds of
-       Entity Identifier URLs and processing rules that accompany them.<a href="#section-1.2-3.4" class="pilcrow">¶</a>
+       Entity Identifiers and processing rules that accompany them.<a href="#section-1.2-3.4" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 <dt id="section-1.2-3.5">Trust Anchor</dt>
@@ -3779,11 +3778,8 @@ li > p:last-of-type:only-child {
           <dd class="break"></dd>
 </dl>
 <p id="section-5.2.2-3">
-     It is RECOMMENDED that, when present, these metadata parameters occur in
-     an Entity's <code>federation_entity</code> metadata.
-     They MAY also be present in the Entity's metadata for other Entity Types,
-     particularly when the values for those Entity Types differ from
-     those for the <code>federation_entity</code> metadata.<a href="#section-5.2.2-3" class="pilcrow">¶</a></p>
+     These metadata parameters MAY be present in
+     the Entity's metadata for any Entity Types that it uses.<a href="#section-5.2.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -7508,7 +7504,8 @@ Content-Type: application/json
  Its location is determined by concatenating the string
  <code>/.well-known/openid-federation</code>
  to the Entity Identifier
- (which MUST contain scheme and host components
+ (which MUST use the <code>https</code> scheme and
+ contain a host component
  and MAY also contain port and path components).
  For instance, the configuration endpoint for the Entity Identifier
  <code>https://entity.example</code> is the URL
@@ -7519,7 +7516,7 @@ Content-Type: application/json
 <p id="section-9-2">
         Federation Entities SHOULD make an Entity Configuration document
         available at their configuration endpoint.
-        The sole exception to this rule defined in this specification
+        The sole exception to this rule used in this specification
  is for an RP that only does Explicit Registration.
         Since it posts the Entity Configuration to the OP during client
         registration, the OP has everything it needs from the RP.
@@ -13301,6 +13298,11 @@ Host: op.umu.se
  Make use of <code>client_registration_types</code>
  and <code>client_registration_types_supported</code>
  RECOMMENDED rather than REQUIRED.<a href="#appendix-C-3.4.2.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="appendix-C-3.4.2.4">
+              <p id="appendix-C-3.4.2.4.1">
+ Remove recommendation that informational metadata values be in
+ the Entity's <code>federation_entity</code> metadata.<a href="#appendix-C-3.4.2.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </li>
