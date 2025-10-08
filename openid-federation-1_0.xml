@@ -242,13 +242,13 @@
             </t>
             <t hangText="Entity Identifier">
               <vspace/>
-              A globally unique URL that is bound to one Entity.
+              A globally unique string identifier that is bound to one Entity.
 	      All Entity Identifiers defined by this specification are
 	      URLs that use the <spanx style="verb">https</spanx> scheme,
 	      have a host component, and MAY contain port and path components.
 	      It MUST NOT contain query parameter or fragment components.
 	      Profiles of this specification MAY define other kinds of
-	      Entity Identifier URLs and processing rules that accompany them.
+	      Entity Identifiers and processing rules that accompany them.
             </t>
             <t hangText="Trust Anchor">
               <vspace/>
@@ -1805,11 +1805,8 @@
             </t>
 	  </list>
 	  <t>
-	    It is RECOMMENDED that, when present, these metadata parameters occur in
-	    an Entity's <spanx style="verb">federation_entity</spanx> metadata.
-	    They MAY also be present in the Entity's metadata for other Entity Types,
-	    particularly when the values for those Entity Types differ from
-	    those for the <spanx style="verb">federation_entity</spanx> metadata.
+	    These metadata parameters MAY be present in
+	    the Entity's metadata for any Entity Types that it uses.
 	  </t>
 	</section>
       </section>
@@ -5472,7 +5469,8 @@ Content-Type: application/json
 	Its location is determined by concatenating the string
 	<spanx style="verb">/.well-known/openid-federation</spanx>
 	to the Entity Identifier
-	(which MUST contain scheme and host components
+	(which MUST use the <spanx style="verb">https</spanx> scheme and
+	contain a host component
 	and MAY also contain port and path components).
 	For instance, the configuration endpoint for the Entity Identifier
 	<spanx style="verb">https://entity.example</spanx> is the URL
@@ -5484,7 +5482,7 @@ Content-Type: application/json
       <t>
         Federation Entities SHOULD make an Entity Configuration document
         available at their configuration endpoint.
-        The sole exception to this rule defined in this specification
+        The sole exception to this rule used in this specification
 	is for an RP that only does Explicit Registration.
         Since it posts the Entity Configuration to the OP during client
         registration, the OP has everything it needs from the RP.
@@ -10759,6 +10757,10 @@ Host: op.umu.se
 		Make use of <spanx style="verb">client_registration_types</spanx>
 		and <spanx style="verb">client_registration_types_supported</spanx>
 		RECOMMENDED rather than REQUIRED.
+	      </t>
+	      <t>
+		Remove recommendation that informational metadata values be in
+		the Entity's <spanx style="verb">federation_entity</spanx> metadata.
 	      </t>
 	    </list>
 	  </t>
