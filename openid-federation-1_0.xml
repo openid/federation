@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="3" month="October" year="2025"/>
+    <date day="8" month="October" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -670,6 +670,23 @@
               </list>
               Trust Marks are described in <xref target="trust_marks"/>.
 	            This claim SHOULD only be used in Entity Configurations.
+            </t>
+            <t hangText="trust_mark_hints">
+              <vspace/>
+              OPTIONAL. An array of JSON objects, each representing
+	      a declaration that a Trust Mark of a given Trust Mark Type
+	      can be retrieved from a Trust Mark Issuer.
+              <list style="hanging">
+                <t hangText="trust_mark_type">
+                  REQUIRED. Identifier for the type of the Trust Mark.
+                </t>
+                <t hangText="trust_mark_issuer">
+                  REQUIRED. Entity Identifier of an Entity that can issue
+		  a Trust Mark of the indicated Trust Mark Type
+		  for this Entity Configuration.
+                </t>
+              </list>
+	      This claim SHOULD only be used in Entity Configurations.
             </t>
             <t hangText="trust_mark_issuers">
               <vspace/>
@@ -10599,6 +10616,15 @@ Host: op.umu.se
 	  <t>
 	    Fixed #147: Added a note about client authentication methods
 	    and Automatic Registration.
+	  </t>
+	  <t>
+	    Applied strong requests from Sweden, specifically:
+	    <list style="symbols">
+	      <t>
+		Defined <spanx style="verb">trust_mark_hints</spanx>, which indicates
+		that a Trust Mark of a given Type can be retrieved from an Issuer.
+	      </t>
+	    </list>
 	  </t>
 	</list>
       </t>
