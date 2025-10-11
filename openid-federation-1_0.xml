@@ -1812,6 +1812,108 @@
       </section>
 
     </section>
+
+    <section title="Federation Discovery Patterns" anchor="discovery_patterns">
+      <t>
+        Implementers may support three distinct discovery patterns,
+        as described in this section.
+      </t>
+      
+      <t>
+        The three discovery patterns are:
+        <list style="symbols">
+          <t><xref target="top_down_discovery">Top-Down Discovery</xref>, this is particularly useful for finding protocol-specific providers within a federation</t>
+          <t><xref target="bottom_up_discovery">Bottom-Up Discovery</xref>, this is typically used to evaluate the trustworthiness of an entity starting from its claims</t>
+          <t><xref target="single_point_discovery">Single Point of Trust</xref>, this is commonly used to offload trust evaluation to a trusted resolver, be this a federation authority like a Trust Anchor or Intermediate or a trusted third party</t>
+        </list>
+      </t>
+
+      <section title="Top-Down Discovery" anchor="top_down_discovery">
+        <t>
+          Top-down discovery is used in particular when a Leaf entity needs to find protocol-specific 
+          providers within a federation. This pattern is particularly useful for:
+          <list style="symbols">
+            <t>Service discovery by Relying Parties looking for OpenID Providers</t>
+            <t>Resource discovery by clients looking for specific service types</t>
+            <t>Federation browsing and exploration</t>
+            <t>Building provider directories and catalogs</t>
+          </list>
+        </t>
+        
+        <t>
+          The top-down discovery process follows these steps:
+          <list style="numbers">
+            <t>Start with a known Trust Anchor that the discovering entity trusts</t>
+            <t>Use the list endpoint to discover Immediate Subordinate entities</t>
+            <t>Filter by <spanx style="verb">entity_type</spanx> parameter to find protocol-specific providers (e.g., <spanx style="verb">openid_provider</spanx>)</t>
+            <t>For intermediate entities, recursively traverse their subordinates</t>
+            <t>Collect Entity Configurations and Subordinate Statements for discovered entities</t>
+            <t>Build and validate Trust Chains for each discovered entity</t>
+            <t>Apply federation policies to derive resolved metadata</t>
+          </list>
+        </t>
+      </section>
+
+      <section title="Bottom-Up Discovery" anchor="bottom_up_discovery">
+        <t>
+          Bottom-up discovery is used in particular when a protocol specific provider receives a request and 
+          needs to verify trust about the requestor. This pattern is used for:
+          <list style="symbols">
+            <t>OpenID Providers verifying Relying Parties during authentication requests</t>
+            <t>Resource servers verifying client trustworthiness</t>
+            <t>Any entity validating incoming requests from unknown parties</t>
+            <t>Dynamic trust establishment in federated environments</t>
+          </list>
+        </t>
+        
+        <t>
+          The bottom-up discovery process follows these steps:
+          <list style="numbers">
+            <t>Start with the requestor's Entity Configuration (provided or fetched)</t>
+            <t>Extract <spanx style="verb">authority_hints</spanx> to identify immediate superior entities</t>
+            <t>Fetch Entity Configuration for each superior entity</t>
+            <t>Use fetch endpoints to obtain Subordinate Statements about the requestor</t>
+            <t>Recursively traverse up the hierarchy until reaching a Trust Anchor</t>
+            <t>Build and validate the complete Trust Chain</t>
+            <t>Apply federation policies to derive resolved metadata</t>
+          </list>
+        </t>
+      </section>
+
+      <section title="Single Point of Trust" anchor="single_point_discovery">
+        <t>
+          Single point of trust discovery delegates the entire trust evaluation process 
+          to a trusted resolver implementing the <xref target="resolve"/>. This pattern is useful for:
+          <list style="symbols">
+            <t>Entities that want to offload trust chain resolution complexity</t>
+            <t>Centralized trust evaluation services</t>
+            <t>Performance optimization by caching resolved metadata</t>
+            <t>Simplified integration for lightweight clients</t>
+          </list>
+        </t>
+        
+        <t>
+          The single point of trust discovery process follows these steps:
+          <list style="numbers">
+            <t>Identify a trusted resolver with a resolve endpoint</t>
+            <t>Submit entity identifier and trust anchor to resolver</t>
+            <t>Resolver performs complete discovery and validation internally</t>
+            <t>Resolver returns resolved metadata and trust marks</t>
+            <t>Optionally verify resolver's own Trust Chain</t>
+            <t>Use resolved metadata for protocol operations</t>
+          </list>
+        </t>
+      </section>
+
+        <t>
+          Federation operators should consider supporting multiple discovery patterns 
+          to accommodate different use cases and integration scenarios. The choice 
+          of supported patterns affects the federation's usability and the types 
+          of applications that can effectively integrate with it.
+        </t>
+
+    </section>
+
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
         <t>
@@ -10610,6 +10712,9 @@ Host: op.umu.se
 	  <t>
 	    Fixed #147: Added a note about client authentication methods
 	    and Automatic Registration.
+	  </t>
+	  <t>
+	    Added Discovery Patterns section.
 	  </t>
 	</list>
       </t>
