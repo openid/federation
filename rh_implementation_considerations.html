@@ -34,7 +34,7 @@
         protocols for the purpose of establishing trust.
        
     " name="description">
-<meta content="xml2rfc 3.30.2" name="generator">
+<meta content="xml2rfc 3.31.0" name="generator">
 <meta content="OpenID" name="keyword">
 <meta content="OpenID Connect" name="keyword">
 <meta content="Federation" name="keyword">
@@ -47,7 +47,7 @@
 <meta content="Trust Mark" name="keyword">
 <meta content="openid-federation-1_0" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.30.2
+  xml2rfc 3.31.0
     Python 3.12.3
     ConfigArgParse 1.7.1
     google-i18n-address 3.1.1
@@ -58,7 +58,6 @@
     pycountry 24.6.1
     PyYAML 6.0.1
     requests 2.31.0
-    setuptools 68.1.2
     wcwidth 0.2.14
 -->
 <link href="openid-federation-1_0.xml" rel="alternate" type="application/rfc+xml">
@@ -77,9 +76,9 @@
 */
 
 /* fonts */
-@import url('https://fonts.googleapis.com/css?family=Noto+Sans'); /* Sans-serif */
-@import url('https://fonts.googleapis.com/css?family=Noto+Serif'); /* Serif (print) */
-@import url('https://fonts.googleapis.com/css?family=Roboto+Mono'); /* Monospace */
+@import url('https://static.ietf.org/fonts/noto-sans/import.css'); /* Sans-serif */
+@import url('https://static.ietf.org/fonts/noto-serif/import.css'); /* Serif (print) */
+@import url('https://static.ietf.org/fonts/roboto-mono/import.css'); /* Monospace */
 
 :root {
   --font-sans: 'Noto Sans', Arial, Helvetica, sans-serif;
@@ -6639,6 +6638,25 @@ trust_mark=eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6 ...
             <dd style="margin-left: 1.5em" id="section-8.4.2-2.2">
                 REQUIRED. Boolean. Whether the Trust Mark is active or not.<a href="#section-8.4.2-2.2" class="pilcrow">¶</a>
 </dd>
+            <dd class="break"></dd>
+<dt id="section-8.4.2-2.3">reason</dt>
+            <dd style="margin-left: 1.5em" id="section-8.4.2-2.4">
+              <p id="section-8.4.2-2.4.1">
+                    OPTIONAL. String containing additional information about the error.
+                    Reasons defined by this specification:<a href="#section-8.4.2-2.4.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-8.4.2-2.4.2">
+                <dt id="section-8.4.2-2.4.2.1">revoked</dt>
+                <dd style="margin-left: 1.5em" id="section-8.4.2-2.4.2.2">
+                            The trust mark is revoked<a href="#section-8.4.2-2.4.2.2" class="pilcrow">¶</a>
+</dd>
+                <dd class="break"></dd>
+<dt id="section-8.4.2-2.4.2.3">invalid</dt>
+                <dd style="margin-left: 1.5em" id="section-8.4.2-2.4.2.4">
+                            Signature validation fails or instance has expired<a href="#section-8.4.2-2.4.2.4" class="pilcrow">¶</a>
+</dd>
+              <dd class="break"></dd>
+</dl>
+</dd>
           <dd class="break"></dd>
 </dl>
 <p id="section-8.4.2-3">
@@ -6646,7 +6664,7 @@ trust_mark=eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6 ...
             is as defined in
             <a href="#error_response" class="auto internal xref">Section 8.9</a>.<a href="#section-8.4.2-3" class="pilcrow">¶</a></p>
 <p id="section-8.4.2-4" class="keepWithNext">
-                The following is a non-normative example of a Trust Mark status response:<a href="#section-8.4.2-4" class="pilcrow">¶</a></p>
+                The following is a non-normative example of a Trust Mark positive status response:<a href="#section-8.4.2-4" class="pilcrow">¶</a></p>
 <span id="name-trust-mark-status-response-2"></span><figure id="figure-36">
             <div class="alignLeft art-text artwork" id="section-8.4.2-5.1">
 <pre>
@@ -6660,6 +6678,23 @@ Content-Type: application/json
 </div>
 <figcaption><a href="#figure-36" class="selfRef">Figure 36</a>:
 <a href="#name-trust-mark-status-response-2" class="selfRef">Trust Mark Status Response</a>
+            </figcaption></figure>
+<p id="section-8.4.2-6" class="keepWithNext">
+                The following is a non-normative example of a Trust Mark negative status response:<a href="#section-8.4.2-6" class="pilcrow">¶</a></p>
+<span id="name-trust-mark-status-response-3"></span><figure id="figure-37">
+            <div class="alignLeft art-text artwork" id="section-8.4.2-7.1">
+<pre>
+200 OK
+Content-Type: application/json
+
+{
+  "active": false,
+  "reason": "revoked"
+}
+</pre>
+</div>
+<figcaption><a href="#figure-37" class="selfRef">Figure 37</a>:
+<a href="#name-trust-mark-status-response-3" class="selfRef">Trust Mark Status Response</a>
             </figcaption></figure>
 </section>
 </div>
@@ -6717,14 +6752,14 @@ Content-Type: application/json
 <p id="section-8.5.1-4" class="keepWithNext">
               The following is a non-normative example of an HTTP GET
               request for a list of Trust Marked Entities:<a href="#section-8.5.1-4" class="pilcrow">¶</a></p>
-<span id="name-trust-marked-entities-listing"></span><figure id="figure-37">
+<span id="name-trust-marked-entities-listing"></span><figure id="figure-38">
             <div class="alignLeft art-text artwork" id="section-8.5.1-5.1">
 <pre>
 GET /trust_marked_list?trust_mark_type=https%3A%2F%2Ffederation.example.org%2Fopenid_relying_party%2Fprivate%2Funder-age HTTP/1.1
 Host: trust-mark-issuer.example.org
 </pre>
 </div>
-<figcaption><a href="#figure-37" class="selfRef">Figure 37</a>:
+<figcaption><a href="#figure-38" class="selfRef">Figure 38</a>:
 <a href="#name-trust-marked-entities-listing" class="selfRef">Trust Marked Entities Listing Request</a>
             </figcaption></figure>
 </section>
@@ -6745,7 +6780,7 @@ Host: trust-mark-issuer.example.org
 <p id="section-8.5.2-3" class="keepWithNext">
               The following is a non-normative example of a response, containing
               the Trust Marked Entities:<a href="#section-8.5.2-3" class="pilcrow">¶</a></p>
-<span id="name-trust-marked-entities-listing-r"></span><figure id="figure-38">
+<span id="name-trust-marked-entities-listing-r"></span><figure id="figure-39">
             <div class="alignLeft art-text artwork" id="section-8.5.2-4.1">
 <pre>
 200 OK
@@ -6757,7 +6792,7 @@ Content-Type: application/json
 ]
 </pre>
 </div>
-<figcaption><a href="#figure-38" class="selfRef">Figure 38</a>:
+<figcaption><a href="#figure-39" class="selfRef">Figure 39</a>:
 <a href="#name-trust-marked-entities-listing-r" class="selfRef">Trust Marked Entities Listing Response</a>
             </figcaption></figure>
 </section>
@@ -6812,14 +6847,14 @@ Content-Type: application/json
 <p id="section-8.6.1-4" class="keepWithNext">
               The following is a non-normative example of an HTTP
               request for a Trust Mark with a specific Trust Mark type identifier and subject:<a href="#section-8.6.1-4" class="pilcrow">¶</a></p>
-<span id="name-trust-mark-request-2"></span><figure id="figure-39">
+<span id="name-trust-mark-request-2"></span><figure id="figure-40">
             <div class="alignLeft art-text artwork" id="section-8.6.1-5.1">
 <pre>
 GET /trust_mark?trust_mark_type=https%3A%2F%2Fwww.spid.gov.it%2Fcertification%2Frp&amp;sub=https%3A%2F%2Frp.example.it%2Fspid HTTP/1.1
 Host: tuber.cert.example.org
 </pre>
 </div>
-<figcaption><a href="#figure-39" class="selfRef">Figure 39</a>:
+<figcaption><a href="#figure-40" class="selfRef">Figure 40</a>:
 <a href="#name-trust-mark-request-2" class="selfRef">Trust Mark Request</a>
             </figcaption></figure>
 </section>
@@ -6843,7 +6878,7 @@ Host: tuber.cert.example.org
               The following is a non-normative example of a response, containing
               the Trust Mark for the specified Entity
        (with line wraps within values for display purposes only):<a href="#section-8.6.2-3" class="pilcrow">¶</a></p>
-<span id="name-trust-mark-response-2"></span><figure id="figure-40">
+<span id="name-trust-mark-response-2"></span><figure id="figure-41">
             <div class="alignLeft art-text artwork" id="section-8.6.2-4.1">
 <pre>
 200 OK
@@ -6864,7 +6899,7 @@ BBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzSan5nOmkxuAtMinU8k_
 kp6W-V4jCBOpxp7Yo8LZ30o_xpEOzGTIECGWVR86azOAlwVC8XSiAA
 </pre>
 </div>
-<figcaption><a href="#figure-40" class="selfRef">Figure 40</a>:
+<figcaption><a href="#figure-41" class="selfRef">Figure 41</a>:
 <a href="#name-trust-mark-response-2" class="selfRef">Trust Mark Response</a>
             </figcaption></figure>
 </section>
@@ -6911,14 +6946,14 @@ kp6W-V4jCBOpxp7Yo8LZ30o_xpEOzGTIECGWVR86azOAlwVC8XSiAA
 <p id="section-8.7.1-3" class="keepWithNext">
               The following is a non-normative example of a
               historical keys request:<a href="#section-8.7.1-3" class="pilcrow">¶</a></p>
-<span id="name-federation-historical-keys-re"></span><figure id="figure-41">
+<span id="name-federation-historical-keys-re"></span><figure id="figure-42">
             <div class="alignLeft art-text artwork" id="section-8.7.1-4.1">
 <pre>
 GET /federation_historical_keys HTTP/1.1
 Host: trust-anchor.example.com
 </pre>
 </div>
-<figcaption><a href="#figure-41" class="selfRef">Figure 41</a>:
+<figcaption><a href="#figure-42" class="selfRef">Figure 42</a>:
 <a href="#name-federation-historical-keys-re" class="selfRef">Federation Historical Keys Request</a>
             </figcaption></figure>
 </section>
@@ -7051,7 +7086,7 @@ Host: trust-anchor.example.com
 </dl>
 <p id="section-8.7.2-9" class="keepWithNext">
               The following is a non-normative example of the JWT Claims Set for a historical keys response:<a href="#section-8.7.2-9" class="pilcrow">¶</a></p>
-<span id="name-federation-historical-keys-resp"></span><figure id="figure-42">
+<span id="name-federation-historical-keys-resp"></span><figure id="figure-43">
             <div class="alignLeft art-text artwork" id="section-8.7.2-10.1">
 <pre>
 {
@@ -7083,7 +7118,7 @@ Host: trust-anchor.example.com
 }
 </pre>
 </div>
-<figcaption><a href="#figure-42" class="selfRef">Figure 42</a>:
+<figcaption><a href="#figure-43" class="selfRef">Figure 43</a>:
 <a href="#name-federation-historical-keys-resp" class="selfRef">Federation Historical Keys Response JWT Claims Set</a>
             </figcaption></figure>
 </section>
@@ -7259,13 +7294,13 @@ Host: trust-anchor.example.com
        <code>private_key_jwt</code>
        are REQUIRED at the
        <code>federation_trust_mark_endpoint</code>:<a href="#section-8.8.1-4" class="pilcrow">¶</a></p>
-<span id="name-declaring-that-client-authe"></span><figure id="figure-43">
+<span id="name-declaring-that-client-authe"></span><figure id="figure-44">
             <div class="alignLeft art-text artwork" id="section-8.8.1-5.1">
 <pre>
 "federation_trust_mark_endpoint_auth_methods": ["private_key_jwt"]
 </pre>
 </div>
-<figcaption><a href="#figure-43" class="selfRef">Figure 43</a>:
+<figcaption><a href="#figure-44" class="selfRef">Figure 44</a>:
 <a href="#name-declaring-that-client-authe" class="selfRef">Declaring that client authentication is REQUIRED at an endpoint</a>
             </figcaption></figure>
 <p id="section-8.8.1-6">
@@ -7388,7 +7423,7 @@ Host: trust-anchor.example.com
 </dl>
 <p id="section-8.9-3" class="keepWithNext">
             The following is a non-normative example of an error response:<a href="#section-8.9-3" class="pilcrow">¶</a></p>
-<span id="name-example-error-response"></span><figure id="figure-44">
+<span id="name-example-error-response"></span><figure id="figure-45">
           <div class="alignLeft art-text artwork" id="section-8.9-4.1">
 <pre>
 400 Bad request
@@ -7401,7 +7436,7 @@ Content-Type: application/json
 }
 </pre>
 </div>
-<figcaption><a href="#figure-44" class="selfRef">Figure 44</a>:
+<figcaption><a href="#figure-45" class="selfRef">Figure 45</a>:
 <a href="#name-example-error-response" class="selfRef">Example Error Response</a>
           </figcaption></figure>
 </section>
@@ -7446,14 +7481,14 @@ Content-Type: application/json
        In this example, the requesting party would make the following request to the Entity
        <code>https://openid.sunet.se</code>
        to obtain its Entity Configuration:<a href="#section-9.1-2" class="pilcrow">¶</a></p>
-<span id="name-request-for-entity-configur"></span><figure id="figure-45">
+<span id="name-request-for-entity-configur"></span><figure id="figure-46">
           <div class="alignLeft art-text artwork" id="section-9.1-3.1">
 <pre>
   GET /.well-known/openid-federation HTTP/1.1
   Host: openid.sunet.se
 </pre>
 </div>
-<figcaption><a href="#figure-45" class="selfRef">Figure 45</a>:
+<figcaption><a href="#figure-46" class="selfRef">Figure 46</a>:
 <a href="#name-request-for-entity-configur" class="selfRef">Request for Entity Configuration</a>
           </figcaption></figure>
 </section>
@@ -7479,7 +7514,7 @@ Content-Type: application/json
 <p id="section-9.2-3" class="keepWithNext">
        The following is a non-normative example JWT Claims Set for a response from an
        Intermediate Entity:<a href="#section-9.2-3" class="pilcrow">¶</a></p>
-<span id="name-entity-configuration-respon"></span><figure id="figure-46">
+<span id="name-entity-configuration-respon"></span><figure id="figure-47">
           <div class="alignLeft art-text artwork" id="section-9.2-4.1">
 <pre>
 {
@@ -7547,7 +7582,7 @@ Content-Type: application/json
 }
 </pre>
 </div>
-<figcaption><a href="#figure-46" class="selfRef">Figure 46</a>:
+<figcaption><a href="#figure-47" class="selfRef">Figure 47</a>:
 <a href="#name-entity-configuration-respon" class="selfRef">Entity Configuration Response JWT Claims Set</a>
           </figcaption></figure>
 </section>
@@ -7617,7 +7652,7 @@ Content-Type: application/json
    about the RP.
    Relating this to the preceding description, in this diagram,
    Party A is the OP and Party B is the RP.<a href="#section-10.1-7" class="pilcrow">¶</a></p>
-<span id="name-resolving-trust-chain-and-m"></span><figure id="figure-47">
+<span id="name-resolving-trust-chain-and-m"></span><figure id="figure-48">
           <div class="alignLeft art-text artwork" id="section-10.1-8.1">
 <pre>
 +-----+                         +-----+                             +--------------+
@@ -7673,7 +7708,7 @@ Content-Type: application/json
    |                               |&lt;----------------------------------     |
 </pre>
 </div>
-<figcaption><a href="#figure-47" class="selfRef">Figure 47</a>:
+<figcaption><a href="#figure-48" class="selfRef">Figure 48</a>:
 <a href="#name-resolving-trust-chain-and-m" class="selfRef">Resolving Trust Chain and Metadata from the Perspective of an OP</a>
           </figcaption></figure>
 </section>
@@ -8102,7 +8137,7 @@ Content-Type: application/json
 <p id="section-12.1.1.1.1-3" class="keepWithNext">
                 The following is a non-normative example of the JWT Claims Set in a
                 Request Object:<a href="#section-12.1.1.1.1-3" class="pilcrow">¶</a></p>
-<span id="name-request-object-jwt-claims-s"></span><figure id="figure-48">
+<span id="name-request-object-jwt-claims-s"></span><figure id="figure-49">
                 <div class="alignLeft art-text artwork" id="section-12.1.1.1.1-4.1">
 <pre>
 {
@@ -8131,14 +8166,14 @@ Content-Type: application/json
 }
 </pre>
 </div>
-<figcaption><a href="#figure-48" class="selfRef">Figure 48</a>:
+<figcaption><a href="#figure-49" class="selfRef">Figure 49</a>:
 <a href="#name-request-object-jwt-claims-s" class="selfRef">Request Object JWT Claims Set</a>
                 </figcaption></figure>
 <p id="section-12.1.1.1.1-5" class="keepWithNext">
                 The following is a non-normative example of an Authentication
                 Request using the <code>request</code> parameter
                 (with line wraps within values for display purposes only):<a href="#section-12.1.1.1.1-5" class="pilcrow">¶</a></p>
-<span id="name-authentication-request-usin"></span><figure id="figure-49">
+<span id="name-authentication-request-usin"></span><figure id="figure-50">
                 <div class="alignLeft art-text artwork" id="section-12.1.1.1.1-6.1">
 <pre>
 Host: server.example.com
@@ -8173,7 +8208,7 @@ GET /authorize?
 
 </pre>
 </div>
-<figcaption><a href="#figure-49" class="selfRef">Figure 49</a>:
+<figcaption><a href="#figure-50" class="selfRef">Figure 50</a>:
 <a href="#name-authentication-request-usin" class="selfRef">Authentication Request Using Request Object</a>
                 </figcaption></figure>
 </section>
@@ -8285,7 +8320,7 @@ GET /authorize?
             </ul>
 <p id="section-12.1.1.2-5" class="keepWithNext">
        A Pushed Authorization Request to the OP could look like this:<a href="#section-12.1.1.2-5" class="pilcrow">¶</a></p>
-<span id="name-pushed-authorization-reques"></span><figure id="figure-50">
+<span id="name-pushed-authorization-reques"></span><figure id="figure-51">
               <div class="alignLeft art-text artwork" id="section-12.1.1.2-6.1">
 <pre>
 POST /par HTTP/1.1
@@ -8318,7 +8353,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
   DwA7B0ZqmuSmMFQ
 </pre>
 </div>
-<figcaption><a href="#figure-50" class="selfRef">Figure 50</a>:
+<figcaption><a href="#figure-51" class="selfRef">Figure 51</a>:
 <a href="#name-pushed-authorization-reques" class="selfRef">Pushed Authorization Request to the OP</a>
               </figcaption></figure>
 <div id="par-processing">
@@ -8420,7 +8455,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
      which MAY also be used.<a href="#section-12.1.3-4" class="pilcrow">¶</a></p>
 <p id="section-12.1.3-5" class="keepWithNext">
               The following is a non-normative example authentication error response:<a href="#section-12.1.3-5" class="pilcrow">¶</a></p>
-<span id="name-authentication-error-respons"></span><figure id="figure-51">
+<span id="name-authentication-error-respons"></span><figure id="figure-52">
             <div class="alignLeft art-text artwork" id="section-12.1.3-6.1">
 <pre>
 HTTP/1.1 302 Found
@@ -8431,7 +8466,7 @@ HTTP/1.1 302 Found
     &amp;state=af0ifjsldkj
 </pre>
 </div>
-<figcaption><a href="#figure-51" class="selfRef">Figure 51</a>:
+<figcaption><a href="#figure-52" class="selfRef">Figure 52</a>:
 <a href="#name-authentication-error-respons" class="selfRef">Authentication Error Response</a>
             </figcaption></figure>
 </section>
@@ -9458,7 +9493,7 @@ HTTP/1.1 302 Found
    ambiguities that deployers need to be aware of.<a href="#section-17.1-1" class="pilcrow">¶</a></p>
 <p id="section-17.1-2" class="keepWithNext">
      Consider the following Federation topology:<a href="#section-17.1-2" class="pilcrow">¶</a></p>
-<span id="name-example-topology-with-multi"></span><figure id="figure-52">
+<span id="name-example-topology-with-multi"></span><figure id="figure-53">
           <div class="alignLeft art-text artwork" id="section-17.1-3.1">
 <pre>
               .--------------.
@@ -9482,7 +9517,7 @@ HTTP/1.1 302 Found
                  '----'
 </pre>
 </div>
-<figcaption><a href="#figure-52" class="selfRef">Figure 52</a>:
+<figcaption><a href="#figure-53" class="selfRef">Figure 53</a>:
 <a href="#name-example-topology-with-multi" class="selfRef">Example topology with multiple trust paths between Entities</a>
           </figcaption></figure>
 <p id="section-17.1-4">
@@ -11848,7 +11883,7 @@ HTTP/1.1 302 Found
         federation.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 <p id="appendix-A-2" class="keepWithNext">
    The following depicts a federation under the eduGAIN Trust Anchor:<a href="#appendix-A-2" class="pilcrow">¶</a></p>
-<span id="name-participants-within-the-edu"></span><figure id="figure-53">
+<span id="name-participants-within-the-edu"></span><figure id="figure-54">
         <div class="alignLeft art-text artwork" id="appendix-A-3.1">
 <pre>
                        eduGAIN
@@ -11862,7 +11897,7 @@ HTTP/1.1 302 Found
    op.umu.se                           wiki.ligo.org
 </pre>
 </div>
-<figcaption><a href="#figure-53" class="selfRef">Figure 53</a>:
+<figcaption><a href="#figure-54" class="selfRef">Figure 54</a>:
 <a href="#name-participants-within-the-edu" class="selfRef">Participants Within the eduGAIN Federation</a>
         </figcaption></figure>
 <p id="appendix-A-4">
@@ -11992,7 +12027,7 @@ HTTP/1.1 302 Found
             OP (op.umu.se)
             using the process defined in <a href="#federation_configuration" class="auto internal xref">Section 9</a>.<a href="#appendix-A.2.1-1" class="pilcrow">¶</a></p>
 <p id="appendix-A.2.1-2" class="keepWithNext">The result is this Entity Configuration:<a href="#appendix-A.2.1-2" class="pilcrow">¶</a></p>
-<span id="name-entity-configuration-issued"></span><figure id="figure-54">
+<span id="name-entity-configuration-issued"></span><figure id="figure-55">
             <div class="alignLeft art-text artwork" id="appendix-A.2.1-3.1">
 <pre>
 {
@@ -12059,7 +12094,7 @@ HTTP/1.1 302 Found
 }
 </pre>
 </div>
-<figcaption><a href="#figure-54" class="selfRef">Figure 54</a>:
+<figcaption><a href="#figure-55" class="selfRef">Figure 55</a>:
 <a href="#name-entity-configuration-issued" class="selfRef">Entity Configuration Issued by https://op.umu.se</a>
             </figcaption></figure>
 <p id="appendix-A.2.1-4">
@@ -12080,19 +12115,19 @@ HTTP/1.1 302 Found
             <a href="#federation_configuration" class="auto internal xref">Section 9</a>.<a href="#appendix-A.2.2-1" class="pilcrow">¶</a></p>
 <p id="appendix-A.2.2-2" class="keepWithNext">
        The request will look like this:<a href="#appendix-A.2.2-2" class="pilcrow">¶</a></p>
-<span id="name-entity-configuration-issued-"></span><figure id="figure-55">
+<span id="name-entity-configuration-issued-"></span><figure id="figure-56">
             <div class="alignLeft art-text artwork" id="appendix-A.2.2-3.1">
 <pre>
 GET /.well-known/openid-federation HTTP/1.1
 Host: umu.se
 </pre>
 </div>
-<figcaption><a href="#figure-55" class="selfRef">Figure 55</a>:
+<figcaption><a href="#figure-56" class="selfRef">Figure 56</a>:
 <a href="#name-entity-configuration-issued-" class="selfRef">Entity Configuration Issued by https://umu.se</a>
             </figcaption></figure>
 <p id="appendix-A.2.2-4" class="keepWithNext">
        And the GET will return:<a href="#appendix-A.2.2-4" class="pilcrow">¶</a></p>
-<span id="name-entity-configuration-jwt-cl"></span><figure id="figure-56">
+<span id="name-entity-configuration-jwt-cl"></span><figure id="figure-57">
             <div class="alignLeft art-text artwork" id="appendix-A.2.2-5.1">
 <pre>
 {
@@ -12124,7 +12159,7 @@ Host: umu.se
 }
 </pre>
 </div>
-<figcaption><a href="#figure-56" class="selfRef">Figure 56</a>:
+<figcaption><a href="#figure-57" class="selfRef">Figure 57</a>:
 <a href="#name-entity-configuration-jwt-cl" class="selfRef">Entity Configuration JWT Claims Set</a>
             </figcaption></figure>
 <p id="appendix-A.2.2-6">
@@ -12146,7 +12181,7 @@ Host: umu.se
             https://op.umu.se.<a href="#appendix-A.2.3-1" class="pilcrow">¶</a></p>
 <p id="appendix-A.2.3-2" class="keepWithNext">
        The request will look like this:<a href="#appendix-A.2.3-2" class="pilcrow">¶</a></p>
-<span id="name-request-subordinate-stateme"></span><figure id="figure-57">
+<span id="name-request-subordinate-stateme"></span><figure id="figure-58">
             <div class="alignLeft art-text artwork" id="appendix-A.2.3-3.1">
 <pre>
 GET /oidc/fedapi?sub=https%3A%2F%2Fop.umu.se&amp;
@@ -12154,12 +12189,12 @@ iss=https%3A%2F%2Fumu.se HTTP/1.1
 Host: umu.se
 </pre>
 </div>
-<figcaption><a href="#figure-57" class="selfRef">Figure 57</a>:
+<figcaption><a href="#figure-58" class="selfRef">Figure 58</a>:
 <a href="#name-request-subordinate-stateme" class="selfRef">Request Subordinate Statement from https://umu.se about https://op.umu.se</a>
             </figcaption></figure>
 <p id="appendix-A.2.3-4" class="keepWithNext">
        And the result is this:<a href="#appendix-A.2.3-4" class="pilcrow">¶</a></p>
-<span id="name-subordinate-statement-issue"></span><figure id="figure-58">
+<span id="name-subordinate-statement-issue"></span><figure id="figure-59">
             <div class="alignLeft art-text artwork" id="appendix-A.2.3-5.1">
 <pre>
 {
@@ -12210,7 +12245,7 @@ Host: umu.se
 }
 </pre>
 </div>
-<figcaption><a href="#figure-58" class="selfRef">Figure 58</a>:
+<figcaption><a href="#figure-59" class="selfRef">Figure 59</a>:
 <a href="#name-subordinate-statement-issue" class="selfRef">Subordinate Statement Issued by https://umu.se about https://op.umu.se</a>
             </figcaption></figure>
 <p id="appendix-A.2.3-6">
@@ -12227,19 +12262,19 @@ Host: umu.se
             <a href="#federation_configuration" class="auto internal xref">Section 9</a>.<a href="#appendix-A.2.4-1" class="pilcrow">¶</a></p>
 <p id="appendix-A.2.4-2" class="keepWithNext">
        The request will look like this:<a href="#appendix-A.2.4-2" class="pilcrow">¶</a></p>
-<span id="name-request-entity-configuratio"></span><figure id="figure-59">
+<span id="name-request-entity-configuratio"></span><figure id="figure-60">
             <div class="alignLeft art-text artwork" id="appendix-A.2.4-3.1">
 <pre>
 GET /.well-known/openid-federation HTTP/1.1
 Host: swamid.se
 </pre>
 </div>
-<figcaption><a href="#figure-59" class="selfRef">Figure 59</a>:
+<figcaption><a href="#figure-60" class="selfRef">Figure 60</a>:
 <a href="#name-request-entity-configuratio" class="selfRef">Request Entity Configuration from https://swamid.se</a>
             </figcaption></figure>
 <p id="appendix-A.2.4-4" class="keepWithNext">
        And the GET will return:<a href="#appendix-A.2.4-4" class="pilcrow">¶</a></p>
-<span id="name-entity-configuration-issued-b"></span><figure id="figure-60">
+<span id="name-entity-configuration-issued-b"></span><figure id="figure-61">
             <div class="alignLeft art-text artwork" id="appendix-A.2.4-5.1">
 <pre>
 {
@@ -12272,7 +12307,7 @@ Host: swamid.se
 }
 </pre>
 </div>
-<figcaption><a href="#figure-60" class="selfRef">Figure 60</a>:
+<figcaption><a href="#figure-61" class="selfRef">Figure 61</a>:
 <a href="#name-entity-configuration-issued-b" class="selfRef">Entity Configuration Issued by https://swamid.se</a>
             </figcaption></figure>
 <p id="appendix-A.2.4-6">
@@ -12295,7 +12330,7 @@ Host: swamid.se
             https://umu.se.<a href="#appendix-A.2.5-1" class="pilcrow">¶</a></p>
 <p id="appendix-A.2.5-2" class="keepWithNext">
        The request will look like this:<a href="#appendix-A.2.5-2" class="pilcrow">¶</a></p>
-<span id="name-request-to-https-swamidse-f"></span><figure id="figure-61">
+<span id="name-request-to-https-swamidse-f"></span><figure id="figure-62">
             <div class="alignLeft art-text artwork" id="appendix-A.2.5-3.1">
 <pre>
 GET /fedapi?sub=https%3A%2F%2Fumu.se&amp;
@@ -12303,12 +12338,12 @@ iss=https%3A%2F%2Fswamid.se HTTP/1.1
 Host: swamid.se
 </pre>
 </div>
-<figcaption><a href="#figure-61" class="selfRef">Figure 61</a>:
+<figcaption><a href="#figure-62" class="selfRef">Figure 62</a>:
 <a href="#name-request-to-https-swamidse-f" class="selfRef">Request to https://swamid.se for Subordinate Statement about https://umu.se</a>
             </figcaption></figure>
 <p id="appendix-A.2.5-4" class="keepWithNext">
        And the result is this:<a href="#appendix-A.2.5-4" class="pilcrow">¶</a></p>
-<span id="name-subordinate-statement-issued"></span><figure id="figure-62">
+<span id="name-subordinate-statement-issued"></span><figure id="figure-63">
             <div class="alignLeft art-text artwork" id="appendix-A.2.5-5.1">
 <pre>
 {
@@ -12355,7 +12390,7 @@ Host: swamid.se
 }
 </pre>
 </div>
-<figcaption><a href="#figure-62" class="selfRef">Figure 62</a>:
+<figcaption><a href="#figure-63" class="selfRef">Figure 63</a>:
 <a href="#name-subordinate-statement-issued" class="selfRef">Subordinate Statement Issued by https://swamid.se about https://umu.se</a>
             </figcaption></figure>
 <p id="appendix-A.2.5-6">
@@ -12376,19 +12411,19 @@ Host: swamid.se
             <a href="#federation_configuration" class="auto internal xref">Section 9</a>.<a href="#appendix-A.2.6-1" class="pilcrow">¶</a></p>
 <p id="appendix-A.2.6-2" class="keepWithNext">
        The request will look like this:<a href="#appendix-A.2.6-2" class="pilcrow">¶</a></p>
-<span id="name-entity-configuration-reques"></span><figure id="figure-63">
+<span id="name-entity-configuration-reques"></span><figure id="figure-64">
             <div class="alignLeft art-text artwork" id="appendix-A.2.6-3.1">
 <pre>
 GET /.well-known/openid-federation HTTP/1.1
 Host: edugain.geant.org
 </pre>
 </div>
-<figcaption><a href="#figure-63" class="selfRef">Figure 63</a>:
+<figcaption><a href="#figure-64" class="selfRef">Figure 64</a>:
 <a href="#name-entity-configuration-reques" class="selfRef">Entity Configuration Requested from https://edugain.geant.org</a>
             </figcaption></figure>
 <p id="appendix-A.2.6-4" class="keepWithNext">
        And the GET will return:<a href="#appendix-A.2.6-4" class="pilcrow">¶</a></p>
-<span id="name-entity-configuration-issued-by"></span><figure id="figure-64">
+<span id="name-entity-configuration-issued-by"></span><figure id="figure-65">
             <div class="alignLeft art-text artwork" id="appendix-A.2.6-5.1">
 <pre>
 {
@@ -12414,7 +12449,7 @@ Host: edugain.geant.org
 }
 </pre>
 </div>
-<figcaption><a href="#figure-64" class="selfRef">Figure 64</a>:
+<figcaption><a href="#figure-65" class="selfRef">Figure 65</a>:
 <a href="#name-entity-configuration-issued-by" class="selfRef">Entity Configuration issued by https://edugain.geant.org</a>
             </figcaption></figure>
 <p id="appendix-A.2.6-6">
@@ -12440,7 +12475,7 @@ Host: edugain.geant.org
             "https://swamid.se".<a href="#appendix-A.2.7-1" class="pilcrow">¶</a></p>
 <p id="appendix-A.2.7-2" class="keepWithNext">
      The request will look like this:<a href="#appendix-A.2.7-2" class="pilcrow">¶</a></p>
-<span id="name-request-to-https-edugaingea"></span><figure id="figure-65">
+<span id="name-request-to-https-edugaingea"></span><figure id="figure-66">
             <div class="alignLeft art-text artwork" id="appendix-A.2.7-3.1">
 <pre>
 GET /edugain/api?sub=https%3A%2F%2Fswamid.se&amp;
@@ -12448,12 +12483,12 @@ iss=https%3A%2F%2Fedugain.geant.org HTTP/1.1
 Host: geant.org
 </pre>
 </div>
-<figcaption><a href="#figure-65" class="selfRef">Figure 65</a>:
+<figcaption><a href="#figure-66" class="selfRef">Figure 66</a>:
 <a href="#name-request-to-https-edugaingea" class="selfRef">Request to https://edugain.geant.org for Subordinate Statement about https://swamid.se</a>
             </figcaption></figure>
 <p id="appendix-A.2.7-4" class="keepWithNext">
        And the result is this:<a href="#appendix-A.2.7-4" class="pilcrow">¶</a></p>
-<span id="name-subordinate-statement-issued-"></span><figure id="figure-66">
+<span id="name-subordinate-statement-issued-"></span><figure id="figure-67">
             <div class="alignLeft art-text artwork" id="appendix-A.2.7-5.1">
 <pre>
 {
@@ -12487,7 +12522,7 @@ Host: geant.org
 }
 </pre>
 </div>
-<figcaption><a href="#figure-66" class="selfRef">Figure 66</a>:
+<figcaption><a href="#figure-67" class="selfRef">Figure 67</a>:
 <a href="#name-subordinate-statement-issued-" class="selfRef">Subordinate Statement issued by https://edugain.geant.org about https://swamid.se</a>
             </figcaption></figure>
 <p id="appendix-A.2.7-6">
@@ -12557,7 +12592,7 @@ Host: geant.org
        Immediate Superiors about their Immediate Subordinates and applying the combined policy
        to the
        metadata statement that the Leaf Entity presented, we get:<a href="#appendix-A.2.8-2" class="pilcrow">¶</a></p>
-<span id="name-resolved-metadata-derived-f"></span><figure id="figure-67">
+<span id="name-resolved-metadata-derived-f"></span><figure id="figure-68">
             <div class="alignLeft art-text artwork" id="appendix-A.2.8-3.1">
 <pre>
 {
@@ -12607,7 +12642,7 @@ Host: geant.org
 
 </pre>
 </div>
-<figcaption><a href="#figure-67" class="selfRef">Figure 67</a>:
+<figcaption><a href="#figure-68" class="selfRef">Figure 68</a>:
 <a href="#name-resolved-metadata-derived-f" class="selfRef">Resolved Metadata Derived from Trust Chain by Applying Metadata Policies</a>
             </figcaption></figure>
 <p id="appendix-A.2.8-4">
@@ -12655,7 +12690,7 @@ Host: geant.org
             sending an Authentication Request.<a href="#appendix-A.3.1-1" class="pilcrow">¶</a></p>
 <p id="appendix-A.3.1-2" class="keepWithNext">
        Here is an example of such an Authentication Request:<a href="#appendix-A.3.1-2" class="pilcrow">¶</a></p>
-<span id="name-authentication-request-using"></span><figure id="figure-68">
+<span id="name-authentication-request-using"></span><figure id="figure-69">
             <div class="alignLeft art-text artwork" id="appendix-A.3.1-3.1">
 <pre>
 GET /openid/authorization?
@@ -12685,7 +12720,7 @@ GET /openid/authorization?
 Host: op.umu.se
 </pre>
 </div>
-<figcaption><a href="#figure-68" class="selfRef">Figure 68</a>:
+<figcaption><a href="#figure-69" class="selfRef">Figure 69</a>:
 <a href="#name-authentication-request-using" class="selfRef">Authentication Request Using Automatic Client Registration</a>
             </figcaption></figure>
 <p id="appendix-A.3.1-4">
@@ -12757,7 +12792,7 @@ Host: op.umu.se
 <span class="break"></span><dl class="dlParallel" id="appendix-A.3.1.2-3">
               <dt id="appendix-A.3.1.2-3.1">edugain.geant.org:</dt>
               <dd style="margin-left: 1.5em" id="appendix-A.3.1.2-3.2">
-                <span id="name-metadata-policies-related-t"></span><figure id="figure-69">
+                <span id="name-metadata-policies-related-t"></span><figure id="figure-70">
                   <div class="alignLeft art-text artwork" id="appendix-A.3.1.2-3.2.1.1">
 <pre>
 "metadata_policy": {
@@ -12774,7 +12809,7 @@ Host: op.umu.se
 }
 </pre>
 </div>
-<figcaption><a href="#figure-69" class="selfRef">Figure 69</a>:
+<figcaption><a href="#figure-70" class="selfRef">Figure 70</a>:
 <a href="#name-metadata-policies-related-t" class="selfRef">Metadata Policies Related to Multiple Metadata Types</a>
                   </figcaption></figure><a href="#appendix-A.3.1.2-3.2" class="pilcrow">¶</a>
 </dd>
@@ -12783,7 +12818,7 @@ Host: op.umu.se
 <span class="break"></span><dl class="dlParallel" id="appendix-A.3.1.2-4">
               <dt id="appendix-A.3.1.2-4.1">incommon.org:</dt>
               <dd style="margin-left: 1.5em" id="appendix-A.3.1.2-4.2">
-                <span id="name-metadata-policy-related-to-"></span><figure id="figure-70">
+                <span id="name-metadata-policy-related-to-"></span><figure id="figure-71">
                   <div class="alignLeft art-text artwork" id="appendix-A.3.1.2-4.2.1.1">
 <pre>
 "metadata_policy": {
@@ -12807,7 +12842,7 @@ Host: op.umu.se
 }
 </pre>
 </div>
-<figcaption><a href="#figure-70" class="selfRef">Figure 70</a>:
+<figcaption><a href="#figure-71" class="selfRef">Figure 71</a>:
 <a href="#name-metadata-policy-related-to-" class="selfRef">Metadata Policy Related to the RP</a>
                   </figcaption></figure><a href="#appendix-A.3.1.2-4.2" class="pilcrow">¶</a>
 </dd>
@@ -12815,7 +12850,7 @@ Host: op.umu.se
 </dl>
 <p id="appendix-A.3.1.2-5" class="keepWithNext">
  Next, combine these and apply them to the metadata for wiki.ligo.org:<a href="#appendix-A.3.1.2-5" class="pilcrow">¶</a></p>
-<span id="name-combined-metadata-with-meta"></span><figure id="figure-71">
+<span id="name-combined-metadata-with-meta"></span><figure id="figure-72">
               <div class="alignLeft art-text artwork" id="appendix-A.3.1.2-6.1">
 <pre>
 "metadata": {
@@ -12844,12 +12879,12 @@ Host: op.umu.se
 }
 </pre>
 </div>
-<figcaption><a href="#figure-71" class="selfRef">Figure 71</a>:
+<figcaption><a href="#figure-72" class="selfRef">Figure 72</a>:
 <a href="#name-combined-metadata-with-meta" class="selfRef">Combined Metadata with Metadata Policy yet to be applied</a>
               </figcaption></figure>
 <p id="appendix-A.3.1.2-7" class="keepWithNext">
  The final result is:<a href="#appendix-A.3.1.2-7" class="pilcrow">¶</a></p>
-<span id="name-resolved-metadata-after-met"></span><figure id="figure-72">
+<span id="name-resolved-metadata-after-met"></span><figure id="figure-73">
               <div class="alignLeft art-text artwork" id="appendix-A.3.1.2-8.1">
 <pre>
 "metadata": {
@@ -12880,7 +12915,7 @@ Host: op.umu.se
 }
 </pre>
 </div>
-<figcaption><a href="#figure-72" class="selfRef">Figure 72</a>:
+<figcaption><a href="#figure-73" class="selfRef">Figure 73</a>:
 <a href="#name-resolved-metadata-after-met" class="selfRef">Resolved Metadata After Metadata Policy has been Applied</a>
               </figcaption></figure>
 <p id="appendix-A.3.1.2-9">
@@ -12905,7 +12940,7 @@ Host: op.umu.se
             of the OP (op.umu.se). The request contains the RP's Entity Configuration.<a href="#appendix-A.3.2-1" class="pilcrow">¶</a></p>
 <p id="appendix-A.3.2-2" class="keepWithNext">
        An example JWT Claims Set for the RP's Entity Configuration is:<a href="#appendix-A.3.2-2" class="pilcrow">¶</a></p>
-<span id="name-rps-entity-configuration-jw"></span><figure id="figure-73">
+<span id="name-rps-entity-configuration-jw"></span><figure id="figure-74">
             <div class="alignLeft art-text artwork" id="appendix-A.3.2-3.1">
 <pre>
 {
@@ -12946,7 +12981,7 @@ Host: op.umu.se
 }
 </pre>
 </div>
-<figcaption><a href="#figure-73" class="selfRef">Figure 73</a>:
+<figcaption><a href="#figure-74" class="selfRef">Figure 74</a>:
 <a href="#name-rps-entity-configuration-jw" class="selfRef">RP's Entity Configuration JWT Claims Set</a>
             </figcaption></figure>
 <p id="appendix-A.3.2-4">
@@ -12968,7 +13003,7 @@ Host: op.umu.se
 <p id="appendix-A.3.2-8" class="keepWithNext">
        Here is an example JWT Claims Set of the registration Entity Statement returned
        by the OP to the RP after successful explicit client registration:<a href="#appendix-A.3.2-8" class="pilcrow">¶</a></p>
-<span id="name-jwt-claims-set-of-registrat"></span><figure id="figure-74">
+<span id="name-jwt-claims-set-of-registrat"></span><figure id="figure-75">
             <div class="alignLeft art-text artwork" id="appendix-A.3.2-9.1">
 <pre>
 {
@@ -13033,7 +13068,7 @@ Host: op.umu.se
 }
 </pre>
 </div>
-<figcaption><a href="#figure-74" class="selfRef">Figure 74</a>:
+<figcaption><a href="#figure-75" class="selfRef">Figure 75</a>:
 <a href="#name-jwt-claims-set-of-registrat" class="selfRef">JWT Claims Set of Registration Entity Statement Returned by OP to RP after Explicit Client Registration</a>
             </figcaption></figure>
 </section>
