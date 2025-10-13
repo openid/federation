@@ -5299,7 +5299,7 @@ li > p:last-of-type:only-child {
           </h4>
 <p id="section-6.2.3-1">
             The <code>allowed_entity_types</code> constraint
-            specifies the acceptable Entity Types of Subordinate Entities in a
+            specifies the acceptable metadata Entity Types of Subordinate Entities in a
             Trust Chain. If there is no
             <code>allowed_entity_types</code> constraint, it
             means that any Entity Type is allowed. The
@@ -5309,6 +5309,13 @@ li > p:last-of-type:only-child {
             constraint is the empty array <code>[]</code>, it
             means that only the <code>federation_entity</code>
             Entity Type is allowed.<a href="#section-6.2.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.2.3-2">
+                To apply the <code>allowed_entity_types</code> constraint during Trust Chain Resolution
+                all Entity Types that are not listed in the <code>allowed_entity_types</code> constraint
+                MUST be removed from the metadata claim in the subject's Entity Configuration.
+                The <code>federation_entity</code> Entity Type MUST NOT be removed.
+                This MUST be done before applying Metadata Policies but after applying Metadata from a direct
+                superior's Subordinate Statement.<a href="#section-6.2.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -6746,6 +6753,9 @@ Content-Type: application/json
             An error response to a Trust Mark Status request
             is as defined in
             <a href="#error_response" class="auto internal xref">Section 8.9</a>.<a href="#section-8.4.2-11" class="pilcrow">¶</a></p>
+<p id="section-8.4.2-12">
+     If the Trust Mark Issuer receives a request about the status of an unknown Trust Mark, something it did not issue or is not aware of,
+     it MUST respond with an HTTP status code 404 (Not found).<a href="#section-8.4.2-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
