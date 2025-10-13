@@ -3293,7 +3293,7 @@
                  anchor="entity_type_constraints">
           <t>
             The <spanx style="verb">allowed_entity_types</spanx> constraint
-            specifies the acceptable Entity Types of Subordinate Entities in a
+            specifies the acceptable metadata Entity Types of Subordinate Entities in a
             Trust Chain. If there is no
             <spanx style="verb">allowed_entity_types</spanx> constraint, it
             means that any Entity Type is allowed. The
@@ -3304,6 +3304,14 @@
             means that only the <spanx style="verb">federation_entity</spanx>
             Entity Type is allowed.
           </t>
+            <t>
+                To apply the <spanx style="verb">allowed_entity_types</spanx> constraint during Trust Chain Resolution
+                all Entity Types that are not listed in the <spanx style="verb">allowed_entity_types</spanx> constraint
+                MUST be removed from the metadata claim in the subject's Entity Configuration.
+                The <spanx style="verb">federation_entity</spanx> Entity Type MUST NOT be removed.
+                This MUST be done before applying Metadata Policies but after applying Metadata from a direct
+                superior's Subordinate Statement.
+            </t>
         </section>
       </section>
     </section>
@@ -4710,6 +4718,10 @@ Content-Type: application/json
             is as defined in
             <xref target="error_response"/>.
           </t>
+	  <t>
+	    If the Trust Mark Issuer receives a request about the status of an unknown Trust Mark, something it did not issue or is not aware of,
+	    it MUST respond with an HTTP status code 404 (Not found).
+	  </t>
         </section>
       </section>
 
