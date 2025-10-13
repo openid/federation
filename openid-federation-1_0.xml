@@ -5464,8 +5464,10 @@ Content-Type: application/json
             title="Obtaining Federation Entity Configuration Information"
             anchor="federation_configuration">
       <t>
-	The Entity Configuration of every Federation Entity SHOULD be published
-	at its configuration endpoint.
+	The Entity Configuration of all Trust Anchor and Intermediate
+	Federation Entities MUST be published
+	at their configuration endpoint
+	and the Entity Configuration for Leaf Entities SHOULD be published there.
 	Its location is determined by concatenating the string
 	<spanx style="verb">/.well-known/openid-federation</spanx>
 	to the Entity Identifier
@@ -5480,13 +5482,13 @@ Content-Type: application/json
 	<spanx style="verb">/.well-known/openid-federation</spanx>.
       </t>
       <t>
-        Federation Entities SHOULD make an Entity Configuration document
-        available at their configuration endpoint.
-        The sole exception to this rule used in this specification
-	is for an RP that only does Explicit Registration.
+        While Leaf Federation Entities SHOULD make an Entity Configuration document
+        available at their configuration endpoint,
+	an exception to this requirement is that
+	an RP that only does Explicit Registration MAY omit doing so.
         Since it posts the Entity Configuration to the OP during client
         registration, the OP has everything it needs from the RP.
-	Profiles of this specification MAY define other exceptions
+	Profiles of this specification MAY define other exceptions for Leaf Entities
 	and processing rules that accompany them.
       </t>
 
@@ -10740,7 +10742,7 @@ Host: op.umu.se
 	    and Automatic Registration.
 	  </t>
 	  <t>
-	    Applied must-have feature requests from Sweden, specifically:
+	    Applied must-have feature requests for Swedish government use cases, specifically:
 	    <list style="symbols">
 	      <t>
 		Make it optional to publish an Entity Configuration at the
@@ -10765,7 +10767,7 @@ Host: op.umu.se
 	    </list>
 	  </t>
 	  <t>
-	    Applied strong requests from Sweden, specifically:
+	    Applied strong requests for Swedish government use cases, specifically:
 	    <list style="symbols">
 	      <t>
 		Fixes #244: Sign Trust Mark Status responses
