@@ -1264,7 +1264,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-10-08" class="published">8 October 2025</time>
+<time datetime="2025-10-14" class="published">14 October 2025</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -5304,7 +5304,7 @@ li > p:last-of-type:only-child {
           </h4>
 <p id="section-6.2.3-1">
             The <code>allowed_entity_types</code> constraint
-            specifies the acceptable Entity Types of Subordinate Entities in a
+            specifies the acceptable metadata Entity Types of Subordinate Entities in a
             Trust Chain. If there is no
             <code>allowed_entity_types</code> constraint, it
             means that any Entity Type is allowed. The
@@ -5314,6 +5314,13 @@ li > p:last-of-type:only-child {
             constraint is the empty array <code>[]</code>, it
             means that only the <code>federation_entity</code>
             Entity Type is allowed.<a href="#section-6.2.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.2.3-2">
+                To apply the <code>allowed_entity_types</code> constraint during Trust Chain Resolution
+                all Entity Types that are not listed in the <code>allowed_entity_types</code> constraint
+                MUST be removed from the metadata claim in the subject's Entity Configuration.
+                The <code>federation_entity</code> Entity Type MUST NOT be removed.
+                This MUST be done before applying Metadata Policies but after applying Metadata from a direct
+                superior's Subordinate Statement.<a href="#section-6.2.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -6663,10 +6670,13 @@ trust_mark=eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6 ...
             An error response
             is as defined in
             <a href="#error_response" class="auto internal xref">Section 8.9</a>.<a href="#section-8.4.2-3" class="pilcrow">¶</a></p>
-<p id="section-8.4.2-4" class="keepWithNext">
-                The following is a non-normative example of a Trust Mark positive status response:<a href="#section-8.4.2-4" class="pilcrow">¶</a></p>
+<p id="section-8.4.2-4">
+                If the Trust Mark Issuer receives a request about the status of an unknown Trust Mark, something it did not issue or is not aware of,
+                it MUST respond with an HTTP status code 404 (Not found)<a href="#section-8.4.2-4" class="pilcrow">¶</a></p>
+<p id="section-8.4.2-5" class="keepWithNext">
+                The following is a non-normative example of a Trust Mark positive status response:<a href="#section-8.4.2-5" class="pilcrow">¶</a></p>
 <span id="name-trust-mark-status-response-2"></span><figure id="figure-36">
-            <div class="alignLeft art-text artwork" id="section-8.4.2-5.1">
+            <div class="alignLeft art-text artwork" id="section-8.4.2-6.1">
 <pre>
 200 OK
 Content-Type: application/json
@@ -6679,10 +6689,10 @@ Content-Type: application/json
 <figcaption><a href="#figure-36" class="selfRef">Figure 36</a>:
 <a href="#name-trust-mark-status-response-2" class="selfRef">Trust Mark Status Response</a>
             </figcaption></figure>
-<p id="section-8.4.2-6" class="keepWithNext">
-                The following is a non-normative example of a Trust Mark negative status response:<a href="#section-8.4.2-6" class="pilcrow">¶</a></p>
+<p id="section-8.4.2-7" class="keepWithNext">
+                The following is a non-normative example of a Trust Mark negative status response:<a href="#section-8.4.2-7" class="pilcrow">¶</a></p>
 <span id="name-trust-mark-status-response-3"></span><figure id="figure-37">
-            <div class="alignLeft art-text artwork" id="section-8.4.2-7.1">
+            <div class="alignLeft art-text artwork" id="section-8.4.2-8.1">
 <pre>
 200 OK
 Content-Type: application/json
@@ -13123,7 +13133,7 @@ Host: op.umu.se
 </li>
         <li class="normal" id="appendix-C-3.4">
           <p id="appendix-C-3.4.1">
-     Applied strong requests from Sweden, specifically:<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
+     Applied strong requests for Swedish government use cases, specifically:<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="appendix-C-3.4.2.1">
               <p id="appendix-C-3.4.2.1.1">
