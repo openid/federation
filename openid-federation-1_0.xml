@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="3" month="October" year="2025"/>
+    <date day="14" month="October" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -1736,6 +1736,15 @@
 	      However, there may be circumstances in which it is desirable to use multiple
 	      JWK Set representations, such as when an Entity is in multiple federations and the
 	      federations have different policies about the JWK Set representation to be used.
+	      Also note that some implementations might not understand
+	      all these representations.  For instance, while
+	      <spanx style="verb">jwks_uri</spanx> will certainly be understood
+	      in OpenID Connect OP metadata,
+	      <spanx style="verb">signed_jwks_uri</spanx> might not be understood
+	      by all OpenID Connect implementations, and so
+	      a JWK Set representation that is understood also needs to be present.
+	    </t>
+	    <t>
 	      When multiple JWK Set representations are used, the keys present in each
 	      representation SHOULD be the same.  Even if they are not completely the
 	      same at a given instant in time (which may be the case during key rollover operations),
@@ -10610,6 +10619,15 @@ Host: op.umu.se
 	  <t>
 	    Fixed #147: Added a note about client authentication methods
 	    and Automatic Registration.
+	  </t>
+	  <t>
+	    Applied strong requests for Swedish government use cases, specifically:
+	    <list style="symbols">
+	      <t>
+		Added warning about using JWKS representations
+		where they may not be understood.
+	      </t>
+	    </list>
 	  </t>
 	</list>
       </t>
