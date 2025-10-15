@@ -2532,71 +2532,6 @@ li > p:last-of-type:only-child {
        Claims specified for use in Entity Statements by this specification
        MUST NOT be included in the list.<a href="#section-3.1-1.14" class="pilcrow">¶</a>
 </dd>
-          <dd class="break"></dd>
-<dt id="section-3.1-1.15">source_endpoint</dt>
-          <dd style="margin-left: 1.5em" id="section-3.1-1.16">
-              OPTIONAL. String containing the fetch endpoint URL
-              from which the Entity Statement was issued,
-              as specified in <a href="#fetch_endpoint" class="auto internal xref">Section 8.1</a>.
-              This parameter enables an optimized refresh of the Subordinate Statements
-       and hence the Trust Chain, by skipping the
-              request to the Entity Configuration
-              that is normally required to discover the
-              <code>federation_fetch_endpoint</code>
-              of the issuing authority.
-              If an Entity Statement cannot be retrieved from the
-       <code>source_endpoint</code>,
-       which can occur if the endpoint URL has changed,
-       the current <code>federation_fetch_endpoint</code>
-       location can be determined by retrieving
-       the Entity Configuration of the issuer.<a href="#section-3.1-1.16" class="pilcrow">¶</a>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-3.1-1.17">trust_mark_issuers</dt>
-          <dd style="margin-left: 1.5em" id="section-3.1-1.18">
-              OPTIONAL.
-              A Trust Anchor MAY use this claim to tell which combination of
-              Trust Mark type identifiers and issuers are trusted by the federation.
-              This claim MUST be ignored if present in an Entity Configuration
-              for an Entity that is not a Trust Anchor.
-              It is a JSON object with member names that are Trust Mark type identifiers and
-              each corresponding value being an array of Entity Identifiers
-       that are trusted to represent the accreditation authority
-       for Trust Marks with that identifier.
-              If the array following a Trust Mark type identifier is empty,
-              anyone MAY issue Trust Marks with that identifier.
-              Trust Marks are described in <a href="#trust_marks" class="auto internal xref">Section 7</a>.<a href="#section-3.1-1.18" class="pilcrow">¶</a>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-3.1-1.19">trust_mark_owners</dt>
-          <dd style="margin-left: 1.5em" id="section-3.1-1.20">
-            <p id="section-3.1-1.20.1">
-              OPTIONAL.
-              If a Federation Operator knows that a Trust Mark type identifier is owned
-              by an Entity different from the Trust Mark Issuer, then that
-              knowledge MUST be expressed in this claim.
-              This claim MUST be ignored if present in an Entity Configuration
-              for an Entity that is not a Trust Anchor.
-              It is a JSON object with member names that are Trust Mark type identifiers and
-              each corresponding value being a JSON object with these members:<a href="#section-3.1-1.20.1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-3.1-1.20.2">
-              <dt id="section-3.1-1.20.2.1">sub</dt>
-              <dd style="margin-left: 1.5em" id="section-3.1-1.20.2.2">
-                  REQUIRED
-                  Identifier of the Trust Mark Owner.<a href="#section-3.1-1.20.2.2" class="pilcrow">¶</a>
-</dd>
-              <dd class="break"></dd>
-<dt id="section-3.1-1.20.2.3">jwks</dt>
-              <dd style="margin-left: 1.5em" id="section-3.1-1.20.2.4">
-                  REQUIRED
-                  <span><a href="#RFC7517" class="internal xref">JSON Web Key Set (JWKS)</a> [<a href="#RFC7517" class="cite xref">RFC7517</a>]</span>
-                  containing the owner's Federation Entity Keys used for signing.<a href="#section-3.1-1.20.2.4" class="pilcrow">¶</a>
-</dd>
-            <dd class="break"></dd>
-</dl>
-<p id="section-3.1-1.20.3">
-       Other members MAY also be defined and used.<a href="#section-3.1-1.20.3" class="pilcrow">¶</a></p>
-</dd>
         <dd class="break"></dd>
 </dl>
 </section>
@@ -2649,6 +2584,52 @@ li > p:last-of-type:only-child {
 <p id="section-3.2-1.4.3">
               Trust Marks are described in <a href="#trust_marks" class="auto internal xref">Section 7</a><a href="#section-3.2-1.4.3" class="pilcrow">¶</a></p>
 </dd>
+          <dd class="break"></dd>
+<dt id="section-3.2-1.5">trust_mark_issuers</dt>
+          <dd style="margin-left: 1.5em" id="section-3.2-1.6">
+              OPTIONAL.
+              A Trust Anchor MAY use this claim to tell which combination of
+              Trust Mark type identifiers and issuers are trusted by the federation.
+              This claim MUST be ignored if present in an Entity Configuration
+              for an Entity that is not a Trust Anchor.
+              It is a JSON object with member names that are Trust Mark type identifiers and
+              each corresponding value being an array of Entity Identifiers
+       that are trusted to represent the accreditation authority
+       for Trust Marks with that identifier.
+              If the array following a Trust Mark type identifier is empty,
+              anyone MAY issue Trust Marks with that identifier.
+              Trust Marks are described in <a href="#trust_marks" class="auto internal xref">Section 7</a>.<a href="#section-3.2-1.6" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-3.2-1.7">trust_mark_owners</dt>
+          <dd style="margin-left: 1.5em" id="section-3.2-1.8">
+            <p id="section-3.2-1.8.1">
+              OPTIONAL.
+              If a Federation Operator knows that a Trust Mark type identifier is owned
+              by an Entity different from the Trust Mark Issuer, then that
+              knowledge MUST be expressed in this claim.
+              This claim MUST be ignored if present in an Entity Configuration
+              for an Entity that is not a Trust Anchor.
+              It is a JSON object with member names that are Trust Mark type identifiers and
+              each corresponding value being a JSON object with these members:<a href="#section-3.2-1.8.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-3.2-1.8.2">
+              <dt id="section-3.2-1.8.2.1">sub</dt>
+              <dd style="margin-left: 1.5em" id="section-3.2-1.8.2.2">
+                  REQUIRED
+                  Identifier of the Trust Mark Owner.<a href="#section-3.2-1.8.2.2" class="pilcrow">¶</a>
+</dd>
+              <dd class="break"></dd>
+<dt id="section-3.2-1.8.2.3">jwks</dt>
+              <dd style="margin-left: 1.5em" id="section-3.2-1.8.2.4">
+                  REQUIRED
+                  <span><a href="#RFC7517" class="internal xref">JSON Web Key Set (JWKS)</a> [<a href="#RFC7517" class="cite xref">RFC7517</a>]</span>
+                  containing the owner's Federation Entity Keys used for signing.<a href="#section-3.2-1.8.2.4" class="pilcrow">¶</a>
+</dd>
+            <dd class="break"></dd>
+</dl>
+<p id="section-3.2-1.8.3">
+       Other members MAY also be defined and used.<a href="#section-3.2-1.8.3" class="pilcrow">¶</a></p>
+</dd>
         <dd class="break"></dd>
 </dl>
 </section>
@@ -2659,23 +2640,23 @@ li > p:last-of-type:only-child {
 <a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-claims-that-must-or-may-appea" class="section-name selfRef">Claims that MUST or MAY appear in Subordinate Statements but not Entity Configurations</a>
         </h3>
 <span class="break"></span><dl class="dlNewline" id="section-3.3-1">
-          <dt id="section-3.3-1.1">metadata_policy</dt>
+          <dt id="section-3.3-1.1">constraints</dt>
           <dd style="margin-left: 1.5em" id="section-3.3-1.2">
+              OPTIONAL. JSON object that defines Trust Chain constraints, as
+              described in <a href="#chain_constraints" class="auto internal xref">Section 6.2</a>. The constraints apply to the
+              Entity that is the subject of this Subordinate Statement as well
+              as to all Entities that are Subordinate to it.<a href="#section-3.3-1.2" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-3.3-1.3">metadata_policy</dt>
+          <dd style="margin-left: 1.5em" id="section-3.3-1.4">
               OPTIONAL. JSON object that defines a metadata policy, as described
               in <a href="#metadata_policy" class="auto internal xref">Section 6.1</a>. The metadata policy applies to the Entity
               that is the subject of this Subordinate Statement as well as to
               all Entities that are Subordinate to it. Applying to Subordinate
               Entities distinguishes <code>metadata_policy</code>
               from <code>metadata</code>, which only applies to
-              the subject itself.<a href="#section-3.3-1.2" class="pilcrow">¶</a>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-3.3-1.3">constraints</dt>
-          <dd style="margin-left: 1.5em" id="section-3.3-1.4">
-              OPTIONAL. JSON object that defines Trust Chain constraints, as
-              described in <a href="#chain_constraints" class="auto internal xref">Section 6.2</a>. The constraints apply to the
-              Entity that is the subject of this Subordinate Statement as well
-              as to all Entities that are Subordinate to it.<a href="#section-3.3-1.4" class="pilcrow">¶</a>
+              the subject itself.<a href="#section-3.3-1.4" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 <dt id="section-3.3-1.5">metadata_policy_crit</dt>
@@ -2689,6 +2670,25 @@ li > p:last-of-type:only-child {
               operators are not understood and supported, then the Subordinate
               Statement and thus the Trust Chain that includes it MUST be
               considered invalid.<a href="#section-3.3-1.6" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-3.3-1.7">source_endpoint</dt>
+          <dd style="margin-left: 1.5em" id="section-3.3-1.8">
+              OPTIONAL. String containing the fetch endpoint URL
+              from which the Entity Statement was issued,
+              as specified in <a href="#fetch_endpoint" class="auto internal xref">Section 8.1</a>.
+              This parameter enables an optimized refresh of the Subordinate Statements
+       and hence the Trust Chain, by skipping the
+              request to the Entity Configuration
+              that is normally required to discover the
+              <code>federation_fetch_endpoint</code>
+              of the issuing authority.
+              If an Entity Statement cannot be retrieved from the
+       <code>source_endpoint</code>,
+       which can occur if the endpoint URL has changed,
+       the current <code>federation_fetch_endpoint</code>
+       location can be determined by retrieving
+       the Entity Configuration of the issuer.<a href="#section-3.3-1.8" class="pilcrow">¶</a>
 </dd>
         <dd class="break"></dd>
 </dl>
