@@ -608,23 +608,46 @@
 	      Claims specified for use in Entity Statements by this specification
 	      MUST NOT be included in the list.
             </t>
-            <t hangText="source_endpoint">
+
+          </list>
+        </t>
+                        </section>
+          <section anchor="ec_specific"
+                   title="Claims that MUST or MAY appear in Entity Configurations but not Subordinate Statements">
+              <t>
+                  <list style="hanging">
+            <t hangText="authority_hints" anchor="authority_hints">
               <vspace/>
-              OPTIONAL. String containing the fetch endpoint URL
-              from which the Entity Statement was issued,
-              as specified in <xref target="fetch_endpoint"/>.
-              This parameter enables an optimized refresh of the Subordinate Statements
-	      and hence the Trust Chain, by skipping the
-              request to the Entity Configuration
-              that is normally required to discover the
-              <spanx style="verb">federation_fetch_endpoint</spanx>
-              of the issuing authority.
-              If an Entity Statement cannot be retrieved from the
-	      <spanx style="verb">source_endpoint</spanx>,
-	      which can occur if the endpoint URL has changed,
-	      the current <spanx style="verb">federation_fetch_endpoint</spanx>
-	      location can be determined by retrieving
-	      the Entity Configuration of the issuer.
+              OPTIONAL. An array of strings representing
+              the Entity Identifiers of Intermediate Entities or Trust Anchors
+              that are Immediate Superiors of the Entity.
+              This claim is REQUIRED in Entity Configurations of
+              the Entities that have at least one Superior above them,
+              such as Leaf and Intermediate Entities.
+              Its value MUST contain the Entity Identifiers of
+	      its Immediate Superiors and
+	      MUST NOT be the empty array
+              <spanx style="verb">[]</spanx>.
+              This claim MUST NOT be present in Entity Configurations
+              of Trust Anchors with no Superiors.
+            </t>
+                      <t hangText="trust_marks">
+              <vspace/>
+              OPTIONAL. An array of JSON objects, each representing
+              a Trust Mark.
+              <list style="hanging">
+                <t hangText="trust_mark_type">
+                  REQUIRED. Identifier for the type of the Trust Mark.
+                  The value of this claim MUST be the same as the value of the
+                  <spanx style="verb">trust_mark_type</spanx>
+                  claim contained in the Trust Mark JWT that is the value of the <spanx style="verb">trust_mark
+                </spanx> claim in this object.
+                </t>
+                <t hangText="trust_mark">
+                  REQUIRED. A signed JSON Web Token that represents a Trust Mark.
+                </t>
+              </list>
+              Trust Marks are described in <xref target="trust_marks"/>
             </t>
             <t hangText="trust_mark_issuers">
               <vspace/>
@@ -666,47 +689,6 @@
               </list>
 	      Other members MAY also be defined and used.
             </t>
-          </list>
-        </t>
-                        </section>
-          <section anchor="ec_specific"
-                   title="Claims that MUST or MAY appear in Entity Configurations but not Subordinate Statements">
-              <t>
-                  <list style="hanging">
-            <t hangText="authority_hints" anchor="authority_hints">
-              <vspace/>
-              OPTIONAL. An array of strings representing
-              the Entity Identifiers of Intermediate Entities or Trust Anchors
-              that are Immediate Superiors of the Entity.
-              This claim is REQUIRED in Entity Configurations of
-              the Entities that have at least one Superior above them,
-              such as Leaf and Intermediate Entities.
-              Its value MUST contain the Entity Identifiers of
-	      its Immediate Superiors and
-	      MUST NOT be the empty array
-              <spanx style="verb">[]</spanx>.
-              This claim MUST NOT be present in Entity Configurations
-              of Trust Anchors with no Superiors.
-            </t>
-                      <t hangText="trust_marks">
-              <vspace/>
-              OPTIONAL. An array of JSON objects, each representing
-              a Trust Mark.
-              <list style="hanging">
-                <t hangText="trust_mark_type">
-                  REQUIRED. Identifier for the type of the Trust Mark.
-                  The value of this claim MUST be the same as the value of the
-                  <spanx style="verb">trust_mark_type</spanx>
-                  claim contained in the Trust Mark JWT that is the value of the <spanx style="verb">trust_mark
-                </spanx> claim in this object.
-                </t>
-                <t hangText="trust_mark">
-                  REQUIRED. A signed JSON Web Token that represents a Trust Mark.
-                </t>
-              </list>
-              Trust Marks are described in <xref target="trust_marks"/>
-            </t>
-
               </list>
               </t>
                </section>
@@ -714,6 +696,13 @@
                    title="Claims that MUST or MAY appear in Subordinate Statements but not Entity Configurations">
               <t>
               <list style="hanging">
+            <t hangText="constraints">
+              <vspace/>
+              OPTIONAL. JSON object that defines Trust Chain constraints, as
+              described in <xref target="chain_constraints"/>. The constraints apply to the
+              Entity that is the subject of this Subordinate Statement as well
+              as to all Entities that are Subordinate to it.
+            </t>
                               <t hangText="metadata_policy">
               <vspace/>
               OPTIONAL. JSON object that defines a metadata policy, as described
@@ -725,13 +714,6 @@
               the subject itself.
             </t>
 
-            <t hangText="constraints">
-              <vspace/>
-              OPTIONAL. JSON object that defines Trust Chain constraints, as
-              described in <xref target="chain_constraints"/>. The constraints apply to the
-              Entity that is the subject of this Subordinate Statement as well
-              as to all Entities that are Subordinate to it.
-            </t>
                               <t hangText="metadata_policy_crit">
               <vspace/>
               OPTIONAL.
@@ -743,6 +725,24 @@
               operators are not understood and supported, then the Subordinate
               Statement and thus the Trust Chain that includes it MUST be
               considered invalid.
+            </t>
+            <t hangText="source_endpoint">
+              <vspace/>
+              OPTIONAL. String containing the fetch endpoint URL
+              from which the Entity Statement was issued,
+              as specified in <xref target="fetch_endpoint"/>.
+              This parameter enables an optimized refresh of the Subordinate Statements
+	      and hence the Trust Chain, by skipping the
+              request to the Entity Configuration
+              that is normally required to discover the
+              <spanx style="verb">federation_fetch_endpoint</spanx>
+              of the issuing authority.
+              If an Entity Statement cannot be retrieved from the
+	      <spanx style="verb">source_endpoint</spanx>,
+	      which can occur if the endpoint URL has changed,
+	      the current <spanx style="verb">federation_fetch_endpoint</spanx>
+	      location can be determined by retrieving
+	      the Entity Configuration of the issuer.
             </t>
 
               </list></t>
