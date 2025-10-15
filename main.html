@@ -1794,6 +1794,9 @@ li > p:last-of-type:only-child {
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15.2.7">
                 <p id="section-toc.1-1.15.2.7.1"><a href="#section-15.7" class="auto internal xref">15.7</a>.  <a href="#name-application-explicit-regist" class="internal xref">"application/explicit-registration-response+jwt" Media Type</a></p>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15.2.8">
+                <p id="section-toc.1-1.15.2.8.1"><a href="#section-15.8" class="auto internal xref">15.8</a>.  <a href="#name-application-trust-mark-stat" class="internal xref">"application/trust-mark-status-response+jwt" Media Type</a></p>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16">
@@ -2113,10 +2116,13 @@ li > p:last-of-type:only-child {
           <dd class="break"></dd>
 <dt id="section-1.2-3.3">Entity Identifier</dt>
           <dd style="margin-left: 1.5em" id="section-1.2-3.4">
-              A globally unique URL that is bound to one Entity.
-       This URL MUST use the <code>https</code> scheme,
+              A globally unique string identifier that is bound to one Entity.
+       All Entity Identifiers defined by this specification are
+       URLs that use the <code>https</code> scheme,
        have a host component, and MAY contain port and path components.
-       It MUST NOT contain query parameter or fragment components.<a href="#section-1.2-3.4" class="pilcrow">¶</a>
+       It MUST NOT contain query parameter or fragment components.
+       Profiles of this specification MAY define other kinds of
+       Entity Identifiers and processing rules that accompany them.<a href="#section-1.2-3.4" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 <dt id="section-1.2-3.5">Trust Anchor</dt>
@@ -3096,14 +3102,12 @@ li > p:last-of-type:only-child {
           The Entity Type Identifier is
           <code>federation_entity</code>.<a href="#section-5.1.1-1" class="pilcrow">¶</a></p>
 <p id="section-5.1.1-2">
-          All Entities in a federation MAY use this Entity Type.
-          The Entities that provide federation API endpoints
-          MUST use this Entity Type.<a href="#section-5.1.1-2" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-3">
-          The following Federation Entity properties are defined:<a href="#section-5.1.1-3" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-5.1.1-4">
-            <dt id="section-5.1.1-4.1">federation_fetch_endpoint</dt>
-            <dd style="margin-left: 1.5em" id="section-5.1.1-4.2">
+          The Entities that contain any of Federation Entity properties defined below
+          MUST use this Entity Type.
+          The following Federation Entity properties are defined:<a href="#section-5.1.1-2" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-5.1.1-3">
+            <dt id="section-5.1.1-3.1">federation_fetch_endpoint</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-3.2">
               OPTIONAL.
               The fetch endpoint described in
               <a href="#fetch_endpoint" class="auto internal xref">Section 8.1</a>.
@@ -3114,11 +3118,11 @@ li > p:last-of-type:only-child {
               Intermediate Entities and
               Trust Anchors MUST publish a
               <code>federation_fetch_endpoint</code>.
-              Leaf Entities MUST NOT.<a href="#section-5.1.1-4.2" class="pilcrow">¶</a>
+              Leaf Entities MUST NOT.<a href="#section-5.1.1-3.2" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.1.1-4.3">federation_list_endpoint</dt>
-            <dd style="margin-left: 1.5em" id="section-5.1.1-4.4">
+<dt id="section-5.1.1-3.3">federation_list_endpoint</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-3.4">
               OPTIONAL.
               The list endpoint described in
               <a href="#entity_listing" class="auto internal xref">Section 8.2</a>.
@@ -3129,11 +3133,11 @@ li > p:last-of-type:only-child {
               Intermediate Entities and
               Trust Anchors MUST publish a
               <code>federation_list_endpoint</code>.
-              Leaf Entities MUST NOT.<a href="#section-5.1.1-4.4" class="pilcrow">¶</a>
+              Leaf Entities MUST NOT.<a href="#section-5.1.1-3.4" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.1.1-4.5">federation_resolve_endpoint</dt>
-            <dd style="margin-left: 1.5em" id="section-5.1.1-4.6">
+<dt id="section-5.1.1-3.5">federation_resolve_endpoint</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-3.6">
               OPTIONAL.
               The resolve endpoint described in
               <a href="#resolve" class="auto internal xref">Section 8.3</a>.
@@ -3142,11 +3146,11 @@ li > p:last-of-type:only-child {
               path, and query parameter components;
               it MUST NOT contain a fragment component.
               Any federation Entity MAY publish a
-              <code>federation_resolve_endpoint</code>.<a href="#section-5.1.1-4.6" class="pilcrow">¶</a>
+              <code>federation_resolve_endpoint</code>.<a href="#section-5.1.1-3.6" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.1.1-4.7">federation_trust_mark_status_endpoint</dt>
-            <dd style="margin-left: 1.5em" id="section-5.1.1-4.8">
+<dt id="section-5.1.1-3.7">federation_trust_mark_status_endpoint</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-3.8">
               OPTIONAL.
               The Trust Mark Status endpoint described in
               <a href="#status_endpoint" class="auto internal xref">Section 8.4</a>. Trust Mark Issuers SHOULD
@@ -3155,11 +3159,11 @@ li > p:last-of-type:only-child {
               This URL MUST use the <code>https</code>
               scheme and MAY contain port,
               path, and query parameter components;
-              it MUST NOT contain a fragment component.<a href="#section-5.1.1-4.8" class="pilcrow">¶</a>
+              it MUST NOT contain a fragment component.<a href="#section-5.1.1-3.8" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.1.1-4.9">federation_trust_mark_list_endpoint</dt>
-            <dd style="margin-left: 1.5em" id="section-5.1.1-4.10">
+<dt id="section-5.1.1-3.9">federation_trust_mark_list_endpoint</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-3.10">
               OPTIONAL.
               The endpoint described in
               <a href="#tm_listing" class="auto internal xref">Section 8.5</a>.
@@ -3168,11 +3172,11 @@ li > p:last-of-type:only-child {
               path, and query parameter components;
               it MUST NOT contain a fragment component.
               Trust Mark Issuers MAY publish a
-              <code>federation_trust_mark_list_endpoint</code>.<a href="#section-5.1.1-4.10" class="pilcrow">¶</a>
+              <code>federation_trust_mark_list_endpoint</code>.<a href="#section-5.1.1-3.10" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.1.1-4.11">federation_trust_mark_endpoint</dt>
-            <dd style="margin-left: 1.5em" id="section-5.1.1-4.12">
+<dt id="section-5.1.1-3.11">federation_trust_mark_endpoint</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-3.12">
               OPTIONAL.
               The endpoint described in
               <a href="#tm_endpoint" class="auto internal xref">Section 8.6</a>.
@@ -3181,11 +3185,11 @@ li > p:last-of-type:only-child {
               path, and query parameter components;
               it MUST NOT contain a fragment component.
               Trust Mark Issuers MAY publish a
-              <code>federation_trust_mark_endpoint</code>.<a href="#section-5.1.1-4.12" class="pilcrow">¶</a>
+              <code>federation_trust_mark_endpoint</code>.<a href="#section-5.1.1-3.12" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.1.1-4.13">federation_historical_keys_endpoint</dt>
-            <dd style="margin-left: 1.5em" id="section-5.1.1-4.14">
+<dt id="section-5.1.1-3.13">federation_historical_keys_endpoint</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-3.14">
        OPTIONAL.
        The endpoint described in <a href="#historical_keys" class="auto internal xref">Section 8.7</a>.
        This URL MUST use the <code>https</code>
@@ -3193,11 +3197,11 @@ li > p:last-of-type:only-child {
        path, and query parameter components;
        it MUST NOT contain a fragment component.
           All Federation Entities MAY publish a
-       <code>federation_historical_keys_endpoint</code>.<a href="#section-5.1.1-4.14" class="pilcrow">¶</a>
+       <code>federation_historical_keys_endpoint</code>.<a href="#section-5.1.1-3.14" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-5.1.1-4.15">endpoint_auth_signing_alg_values_supported</dt>
-            <dd style="margin-left: 1.5em" id="section-5.1.1-4.16">
+<dt id="section-5.1.1-3.15">endpoint_auth_signing_alg_values_supported</dt>
+            <dd style="margin-left: 1.5em" id="section-5.1.1-3.16">
               OPTIONAL.
               JSON array containing a list of the supported
               <span><a href="#RFC7515" class="internal xref">JWS</a> [<a href="#RFC7515" class="cite xref">RFC7515</a>]</span> algorithms
@@ -3208,18 +3212,18 @@ li > p:last-of-type:only-child {
        as described in <a href="#ClientAuthentication" class="auto internal xref">Section 8.8</a>.
               No default algorithms are implied if this entry is omitted.
               Servers SHOULD support <code>RS256</code>.
-              The value <code>none</code> MUST NOT be used.<a href="#section-5.1.1-4.16" class="pilcrow">¶</a>
+              The value <code>none</code> MUST NOT be used.<a href="#section-5.1.1-3.16" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 </dl>
-<p id="section-5.1.1-5">
+<p id="section-5.1.1-4">
    It is RECOMMENDED that each Federation Entity contain
    an <code>organization_name</code> claim,
-   as defined in <a href="#informational_metadata" class="auto internal xref">Section 5.2.2</a>.<a href="#section-5.1.1-5" class="pilcrow">¶</a></p>
-<p id="section-5.1.1-6" class="keepWithNext">
-     The following is a non-normative example of the <code>federation_entity</code> Entity Type:<a href="#section-5.1.1-6" class="pilcrow">¶</a></p>
+   as defined in <a href="#informational_metadata" class="auto internal xref">Section 5.2.2</a>.<a href="#section-5.1.1-4" class="pilcrow">¶</a></p>
+<p id="section-5.1.1-5" class="keepWithNext">
+     The following is a non-normative example of the <code>federation_entity</code> Entity Type:<a href="#section-5.1.1-5" class="pilcrow">¶</a></p>
 <span id="name-example-of-federation_entit"></span><figure id="figure-7">
-            <div class="alignLeft art-text artwork" id="section-5.1.1-7.1">
+            <div class="alignLeft art-text artwork" id="section-5.1.1-6.1">
 <pre>
 "federation_entity": {
   "federation_fetch_endpoint":
@@ -3259,7 +3263,7 @@ li > p:last-of-type:only-child {
 <span class="break"></span><dl class="dlNewline" id="section-5.1.2-4">
             <dt id="section-5.1.2-4.1">client_registration_types</dt>
             <dd style="margin-left: 1.5em" id="section-5.1.2-4.2">
-              REQUIRED. An array of strings specifying the client registration
+              RECOMMENDED. An array of strings specifying the client registration
               types the RP supports. Values defined by this specification
               are
               <code>automatic</code>
@@ -3347,7 +3351,7 @@ li > p:last-of-type:only-child {
 <span class="break"></span><dl class="dlNewline" id="section-5.1.3-5">
             <dt id="section-5.1.3-5.1">client_registration_types_supported</dt>
             <dd style="margin-left: 1.5em" id="section-5.1.3-5.2">
-              REQUIRED. An array of strings specifying the client registration
+              RECOMMENDED. An array of strings specifying the client registration
               types the OP supports. Values defined by this specification are
               <code>automatic</code>
               and <code>explicit</code>.
@@ -3780,11 +3784,8 @@ li > p:last-of-type:only-child {
           <dd class="break"></dd>
 </dl>
 <p id="section-5.2.2-3">
-     It is RECOMMENDED that, when present, these metadata parameters occur in
-     an Entity's <code>federation_entity</code> metadata.
-     They MAY also be present in the Entity's metadata for other Entity Types,
-     particularly when the values for those Entity Types differ from
-     those for the <code>federation_entity</code> metadata.<a href="#section-5.2.2-3" class="pilcrow">¶</a></p>
+     These metadata parameters MAY be present in
+     the Entity's metadata for any Entity Types that it uses.<a href="#section-5.2.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -6638,74 +6639,157 @@ trust_mark=eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6 ...
 <p id="section-8.4.2-1">
             A successful response MUST use the HTTP status code 200
             with the content type
-            <code>application/json</code>.
-            The response body is a JSON object containing the data below:<a href="#section-8.4.2-1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-8.4.2-2">
-            <dt id="section-8.4.2-2.1">active</dt>
-            <dd style="margin-left: 1.5em" id="section-8.4.2-2.2">
-                REQUIRED. Boolean. Whether the Trust Mark is active or not.<a href="#section-8.4.2-2.2" class="pilcrow">¶</a>
+            <code>application/trust-mark-status-response+jwt</code>,
+     containing a signed JWT that is a Trust Mark Status Response.<a href="#section-8.4.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.4.2-2">
+            The Trust Mark Status Response is a signed JWT that is explicitly typed by setting the
+            <code>typ</code> header parameter to
+            <code>trust-mark-status-response+jwt</code> to prevent
+            cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.
+     Trust Mark Status Responses without a <code>typ</code> header parameter
+     or with a different <code>typ</code> value MUST be rejected.
+     It is signed with a Federation Entity Key.<a href="#section-8.4.2-2" class="pilcrow">¶</a></p>
+<p id="section-8.4.2-3">
+     The Trust Mark Status Response JWT MUST include the
+     <code>kid</code> (Key ID) header parameter
+     with its value being the Key ID of the signing key used.<a href="#section-8.4.2-3" class="pilcrow">¶</a></p>
+<p id="section-8.4.2-4">
+     The JWT Claims Set of the Trust Mark Status JWT
+     is a JSON object containing the following claims:<a href="#section-8.4.2-4" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-8.4.2-5">
+            <dt id="section-8.4.2-5.1">iss</dt>
+            <dd style="margin-left: 1.5em" id="section-8.4.2-5.2">
+                REQUIRED. String.
+                Entity Identifier of the issuer of the Trust Mark Status JWT.<a href="#section-8.4.2-5.2" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-8.4.2-2.3">reason</dt>
-            <dd style="margin-left: 1.5em" id="section-8.4.2-2.4">
-              <p id="section-8.4.2-2.4.1">
-                    OPTIONAL. String containing additional information about the error.
-                    Reasons defined by this specification:<a href="#section-8.4.2-2.4.1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-8.4.2-2.4.2">
-                <dt id="section-8.4.2-2.4.2.1">revoked</dt>
-                <dd style="margin-left: 1.5em" id="section-8.4.2-2.4.2.2">
-                            The trust mark is revoked<a href="#section-8.4.2-2.4.2.2" class="pilcrow">¶</a>
+<dt id="section-8.4.2-5.3">iat</dt>
+            <dd style="margin-left: 1.5em" id="section-8.4.2-5.4">
+                REQUIRED. Number. Time when this Trust Mark Status JWT was issued.
+                This is expressed as Seconds Since the Epoch, per
+                <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-8.4.2-5.4" class="pilcrow">¶</a>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-8.4.2-5.5">trust_mark</dt>
+            <dd style="margin-left: 1.5em" id="section-8.4.2-5.6">
+                REQUIRED. String.
+                The Trust Mark JWT that this status response is about.<a href="#section-8.4.2-5.6" class="pilcrow">¶</a>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-8.4.2-5.7">status</dt>
+            <dd style="margin-left: 1.5em" id="section-8.4.2-5.8">
+              <p id="section-8.4.2-5.8.1">
+                REQUIRED. Case-sensitive string value indicating the status of the Trust Mark.
+ Values defined by this specification are:<a href="#section-8.4.2-5.8.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-8.4.2-5.8.2">
+                <dt id="section-8.4.2-5.8.2.1">active</dt>
+                <dd style="margin-left: 1.5em" id="section-8.4.2-5.8.2.2">
+     The Trust Mark is active<a href="#section-8.4.2-5.8.2.2" class="pilcrow">¶</a>
 </dd>
                 <dd class="break"></dd>
-<dt id="section-8.4.2-2.4.2.3">invalid</dt>
-                <dd style="margin-left: 1.5em" id="section-8.4.2-2.4.2.4">
-                            Signature validation fails or instance has expired<a href="#section-8.4.2-2.4.2.4" class="pilcrow">¶</a>
+<dt id="section-8.4.2-5.8.2.3">expired</dt>
+                <dd style="margin-left: 1.5em" id="section-8.4.2-5.8.2.4">
+     The Trust Mark has expired<a href="#section-8.4.2-5.8.2.4" class="pilcrow">¶</a>
+</dd>
+                <dd class="break"></dd>
+<dt id="section-8.4.2-5.8.2.5">revoked</dt>
+                <dd style="margin-left: 1.5em" id="section-8.4.2-5.8.2.6">
+     The Trust Mark was revoked<a href="#section-8.4.2-5.8.2.6" class="pilcrow">¶</a>
+</dd>
+                <dd class="break"></dd>
+<dt id="section-8.4.2-5.8.2.7">invalid</dt>
+                <dd style="margin-left: 1.5em" id="section-8.4.2-5.8.2.8">
+     Signature validation failed or another error was detected<a href="#section-8.4.2-5.8.2.8" class="pilcrow">¶</a>
 </dd>
               <dd class="break"></dd>
 </dl>
 </dd>
+            <dd class="break"></dd>
+<dt id="section-8.4.2-5.9"></dt>
+            <dd style="margin-left: 1.5em" id="section-8.4.2-5.10">
+ Additional status values MAY be defined and used
+ in addition to those above.<a href="#section-8.4.2-5.10" class="pilcrow">¶</a>
+</dd>
           <dd class="break"></dd>
 </dl>
-<p id="section-8.4.2-3">
-            An error response
-            is as defined in
-            <a href="#error_response" class="auto internal xref">Section 8.9</a>.<a href="#section-8.4.2-3" class="pilcrow">¶</a></p>
-<p id="section-8.4.2-4">
-                If the Trust Mark Issuer receives a request about the status of an unknown Trust Mark, something it did not issue or is not aware of,
-                it MUST respond with an HTTP status code 404 (Not found)<a href="#section-8.4.2-4" class="pilcrow">¶</a></p>
-<p id="section-8.4.2-5" class="keepWithNext">
-                The following is a non-normative example of a Trust Mark positive status response:<a href="#section-8.4.2-5" class="pilcrow">¶</a></p>
-<span id="name-trust-mark-status-response-2"></span><figure id="figure-36">
-            <div class="alignLeft art-text artwork" id="section-8.4.2-6.1">
-<pre>
-200 OK
-Content-Type: application/json
-
-{
-  "active": true
-}
-</pre>
-</div>
-<figcaption><a href="#figure-36" class="selfRef">Figure 36</a>:
-<a href="#name-trust-mark-status-response-2" class="selfRef">Trust Mark Status Response</a>
-            </figcaption></figure>
+<p id="section-8.4.2-6">
+     Additional Trust Mark Status claims MAY be defined and used
+     in addition to the one above.<a href="#section-8.4.2-6" class="pilcrow">¶</a></p>
 <p id="section-8.4.2-7" class="keepWithNext">
-                The following is a non-normative example of a Trust Mark negative status response:<a href="#section-8.4.2-7" class="pilcrow">¶</a></p>
-<span id="name-trust-mark-status-response-3"></span><figure id="figure-37">
+                The following is a non-normative example of the JWT Claims Set for
+ a response with the status <code>active</code>:<a href="#section-8.4.2-7" class="pilcrow">¶</a></p>
+<span id="name-active-trust-mark-status-re"></span><figure id="figure-36">
             <div class="alignLeft art-text artwork" id="section-8.4.2-8.1">
 <pre>
 200 OK
 Content-Type: application/json
 
 {
-  "active": false,
-  "reason": "revoked"
+  "iss": "https://www.agid.gov.it",
+  "sub": "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia
+        29zR20yd3VaaDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.
+        eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8
+        vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYX
+        JrX3R5cGUiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZXJ0aWZpY2F0aW9uL
+        3JwIiwibG9nb191cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdC90aGVtZXMv
+        Y3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYiOiJodHRwczovL2RvY3MuaXRhbGl
+        hLml0L2RvY3Mvc3BpZC1jaWUtb2lkYy1kb2NzL2l0L3ZlcnNpb25lLWNvcnJlbn
+        RlLyJ9.
+        L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJW
+        QBdZpjxnHBBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzS
+        an5nOmkxuAtMinU8k_-aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0Y
+        AvbMlq2pPWO5OWKdZhiFRMSprwh0GYluQkK0j1aLNMGXD3keMJd2zEoWX9D7w2f
+        XShAA48W3cNhuXyBVnCoum1K4IWK3s_fx4nIkp6W-V4jCBOpxp7Yo8LZ30o_xpE
+        OzGTIECGWVR86azOAlwVC8XSiAA",
+  "iat": 1759897995,
+  "status": "active"
+}
+</pre>
+</div>
+<figcaption><a href="#figure-36" class="selfRef">Figure 36</a>:
+<a href="#name-active-trust-mark-status-re" class="selfRef">Active Trust Mark Status Response</a>
+            </figcaption></figure>
+<p id="section-8.4.2-9" class="keepWithNext">
+                The following is a non-normative example of the JWT Claims Set for
+ a response with the status <code>revoked</code>:<a href="#section-8.4.2-9" class="pilcrow">¶</a></p>
+<span id="name-revoked-trust-mark-status-r"></span><figure id="figure-37">
+            <div class="alignLeft art-text artwork" id="section-8.4.2-10.1">
+<pre>
+200 OK
+Content-Type: application/json
+
+{
+  "iss": "https://www.agid.gov.it",
+  "sub": "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia
+        29zR20yd3VaaDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.
+        eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8
+        vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYX
+        JrX3R5cGUiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZXJ0aWZpY2F0aW9uL
+        3JwIiwibG9nb191cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdC90aGVtZXMv
+        Y3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYiOiJodHRwczovL2RvY3MuaXRhbGl
+        hLml0L2RvY3Mvc3BpZC1jaWUtb2lkYy1kb2NzL2l0L3ZlcnNpb25lLWNvcnJlbn
+        RlLyJ9.
+        L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJW
+        QBdZpjxnHBBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzS
+        an5nOmkxuAtMinU8k_-aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0Y
+        AvbMlq2pPWO5OWKdZhiFRMSprwh0GYluQkK0j1aLNMGXD3keMJd2zEoWX9D7w2f
+        XShAA48W3cNhuXyBVnCoum1K4IWK3s_fx4nIkp6W-V4jCBOpxp7Yo8LZ30o_xpE
+        OzGTIECGWVR86azOAlwVC8XSiAA",
+  "iat": 1759898057,
+  "status": "revoked"
 }
 </pre>
 </div>
 <figcaption><a href="#figure-37" class="selfRef">Figure 37</a>:
-<a href="#name-trust-mark-status-response-3" class="selfRef">Trust Mark Status Response</a>
+<a href="#name-revoked-trust-mark-status-r" class="selfRef">Revoked Trust Mark Status Response</a>
             </figcaption></figure>
+<p id="section-8.4.2-11">
+            An error response to a Trust Mark Status request
+            is as defined in
+            <a href="#error_response" class="auto internal xref">Section 8.9</a>.<a href="#section-8.4.2-11" class="pilcrow">¶</a></p>
+<p id="section-8.4.2-12">
+     If the Trust Mark Issuer receives a request about the status of an unknown Trust Mark, something it did not issue or is not aware of,
+     it MUST respond with an HTTP status code 404 (Not found).<a href="#section-8.4.2-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -7459,12 +7543,15 @@ Content-Type: application/json
 <a href="#section-9" class="section-number selfRef">9. </a><a href="#name-obtaining-federation-entity" class="section-name selfRef">Obtaining Federation Entity Configuration Information</a>
       </h2>
 <p id="section-9-1">
- The Entity Configuration of every Federation Entity is published
- at its configuration endpoint.
+ The Entity Configuration of all Trust Anchor and Intermediate
+ Federation Entities MUST be published
+ at their configuration endpoint
+ and the Entity Configuration for Leaf Entities SHOULD be published there.
  Its location is determined by concatenating the string
  <code>/.well-known/openid-federation</code>
  to the Entity Identifier
- (which MUST contain scheme and host components
+ (which MUST use the <code>https</code> scheme and
+ contain a host component
  and MAY also contain port and path components).
  For instance, the configuration endpoint for the Entity Identifier
  <code>https://entity.example</code> is the URL
@@ -7473,12 +7560,22 @@ Content-Type: application/json
  it MUST be removed before concatenating
  <code>/.well-known/openid-federation</code>.<a href="#section-9-1" class="pilcrow">¶</a></p>
 <p id="section-9-2">
-        Federation Entities MUST make an Entity Configuration document
-        available at their configuration endpoint.
-        The sole exception to this
-        rule is for an RP that only does Explicit Registration.
-        Since it posts the Entity Configuration to the OP during client
-        registration, the OP has everything it needs from the RP.<a href="#section-9-2" class="pilcrow">¶</a></p>
+ Furthermore, any Entity Configuration including the Entity Type Identifier
+ <code>federation_entity</code> MUST be published
+ at its configuration endpoint.<a href="#section-9-2" class="pilcrow">¶</a></p>
+<p id="section-9-3">
+        While Leaf Federation Entities SHOULD make an Entity Configuration document
+        available at their configuration endpoints,
+ an exception to this requirement is that
+ clients that use a client registration method that results in
+ the server having the client's Entity Configuration
+ MAY omit doing so.
+ For instance, since an RP using Explicit Registration
+ posts its Entity Configuration to the OP during client
+        registration, the OP has everything it needs from the RP.
+ Profiles of this specification MAY define other exceptions for Leaf Entities
+ that do not use the the Entity Type Identifier <code>federation_entity</code>
+ and processing rules that accompany them.<a href="#section-9-3" class="pilcrow">¶</a></p>
 <div id="ec-request">
 <section id="section-9.1">
         <h3 id="name-federation-entity-configura">
@@ -9442,6 +9539,19 @@ HTTP/1.1 302 Found
    No parameters are used with this media type.<a href="#section-15.7-1" class="pilcrow">¶</a></p>
 </section>
 </div>
+<div id="trust-mark-status-response_jwt">
+<section id="section-15.8">
+        <h3 id="name-application-trust-mark-stat">
+<a href="#section-15.8" class="section-number selfRef">15.8. </a><a href="#name-application-trust-mark-stat" class="section-name selfRef">"application/trust-mark-status-response+jwt" Media Type</a>
+        </h3>
+<p id="section-15.8-1">
+   The <code>application/trust-mark-status-response+jwt</code>
+   media type is used to specify that the associated content is
+   a Trust Mark Status Response,
+   as defined in <a href="#tm-status-response" class="auto internal xref">Section 8.4.2</a>.
+   No parameters are used with this media type.<a href="#section-15.8-1" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="StringOps">
@@ -10947,6 +11057,95 @@ HTTP/1.1 302 Found
             <li class="compact" id="section-20.4.1-7.17">
               <p id="section-20.4.1-7.17.1">
                 Provisional registration? No<a href="#section-20.4.1-7.17.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<ul class="compact">
+<li class="compact" id="section-20.4.1-8.1">
+              <p id="section-20.4.1-8.1.1">
+                Type name: application<a href="#section-20.4.1-8.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.2">
+              <p id="section-20.4.1-8.2.1">
+                Subtype name: trust-mark-status-response+jwt<a href="#section-20.4.1-8.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.3">
+              <p id="section-20.4.1-8.3.1">
+                Required parameters: n/a<a href="#section-20.4.1-8.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.4">
+              <p id="section-20.4.1-8.4.1">
+                Optional parameters: n/a<a href="#section-20.4.1-8.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.5">
+              <p id="section-20.4.1-8.5.1">
+                Encoding considerations: binary;
+                A Trust Mark Status Response is a signed JWT;
+                JWT values are encoded as a
+                series of base64url-encoded values (some of which may be the
+                empty string) separated by period ('.') characters.<a href="#section-20.4.1-8.5.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.6">
+              <p id="section-20.4.1-8.6.1">
+                Security considerations: See <a href="#Security" class="auto internal xref">Section 18</a> of this specification<a href="#section-20.4.1-8.6.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.7">
+              <p id="section-20.4.1-8.7.1">
+                Interoperability considerations: n/a<a href="#section-20.4.1-8.7.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.8">
+              <p id="section-20.4.1-8.8.1">
+                Published specification: <a href="#trust-mark-status-response_jwt" class="auto internal xref">Section 15.8</a> of this specification<a href="#section-20.4.1-8.8.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.9">
+              <p id="section-20.4.1-8.9.1">
+                Applications that use this media type:
+                Applications that use this specification<a href="#section-20.4.1-8.9.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.10">
+              <p id="section-20.4.1-8.10.1">
+                Fragment identifier considerations: n/a<a href="#section-20.4.1-8.10.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.11">
+              <p id="section-20.4.1-8.11.1">
+                Additional information:<a href="#section-20.4.1-8.11.1" class="pilcrow">¶</a></p>
+<ul class="compact ulEmpty">
+<li class="compact ulEmpty" id="section-20.4.1-8.11.2.1">
+                  <p id="section-20.4.1-8.11.2.1.1">Magic number(s): n/a<a href="#section-20.4.1-8.11.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="compact ulEmpty" id="section-20.4.1-8.11.2.2">
+                  <p id="section-20.4.1-8.11.2.2.1">File extension(s): n/a<a href="#section-20.4.1-8.11.2.2.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="compact ulEmpty" id="section-20.4.1-8.11.2.3">
+                  <p id="section-20.4.1-8.11.2.3.1">Macintosh file type code(s): n/a<a href="#section-20.4.1-8.11.2.3.1" class="pilcrow">¶</a></p>
+</li>
+              </ul>
+<p id="section-20.4.1-8.11.3"></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.12">
+              <p id="section-20.4.1-8.12.1">
+                Person &amp; email address to contact for further information:<a href="#section-20.4.1-8.12.1" class="pilcrow">¶</a></p>
+<p id="section-20.4.1-8.12.2">
+                Michael B. Jones, michael_b_jones@hotmail.com<a href="#section-20.4.1-8.12.2" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.13">
+              <p id="section-20.4.1-8.13.1">
+                Intended usage: COMMON<a href="#section-20.4.1-8.13.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.14">
+              <p id="section-20.4.1-8.14.1">
+                Restrictions on usage: none<a href="#section-20.4.1-8.14.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.15">
+              <p id="section-20.4.1-8.15.1">
+                Author: Michael B. Jones, michael_b_jones@hotmail.com<a href="#section-20.4.1-8.15.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.16">
+              <p id="section-20.4.1-8.16.1">
+                Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-20.4.1-8.16.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.4.1-8.17">
+              <p id="section-20.4.1-8.17.1">
+                Provisional registration? No<a href="#section-20.4.1-8.17.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -13133,12 +13332,47 @@ Host: op.umu.se
 </li>
         <li class="normal" id="appendix-C-3.4">
           <p id="appendix-C-3.4.1">
-     Applied strong requests for Swedish government use cases, specifically:<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
+     Applied must-have feature requests for Swedish government use cases, specifically:<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="appendix-C-3.4.2.1">
               <p id="appendix-C-3.4.2.1.1">
+ Make it optional to publish an Entity Configuration at the
+ Entity Identifier's
+ <code>/.well-known/openid-federation</code> URL
+ (which is already true when using Explicit Registration).<a href="#appendix-C-3.4.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="appendix-C-3.4.2.2">
+              <p id="appendix-C-3.4.2.2.1">
+ Allow non-https Entity Identifiers
+ (while leaving defining how to retrieve Entity Configurations
+ for them to future extensions).<a href="#appendix-C-3.4.2.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="appendix-C-3.4.2.3">
+              <p id="appendix-C-3.4.2.3.1">
+ Make use of <code>client_registration_types</code>
+ and <code>client_registration_types_supported</code>
+ RECOMMENDED rather than REQUIRED.<a href="#appendix-C-3.4.2.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="appendix-C-3.4.2.4">
+              <p id="appendix-C-3.4.2.4.1">
+ Remove recommendation that informational metadata values be in
+ the Entity's <code>federation_entity</code> metadata.<a href="#appendix-C-3.4.2.4.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</li>
+        <li class="normal" id="appendix-C-3.5">
+          <p id="appendix-C-3.5.1">
+     Applied strong requests for Swedish government use cases, specifically:<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-C-3.5.2.1">
+              <p id="appendix-C-3.5.2.1.1">
+ Fixes #244: Sign Trust Mark Status responses
+ and extend the set of defined status values.<a href="#appendix-C-3.5.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="appendix-C-3.5.2.2">
+              <p id="appendix-C-3.5.2.2.1">
  Added warning about using JWKS representations
- where they may not be understood.<a href="#appendix-C-3.4.2.1.1" class="pilcrow">¶</a></p>
+ where they may not be understood.<a href="#appendix-C-3.5.2.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </li>
