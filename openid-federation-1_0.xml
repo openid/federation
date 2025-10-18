@@ -26,7 +26,7 @@
 
   <front>
     <title abbrev="OpenID Federation">OpenID Federation 1.0 -
-      draft 44
+      draft 45
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="18" month="September" year="2025"/>
+    <date day="18" month="October" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -242,10 +242,13 @@
             </t>
             <t hangText="Entity Identifier">
               <vspace/>
-              A globally unique URL that is bound to one Entity.
-	      This URL MUST use the <spanx style="verb">https</spanx> scheme,
+              A globally unique string identifier that is bound to one Entity.
+	      All Entity Identifiers defined by this specification are
+	      URLs that use the <spanx style="verb">https</spanx> scheme,
 	      have a host component, and MAY contain port and path components.
 	      It MUST NOT contain query parameter or fragment components.
+	      Profiles of this specification MAY define other kinds of
+	      Entity Identifiers and processing rules that accompany them.
             </t>
             <t hangText="Trust Anchor">
               <vspace/>
@@ -656,21 +659,16 @@
               <vspace/>
               OPTIONAL. An array of JSON objects, each representing
               a Trust Mark.
-              Each JSON object MUST contain the following two claims
-              and MAY contain other claims. The <spanx style="verb">trust_mark_type</spanx>
-              claim in this object MUST have the same value as the
-              <spanx style="verb">trust_mark_type</spanx> claim in the Trust Mark JWT.
-
               <list style="hanging">
                 <t hangText="trust_mark_type">
-                  Identifier for the type of the Trust Mark.
-                  It MUST be the same value as the
+                  REQUIRED. Identifier for the type of the Trust Mark.
+                  The value of this claim MUST be the same as the value of the
                   <spanx style="verb">trust_mark_type</spanx>
-                  claim contained in the
-                  Trust Mark JWT.
+                  claim contained in the Trust Mark JWT that is the value of the
+		  <spanx style="verb">trust_mark</spanx> claim in this object.
                 </t>
                 <t hangText="trust_mark">
-                  A signed JSON Web Token that represents a Trust Mark.
+                  REQUIRED. A signed JSON Web Token that represents a Trust Mark.
                 </t>
               </list>
               Trust Marks are described in <xref target="trust_marks"/>.
@@ -1268,10 +1266,10 @@
   "alg": "RS256",
   "kid": "SUdtUndEWVY2cUFDeDV5NVlBWDhvOXJodVl2am1mNGNtR0pmd",
   "trust_chain": [
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6ImR6aGpNa0pyYkZkclVrVkNja1V5Y2s1d1ptOVJORU0xWm1kQlZscFFWRWg1UzFwT1ltTmlSVWhGWXcifQ.eyJtZXRhZGF0YSI6IHsib3BlbmlkX2NyZWRlbnRpYWxfaXNzdWVyIjogeyJqd2tzIjogeyJrZXlzIjogW3sia3R5IjogIlJTQSIsICJraWQiOiAiUjJSelJYQTBSVkJ5ZHpGT1ZHMWZkV1JUTVRaM1lUUm1ObkUxVjNGZk1FMW9NVVpMZWtsaVkxTllPQSIsICJlIjogIkFRQUIiLCAibiI6ICI1SF9YaDd4Z0RXVHhRVmJKcW1PR3Vyb2tFOGtyMmUxS2dNV2NZT0E3NE9fMVBYZDJ1Z2p5SXE5dDFtVlBTdXd4LXR5U2syUEtwanAtLVdySG4zQTRVS0prdVIxMXpobWRMQnNVOFRPQkJ1NU1aOGF0RHVqZlJ3SUxYZEtzRVhrbHZhQjZQTFQ0emRab2RnQ3MwNUt5MmU1c2I1ejZfQ2lEcWdVVm5XUG1KTE1rZ3BCdFota01kX2xiOVNvb1psbGZVR2xUa3NhdUoyX2dWUS1WcEZVTVhZam9Kak54OTdldWthWW5SRW9DQzNUYV8tOGJjUm9zbHgyeHJJYnVfVUdWcWlwZU4zTlAtbWVmZjlWVFpXWU0zZ21vbHd1cG5NQ1hYaWlrY1I1VVNMVmcwZV9nejZPZm9SVkdLQVdJcFJSTFR6MmFpcXVrVkhaZFpYOXRObXowbXcifV19fSwgImZlZGVyYXRpb25fZW50aXR5IjogeyJvcmdhbml6YXRpb25fbmFtZSI6ICJPcGVuSUQgQ3JlZGVudGlhbCBJc3N1ZXIgZXhhbXBsZSIsICJvcmdhbml6YXRpb25fdXJpIjogImh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmcvaG9tZSIsICJwb2xpY3lfdXJpIjogImh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmcvcG9saWN5IiwgImxvZ29fdXJpIjogImh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmcvc3RhdGljL2xvZ28uc3ZnIiwgImNvbnRhY3RzIjogWyJ0ZWNoQGNyZWRlbnRpYWxfaXNzdWVyLmV4YW1wbGUub3JnIl19fSwgImF1dGhvcml0eV9oaW50cyI6IFsiaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZWlkYXMuZXhhbXBsZS5vcmciXSwgImp3a3MiOiB7ImtleXMiOiBbeyJrdHkiOiAiUlNBIiwgImtpZCI6ICJkemhqTWtKcmJGZHJVa1ZDY2tVeWNrNXdabTlSTkVNMVptZEJWbHBRVkVoNVMxcE9ZbU5pUlVoRll3IiwgIm4iOiAiMU1IRGNoZkw2QkcxS1lkdmdtNVMxXzRZQUdlaHItYzB2US1BSjh3OW9mcWtINXhKcnJoSGZRUndyWUQ1cExWdEY4X2ZKY3lYUTlmaTJVVE5kamY3SEE2WVcwYVMxclZDQ0F1Ti1YQk5jZWx1R3JUZ2lITF83RjIzNFBKWWR0Z3YyWElxMzNFREdmWHZUa2hpenMzbTAxd0tONmtFRHpWb05Ha3k0eEV3ajRuTkRBSGNTVmg1aHkteXJJWFZITHJsSVd3eVhENDh5Q3VpeXo2R1A2MUNoTjF0aFo3SXBuUXJwVWNuX1hrT3o2UDA0eEwwS1pjbDNiT21pNU1pR3d5dHVJWEdQaEhHVFV2d2hrVlExaWllYnZuOUhQcHoyWUNPQkhMU2gwTGRGZkctTGZiV2o5Tnd3aWRReDZmVFlKWVdHX2hqMk5UZ0cwbWxJZS1wNDdKNFdRIiwgImUiOiAiQVFBQiJ9XX0sICJzdWIiOiAiaHR0cHM6Ly9jcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZyIsICJpc3MiOiAiaHR0cHM6Ly9jcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZyIsICJpYXQiOiAxNzU1MTkzMjg5LCAiZXhwIjogMTc1NTQ5MzI4OX0.bOD3C8GbhSMZxrDdT53s-zf2ShyV4hlxNf-85gkJIr1xio8EK-rP7oboyynuSCcj2XxxFmNIvQSbL8ZP6rOK4y5A5EiMJvEgUw82txR4nlt6sEAILeDQLK2Ne9aYHCg3SdSDK8cKGuMdYRmaFmdUn3OulOt8JprhUNsa1wyCXUpDXa8gIv5Eir700ucB4L7gI7MqdQkcBv_cE0L8GDicefzXWZ1gPOKS0mxuExejPWohpmWkgHHwyJmsq-TZ8nijM78or9PcWhm7wmMLknHMxJ25QMfGKj6hr8Snc9dvup25xNs8Dbahj6UBh9ocIOhj4OqDmtDo1tnHriPvIdDN3Q",
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6IlZsUkdPSGx1V0ZWaVN6STRjVFJwVjJWeFVFNUVRbWhHUWtGeGVVbzNkbEpGVVRjMmFtczVaVTl0T0EifQ.eyJzdWIiOiAiaHR0cHM6Ly9jcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZyIsICJqd2tzIjogeyJrZXlzIjogW3sia3R5IjogIlJTQSIsICJraWQiOiAiZHpoak1rSnJiRmRyVWtWQ2NrVXljazV3Wm05Uk5FTTFabWRCVmxwUVZFaDVTMXBPWW1OaVJVaEZZdyIsICJuIjogIjFNSERjaGZMNkJHMUtZZHZnbTVTMV80WUFHZWhyLWMwdlEtQUo4dzlvZnFrSDV4SnJyaEhmUVJ3cllENXBMVnRGOF9mSmN5WFE5ZmkyVVROZGpmN0hBNllXMGFTMXJWQ0NBdU4tWEJOY2VsdUdyVGdpSExfN0YyMzRQSllkdGd2MlhJcTMzRURHZlh2VGtoaXpzM20wMXdLTjZrRUR6Vm9OR2t5NHhFd2o0bk5EQUhjU1ZoNWh5LXlySVhWSExybElXd3lYRDQ4eUN1aXl6NkdQNjFDaE4xdGhaN0lwblFycFVjbl9Ya096NlAwNHhMMEtaY2wzYk9taTVNaUd3eXR1SVhHUGhIR1RVdndoa1ZRMWlpZWJ2bjlIUHB6MllDT0JITFNoMExkRmZHLUxmYldqOU53d2lkUXg2ZlRZSllXR19oajJOVGdHMG1sSWUtcDQ3SjRXUSIsICJlIjogIkFRQUIifV19LCAiaXNzIjogImh0dHBzOi8vaW50ZXJtZWRpYXRlLmVpZGFzLmV4YW1wbGUub3JnIiwgImlhdCI6IDE3NTUxOTMyODksICJleHAiOiAxNzU1NDkzMjg5fQ.nVtQXK6HP4pW4sZPr_mmcHnYYsu_dwAx_qXJiicWqS43gulQG7SACDa3fcjnwX9crjJHAIbqpG31hZDEoln3KHvEJPxjvhHquUWg2JL8xHuha3u7nDJkQUuTK5ZKiIrXhAKLKiD5ufPqrT4l5SzeYikUxVSf1NJL3aObzuKbNqMPo4Hol2TxeiCXqh4Z130HMaUuYNuiSXsYNWKPmXJZ5iIN1pzkNpLpesjhcsLVgPTpPTqgCO-fpgOoPAISaYR8rMD4jEyTsYWg3UzSKGDtJsZcKwGQsO6Ct0JGC2nBwHwlFLIEf1PriauEXmf4g9lXZNJI6eQWpNVyo3_ROkYj4Q",
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6IlNDMXBkbXhuUlRJNWFUSlRkRXQ0WjJaWVJtc3lObWhZTTI1TlQzTTVVM1YyTlVKUVptTTNaR3hIVFEifQ.eyJzdWIiOiAiaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZWlkYXMuZXhhbXBsZS5vcmciLCAiandrcyI6IHsia2V5cyI6IFt7Imt0eSI6ICJSU0EiLCAia2lkIjogIlZsUkdPSGx1V0ZWaVN6STRjVFJwVjJWeFVFNUVRbWhHUWtGeGVVbzNkbEpGVVRjMmFtczVaVTl0T0EiLCAibiI6ICJ0M0oxTHZDVDBBR0gxS2NZU3Q3aHoyTG9rVEk4cWtuSk9qNC1LdGVLOVM5Y08xdlF2LXdBQjRaZEdHV1hfX1VmS0YyRXBCWVlpZXhrbzlpTk1OamM0ZDhyaVh0dWRGTDRDaDk2WU5hRWdDNEhYd0Q4RThGb0tscjZMb29OdDFwQVhRdlZXWWVnTnFBX01yUXRCRW5jLWc5WFZ1d1Z1dkZhT0p1a1VnU2ctUjJjVTNQZXZDSloxazFUUTVFYS0xZXRMU3lmRVoyR0lSeDJEeV9wOG5QVTdXUThDbk1heFl2ZWJJSmdVN0ozUUlHazZEdjVUUkhDcnhld1BlMjlSZjdwdkdJWXJucE5veHBjbDRYcV9oM0k5RWt3UGZzSndCQjRvYlVEZUhYdUxzSGYweW43Zjdvdkc3QlNPY3NKTkMwRVRGUDJRYmlMN1hrRnJrb0hRNUtaTHciLCAiZSI6ICJBUUFCIn1dfSwgImlzcyI6ICJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZyIsICJpYXQiOiAxNzU1MTkzMjg5LCAiZXhwIjogMTc1NTQ5MzI4OX0.Ql7DxyGjhOCcdyuY5kOahDidzwmuXBndiBB6ntwnmuoRpbmOT-yC1SmDZBDyy05aFLo8go02fTqZC64pjyllk6tXDXGDALqnQr_iOb05lBnHkKM8MjuHPE4ESSWy3bF_99V54eRkmTjeaLzWEoVpOjbqF7YMO1IGjQPYn4Z15_c6mo_TD9n8YgUf8bLWy-slT64oM4qhhmnvRN7_nh9q8I2urPGjnnAgR3ByffCjabmuUHq6cWDmQhzhcQuBP6M1Dt81q1UCSZDWR6OIkN8oqZ2wflIXmgSWIT2bFDDmWoEXKzcRSDvGZ9aaYFqtIjA9qUnrofe3rHCrn_rTPBUChg",
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6IlNDMXBkbXhuUlRJNWFUSlRkRXQ0WjJaWVJtc3lObWhZTTI1TlQzTTVVM1YyTlVKUVptTTNaR3hIVFEifQ.eyJtZXRhZGF0YSI6IHsiZmVkZXJhdGlvbl9lbnRpdHkiOiB7ImZlZGVyYXRpb25fZmV0Y2hfZW5kcG9pbnQiOiAiaHR0cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5vcmcvZmV0Y2giLCAiZmVkZXJhdGlvbl9yZXNvbHZlX2VuZHBvaW50IjogImh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnL3Jlc29sdmUiLCAiZmVkZXJhdGlvbl9saXN0X2VuZHBvaW50IjogImh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnL2xpc3QiLCAib3JnYW5pemF0aW9uX25hbWUiOiAiVEEgZXhhbXBsZSIsICJvcmdhbml6YXRpb25fdXJpIjogImh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnL2hvbWUiLCAicG9saWN5X3VyaSI6ICJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZy9wb2xpY3kiLCAibG9nb191cmkiOiAiaHR0cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5vcmcvc3RhdGljL2xvZ28uc3ZnIiwgImNvbnRhY3RzIjogWyJ0ZWNoQHRydXN0LWFuY2hvci5leGFtcGxlLm9yZyJdfX0sICJqd2tzIjogeyJrZXlzIjogW3sia3R5IjogIlJTQSIsICJraWQiOiAiU0MxcGRteG5SVEk1YVRKVGRFdDRaMlpZUm1zeU5taFlNMjVOVDNNNVUzVjJOVUpRWm1NM1pHeEhUUSIsICJuIjogInF1Um1aT3Y3Y1RaSDVNWXREUUxhXzFiQUdlYkd2bmtma2NuU0VmLThvTFltcnRSaXJRQjNoT0t3TDlYVTZZQW5OWC1KSUE5WWlQaWZaY043czJFU3hpY0JmRHNwS1BLSDM5VFBzeVBVVTlsbm5vWjlMN3gxS3RmV0RpWmp1aVdEZVZrTTVOUnlCenViTVVmR0NPTXdJRkVrdDBBclAtSFRfZUhBeFF1QnhxY25zVkNubzhKU2JTck5ZVDdMRzBFN0MybldnRHIwX1d4QkV0cmkySXRXaktkcjlwUmQ5U2RRRmk5alFHSTNsbm5NakZ0YVdkdnFDbnlYUkRWSndwQno1UmFaZW5JNFBqNURiQlgzMUdDTjg1UVpnSTExQkozdDVnUUp4SExSQi1IM0lEdEVpOHd6NTB0NG9TWURkUzFIQ1JZUmo1NW85aGlaRmdGYTliMjRRdyIsICJlIjogIkFRQUIifV19LCAic3ViIjogImh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnIiwgImlzcyI6ICJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZyIsICJpYXQiOiAxNzU1MTkzMjg5LCAiZXhwIjogMTc1NTQ5MzI4OX0.GUs_-0I52K0YN5a3xxkrJkwIWJIv-lgOknR-jPHWOWvkd_exOF95Z_5WdPI07iMlAe0esX8eGw7J-nWi1Go7P2ICKJAIC1xD50WfyQY0HIVYFIx2kh0hm1vIH847_VIwHUfEDLPfnmwiUm-2TynzMwOpNM6wNA3JQ0hBYqhtRTzwDBcvtNlYJ1bicfEQqenSXFIrUEV2tEUuZHjfTcxo7FW4lZ7j2Sg4M4d7eyS1EaiZaKplRz-h9DxTroofhKcYTGmEseWsZgOTIfHQP6W81bKWRLheitQAG2Kof9sW91srdd6VO_VeAhKo9Aq08Tu-3HbJDrt_9O7U6n3NM9BKcA"
+    "eyJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiVUdaSGF6aHVZalpoT0Y5amNUaHBWa05KU1VkWWQxVnlaR1JGVXpWd09FVXlSMDQwU2tjMk1XMXVPQSJ9.eyJtZXRhZGF0YSI6IHsib3BlbmlkX2NyZWRlbnRpYWxfaXNzdWVyIjogeyJqd2tzIjogeyJrZXlzIjogW3sia3R5IjogIlJTQSIsICJraWQiOiAiUjJSelJYQTBSVkJ5ZHpGT1ZHMWZkV1JUTVRaM1lUUm1ObkUxVjNGZk1FMW9NVVpMZWtsaVkxTllPQSIsICJlIjogIkFRQUIiLCAibiI6ICI1SF9YaDd4Z0RXVHhRVmJKcW1PR3Vyb2tFOGtyMmUxS2dNV2NZT0E3NE9fMVBYZDJ1Z2p5SXE5dDFtVlBTdXd4LXR5U2syUEtwanAtLVdySG4zQTRVS0prdVIxMXpobWRMQnNVOFRPQkJ1NU1aOGF0RHVqZlJ3SUxYZEtzRVhrbHZhQjZQTFQ0emRab2RnQ3MwNUt5MmU1c2I1ejZfQ2lEcWdVVm5XUG1KTE1rZ3BCdFota01kX2xiOVNvb1psbGZVR2xUa3NhdUoyX2dWUS1WcEZVTVhZam9Kak54OTdldWthWW5SRW9DQzNUYV8tOGJjUm9zbHgyeHJJYnVfVUdWcWlwZU4zTlAtbWVmZjlWVFpXWU0zZ21vbHd1cG5NQ1hYaWlrY1I1VVNMVmcwZV9nejZPZm9SVkdLQVdJcFJSTFR6MmFpcXVrVkhaZFpYOXRObXowbXcifV19fSwgImZlZGVyYXRpb25fZW50aXR5IjogeyJvcmdhbml6YXRpb25fbmFtZSI6ICJPcGVuSUQgQ3JlZGVudGlhbCBJc3N1ZXIgZXhhbXBsZSIsICJvcmdhbml6YXRpb25fdXJpIjogImh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmcvaG9tZSIsICJwb2xpY3lfdXJpIjogImh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmcvcG9saWN5IiwgImxvZ29fdXJpIjogImh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmcvc3RhdGljL2xvZ28uc3ZnIiwgImNvbnRhY3RzIjogWyJ0ZWNoQGNyZWRlbnRpYWxfaXNzdWVyLmV4YW1wbGUub3JnIl19fSwgImF1dGhvcml0eV9oaW50cyI6IFsiaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZWlkYXMuZXhhbXBsZS5vcmciXSwgImp3a3MiOiB7ImtleXMiOiBbeyJrdHkiOiAiUlNBIiwgImtpZCI6ICJNR281VVY4dGIwRkpha2xEVm10aFpuTmpZWE50V1hvd1J6aG9OVzQwTTBkTVJqTlRTRWd3TWpNeE9BIiwgIm4iOiAielVITzlvQWJUOXg4TWhGNEdTY0JPU3BkaVRoMGM3dWh0eFo3WG9vRFMxckZyQXRXVUNRLV9nUUFjVmVsMEFjcUIxdEoyQmFTaEdobkdsX1ZVYTlqSXE5WkJpc2xQZS1tZ01STFFYNm1HdnhKR19Gb0FRQ3BOUGNXRWRCT21uNUFkVGxXeTFoYk9mMlY5YV9TUzdKeUpnaVJJMXBodm43bmhyNVVmMFRUX1B2NzJsS0tBZ3drUmdEOXZtWVRSOFBTSzF3b2d6WVJSMFYwYVg2M3I5Xy0wb2ZZN3hRRXIwR2xVY2dqZlVyS0dzS0JJNWswalQtQlIxdXpxaWJVSHlsblQ5UXBNajhBQ0docmktYXRnb2t0Z1ZtNklUTmJXYTBCcnIyMWVLVUpKaHZ1eGVQTUxhUDVPdUoxRy1CanhxakNwOHJGaTB0bWJOU0pWanNiUlplQ3lRIiwgImUiOiAiQVFBQiJ9XX0sICJzdWIiOiAiaHR0cHM6Ly9jcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZyIsICJpc3MiOiAiaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZWlkYXMuZXhhbXBsZS5vcmciLCAiaWF0IjogMTc1ODUyNzgxOCwgImV4cCI6IDE3NTg4Mjc4MTh9.W3fbv3JrAxcDsV0MHk00MzcgC1DddTrzkRN8vdT1IRwq3qy9NtsiC2532oInHoxxjlKBu7D8cqF9yG0Tb1v4gk_tejyUo0M9xJqyz32RU2iZP0lpbNHHUDrMxuGv1wPDap2mKisRgbb7pxm6dx_aaIrydhx0uKDM6EwX1RzpMxJeqNMeLK9992_xyCZvsi3kVGRCJDSqd-rXBS_2LFWKUViC1_5GcsWAkRABBgRDeARqQah3FvJVWiAcNv2Te2k6SMW1MNVCT7Q3uf3c2vVuaVA1OwY_wUTrkfFRjKEOmU1sgZ1TndxJKQW0XZZmTxcoJfmrjmCyxtteucYznESMnw",
+    "eyJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiVUdaSGF6aHVZalpoT0Y5amNUaHBWa05KU1VkWWQxVnlaR1JGVXpWd09FVXlSMDQwU2tjMk1XMXVPQSJ9.eyJzdWIiOiAiaHR0cHM6Ly9jcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZyIsICJqd2tzIjogeyJrZXlzIjogW3sia3R5IjogIlJTQSIsICJraWQiOiAiTUdvNVVWOHRiMEZKYWtsRFZtdGhabk5qWVhOdFdYb3dSemhvTlc0ME0wZE1Sak5UU0Vnd01qTXhPQSIsICJuIjogInpVSE85b0FiVDl4OE1oRjRHU2NCT1NwZGlUaDBjN3VodHhaN1hvb0RTMXJGckF0V1VDUS1fZ1FBY1ZlbDBBY3FCMXRKMkJhU2hHaG5HbF9WVWE5aklxOVpCaXNsUGUtbWdNUkxRWDZtR3Z4SkdfRm9BUUNwTlBjV0VkQk9tbjVBZFRsV3kxaGJPZjJWOWFfU1M3SnlKZ2lSSTFwaHZuN25ocjVVZjBUVF9QdjcybEtLQWd3a1JnRDl2bVlUUjhQU0sxd29nellSUjBWMGFYNjNyOV8tMG9mWTd4UUVyMEdsVWNnamZVcktHc0tCSTVrMGpULUJSMXV6cWliVUh5bG5UOVFwTWo4QUNHaHJpLWF0Z29rdGdWbTZJVE5iV2EwQnJyMjFlS1VKSmh2dXhlUE1MYVA1T3VKMUctQmp4cWpDcDhyRmkwdG1iTlNKVmpzYlJaZUN5USIsICJlIjogIkFRQUIifV19LCAiaXNzIjogImh0dHBzOi8vaW50ZXJtZWRpYXRlLmVpZGFzLmV4YW1wbGUub3JnIiwgImlhdCI6IDE3NTg1Mjc4MTgsICJleHAiOiAxNzU4ODI3ODE4fQ.hF0ABpYlQBPzeMJrANe-5VOStDbZrEFdYVnNVwRgxphCMEMyoBfHDVv9kQceJtKqKbzFyFFCiO6QPY-GGt-eI37YxdzG5F8GCr9hBXfoUtTSiWaEop3B0AVXH0SelRO5zvN8W2SlR0rPTJ75kLv2vaVbgES_IzMhneteRvx2HGvCxOdvA4kermxkFT7MSP3YGyuNGJ4JAEvLXT6TmL9wiitGJ3SO34ImWZ4uI9zmSzWqvRIFKZ05dD2_RVybJbKQcOuRS3Th2yn0uq4YPzPw-Na2mw0FcYXMKQhq-SvdkI4Rt4eQMbIyyminMuTxrdIeQD6-rvSOxUTjF31sjnekvA",
+    "eyJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiTjFsNWVWWTJhMmszU0ZCSGNtcFRjMVJJYkZGM1R6VmlZbkp2VTBNNGJuaE1ZMXBxTkdod01VcEZTUSJ9.eyJzdWIiOiAiaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZWlkYXMuZXhhbXBsZS5vcmciLCAiandrcyI6IHsia2V5cyI6IFt7Imt0eSI6ICJSU0EiLCAia2lkIjogIlVHWkhhemh1WWpaaE9GOWpjVGhwVmtOSlNVZFlkMVZ5WkdSRlV6VndPRVV5UjA0MFNrYzJNVzF1T0EiLCAibiI6ICJvTlhGczdmajR5Q0k2TUotS3JSbDM0WkpBbGR1N2x3ZE5rdHk2N1FHTUx5Wmh6dFpkT0VYV2w3Z1ZRUldIeUM3M01kTGlhU1VJUFB0R2daak5iSVJEUDF0UDFJZWlObU52bmhWTnNCbWNiVjhLRUNkXy1GRGlYWDRTT0VNU0ItNXVhTGpsay1VTGpZajdwZGhPSjJqcWdIQ1dHMmFhMkozYXdUY25zSXc1NDF0YVdoc2NGZlZIT0ktMVZnbzVCTDdmRGdEakRLcGtpeGg4SE5PUVVQTXJrMWdZb2tiakt3V0RKZXphUndtamVNWldOczB1aTFvdmlFWW0xQzRfTVNSWW8wUEVOWHk0QmQ2QzVHLTVTanZyNU83U1dLN19GUWpsY09yZXhrUERyNmdQQWZHZVZnNW1CblJYOGp3b1l0TnlMal94SlpSRGZKMDdjTTRfNXl4cVEiLCAiZSI6ICJBUUFCIn1dfSwgImlzcyI6ICJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZyIsICJpYXQiOiAxNzU4NTI3ODE4LCAiZXhwIjogMTc1ODgyNzgxOH0.G3DP1Nqt8UTXwes0ozKzADd1KmAYl0K0DhyjQMJOKR7pgqYp_S91ObMKPrBJDh1Mnpy7mpHICUM23pUEMFt7v_-MdqjPTOG5ebrxqjFtemizFk6iHWvwhCcheQIsNMRXf-y64Ox6SgBVXP_JaKHtA_YInTQB9-_bdb-mWvwpOlvvGH-l5Hl7TQten_IoewT9bfC62UkOmKzn0L1VlVFtYn9R7sRFUtnfcqsvvRLIHNfJwaJi-lpODgNv2l7arHssS_FmfX5ZN-3WylJJbZhtkFku1ITKx7c4bvGsZSvEx9m_ixGJYunfD-iKWAmfE1suc6X-ywR7dgdp_BBpMvytlg",
+    "eyJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiTjFsNWVWWTJhMmszU0ZCSGNtcFRjMVJJYkZGM1R6VmlZbkp2VTBNNGJuaE1ZMXBxTkdod01VcEZTUSJ9.eyJtZXRhZGF0YSI6IHsiZmVkZXJhdGlvbl9lbnRpdHkiOiB7ImZlZGVyYXRpb25fZmV0Y2hfZW5kcG9pbnQiOiAiaHR0cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5vcmcvZmV0Y2giLCAiZmVkZXJhdGlvbl9yZXNvbHZlX2VuZHBvaW50IjogImh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnL3Jlc29sdmUiLCAiZmVkZXJhdGlvbl9saXN0X2VuZHBvaW50IjogImh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnL2xpc3QiLCAib3JnYW5pemF0aW9uX25hbWUiOiAiVEEgZXhhbXBsZSIsICJvcmdhbml6YXRpb25fdXJpIjogImh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnL2hvbWUiLCAicG9saWN5X3VyaSI6ICJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZy9wb2xpY3kiLCAibG9nb191cmkiOiAiaHR0cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5vcmcvc3RhdGljL2xvZ28uc3ZnIiwgImNvbnRhY3RzIjogWyJ0ZWNoQHRydXN0LWFuY2hvci5leGFtcGxlLm9yZyJdfX0sICJjb25zdHJhaW50cyI6IHsibWF4X3BhdGhfbGVuZ3RoIjogMX0sICJqd2tzIjogeyJrZXlzIjogW3sia3R5IjogIlJTQSIsICJraWQiOiAiTjFsNWVWWTJhMmszU0ZCSGNtcFRjMVJJYkZGM1R6VmlZbkp2VTBNNGJuaE1ZMXBxTkdod01VcEZTUSIsICJuIjogIm9pcm5UMEVjMkNva2JPZFJQT0VlbTI0SXc5LXhUeW5DcGwtOWx0cjBQclNUTEJXbHp6VW1IbzNBS25qemttNUg4MmxudVRMVTd1Skd3a0tqMjJaeklCMmFiMDIzendEX09rdDRaOXFyeW1kZUFYc0MtYXFhcVQ5RjZjZjFsbUJVczBvQXlwdWlTSnh1bU5WSVVucF9wbWhvbjlfR3NHUnlYcnJnT3lJclNKZ2hoX3p4RXREb3BnN0NQb3Q3Mmk3QlRpd0U1cXp0MFhGOHBnczM2VndYM0F3WnNMVkhpaGo0WVNUYXlYUUV3aUszMDUxRnhXXzVCbWNIRXJxM0J5WkU0UmZOSjBzbU96Z1NwMEtET0dkVjUwNHR5cTZJS1BjM04ybkhJd3hjUl9NbmczaWlfVWlFVXFYVEkwYkk5TlY4VHV4VWtrUldRcFZab0w5T3V2am9NUSIsICJlIjogIkFRQUIifV19LCAic3ViIjogImh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnIiwgImlzcyI6ICJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZyIsICJpYXQiOiAxNzU4NTI3ODE4LCAiZXhwIjogMTc1ODgyNzgxOH0.lYDvz35LPE0V6nVUfO6Qwe8-AVQ9HBBeup-hg79HPAV-PqGa9dI9YX7GMiwb_khVGL8ASLfru4pFjlk4kjvgWj6u-ZXmWeElo48rAubCTtHKU8XOkHhvPXp04havTUevTCs3J0rBZKiJBLCBS9046yTrLPP8yN2hh_wR_3YExfW9O6w5tuEkghP4pQHZbWVZjE2pXTd-iIL5OFOWF_3050bAMTUQP_XUH5ZAPlj2-_qyDmARM9sh83SMDFwWkSqsDQDrOpWs1Uy7uT_iwqgPBuMSwUl9s4iRV-_CJy3IOdP0DCJOM3IyTWoHSlcMotEKGLmf4zTSnABr9PCPc5Bgrg"
   ]
 }
 ]]>
@@ -1324,11 +1322,8 @@
           <spanx style="verb">federation_entity</spanx>.
         </t>
         <t>
-          All Entities in a federation MAY use this Entity Type.
-          The Entities that provide federation API endpoints
+          The Entities that contain any of Federation Entity properties defined below
           MUST use this Entity Type.
-        </t>
-        <t>
           The following Federation Entity properties are defined:
           <list style="hanging">
             <t hangText="federation_fetch_endpoint">
@@ -1436,6 +1431,9 @@
           </list>
         </t>
 	<t>
+	  Additional Federation Entity properties MAY be defined and used.
+	</t>
+	<t>
 	  It is RECOMMENDED that each Federation Entity contain
 	  an <spanx style="verb">organization_name</spanx> claim,
 	  as defined in <xref target="informational_metadata"/>.
@@ -1481,7 +1479,7 @@
           <list style="hanging">
             <t hangText="client_registration_types">
               <vspace/>
-              REQUIRED. An array of strings specifying the client registration
+              RECOMMENDED. An array of strings specifying the client registration
               types the RP supports. Values defined by this specification
               are
               <spanx style="verb">automatic</spanx>
@@ -1572,7 +1570,7 @@
           <list style="hanging">
             <t hangText="client_registration_types_supported">
               <vspace/>
-              REQUIRED. An array of strings specifying the client registration
+              RECOMMENDED. An array of strings specifying the client registration
               types the OP supports. Values defined by this specification are
               <spanx style="verb">automatic</spanx>
               and <spanx style="verb">explicit</spanx>.
@@ -1716,7 +1714,7 @@
           The Entity Type Identifier is
           <spanx style="verb">oauth_resource</spanx>.
 	  The parameters defined in <xref target="common_metadata"/> are applicable.
-	  In addition, while it is not yet a standard,
+	  In addition,
 	  deployments MAY use the protected resource metadata parameters
 	  defined in <xref target="RFC9728"/>.
         </t>
@@ -1895,6 +1893,15 @@
 	      However, there may be circumstances in which it is desirable to use multiple
 	      JWK Set representations, such as when an Entity is in multiple federations and the
 	      federations have different policies about the JWK Set representation to be used.
+	      Also note that some implementations might not understand
+	      all these representations.  For instance, while
+	      <spanx style="verb">jwks_uri</spanx> will certainly be understood
+	      in OpenID Connect OP metadata,
+	      <spanx style="verb">signed_jwks_uri</spanx> might not be understood
+	      by all OpenID Connect implementations, and so
+	      a JWK Set representation that is understood also needs to be present.
+	    </t>
+	    <t>
 	      When multiple JWK Set representations are used, the keys present in each
 	      representation SHOULD be the same.  Even if they are not completely the
 	      same at a given instant in time (which may be the case during key rollover operations),
@@ -1961,11 +1968,8 @@
             </t>
 	  </list>
 	  <t>
-	    It is RECOMMENDED that, when present, these metadata parameters occur in
-	    an Entity's <spanx style="verb">federation_entity</spanx> metadata.
-	    They MAY also be present in the Entity's metadata for other Entity Types,
-	    particularly when the values for those Entity Types differ from
-	    those for the <spanx style="verb">federation_entity</spanx> metadata.
+	    These metadata parameters MAY be present in
+	    the Entity's metadata for any Entity Types that it uses.
 	  </t>
 	</section>
       </section>
@@ -3452,7 +3456,7 @@
                  anchor="entity_type_constraints">
           <t>
             The <spanx style="verb">allowed_entity_types</spanx> constraint
-            specifies the acceptable Entity Types of Subordinate Entities in a
+            specifies the acceptable metadata Entity Types of Subordinate Entities in a
             Trust Chain. If there is no
             <spanx style="verb">allowed_entity_types</spanx> constraint, it
             means that any Entity Type is allowed. The
@@ -3463,6 +3467,14 @@
             means that only the <spanx style="verb">federation_entity</spanx>
             Entity Type is allowed.
           </t>
+            <t>
+                To apply the <spanx style="verb">allowed_entity_types</spanx> constraint during Trust Chain Resolution
+                all Entity Types that are not listed in the <spanx style="verb">allowed_entity_types</spanx> constraint
+                MUST be removed from the metadata claim in the subject's Entity Configuration.
+                The <spanx style="verb">federation_entity</spanx> Entity Type MUST NOT be removed.
+                This MUST be done before applying Metadata Policies but after applying Metadata from a direct
+                superior's Subordinate Statement.
+            </t>
         </section>
       </section>
     </section>
@@ -3521,11 +3533,11 @@
             <list style="hanging">
               <t hangText="iss">
                 <vspace/>
-                REQUIRED. String. Issuer of the Trust Mark.
+                REQUIRED. String. The Entity Identifier of the issuer of the Trust Mark.
               </t>
               <t hangText="sub">
                 <vspace/>
-                REQUIRED. String. Entity this Trust Mark applies to.
+                REQUIRED. String. The Entity Identifier of the Entity this Trust Mark applies to.
               </t>
               <t hangText="trust_mark_type">
                 <vspace/>
@@ -3677,8 +3689,7 @@
 	  </t>
 	  </section>
         </section>
-
-        <section title="Validating a Trust Mark" anchor="trust_valid">
+        <section title="Validating a Trust Mark" anchor="trust-mark-validation">
           <t>
             Validating a Trust Mark means validating a Trust Mark instance
             represented by a specific signed JWT.
@@ -3688,9 +3699,10 @@
           <t>
 	    An Entity SHOULD NOT try to validate a Trust Mark until
 	    it knows which Trust Anchor it is using.
-	    To validate a Trust Mark Issuer, follow the procedure
-	    defined in <xref target="resolving_trust"/>.
-          </t>
+	    To determine this, first resolve the Trust Chain
+	    for the Trust Mark Issuer,
+	    as described in <xref target="resolving_trust"/>.
+	  </t>
       <t>
         Henceforth, "instance" is used as a shorthand for Trust Mark instance. An
         instance is a signed JWT.
@@ -3767,13 +3779,18 @@
             In that case, validation Step 1 becomes OPTIONAL.
           </t>
 	  <t>
-	    If trust marks are issued without an expiration time,
+	    If Trust Marks are issued without an expiration time,
 	    it is RECOMMENDED that a mechanism be provided to validate them,
 	    such as the Trust Mark Status endpoint
 	    and/or the Trust Marked Entities Listing endpoint.
 	  </t>
+	  <t>
+	    As an alternative to the above procedure for validating Trust Marks,
+	    implementations MAY use the Trust Mark Status endpoint to verify that the
+	    Trust Mark is still active,
+	    as described in <xref target="status_endpoint"/>.
+	  </t>
         </section>
-
         <section title="Trust Mark Examples" anchor="trust_example">
           <figure>
             <preamble>
@@ -4278,9 +4295,7 @@ Host: edugain.org
                 filtered to include only those that include the specified Entity Type. When
                 multiple <spanx style="verb">entity_type</spanx>
                 parameters are present, for example
-                <spanx style="verb">
-                    entity_type=openid_provider&amp;entity_type=openid_relying_party
-                </spanx>,
+                <spanx style="verb">entity_type=openid_provider&amp;entity_type=openid_relying_party</spanx>,
                 the result MUST be filtered to include all specified Entity Types.
 
                 If the responder does not support this feature, it MUST
@@ -4687,7 +4702,7 @@ Host: openid.sunet.se
 
       <section title="Trust Mark Status" anchor="status_endpoint">
         <t>
-          This enables determining whether a Trust Mark that has been issued to
+          This enables determining whether a Trust Mark Instance that has been issued to
           an Entity is still active. The query MUST be sent to the Trust Mark Issuer.
         </t>
 	<t>
@@ -4740,43 +4755,163 @@ trust_mark=eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6 ...
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type
-            <spanx style="verb">application/json</spanx>.
-            The response body is a JSON object containing the data below:
+            <spanx style="verb">application/trust-mark-status-response+jwt</spanx>,
+	    containing a signed JWT that is a Trust Mark Status Response.
+	  </t>
+	  <t>
+            The Trust Mark Status Response is a signed JWT that is explicitly typed by setting the
+            <spanx style="verb">typ</spanx> header parameter to
+            <spanx style="verb">trust-mark-status-response+jwt</spanx> to prevent
+            cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+	    Trust Mark Status Responses without a <spanx style="verb">typ</spanx> header parameter
+	    or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
+	    It is signed with a Federation Entity Key.
           </t>
-
+	  <t>
+	    The Trust Mark Status Response JWT MUST include the
+	    <spanx style="verb">kid</spanx> (Key ID) header parameter
+	    with its value being the Key ID of the signing key used.
+	  </t>
+          <t>
+	    The JWT Claims Set of the Trust Mark Status JWT
+	    is a JSON object containing the following claims:
+          </t>
           <t>
             <list style="hanging">
-              <t hangText="active">
+              <t hangText="iss">
                 <vspace/>
-                REQUIRED. Boolean. Whether the Trust Mark is active or not.
+                REQUIRED. String.
+                Entity Identifier of the issuer of the Trust Mark Status JWT.
               </t>
-            </list>
-          </t>
+              <t hangText="iat">
+                <vspace/>
+                REQUIRED. Number. Time when this Trust Mark Status JWT was issued.
+                This is expressed as Seconds Since the Epoch, per
+                <xref target="RFC7519"/>.
+              </t>
+              <t hangText="trust_mark">
+                <vspace/>
+                REQUIRED. String.
+                The Trust Mark JWT that this status response is about.
+              </t>
+              <t hangText="status">
+                <vspace/>
+                REQUIRED. Case-sensitive string value indicating the status of the Trust Mark.
+		Values defined by this specification are:
 
-          <t>
-            An error response
-            is as defined in
-            <xref target="error_response"/>.
-          </t>
+		<list style="hanging">
+		  <t hangText="active">
+		    <vspace/>
+		    The Trust Mark is active
+		  </t>
+		  <t hangText="expired">
+		    <vspace/>
+		    The Trust Mark has expired
+		  </t>
+		  <t hangText="revoked">
+		    <vspace/>
+		    The Trust Mark was revoked
+		  </t>
+		  <t hangText="invalid">
+		    <vspace/>
+		    Signature validation failed or another error was detected
+		  </t>
+		</list>
+	      </t>
+	      <t>
+		Additional status values MAY be defined and used
+		in addition to those above.
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    Additional Trust Mark Status claims MAY be defined and used
+	    in addition to the one above.
+	  </t>
 
           <t>
             <figure>
               <preamble>
-                The following is a non-normative example of a Trust Mark status response:
+                The following is a non-normative example of the JWT Claims Set for
+		a response with the status <spanx style="verb">active</spanx>:
               </preamble>
 	      <name>
-		Trust Mark Status Response
+		Active Trust Mark Status Response
 	      </name>
               <artwork><![CDATA[
 200 OK
 Content-Type: application/json
 
 {
-  "active": true
+  "iss": "https://www.agid.gov.it",
+  "sub": "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia
+        29zR20yd3VaaDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.
+        eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8
+        vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYX
+        JrX3R5cGUiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZXJ0aWZpY2F0aW9uL
+        3JwIiwibG9nb191cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdC90aGVtZXMv
+        Y3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYiOiJodHRwczovL2RvY3MuaXRhbGl
+        hLml0L2RvY3Mvc3BpZC1jaWUtb2lkYy1kb2NzL2l0L3ZlcnNpb25lLWNvcnJlbn
+        RlLyJ9.
+        L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJW
+        QBdZpjxnHBBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzS
+        an5nOmkxuAtMinU8k_-aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0Y
+        AvbMlq2pPWO5OWKdZhiFRMSprwh0GYluQkK0j1aLNMGXD3keMJd2zEoWX9D7w2f
+        XShAA48W3cNhuXyBVnCoum1K4IWK3s_fx4nIkp6W-V4jCBOpxp7Yo8LZ30o_xpE
+        OzGTIECGWVR86azOAlwVC8XSiAA",
+  "iat": 1759897995,
+  "status": "active"
 }
 ]]></artwork>
             </figure>
           </t>
+
+          <t>
+            <figure>
+              <preamble>
+                The following is a non-normative example of the JWT Claims Set for
+		a response with the status <spanx style="verb">revoked</spanx>:
+              </preamble>
+	      <name>
+		Revoked Trust Mark Status Response
+	      </name>
+              <artwork><![CDATA[
+200 OK
+Content-Type: application/json
+
+{
+  "iss": "https://www.agid.gov.it",
+  "sub": "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoia
+        29zR20yd3VaaDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.
+        eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8
+        vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYX
+        JrX3R5cGUiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZXJ0aWZpY2F0aW9uL
+        3JwIiwibG9nb191cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdC90aGVtZXMv
+        Y3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYiOiJodHRwczovL2RvY3MuaXRhbGl
+        hLml0L2RvY3Mvc3BpZC1jaWUtb2lkYy1kb2NzL2l0L3ZlcnNpb25lLWNvcnJlbn
+        RlLyJ9.
+        L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJW
+        QBdZpjxnHBBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzS
+        an5nOmkxuAtMinU8k_-aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0Y
+        AvbMlq2pPWO5OWKdZhiFRMSprwh0GYluQkK0j1aLNMGXD3keMJd2zEoWX9D7w2f
+        XShAA48W3cNhuXyBVnCoum1K4IWK3s_fx4nIkp6W-V4jCBOpxp7Yo8LZ30o_xpE
+        OzGTIECGWVR86azOAlwVC8XSiAA",
+  "iat": 1759898057,
+  "status": "revoked"
+}
+]]></artwork>
+            </figure>
+          </t>
+
+          <t>
+            An error response to a Trust Mark Status request
+            is as defined in
+            <xref target="error_response"/>.
+          </t>
+	  <t>
+	    If the Trust Mark Issuer receives a request about the status of an unknown Trust Mark, something it did not issue or is not aware of,
+	    it MUST respond with an HTTP status code 404 (Not found).
+	  </t>
         </section>
       </section>
 
@@ -5531,12 +5666,15 @@ Content-Type: application/json
             title="Obtaining Federation Entity Configuration Information"
             anchor="federation_configuration">
       <t>
-	The Entity Configuration of every Federation Entity is published
-	at its configuration endpoint.
+	The Entity Configuration of all Trust Anchor and Intermediate
+	Federation Entities MUST be published
+	at their configuration endpoint
+	and the Entity Configuration for Leaf Entities SHOULD be published there.
 	Its location is determined by concatenating the string
 	<spanx style="verb">/.well-known/openid-federation</spanx>
 	to the Entity Identifier
-	(which MUST contain scheme and host components
+	(which MUST use the <spanx style="verb">https</spanx> scheme and
+	contain a host component
 	and MAY also contain port and path components).
 	For instance, the configuration endpoint for the Entity Identifier
 	<spanx style="verb">https://entity.example</spanx> is the URL
@@ -5546,12 +5684,23 @@ Content-Type: application/json
 	<spanx style="verb">/.well-known/openid-federation</spanx>.
       </t>
       <t>
-        Federation Entities MUST make an Entity Configuration document
-        available at their configuration endpoint.
-        The sole exception to this
-        rule is for an RP that only does Explicit Registration.
-        Since it posts the Entity Configuration to the OP during client
+	Furthermore, any Entity Configuration including the Entity Type Identifier
+	<spanx style="verb">federation_entity</spanx> MUST be published
+	at its configuration endpoint.
+      </t>
+      <t>
+        While Leaf Federation Entities SHOULD make an Entity Configuration document
+        available at their configuration endpoints,
+	an exception to this requirement is that
+	clients that use a client registration method that results in
+	the server having the client's Entity Configuration
+	MAY omit doing so.
+	For instance, since an RP using Explicit Registration
+	posts its Entity Configuration to the OP during client
         registration, the OP has everything it needs from the RP.
+	Profiles of this specification MAY define other exceptions for Leaf Entities
+	that do not use the the Entity Type Identifier <spanx style="verb">federation_entity</spanx>
+	and processing rules that accompany them.
       </t>
 
       <section anchor="ec-request" title="Federation Entity Configuration Request">
@@ -5720,8 +5869,7 @@ Content-Type: application/json
           Federation participants MUST NOT attempt to fetch
           Entity Statements they already have obtained during this
           process to prevent loops.
-	  An <spanx style="verb">invalid_trust_chain</spanx> error
-	  SHOULD be returned if a loop is encountered.
+          If a loop is detected, the authority hint that led to it MUST NOT be used.
         </t>
         <t>
           A successful operation will return one or more lists of
@@ -5790,11 +5938,11 @@ Content-Type: application/json
    |                               |<-------------------------              |
    |                               |                                        |
    |                               | Applies Metadata Policies              |
-   |                               |--------------------------              |       
-   |                               |                         |              |       
-   |                               |<-------------------------              |       
-   |                               |                                        |       
-   |                               | Applies Constraints                    |       
+   |                               |--------------------------              |
+   |                               |                         |              |
+   |                               |<-------------------------              |
+   |                               |                                        |
+   |                               | Applies Constraints                    |
    |                               |--------------------                    |
    |                               |                   |                    |
    |                               |<-------------------                    |
@@ -7396,6 +7544,17 @@ HTTP/1.1 302 Found
 	</t>
       </section>
 
+      <section anchor="trust-mark-status-response+jwt"
+	       title='"application/trust-mark-status-response+jwt" Media Type'>
+	<t>
+	  The <spanx style="verb">application/trust-mark-status-response+jwt</spanx>
+	  media type is used to specify that the associated content is
+	  a Trust Mark Status Response,
+	  as defined in <xref target="tm-status-response"/>.
+	  No parameters are used with this media type.
+	</t>
+      </section>
+
     </section>
 
     <section anchor="StringOps" title="String Operations">
@@ -8336,7 +8495,6 @@ HTTP/1.1 302 Found
             <?rfc subcompact="no"?>
           </t>
 
-
           <t>
             <?rfc subcompact="yes"?>
             <list style="symbols">
@@ -8612,6 +8770,76 @@ HTTP/1.1 302 Found
             </list>
             <?rfc subcompact="no"?>
           </t>
+
+          <t>
+            <?rfc subcompact="yes"?>
+            <list style="symbols">
+              <t>
+                Type name: application
+              </t>
+              <t>
+                Subtype name: trust-mark-status-response+jwt
+              </t>
+              <t>
+                Required parameters: n/a
+              </t>
+              <t>
+                Optional parameters: n/a
+              </t>
+              <t>
+                Encoding considerations: binary;
+                A Trust Mark Status Response is a signed JWT;
+                JWT values are encoded as a
+                series of base64url-encoded values (some of which may be the
+                empty string) separated by period ('.') characters.
+              </t>
+              <t>
+                Security considerations: See <xref target="Security"/> of this specification
+              </t>
+              <t>
+                Interoperability considerations: n/a
+              </t>
+              <t>
+                Published specification: <xref target="trust-mark-status-response+jwt"/> of this specification
+              </t>
+              <t>
+                Applications that use this media type:
+                Applications that use this specification
+              </t>
+              <t>
+                Fragment identifier considerations: n/a
+              </t>
+              <t>
+                Additional information:<list style="empty">
+                <t>Magic number(s): n/a</t>
+                <t>File extension(s): n/a</t>
+                <t>Macintosh file type code(s): n/a </t></list>
+                <vspace/>
+              </t>
+              <t>
+                Person &amp; email address to contact for further information:
+                <vspace/>
+                Michael B. Jones, michael_b_jones@hotmail.com
+              </t>
+              <t>
+                Intended usage: COMMON
+              </t>
+              <t>
+                Restrictions on usage: none
+              </t>
+              <t>
+                Author: Michael B. Jones, michael_b_jones@hotmail.com
+              </t>
+              <t>
+                Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Provisional registration? No
+              </t>
+            </list>
+            <?rfc subcompact="no"?>
+          </t>
+
         </section>
 
       </section>
@@ -10712,8 +10940,20 @@ Host: op.umu.se
       <t>[[ To be removed from the final specification ]]</t>
 
       <t>
+	-45
+	<list style="symbols">
+	  <t>
+	    Fixed #84: Added sections on validating Entity Statements.
+	  </t>
+	</list>
+      </t>
+
+      <t>
 	-44
 	<list style="symbols">
+	  <t>
+	    Fixed #127: Explained Trust Mark Issuer validation in more detail.
+	  </t>
 	  <t>
 	    Corrected location of Constraints in Trust Chain Example figure.
 	  </t>
@@ -10722,7 +10962,42 @@ Host: op.umu.se
 	    and Automatic Registration.
 	  </t>
 	  <t>
-	    Fixed #84: Added sections on validating Entity Statements.
+	    Applied must-have feature requests for Swedish government use cases, specifically:
+	    <list style="symbols">
+	      <t>
+		Make it optional to publish an Entity Configuration at the
+		Entity Identifier's
+		<spanx style="verb">/.well-known/openid-federation</spanx> URL
+		(which is already true when using Explicit Registration).
+	      </t>
+	      <t>
+		Allow non-https Entity Identifiers
+		(while leaving defining how to retrieve Entity Configurations
+		for them to future extensions).
+	      </t>
+	      <t>
+		Make use of <spanx style="verb">client_registration_types</spanx>
+		and <spanx style="verb">client_registration_types_supported</spanx>
+		RECOMMENDED rather than REQUIRED.
+	      </t>
+	      <t>
+		Remove recommendation that informational metadata values be in
+		the Entity's <spanx style="verb">federation_entity</spanx> metadata.
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    Applied strong requests for Swedish government use cases, specifically:
+	    <list style="symbols">
+	      <t>
+		Fixes #244: Sign Trust Mark Status responses
+		and extend the set of defined status values.
+	      </t>
+	      <t>
+		Added warning about using JWKS representations
+		where they may not be understood.
+	      </t>
+	    </list>
 	  </t>
 	</list>
       </t>
