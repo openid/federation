@@ -504,8 +504,13 @@
 	  with its value being the Key ID of the signing key used.
 	</t>
         <t>
-          The claims in an Entity Statement are:
+          The claims in an Entity Statement are listed below.
+          Applications and protocols utilizing Entity Statements MAY specify
+          and use additional claims.
         </t>
+          <section title="Claims that MUST or MAY appear in both Entity Configurations and Subordinate Statements"
+                   anchor="common_claims">
+
         <t>
           <list style="hanging">
             <t hangText="iss">
@@ -560,23 +565,7 @@
 	      <spanx style="verb">openid_relying_party</spanx>
 	      Entity Type Identifiers.)
             </t>
-            <t hangText="authority_hints" anchor="authority_hints">
-              <vspace/>
-              OPTIONAL. An array of strings representing
-              the Entity Identifiers of Intermediate Entities or Trust Anchors
-              that are Immediate Superiors of the Entity.
-              This claim is REQUIRED in Entity Configurations of
-              the Entities that have at least one Superior above them,
-              such as Leaf and Intermediate Entities.
-              Its value MUST contain the Entity Identifiers of
-	      its Immediate Superiors and
-	      MUST NOT be the empty array
-              <spanx style="verb">[]</spanx>.
-              This claim MUST NOT be present in Entity Configurations
-              of Trust Anchors with no Superiors.
-	      It MUST NOT be present in Subordinate Statements.
-            </t>
-            <t hangText="metadata">
+                          <t hangText="metadata">
               <vspace/>
               OPTIONAL.
 	      JSON object that declares roles that the Entity plays -
@@ -612,26 +601,7 @@
               <spanx style="verb">metadata_policy</spanx>, as described in
               <xref target="metadata_policy_application"/>.
             </t>
-            <t hangText="metadata_policy">
-              <vspace/>
-              OPTIONAL. JSON object that defines a metadata policy, as described
-              in <xref target="metadata_policy"/>. Only Subordinate Statements
-              MAY include this claim. The metadata policy applies to the Entity
-              that is the subject of this Subordinate Statement as well as to
-              all Entities that are Subordinate to it. Applying to Subordinate
-              Entities distinguishes <spanx style="verb">metadata_policy</spanx>
-              from <spanx style="verb">metadata</spanx>, which only applies to
-              the subject itself.
-            </t>
-            <t hangText="constraints">
-              <vspace/>
-              OPTIONAL. JSON object that defines Trust Chain constraints, as
-              described in <xref target="chain_constraints"/>. Only Subordinate
-              Statements MAY include this claim. The constraints apply to the
-              Entity that is the subject of this Subordinate Statement as well
-              as to all Entities that are Subordinate to it.
-            </t>
-            <t hangText="crit">
+                          <t hangText="crit">
               <vspace/>
               OPTIONAL.
 	      Entity Statements require that
@@ -642,20 +612,30 @@
 	      Claims specified for use in Entity Statements by this specification
 	      MUST NOT be included in the list.
             </t>
-            <t hangText="metadata_policy_crit">
+
+          </list>
+        </t>
+                        </section>
+          <section anchor="ec_specific"
+                   title="Claims that MUST or MAY appear in Entity Configurations but not Subordinate Statements">
+              <t>
+                  <list style="hanging">
+            <t hangText="authority_hints" anchor="authority_hints">
               <vspace/>
-              OPTIONAL.
-              Array of strings specifying critical metadata policy operators
-              other than the standard ones defined in
-              <xref target="standard_metadata_policy_operators"/> that MUST be
-              understood and processed. Only Subordinate Statements MAY include
-              this claim and when included its value MUST NOT be the empty array
-              <spanx style="verb">[]</spanx>. If any of the listed policy
-              operators are not understood and supported, then the Subordinate
-              Statement and thus the Trust Chain that includes it MUST be
-              considered invalid.
+              OPTIONAL. An array of strings representing
+              the Entity Identifiers of Intermediate Entities or Trust Anchors
+              that are Immediate Superiors of the Entity.
+              This claim is REQUIRED in Entity Configurations of
+              the Entities that have at least one Superior above them,
+              such as Leaf and Intermediate Entities.
+              Its value MUST contain the Entity Identifiers of
+	      its Immediate Superiors and
+	      MUST NOT be the empty array
+              <spanx style="verb">[]</spanx>.
+              This claim MUST NOT be present in Entity Configurations
+              of Trust Anchors with no Superiors.
             </t>
-            <t hangText="trust_marks">
+                      <t hangText="trust_marks">
               <vspace/>
               OPTIONAL. An array of JSON objects, each representing
               a Trust Mark.
@@ -664,15 +644,14 @@
                   REQUIRED. Identifier for the type of the Trust Mark.
                   The value of this claim MUST be the same as the value of the
                   <spanx style="verb">trust_mark_type</spanx>
-                  claim contained in the Trust Mark JWT that is the value of the
-		  <spanx style="verb">trust_mark</spanx> claim in this object.
+                  claim contained in the Trust Mark JWT that is the value of the <spanx style="verb">trust_mark
+                </spanx> claim in this object.
                 </t>
                 <t hangText="trust_mark">
                   REQUIRED. A signed JSON Web Token that represents a Trust Mark.
                 </t>
               </list>
               Trust Marks are described in <xref target="trust_marks"/>.
-	            This claim SHOULD only be used in Entity Configurations.
             </t>
             <t hangText="trust_mark_issuers">
               <vspace/>
@@ -687,7 +666,6 @@
 	      for Trust Marks with that identifier.
               If the array following a Trust Mark type identifier is empty,
               anyone MAY issue Trust Marks with that identifier.
-	      This claim MUST NOT be present in Subordinate Statements.
               Trust Marks are described in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_mark_owners">
@@ -714,8 +692,44 @@
                 </t>
               </list>
 	      Other members MAY also be defined and used.
-	      This claim MUST NOT be present in Subordinate Statements.
-	    </t>
+            </t>
+              </list>
+              </t>
+               </section>
+          <section anchor="ss_specific"
+                   title="Claims that MUST or MAY appear in Subordinate Statements but not Entity Configurations">
+              <t>
+              <list style="hanging">
+            <t hangText="constraints">
+              <vspace/>
+              OPTIONAL. JSON object that defines Trust Chain constraints, as
+              described in <xref target="chain_constraints"/>. The constraints apply to the
+              Entity that is the subject of this Subordinate Statement as well
+              as to all Entities that are Subordinate to it.
+            </t>
+                              <t hangText="metadata_policy">
+              <vspace/>
+              OPTIONAL. JSON object that defines a metadata policy, as described
+              in <xref target="metadata_policy"/>. The metadata policy applies to the Entity
+              that is the subject of this Subordinate Statement as well as to
+              all Entities that are Subordinate to it. Applying to Subordinate
+              Entities distinguishes <spanx style="verb">metadata_policy</spanx>
+              from <spanx style="verb">metadata</spanx>, which only applies to
+              the subject itself.
+            </t>
+
+                              <t hangText="metadata_policy_crit">
+              <vspace/>
+              OPTIONAL.
+              Array of strings specifying critical metadata policy operators
+              other than the standard ones defined in
+              <xref target="standard_metadata_policy_operators"/> that MUST be
+              understood and processed. When included its value MUST NOT be the empty array
+              <spanx style="verb">[]</spanx>. If any of the listed policy
+              operators are not understood and supported, then the Subordinate
+              Statement and thus the Trust Chain that includes it MUST be
+              considered invalid.
+            </t>
             <t hangText="source_endpoint">
               <vspace/>
               OPTIONAL. String containing the fetch endpoint URL
@@ -734,6 +748,12 @@
 	      location can be determined by retrieving
 	      the Entity Configuration of the issuer.
             </t>
+
+              </list></t>
+              </section>
+
+            <section title="Claims Specific to Explicit Registration Responses">
+                <list style="hanging">
             <t hangText="trust_anchor">
               <vspace/>
               OPTIONAL.  Its value MUST be the Entity Identifier of the Trust Anchor
@@ -741,13 +761,9 @@
                 This claim is specific to Explicit Registration responses and is not a
                 general Entity Statement claim.
             </t>
-          </list>
-        </t>
-        <t>
-          Applications and protocols utilizing Entity Statements MAY specify
-          and use additional claims.
-        </t>
-
+                </list>
+                </section>
+          <section title="Entity Statement Examples" anchor="es_example">
         <figure>
           <preamble>
             The following is a non-normative example of the JWT Claims Set for an Entity Statement.
@@ -859,6 +875,7 @@
 }
 ]]></artwork>
         </figure>
+          </section>
       </section>
 
       <section title="Trust Chain" anchor="trust_chain">
@@ -10789,7 +10806,7 @@ Host: op.umu.se
 	-45
 	<list style="symbols">
 	  <t>
-	    TBD
+	    Fixed #241: Restructured Entity Statement section.
 	  </t>
 	</list>
       </t>
