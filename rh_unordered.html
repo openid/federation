@@ -54,7 +54,7 @@
     intervaltree 3.1.0
     Jinja2 3.1.2
     lxml 6.0.2
-    platformdirs 4.5.0
+    platformdirs 4.4.0
     pycountry 24.6.1
     PyYAML 6.0.1
     requests 2.31.0
@@ -1345,6 +1345,23 @@ li > p:last-of-type:only-child {
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-entity-statement" class="internal xref">Entity Statement</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-claims-that-must-or-may-app" class="internal xref">Claims that MUST or MAY appear in both Entity Configurations and Subordinate Statements</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-claims-that-must-or-may-appe" class="internal xref">Claims that MUST or MAY appear in Entity Configurations but not Subordinate Statements</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
+                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-claims-that-must-or-may-appea" class="internal xref">Claims that MUST or MAY appear in Subordinate Statements but not Entity Configurations</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-claims-specific-to-explicit" class="internal xref">Claims Specific to Explicit Registration Responses</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5">
+                <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-entity-statement-examples" class="internal xref">Entity Statement Examples</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-trust-chain" class="internal xref">Trust Chain</a></p>
@@ -2305,7 +2322,7 @@ li > p:last-of-type:only-child {
         The Entity Configuration of a Leaf or Intermediate Entity contains one or more
         references to its Immediate Superiors in the
  <code>authority_hints</code> parameter
- described in <a href="#authority_hints" class="auto internal xref">Section 3</a>.
+ described in <a href="#authority_hints" class="auto internal xref">Section 3.2</a>.
         These references can be used to download the Entity Configuration of each Immediate Superior.
         One or more Entity Configurations are traversed during the Federation Entity Discovery
         until the Trust Anchor is reached.<a href="#section-2-2" class="pilcrow">¶</a></p>
@@ -2405,41 +2422,48 @@ li > p:last-of-type:only-child {
    <code>kid</code> (Key ID) header parameter
    with its value being the Key ID of the signing key used.<a href="#section-3-4" class="pilcrow">¶</a></p>
 <p id="section-3-5">
-          The claims in an Entity Statement are:<a href="#section-3-5" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-3-6">
-        <dt id="section-3-6.1">iss</dt>
-        <dd style="margin-left: 1.5em" id="section-3-6.2">
+          The claims in an Entity Statement are listed below.
+          Applications and protocols utilizing Entity Statements MAY specify
+          and use additional claims.<a href="#section-3-5" class="pilcrow">¶</a></p>
+<div id="common_claims">
+<section id="section-3.1">
+        <h3 id="name-claims-that-must-or-may-app">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-claims-that-must-or-may-app" class="section-name selfRef">Claims that MUST or MAY appear in both Entity Configurations and Subordinate Statements</a>
+        </h3>
+<span class="break"></span><dl class="dlNewline" id="section-3.1-1">
+          <dt id="section-3.1-1.1">iss</dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-1.2">
               REQUIRED. The Entity Identifier of the issuer of
               the Entity Statement.
        If the <code>iss</code> and
               the <code>sub</code> are identical,
        the issuer is making an Entity Statement about itself
-       called an Entity Configuration.<a href="#section-3-6.2" class="pilcrow">¶</a>
+       called an Entity Configuration.<a href="#section-3.1-1.2" class="pilcrow">¶</a>
 </dd>
-        <dd class="break"></dd>
-<dt id="section-3-6.3">sub</dt>
-        <dd style="margin-left: 1.5em" id="section-3-6.4">
-              REQUIRED. The Entity Identifier of the subject.<a href="#section-3-6.4" class="pilcrow">¶</a>
+          <dd class="break"></dd>
+<dt id="section-3.1-1.3">sub</dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-1.4">
+              REQUIRED. The Entity Identifier of the subject.<a href="#section-3.1-1.4" class="pilcrow">¶</a>
 </dd>
-        <dd class="break"></dd>
-<dt id="section-3-6.5">iat</dt>
-        <dd style="margin-left: 1.5em" id="section-3-6.6">
+          <dd class="break"></dd>
+<dt id="section-3.1-1.5">iat</dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-1.6">
               REQUIRED. Number. Time when this statement was issued.
                 This is expressed as Seconds Since the Epoch, per
-                <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-3-6.6" class="pilcrow">¶</a>
+                <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-3.1-1.6" class="pilcrow">¶</a>
 </dd>
-        <dd class="break"></dd>
-<dt id="section-3-6.7">exp</dt>
-        <dd style="margin-left: 1.5em" id="section-3-6.8">
+          <dd class="break"></dd>
+<dt id="section-3.1-1.7">exp</dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-1.8">
               REQUIRED. Number.
               Expiration time after which the statement MUST NOT be
               accepted for processing. This is expressed as Seconds
-              Since the Epoch, per <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-3-6.8" class="pilcrow">¶</a>
+              Since the Epoch, per <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.<a href="#section-3.1-1.8" class="pilcrow">¶</a>
 </dd>
-        <dd class="break"></dd>
-<dt id="section-3-6.9">jwks</dt>
-        <dd style="margin-left: 1.5em" id="section-3-6.10">
-          <p id="section-3-6.10.1">
+          <dd class="break"></dd>
+<dt id="section-3.1-1.9">jwks</dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-1.10">
+            <p id="section-3.1-1.10.1">
               REQUIRED. A <span><a href="#RFC7517" class="internal xref">JSON Web Key Set (JWKS)</a> [<a href="#RFC7517" class="cite xref">RFC7517</a>]</span>
               representing the public part of the subject's Federation Entity
               signing keys. The corresponding private key is
@@ -2453,8 +2477,8 @@ li > p:last-of-type:only-child {
               in all other cases, it is REQUIRED.
               Every JWK in the JWK Set MUST have a unique <code>kid</code> (Key ID) value.
               It is RECOMMENDED that the Key ID be the JWK Thumbprint <span>[<a href="#RFC7638" class="cite xref">RFC7638</a>]</span>
-              using the SHA-256 hash function of the key.<a href="#section-3-6.10.1" class="pilcrow">¶</a></p>
-<p id="section-3-6.10.2">
+              using the SHA-256 hash function of the key.<a href="#section-3.1-1.10.1" class="pilcrow">¶</a></p>
+<p id="section-3.1-1.10.2">
        These Federation Entity Keys SHOULD NOT be used in other protocols.
        (Keys to be used in other protocols, such as OpenID Connect,
        are conveyed in the <code>metadata</code> elements
@@ -2462,47 +2486,28 @@ li > p:last-of-type:only-child {
        such as the metadata under the
        <code>openid_provider</code> and
        <code>openid_relying_party</code>
-       Entity Type Identifiers.)<a href="#section-3-6.10.2" class="pilcrow">¶</a></p>
+       Entity Type Identifiers.)<a href="#section-3.1-1.10.2" class="pilcrow">¶</a></p>
 </dd>
-        <dd class="break"></dd>
-<dt id="section-3-6.11">authority_hints</dt>
-        <dd id="section-3-6.12" style="margin-left: 1.5em">
-<div id="authority_hints">
-              OPTIONAL. An array of strings representing
-              the Entity Identifiers of Intermediate Entities or Trust Anchors
-              that are Immediate Superiors of the Entity.
-              This claim is REQUIRED in Entity Configurations of
-              the Entities that have at least one Superior above them,
-              such as Leaf and Intermediate Entities.
-              Its value MUST contain the Entity Identifiers of
-       its Immediate Superiors and
-       MUST NOT be the empty array
-              <code>[]</code>.
-              This claim MUST NOT be present in Entity Configurations
-              of Trust Anchors with no Superiors.
-       It MUST NOT be present in Subordinate Statements.<a href="#authority_hints" class="pilcrow">¶</a>
-</div>
-        </dd>
-<dd class="break"></dd>
-<dt id="section-3-6.13">metadata</dt>
-        <dd style="margin-left: 1.5em" id="section-3-6.14">
-          <p id="section-3-6.14.1">
+          <dd class="break"></dd>
+<dt id="section-3.1-1.11">metadata</dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-1.12">
+            <p id="section-3.1-1.12.1">
               OPTIONAL.
        JSON object that declares roles that the Entity plays -
        its Entity Types - and that contains metadata for those Entity Types.
        Each member name of the JSON
               object is an Entity Type Identifier, and each value MUST be a JSON
               object containing metadata parameters according to the metadata
-              schema of the Entity Type.<a href="#section-3-6.14.1" class="pilcrow">¶</a></p>
-<p id="section-3-6.14.2">
+              schema of the Entity Type.<a href="#section-3.1-1.12.1" class="pilcrow">¶</a></p>
+<p id="section-3.1-1.12.2">
               When an Entity participates in a federation or federations with
               one or more Entity Types, its Entity Configuration MUST contain a
               <code>metadata</code> claim with JSON object values
               for each of the corresponding Entity Type Identifiers, even if the
               values are the empty JSON object <code>{}</code>
               (when the Entity Type has no associated metadata or Immediate
-              Superiors supply any needed metadata).<a href="#section-3-6.14.2" class="pilcrow">¶</a></p>
-<p id="section-3-6.14.3">
+              Superiors supply any needed metadata).<a href="#section-3.1-1.12.2" class="pilcrow">¶</a></p>
+<p id="section-3.1-1.12.3">
               An Immediate Superior MAY provide selected or all metadata
               parameters for an Immediate Subordinate, by using the
               <code>metadata</code> claim in a Subordinate
@@ -2519,32 +2524,11 @@ li > p:last-of-type:only-child {
               Subordinate Statement, then the stated
               <code>metadata</code> MUST be applied before the
               <code>metadata_policy</code>, as described in
-              <a href="#metadata_policy_application" class="auto internal xref">Section 6.1.4.2</a>.<a href="#section-3-6.14.3" class="pilcrow">¶</a></p>
+              <a href="#metadata_policy_application" class="auto internal xref">Section 6.1.4.2</a>.<a href="#section-3.1-1.12.3" class="pilcrow">¶</a></p>
 </dd>
-        <dd class="break"></dd>
-<dt id="section-3-6.15">metadata_policy</dt>
-        <dd style="margin-left: 1.5em" id="section-3-6.16">
-              OPTIONAL. JSON object that defines a metadata policy, as described
-              in <a href="#metadata_policy" class="auto internal xref">Section 6.1</a>. Only Subordinate Statements
-              MAY include this claim. The metadata policy applies to the Entity
-              that is the subject of this Subordinate Statement as well as to
-              all Entities that are Subordinate to it. Applying to Subordinate
-              Entities distinguishes <code>metadata_policy</code>
-              from <code>metadata</code>, which only applies to
-              the subject itself.<a href="#section-3-6.16" class="pilcrow">¶</a>
-</dd>
-        <dd class="break"></dd>
-<dt id="section-3-6.17">constraints</dt>
-        <dd style="margin-left: 1.5em" id="section-3-6.18">
-              OPTIONAL. JSON object that defines Trust Chain constraints, as
-              described in <a href="#chain_constraints" class="auto internal xref">Section 6.2</a>. Only Subordinate
-              Statements MAY include this claim. The constraints apply to the
-              Entity that is the subject of this Subordinate Statement as well
-              as to all Entities that are Subordinate to it.<a href="#section-3-6.18" class="pilcrow">¶</a>
-</dd>
-        <dd class="break"></dd>
-<dt id="section-3-6.19">crit</dt>
-        <dd style="margin-left: 1.5em" id="section-3-6.20">
+          <dd class="break"></dd>
+<dt id="section-3.1-1.13">crit</dt>
+          <dd style="margin-left: 1.5em" id="section-3.1-1.14">
               OPTIONAL.
        Entity Statements require that
        the <code>crit</code> (critical) claim
@@ -2552,51 +2536,63 @@ li > p:last-of-type:only-child {
        Claims in the Entity Statement whose claim names are in the array
        that is the value of this claim MUST be understood and processed.
        Claims specified for use in Entity Statements by this specification
-       MUST NOT be included in the list.<a href="#section-3-6.20" class="pilcrow">¶</a>
+       MUST NOT be included in the list.<a href="#section-3.1-1.14" class="pilcrow">¶</a>
 </dd>
         <dd class="break"></dd>
-<dt id="section-3-6.21">metadata_policy_crit</dt>
-        <dd style="margin-left: 1.5em" id="section-3-6.22">
-              OPTIONAL.
-              Array of strings specifying critical metadata policy operators
-              other than the standard ones defined in
-              <a href="#standard_metadata_policy_operators" class="auto internal xref">Section 6.1.3.1</a> that MUST be
-              understood and processed. Only Subordinate Statements MAY include
-              this claim and when included its value MUST NOT be the empty array
-              <code>[]</code>. If any of the listed policy
-              operators are not understood and supported, then the Subordinate
-              Statement and thus the Trust Chain that includes it MUST be
-              considered invalid.<a href="#section-3-6.22" class="pilcrow">¶</a>
-</dd>
-        <dd class="break"></dd>
-<dt id="section-3-6.23">trust_marks</dt>
-        <dd style="margin-left: 1.5em" id="section-3-6.24">
-          <p id="section-3-6.24.1">
+</dl>
+</section>
+</div>
+<div id="ec_specific">
+<section id="section-3.2">
+        <h3 id="name-claims-that-must-or-may-appe">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-claims-that-must-or-may-appe" class="section-name selfRef">Claims that MUST or MAY appear in Entity Configurations but not Subordinate Statements</a>
+        </h3>
+<span class="break"></span><dl class="dlNewline" id="section-3.2-1">
+          <dt id="section-3.2-1.1">authority_hints</dt>
+          <dd id="section-3.2-1.2" style="margin-left: 1.5em">
+<div id="authority_hints">
+              OPTIONAL. An array of strings representing
+              the Entity Identifiers of Intermediate Entities or Trust Anchors
+              that are Immediate Superiors of the Entity.
+              This claim is REQUIRED in Entity Configurations of
+              the Entities that have at least one Superior above them,
+              such as Leaf and Intermediate Entities.
+              Its value MUST contain the Entity Identifiers of
+       its Immediate Superiors and
+       MUST NOT be the empty array
+              <code>[]</code>.
+              This claim MUST NOT be present in Entity Configurations
+              of Trust Anchors with no Superiors.<a href="#authority_hints" class="pilcrow">¶</a>
+</div>
+          </dd>
+<dd class="break"></dd>
+<dt id="section-3.2-1.3">trust_marks</dt>
+          <dd style="margin-left: 1.5em" id="section-3.2-1.4">
+            <p id="section-3.2-1.4.1">
               OPTIONAL. An array of JSON objects, each representing
-              a Trust Mark.<a href="#section-3-6.24.1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-3-6.24.2">
-            <dt id="section-3-6.24.2.1">trust_mark_type</dt>
-            <dd style="margin-left: 1.5em" id="section-3-6.24.2.2">
+              a Trust Mark.<a href="#section-3.2-1.4.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-3.2-1.4.2">
+              <dt id="section-3.2-1.4.2.1">trust_mark_type</dt>
+              <dd style="margin-left: 1.5em" id="section-3.2-1.4.2.2">
                   REQUIRED. Identifier for the type of the Trust Mark.
                   The value of this claim MUST be the same as the value of the
                   <code>trust_mark_type</code>
-                  claim contained in the Trust Mark JWT that is the value of the
-   <code>trust_mark</code> claim in this object.<a href="#section-3-6.24.2.2" class="pilcrow">¶</a>
+                  claim contained in the Trust Mark JWT that is the value of the <code>trust_mark
+                </code> claim in this object.<a href="#section-3.2-1.4.2.2" class="pilcrow">¶</a>
+</dd>
+              <dd class="break"></dd>
+<dt id="section-3.2-1.4.2.3">trust_mark</dt>
+              <dd style="margin-left: 1.5em" id="section-3.2-1.4.2.4">
+                  REQUIRED. A signed JSON Web Token that represents a Trust Mark.<a href="#section-3.2-1.4.2.4" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-3-6.24.2.3">trust_mark</dt>
-            <dd style="margin-left: 1.5em" id="section-3-6.24.2.4">
-                  REQUIRED. A signed JSON Web Token that represents a Trust Mark.<a href="#section-3-6.24.2.4" class="pilcrow">¶</a>
+</dl>
+<p id="section-3.2-1.4.3">
+              Trust Marks are described in <a href="#trust_marks" class="auto internal xref">Section 7</a>.<a href="#section-3.2-1.4.3" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-</dl>
-<p id="section-3-6.24.3">
-              Trust Marks are described in <a href="#trust_marks" class="auto internal xref">Section 7</a>.
-             This claim SHOULD only be used in Entity Configurations.<a href="#section-3-6.24.3" class="pilcrow">¶</a></p>
-</dd>
-        <dd class="break"></dd>
-<dt id="section-3-6.25">trust_mark_issuers</dt>
-        <dd style="margin-left: 1.5em" id="section-3-6.26">
+<dt id="section-3.2-1.5">trust_mark_issuers</dt>
+          <dd style="margin-left: 1.5em" id="section-3.2-1.6">
               OPTIONAL.
               A Trust Anchor MAY use this claim to tell which combination of
               Trust Mark type identifiers and issuers are trusted by the federation.
@@ -2608,13 +2604,12 @@ li > p:last-of-type:only-child {
        for Trust Marks with that identifier.
               If the array following a Trust Mark type identifier is empty,
               anyone MAY issue Trust Marks with that identifier.
-       This claim MUST NOT be present in Subordinate Statements.
-              Trust Marks are described in <a href="#trust_marks" class="auto internal xref">Section 7</a>.<a href="#section-3-6.26" class="pilcrow">¶</a>
+              Trust Marks are described in <a href="#trust_marks" class="auto internal xref">Section 7</a>.<a href="#section-3.2-1.6" class="pilcrow">¶</a>
 </dd>
-        <dd class="break"></dd>
-<dt id="section-3-6.27">trust_mark_owners</dt>
-        <dd style="margin-left: 1.5em" id="section-3-6.28">
-          <p id="section-3-6.28.1">
+          <dd class="break"></dd>
+<dt id="section-3.2-1.7">trust_mark_owners</dt>
+          <dd style="margin-left: 1.5em" id="section-3.2-1.8">
+            <p id="section-3.2-1.8.1">
               OPTIONAL.
               If a Federation Operator knows that a Trust Mark type identifier is owned
               by an Entity different from the Trust Mark Issuer, then that
@@ -2622,29 +2617,69 @@ li > p:last-of-type:only-child {
               This claim MUST be ignored if present in an Entity Configuration
               for an Entity that is not a Trust Anchor.
               It is a JSON object with member names that are Trust Mark type identifiers and
-              each corresponding value being a JSON object with these members:<a href="#section-3-6.28.1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlNewline" id="section-3-6.28.2">
-            <dt id="section-3-6.28.2.1">sub</dt>
-            <dd style="margin-left: 1.5em" id="section-3-6.28.2.2">
+              each corresponding value being a JSON object with these members:<a href="#section-3.2-1.8.1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-3.2-1.8.2">
+              <dt id="section-3.2-1.8.2.1">sub</dt>
+              <dd style="margin-left: 1.5em" id="section-3.2-1.8.2.2">
                   REQUIRED
-                  Identifier of the Trust Mark Owner.<a href="#section-3-6.28.2.2" class="pilcrow">¶</a>
+                  Identifier of the Trust Mark Owner.<a href="#section-3.2-1.8.2.2" class="pilcrow">¶</a>
 </dd>
-            <dd class="break"></dd>
-<dt id="section-3-6.28.2.3">jwks</dt>
-            <dd style="margin-left: 1.5em" id="section-3-6.28.2.4">
+              <dd class="break"></dd>
+<dt id="section-3.2-1.8.2.3">jwks</dt>
+              <dd style="margin-left: 1.5em" id="section-3.2-1.8.2.4">
                   REQUIRED
                   <span><a href="#RFC7517" class="internal xref">JSON Web Key Set (JWKS)</a> [<a href="#RFC7517" class="cite xref">RFC7517</a>]</span>
-                  containing the owner's Federation Entity Keys used for signing.<a href="#section-3-6.28.2.4" class="pilcrow">¶</a>
+                  containing the owner's Federation Entity Keys used for signing.<a href="#section-3.2-1.8.2.4" class="pilcrow">¶</a>
 </dd>
-          <dd class="break"></dd>
+            <dd class="break"></dd>
 </dl>
-<p id="section-3-6.28.3">
-       Other members MAY also be defined and used.
-       This claim MUST NOT be present in Subordinate Statements.<a href="#section-3-6.28.3" class="pilcrow">¶</a></p>
+<p id="section-3.2-1.8.3">
+       Other members MAY also be defined and used.<a href="#section-3.2-1.8.3" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
-<dt id="section-3-6.29">source_endpoint</dt>
-        <dd style="margin-left: 1.5em" id="section-3-6.30">
+</dl>
+</section>
+</div>
+<div id="ss_specific">
+<section id="section-3.3">
+        <h3 id="name-claims-that-must-or-may-appea">
+<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-claims-that-must-or-may-appea" class="section-name selfRef">Claims that MUST or MAY appear in Subordinate Statements but not Entity Configurations</a>
+        </h3>
+<span class="break"></span><dl class="dlNewline" id="section-3.3-1">
+          <dt id="section-3.3-1.1">constraints</dt>
+          <dd style="margin-left: 1.5em" id="section-3.3-1.2">
+              OPTIONAL. JSON object that defines Trust Chain constraints, as
+              described in <a href="#chain_constraints" class="auto internal xref">Section 6.2</a>. The constraints apply to the
+              Entity that is the subject of this Subordinate Statement as well
+              as to all Entities that are Subordinate to it.<a href="#section-3.3-1.2" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-3.3-1.3">metadata_policy</dt>
+          <dd style="margin-left: 1.5em" id="section-3.3-1.4">
+              OPTIONAL. JSON object that defines a metadata policy, as described
+              in <a href="#metadata_policy" class="auto internal xref">Section 6.1</a>. The metadata policy applies to the Entity
+              that is the subject of this Subordinate Statement as well as to
+              all Entities that are Subordinate to it. Applying to Subordinate
+              Entities distinguishes <code>metadata_policy</code>
+              from <code>metadata</code>, which only applies to
+              the subject itself.<a href="#section-3.3-1.4" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-3.3-1.5">metadata_policy_crit</dt>
+          <dd style="margin-left: 1.5em" id="section-3.3-1.6">
+              OPTIONAL.
+              Array of strings specifying critical metadata policy operators
+              other than the standard ones defined in
+              <a href="#standard_metadata_policy_operators" class="auto internal xref">Section 6.1.3.1</a> that MUST be
+              understood and processed. When included its value MUST NOT be the empty array
+              <code>[]</code>. If any of the listed policy
+              operators are not understood and supported, then the Subordinate
+              Statement and thus the Trust Chain that includes it MUST be
+              considered invalid.<a href="#section-3.3-1.6" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-3.3-1.7">source_endpoint</dt>
+          <dd style="margin-left: 1.5em" id="section-3.3-1.8">
               OPTIONAL. String containing the fetch endpoint URL
               from which the Entity Statement was issued,
               as specified in <a href="#fetch_endpoint" class="auto internal xref">Section 8.1</a>.
@@ -2659,30 +2694,41 @@ li > p:last-of-type:only-child {
        which can occur if the endpoint URL has changed,
        the current <code>federation_fetch_endpoint</code>
        location can be determined by retrieving
-       the Entity Configuration of the issuer.<a href="#section-3-6.30" class="pilcrow">¶</a>
+       the Entity Configuration of the issuer.<a href="#section-3.3-1.8" class="pilcrow">¶</a>
 </dd>
         <dd class="break"></dd>
-<dt id="section-3-6.31">trust_anchor</dt>
-        <dd style="margin-left: 1.5em" id="section-3-6.32">
+</dl>
+</section>
+</div>
+<section id="section-3.4">
+        <h3 id="name-claims-specific-to-explicit">
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-claims-specific-to-explicit" class="section-name selfRef">Claims Specific to Explicit Registration Responses</a>
+        </h3>
+<span class="break"></span><dl class="dlNewline" id="section-3.4-1">
+          <dt id="section-3.4-1.1">trust_anchor</dt>
+          <dd style="margin-left: 1.5em" id="section-3.4-1.2">
               OPTIONAL.  Its value MUST be the Entity Identifier of the Trust Anchor
                 that the OP selected to process the Explicit Registration request.
                 This claim is specific to Explicit Registration responses and is not a
-                general Entity Statement claim.<a href="#section-3-6.32" class="pilcrow">¶</a>
+                general Entity Statement claim.<a href="#section-3.4-1.2" class="pilcrow">¶</a>
 </dd>
-      <dd class="break"></dd>
+        <dd class="break"></dd>
 </dl>
-<p id="section-3-7">
-          Applications and protocols utilizing Entity Statements MAY specify
-          and use additional claims.<a href="#section-3-7" class="pilcrow">¶</a></p>
-<p id="section-3-8" class="keepWithNext">
+</section>
+<div id="es_example">
+<section id="section-3.5">
+        <h3 id="name-entity-statement-examples">
+<a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-entity-statement-examples" class="section-name selfRef">Entity Statement Examples</a>
+        </h3>
+<p id="section-3.5-1" class="keepWithNext">
             The following is a non-normative example of the JWT Claims Set for an Entity Statement.
             The example contains
             a critical extension <code>jti</code> (JWT ID) to the
             Entity Statement and one critical extension to the policy language
             <code>regexp</code>
-            (Regular expression).<a href="#section-3-8" class="pilcrow">¶</a></p>
+            (Regular expression).<a href="#section-3.5-1" class="pilcrow">¶</a></p>
 <span id="name-example-entity-statement-jw"></span><figure id="figure-2">
-        <div class="alignLeft art-text artwork" id="section-3-9.1">
+          <div class="alignLeft art-text artwork" id="section-3.5-2.1">
 <pre>
 {
   "iss": "https://feide.no",
@@ -2736,12 +2782,12 @@ li > p:last-of-type:only-child {
 </div>
 <figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
 <a href="#name-example-entity-statement-jw" class="selfRef">Example Entity Statement JWT Claims Set</a>
-        </figcaption></figure>
-<p id="section-3-10" class="keepWithNext">
+          </figcaption></figure>
+<p id="section-3.5-3" class="keepWithNext">
             The following is a non-normative example of
-            a <code>trust_mark_owners</code> claim value:<a href="#section-3-10" class="pilcrow">¶</a></p>
+            a <code>trust_mark_owners</code> claim value:<a href="#section-3.5-3" class="pilcrow">¶</a></p>
 <span id="name-example-trust_mark_owners-c"></span><figure id="figure-3">
-        <div class="alignLeft art-text artwork" id="section-3-11.1">
+          <div class="alignLeft art-text artwork" id="section-3.5-4.1">
 <pre>
 {
   "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf":
@@ -2765,12 +2811,12 @@ li > p:last-of-type:only-child {
 </div>
 <figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
 <a href="#name-example-trust_mark_owners-c" class="selfRef">Example <code>trust_mark_owners</code> Claim Value</a>
-        </figcaption></figure>
-<p id="section-3-12" class="keepWithNext">
+          </figcaption></figure>
+<p id="section-3.5-5" class="keepWithNext">
             The following is a non-normative example of
-            a <code>trust_mark_issuers</code> claim value:<a href="#section-3-12" class="pilcrow">¶</a></p>
+            a <code>trust_mark_issuers</code> claim value:<a href="#section-3.5-5" class="pilcrow">¶</a></p>
 <span id="name-example-trust_mark_issuers-"></span><figure id="figure-4">
-        <div class="alignLeft art-text artwork" id="section-3-13.1">
+          <div class="alignLeft art-text artwork" id="section-3.5-6.1">
 <pre>
 {
   "https://openid.net/certification/op": [],
@@ -2781,7 +2827,9 @@ li > p:last-of-type:only-child {
 </div>
 <figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
 <a href="#name-example-trust_mark_issuers-" class="selfRef">Example <code>trust_mark_issuers</code> Claim Value</a>
-        </figcaption></figure>
+          </figcaption></figure>
+</section>
+</div>
 </section>
 </div>
 <div id="trust_chain">
@@ -13323,6 +13371,10 @@ Host: op.umu.se
 <li class="normal" id="appendix-C-3.1">
           <p id="appendix-C-3.1.1">
      Fixed #237: The order of the elements resulting from merging two sets is not defined<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.2">
+          <p id="appendix-C-3.2.1">
+     Fixed #241: Restructured Entity Statement section.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
