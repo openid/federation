@@ -7522,6 +7522,21 @@ HTTP/1.1 302 Found
           as mandated in <xref target="fetching-es"/>.
 	</t>
       </section>
+          <section anchor="anchor_resolver" title="Trust Anchors and Resolvers Go Together">
+        <t>
+        If only one resolver is present in a federation, that entity should be
+        both Trust Anchor and Resolver. If so, users of the resolver will not have to
+        collect and evaluate Trust Chains for the Resolver. The Trust Anchor is by definition trusted
+        and if the entity also serves as Resolver, that service will be implicitly trusted.
+        </t>
+</section>
+    <section anchor="one_service" title="One Entity, One Service">
+        <t>
+        Apart from letting an entity provide both the Trust Anchor and Resolver services, there is a good reason for
+        having each entity only do one thing. The reason is that, later in time, it will be much easier to share specific services
+        between federations.
+        </t>
+    </section>
 
     </section>
 
@@ -10806,6 +10821,9 @@ Host: op.umu.se
       <t>
 	-45
 	<list style="symbols">
+     <t>
+    Fixed #216: Added two more implementation considerations.
+    </t>
 	  <t>
 	    Fixed #237: The order of the elements resulting from merging two sets is not defined
     </t>
