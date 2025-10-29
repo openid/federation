@@ -2869,27 +2869,45 @@ li > p:last-of-type:only-child {
  <code>trust_mark_type</code> Claim value in the
  Trust Mark JWT that is the value of the
  <code>trust_mark</code> member.
- Validate each Trust Mark as described in TBD.<a href="#section-3.5-2.18.1" class="pilcrow">¶</a></p>
+ Validate each Trust Mark as described in
+ <a href="#trust-mark-validation" class="auto internal xref">Section 7.3</a>.<a href="#section-3.5-2.18.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.5-2.19">
             <p id="section-3.5-2.19.1">
- If the <code>trust_mark issuers</code> Claim is present,
- TBD<a href="#section-3.5-2.19.1" class="pilcrow">¶</a></p>
+ If the <code>trust_mark_issuers</code> Claim is present,
+ validate that its value is a JSON object with
+ Trust Mark type identifiers as the member names and
+ arrays of Entity Identifiers as the values.<a href="#section-3.5-2.19.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.5-2.20">
             <p id="section-3.5-2.20.1">
  If the <code>trust_mark_owners</code> Claim is present,
- TBD<a href="#section-3.5-2.20.1" class="pilcrow">¶</a></p>
+ validate that its value is a JSON object with
+ Trust Mark type identifiers as the member names and
+ values that are JSON objects containing
+ a <code>sub</code> member with a value that is
+ an Entity Identifier and
+ a <code>jwks</code> member with a value that is
+ a JSON Web Key Set.<a href="#section-3.5-2.20.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.5-2.21">
             <p id="section-3.5-2.21.1">
  If the <code>source_endpoint</code> Claim is present,
- TBD<a href="#section-3.5-2.21.1" class="pilcrow">¶</a></p>
+ validate that its value is a URL.
+ Implementations MAY also make a fetch call to the the URL
+ to validate that this is the fetch endpoint
+ from which the Entity Statement was issued.<a href="#section-3.5-2.21.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.5-2.22">
             <p id="section-3.5-2.22.1">
  If the <code>trust_anchor</code> Claim is present,
- TBD<a href="#section-3.5-2.22.1" class="pilcrow">¶</a></p>
+ validate that its value is an Entity Identifier.
+ Implementations MAY retrieve the Entity Configuration for the
+ Entity Identifier and validate that it is a Trust Anchor,
+ and they MAY also validate that it is the Trust Anchor
+ used for the Explicit Registration.
+ This Claim MUST NOT be present in Entity Statements that are not
+ Explicit Registration responses.<a href="#section-3.5-2.22.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
 <p id="section-3.5-3">
