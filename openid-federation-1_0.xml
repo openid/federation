@@ -888,23 +888,41 @@
 		<spanx style="verb">trust_mark_type</spanx> Claim value in the
 		Trust Mark JWT that is the value of the
 		<spanx style="verb">trust_mark</spanx> member.
-		Validate each Trust Mark as described in TBD.
+		Validate each Trust Mark as described in
+		<xref target="trust-mark-validation"/>.
 	      </t>
 	      <t>
-		If the <spanx style="verb">trust_mark issuers</spanx> Claim is present,
-		TBD
+		If the <spanx style="verb">trust_mark_issuers</spanx> Claim is present,
+		validate that its value is a JSON object with
+		Trust Mark type identifiers as the member names and
+		arrays of Entity Identifiers as the values.
 	      </t>
 	      <t>
 		If the <spanx style="verb">trust_mark_owners</spanx> Claim is present,
-		TBD
+		validate that its value is a JSON object with
+		Trust Mark type identifiers as the member names and
+		values that are JSON objects containing
+		a <spanx style="verb">sub</spanx> member with a value that is
+		an Entity Identifier and
+		a <spanx style="verb">jwks</spanx> member with a value that is
+		a JSON Web Key Set.
 	      </t>
 	      <t>
 		If the <spanx style="verb">source_endpoint</spanx> Claim is present,
-		TBD
+		validate that its value is a URL.
+		Implementations MAY also make a fetch call to the the URL
+		to validate that this is the fetch endpoint
+		from which the Entity Statement was issued.
 	      </t>
 	      <t>
 		If the <spanx style="verb">trust_anchor</spanx> Claim is present,
-		TBD
+		validate that its value is an Entity Identifier.
+		Implementations MAY retrieve the Entity Configuration for the
+		Entity Identifier and validate that it is a Trust Anchor,
+		and they MAY also validate that it is the Trust Anchor
+		used for the Explicit Registration.
+		This Claim MUST NOT be present in Entity Statements that are not
+		Explicit Registration responses.
 	      </t>
 	    </list>
 	  </t>
