@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="28" month="October" year="2025"/>
+    <date day="30" month="October" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -804,8 +804,8 @@
 		one of the values in the
 		<spanx style="verb">authority_hints</spanx> array
 		in the Entity Configuration for the Entity whose Entity Identifier
-		is the value of the <spanx style="verb">sub</spanx> Claim.
-		<!-- TBD Review whether this statement should be a MUST. -->
+		is the value of the <spanx style="verb">sub</spanx> Claim;
+		otherwise the Federation graph is not well-formed.
 	      </t>
 	      <t>
 		The current time MUST be after the time represented by the
@@ -821,41 +821,6 @@
 		The <spanx style="verb">jwks</spanx> (JWK Set) Claim
 		MUST be present, with a value that is a valid
 		JWK Set <xref target="RFC7517"/>.
-	      </t>
-	      <t>
-		If the <spanx style="verb">crit</spanx> Claim is present,
-		then each array element in this claim's value
-		MUST be a string representing an Entity Statement claim
-		that is not defined by this specification
-		and that claim MUST be understood
-		and be able to be processed by the implementation.
-	      </t>
-	      <t>
-		If the <spanx style="verb">metadata</spanx> Claim is present,
-		verify that its value is syntactially correct,
-		not using <spanx style="verb">null</spanx> as metadata values,
-		as specified in <xref target="metadata"/>.
-	      </t>
-	      <t>
-		If the <spanx style="verb">metadata_policy</spanx> Claim is present,
-		the Entity Statement MUST NOT be an Entity Configuration.
-		Verify that its value is syntactially correct,
-		as specified in <xref target="metadata_policy"/>.
-	      </t>
-	      <t>
-		If the <spanx style="verb">metadata_policy_crit</spanx> Claim is present,
-		the Entity Statement MUST NOT be an Entity Configuration.
-		Each array element in this claim's value
-		MUST be a string representing a Metadata Policy operator
-		that is not defined by this specification
-		and that operator MUST be understood
-		and be able to be processed by the implementation.
-	      </t>
-	      <t>
-		If the <spanx style="verb">constraints</spanx> Claim is present,
-		the Entity Statement MUST NOT be an Entity Configuration.
-		Verify that its value is syntactically correct,
-		as specified in <xref target="chain_constraints"/>.
 	      </t>
 	      <t>
 		Obtain the Entity Configuration for the issuing Entity -
@@ -882,8 +847,54 @@
 		<spanx style="verb">kid</spanx> value.
 	      </t>
 	      <t>
+		If the <spanx style="verb">crit</spanx> Claim is present,
+		then each array element in this claim's value
+		MUST be a string representing an Entity Statement claim
+		that is not defined by this specification
+		and that claim MUST be understood
+		and be able to be processed by the implementation.
+	      </t>
+	      <t>
+		If the <spanx style="verb">authority_hints</spanx> Claim is present,
+		the Entity Statement MUST be an Entity Configuration.
+		Verify that its value is syntactially correct,
+		as specified in <xref target="authority_hints"/>.
+		Implementations MAY also validate that the Entity is a Subordinate
+		of each Entity whose Entity Identifier is listed in the
+		<spanx style="verb">authority_hints</spanx> array.
+	      </t>
+	      <t>
+		If the <spanx style="verb">metadata</spanx> Claim is present,
+		verify that its value is syntactially correct,
+		not using <spanx style="verb">null</spanx> as metadata values,
+		as specified in <xref target="metadata"/>.
+	      </t>
+	      <t>
+		If the <spanx style="verb">metadata_policy</spanx> Claim is present,
+		the Entity Statement be a Subordinate Statement.
+		Verify that its value is syntactially correct,
+		as specified in <xref target="metadata_policy"/>.
+	      </t>
+	      <t>
+		If the <spanx style="verb">metadata_policy_crit</spanx> Claim is present,
+		the Entity Statement be a Subordinate Statement.
+		Each array element in this claim's value
+		MUST be a string representing a Metadata Policy operator
+		that is not defined by this specification
+		and that operator MUST be understood
+		and be able to be processed by the implementation.
+	      </t>
+	      <t>
+		If the <spanx style="verb">constraints</spanx> Claim is present,
+		the Entity Statement be a Subordinate Statement.
+		Verify that its value is syntactically correct,
+		as specified in <xref target="chain_constraints"/>.
+	      </t>
+	      <t>
 		If the <spanx style="verb">trust_marks</spanx> Claim is present,
-		for each element of the array, validate that the
+		the Entity Statement MUST be an Entity Configuration.
+		For each element of the array that is the Claim value,
+		validate that the
 		<spanx style="verb">trust_mark_type</spanx> member value matches the
 		<spanx style="verb">trust_mark_type</spanx> Claim value in the
 		Trust Mark JWT that is the value of the
@@ -893,13 +904,15 @@
 	      </t>
 	      <t>
 		If the <spanx style="verb">trust_mark_issuers</spanx> Claim is present,
-		validate that its value is a JSON object with
+		the Entity Statement MUST be an Entity Configuration.
+		Validate that its Claim value is a JSON object with
 		Trust Mark type identifiers as the member names and
 		arrays of Entity Identifiers as the values.
 	      </t>
 	      <t>
 		If the <spanx style="verb">trust_mark_owners</spanx> Claim is present,
-		validate that its value is a JSON object with
+		the Entity Statement MUST be an Entity Configuration.
+		Validate that its Claim value is a JSON object with
 		Trust Mark type identifiers as the member names and
 		values that are JSON objects containing
 		a <spanx style="verb">sub</spanx> member with a value that is
@@ -909,7 +922,8 @@
 	      </t>
 	      <t>
 		If the <spanx style="verb">source_endpoint</spanx> Claim is present,
-		validate that its value is a URL.
+		the Entity Statement MUST be a Subordinate Statement.
+		Validate that its Claim value is a URL.
 		Implementations MAY also make a fetch call to the URL
 		to validate that this is the fetch endpoint
 		from which the Entity Statement was issued.
