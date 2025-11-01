@@ -893,14 +893,18 @@
 	      <t>
 		If the <spanx style="verb">trust_marks</spanx> Claim is present,
 		the Entity Statement MUST be an Entity Configuration.
-		For each element of the array that is the Claim value,
-		validate that the
-		<spanx style="verb">trust_mark_type</spanx> member value matches the
+		Validate that the syntax of this Claim Value conforms to the
+		Claim definition.
+		In particular, for each element of the array that is the Claim value,
+		validate that there is a <spanx style="verb">trust_mark_type</spanx>
+		member whose value matches the
 		<spanx style="verb">trust_mark_type</spanx> Claim value in the
 		Trust Mark JWT that is the value of the
 		<spanx style="verb">trust_mark</spanx> member.
-		Validate each Trust Mark as described in
-		<xref target="trust-mark-validation"/>.
+		Validating the syntax is separate from evaluating whether particular
+		Trust Marks are issued by a trusted party and are trusted;
+		that process is described in <xref target="trust-mark-validation"/>
+		and MAY be performed as a separate step from syntactic validation.
 	      </t>
 	      <t>
 		If the <spanx style="verb">trust_mark_issuers</spanx> Claim is present,
