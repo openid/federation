@@ -54,7 +54,7 @@
     intervaltree 3.1.0
     Jinja2 3.1.2
     lxml 6.0.2
-    platformdirs 4.4.0
+    platformdirs 4.5.0
     pycountry 24.6.1
     PyYAML 6.0.1
     requests 2.31.0
@@ -2917,11 +2917,14 @@ li > p:last-of-type:only-child {
           <li id="section-3.5-2.23">
             <p id="section-3.5-2.23.1">
  If the <code>trust_anchor</code> Claim is present,
- validate that its value is an Entity Identifier.
- Implementations MAY retrieve the Entity Configuration for the
- Entity Identifier and validate that it is a Trust Anchor,
- and they MAY also validate that it is the Trust Anchor
- used for the Explicit Registration.
+ validate that its value is a URL
+ using the <code>https</code> scheme.
+ Implementations MAY validate that the Entity Identifier matches
+ one of the Trust Anchors configured for the deployment.
+ Furthermore, implementations MAY validate that the
+ Entity Configuration for the Entity Identifier contains
+ information compatible with the configured Trust Anchor information
+ - especially the keys.
  This Claim MUST NOT be present in Entity Statements that are not
  Explicit Registration responses.<a href="#section-3.5-2.23.1" class="pilcrow">¶</a></p>
 </li>
