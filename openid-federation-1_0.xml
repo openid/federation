@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="25" month="October" year="2025"/>
+    <date day="2" month="November" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -761,9 +761,200 @@
                 This claim is specific to Explicit Registration responses and is not a
                 general Entity Statement claim.
             </t>
-                </list>
-                </section>
+          </list>
+        </section>
+
+	<section anchor="ESValidation" title="Entity Statement Validation">
+	  <t>
+	    Entity Statements MUST be validated in the following manner.
+	    These steps MAY be performed in a different order, provided that
+	    the result - accepting or rejecting the Entity Statement - is the same.
+	    <list style="numbers">
+	      <t>
+		The Entity Statement MUST be a signed JWT.
+	      </t>
+	      <t>
+		The Entity Statement MUST have a
+		<spanx style="verb">typ</spanx> header parameter with the value
+		<spanx style="verb">entity-statement+jwt</spanx>.
+	      </t>
+	      <t>
+		The Entity Statement MUST have an
+		<spanx style="verb">alg</spanx> (algorithm) header parameter
+		with a value that is an acceptable JWS signing algorithm;
+		it MUST NOT be <spanx style="verb">none</spanx>.
+	      </t>
+	      <t>
+		The Entity Identifier of the Entity to which the Entity Statement refers
+		MUST match the value of the
+		<spanx style="verb">sub</spanx> (subject) Claim.
+	      </t>
+	      <t>
+		The Entity Statement MUST have an
+		<spanx style="verb">iss</spanx> (issuer) Claim
+		with a value that is a valid Entity Identifier.
+	      </t>
+	      <t>
+		When the <spanx style="verb">iss</spanx> (issuer) Claim value
+		matches the <spanx style="verb">sub</spanx> (subject) Claim value,
+		then the Entity Statement is this Entity's Entity Configuration.
+		When they do not match, the Entity Statement is a Subordinate Statement.
+		When the Entity Statement is a Subordinate Statement,
+		the <spanx style="verb">iss</spanx> Claim value MUST match
+		one of the values in the
+		<spanx style="verb">authority_hints</spanx> array
+		in the Entity Configuration for the Entity whose Entity Identifier
+		is the value of the <spanx style="verb">sub</spanx> Claim;
+		otherwise the Federation graph is not well-formed.
+	      </t>
+	      <t>
+		The current time MUST be after the time represented by the
+		<spanx style="verb">iat</spanx> (issued at) Claim
+		(possibly allowing for some small leeway to account for clock skew).
+	      </t>
+	      <t>
+		The current time MUST be before the time represented by the
+		<spanx style="verb">exp</spanx> (expiration) Claim
+		(possibly allowing for some small leeway to account for clock skew).
+	      </t>
+	      <t>
+		The <spanx style="verb">jwks</spanx> (JWK Set) Claim
+		MUST be present, with a value that is a valid
+		JWK Set <xref target="RFC7517"/>.
+	      </t>
+	      <t>
+		Obtain the Entity Configuration for the issuing Entity -
+		the Entity with the Issuer Identifer found in the Entity Statement's
+		<spanx style="verb">iss</spanx> (issuer) Claim.
+		When the <spanx style="verb">iss</spanx> and
+		<spanx style="verb">sub</spanx> Claim values match, this is
+		the Entity Statement being validated itself.
+		Otherwise, this can be obtained either from a Trust Chain or
+		by retrieving it as described in
+		<xref target="federation_configuration"/>.
+	      </t>
+	      <t>
+		The Entity Statement's
+		<spanx style="verb">kid</spanx> (Key ID) header parameter value
+		MUST be a non-zero length string and
+		MUST exactly match the <spanx style="verb">kid</spanx> value
+		for a key in the <spanx style="verb">jwks</spanx> (JWK Set) Claim
+		of the Entity Configuration of the issuing Entity.
+	      </t>
+	      <t>
+		The Entity Statement's signature MUST validate using
+		the issuing Entity's key identified by the
+		<spanx style="verb">kid</spanx> value.
+	      </t>
+	      <t>
+		If the <spanx style="verb">crit</spanx> Claim is present,
+		then each array element in this claim's value
+		MUST be a string representing an Entity Statement claim
+		that is not defined by this specification
+		and that claim MUST be understood
+		and be able to be processed by the implementation.
+	      </t>
+	      <t>
+		If the <spanx style="verb">authority_hints</spanx> Claim is present,
+		the Entity Statement MUST be an Entity Configuration.
+		Verify that its value is syntactially correct,
+		as specified in <xref target="authority_hints"/>.
+		Implementations MAY also validate that the Entity is a Subordinate
+		of each Entity whose Entity Identifier is listed in the
+		<spanx style="verb">authority_hints</spanx> array.
+	      </t>
+	      <t>
+		If the <spanx style="verb">metadata</spanx> Claim is present,
+		verify that its value is syntactially correct,
+		not using <spanx style="verb">null</spanx> as metadata values,
+		as specified in <xref target="metadata"/>.
+	      </t>
+	      <t>
+		If the <spanx style="verb">metadata_policy</spanx> Claim is present,
+		the Entity Statement be a Subordinate Statement.
+		Verify that its value is syntactially correct,
+		as specified in <xref target="metadata_policy"/>.
+	      </t>
+	      <t>
+		If the <spanx style="verb">metadata_policy_crit</spanx> Claim is present,
+		the Entity Statement be a Subordinate Statement.
+		Each array element in this claim's value
+		MUST be a string representing a Metadata Policy operator
+		that is not defined by this specification
+		and that operator MUST be understood
+		and be able to be processed by the implementation.
+	      </t>
+	      <t>
+		If the <spanx style="verb">constraints</spanx> Claim is present,
+		the Entity Statement be a Subordinate Statement.
+		Verify that its value is syntactically correct,
+		as specified in <xref target="chain_constraints"/>.
+	      </t>
+	      <t>
+		If the <spanx style="verb">trust_marks</spanx> Claim is present,
+		the Entity Statement MUST be an Entity Configuration.
+		Validate that the syntax of this Claim Value conforms to the
+		Claim definition.
+		In particular, for each element of the array that is the Claim value,
+		validate that there is a <spanx style="verb">trust_mark_type</spanx>
+		member whose value matches the
+		<spanx style="verb">trust_mark_type</spanx> Claim value in the
+		Trust Mark JWT that is the value of the
+		<spanx style="verb">trust_mark</spanx> member.
+		Validating the syntax is separate from evaluating whether particular
+		Trust Marks are issued by a trusted party and are trusted;
+		that process is described in <xref target="trust-mark-validation"/>
+		and MAY be performed as a separate step from syntactic validation.
+	      </t>
+	      <t>
+		If the <spanx style="verb">trust_mark_issuers</spanx> Claim is present,
+		the Entity Statement MUST be an Entity Configuration.
+		Validate that its Claim value is a JSON object with
+		Trust Mark type identifiers as the member names and
+		arrays of Entity Identifiers as the values.
+	      </t>
+	      <t>
+		If the <spanx style="verb">trust_mark_owners</spanx> Claim is present,
+		the Entity Statement MUST be an Entity Configuration.
+		Validate that its Claim value is a JSON object with
+		Trust Mark type identifiers as the member names and
+		values that are JSON objects containing
+		a <spanx style="verb">sub</spanx> member with a value that is
+		an Entity Identifier and
+		a <spanx style="verb">jwks</spanx> member with a value that is
+		a JSON Web Key Set.
+	      </t>
+	      <t>
+		If the <spanx style="verb">source_endpoint</spanx> Claim is present,
+		the Entity Statement MUST be a Subordinate Statement.
+		Validate that its Claim value is a URL.
+		Implementations MAY also make a fetch call to the URL
+		to validate that this is the fetch endpoint
+		from which the Entity Statement was issued.
+	      </t>
+	      <t>
+		If the <spanx style="verb">trust_anchor</spanx> Claim is present,
+		validate that its value is a URL
+		using the <spanx style="verb">https</spanx> scheme.
+		Implementations SHOULD validate that the Entity Identifier matches
+		one of the Trust Anchors configured for the deployment.
+		Furthermore, implementations SHOULD validate that the
+		Entity Configuration for the Entity Identifier contains
+		information compatible with the configured Trust Anchor information
+		- especially the keys.
+		This Claim MUST NOT be present in Entity Statements that are not
+		Explicit Registration responses.
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    If any of these validation steps fail,
+	    the Entity Statement MUST be rejected.
+	  </t>
+	</section>
+
           <section title="Entity Statement Examples" anchor="es_example">
+
         <figure>
           <preamble>
             The following is a non-normative example of the JWT Claims Set for an Entity Statement.
@@ -876,6 +1067,7 @@
 ]]></artwork>
         </figure>
           </section>
+
       </section>
 
       <section title="Trust Chain" anchor="trust_chain">
@@ -10829,6 +11021,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #241: Restructured Entity Statement section.
+	  </t>
+	  <t>
+	    Fixed #84: Added section on validating Entity Statements.
 	  </t>
 	</list>
       </t>
