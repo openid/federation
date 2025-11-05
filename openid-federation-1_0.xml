@@ -3760,20 +3760,13 @@
 	  </t>
       <t>
         Henceforth, "instance" is used as a shorthand for Trust Mark instance. An
-        instance is a signed JWT.
+        instance is a signed JWT. The Trust Anchor referenced below is a Trust Anchor that
+          was successfully used when establishing trust in the Trust Mark Issuer.
+      </t><t>
         To validate an instance, the following validation steps MUST be performed.
         Please note that if any of these validation checks fail, the entire validation
         process fails and the instance is considered invalid.
         <list style="numbers">
-          <t>
-            Verify that the value of the instance’s
-            <spanx style="verb">trust_mark_type</spanx> is listed in
-            the Trust Anchor's <spanx style="verb">trust_mark_issuers</spanx>, and if so,
-            that the instance's <spanx style="verb">iss</spanx> appears
-            in the corresponding list of Entity Identifiers. Note that the list may be
-            an empty list, which signifies that anyone can issue a Trust Mark
-            with the <spanx style="verb">trust_mark_type</spanx> in question.
-          </t>
           <t>
             Validate the signature of the instance and verify that it has not
             expired and/or send a query to the Trust Mark Issuer's Trust Mark
@@ -7715,7 +7708,38 @@ HTTP/1.1 302 Found
         between federations.
         </t>
     </section>
-
+    <section anchor="trust_mark_policy" title="Trust Mark policies">
+        <t>
+            When validating an Entity Statement looking at the trust marks can be split into three parts.
+            <list style="hanging">
+                <t hangText="Validating trust marks in the context of validating an Entity Statement">
+            <vspace/>
+                    According to the text on Entity Statement Validation validating a Trust Mark is confined to
+                    validating the syntax of the claim value and verifying the trust_mark_type connection.
+                </t>
+                <t hangText="Validating a specific Trust Mark">
+                    <vspace/>
+                    This is what is described in section <xref target="trust-mark-validation"/>.
+                    In order to validate a Trust Mark the entity must find a trust chain for the Trust Mark Issuer to a
+                    Trust Anchor the entity trusts. This has nothing to do with which federation that will later
+                    be used for the application protocol.
+                </t>
+                <t hangText="Deciding which Trust Marks to use">
+                    <vspace/>
+                    A federation may have a policy that states that only trust marks that
+                    match a certain critera SHOULD be used.
+                    Such a criteria could be that the Trust Mark's <spanx style="verb">trust_mark_type</spanx> must be
+                    listed in the Trust Anchor's <spanx style="verb">trust_mark_issuers</spanx>,
+                    and if so, that the instance's <spanx style="verb">iss</spanx> appears in the corresponding list of
+                    Entity Identifiers. Note that the list may be an empty list, which signifies that anyone can issue
+                    a Trust Mark with the <spanx style="verb">trust_mark_type</spanx> in question.
+                    Such Trust Marks can appear for various reasons, such as the Entity Configuration including Trust Marks
+                    associated with another federation, or Trust Marks intended for specific
+                    purposes or Entity audiences.
+                </t>
+            </list>
+        </t>
+    </section>
     </section>
 
     <section anchor="Security" title="Security Considerations">
