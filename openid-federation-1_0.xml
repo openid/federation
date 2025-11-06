@@ -3744,6 +3744,43 @@
 	    Additional claims MAY be defined and used in conjunction with the claims above.
 	  </t>
 	  </section>
+            <section title="Validating a Trust Mark Delegation" anchor="trust-mark-delegation-validation">
+                <t>
+                    Validating a Trust Mark Delegation means validating a Trust Mark Delegation instance represented
+                    by a specific signed JWT.
+                </t>
+                <t>Henceforth, "delegation" is used as a shorthand for a Trust Mark Delegation JWT.
+                    The Trust Anchor referenced below is a Trust Anchor that has been successfully used when
+                    establishing trust in the Trust Mark Issuer.
+                </t>
+                <t>
+                    To validate a delegation, the following validation steps MUST be performed.
+                    Please note that if any of these validation checks fail, the entire validation
+                    process fails and the delegation is considered invalid.
+        <list style="numbers">
+            <t>The delegation MUST be a signed JWT</t>
+            <t>The delegation MUST have a <spanx style="verb">typ</spanx> header with the value
+                <spanx style="verb">trust-mark-delegation+jwt</spanx>
+            </t>
+            <t>The delegation MUST have an <spanx style="verb">alg</spanx> (algorithm) header parameter with a value
+                that is an acceptable JWS signing algorithm; it MUST NOT be <spanx style="verb">none</spanx>
+            </t>
+            <t>The Entity Identifier of the Trust Mark issuer Must match the value of <spanx style="verb">sub</spanx>
+                in the delegation</t>
+            <t>The Entity Identifier of the Trust Mark owner MUST match the value of <spanx style="verb">iss</spanx>
+                in the delegation.</t>
+            <t>The current time MUST be after the time represented by the iat (issued at) Claim in the delegation
+                (possibly allowing for some small leeway to account for clock skew).</t>
+            <t>The current time MUST be before the time represented by the exp (expiration) Claim in the delegation
+                (possibly allowing for some small leeway to account for clock skew).</t>
+            <t>The delegation's signature MUST validate using one of the Trust Mark Owner's keys
+                identified by the value of the header parameter <spanx style="verb">kid</spanx>.
+                The Trust Mark Owner's keys can be found in the <spanx style="verb">trust_mark_owners</spanx> claim in
+                the Trust Anchor's Entity Configuration.
+            </t>
+        </list>
+      </t>
+            </section>
         </section>
         <section title="Validating a Trust Mark" anchor="trust-mark-validation">
           <t>
@@ -3759,58 +3796,36 @@
               <xref target="resolving_trust"/> prior to starting the Trust Mark validation process defined below.
 	  </t>
       <t>
-        Henceforth, "instance" is used as a shorthand for Trust Mark instance. An
-        instance is a signed JWT. The Trust Anchor referenced below is a Trust Anchor that
-          was successfully used when establishing trust in the Trust Mark Issuer.
+        Henceforth, "instance" is used as a shorthand for Trust Mark instance.
+          The Trust Anchor referenced below is a Trust Anchor that
+          has been successfully used when establishing trust in the Trust Mark Issuer.
       </t><t>
         To validate an instance, the following validation steps MUST be performed.
         Please note that if any of these validation checks fail, the entire validation
         process fails and the instance is considered invalid.
         <list style="numbers">
-          <t>
-            Validate the signature of the instance and verify that it has not
-            expired and/or send a query to the Trust Mark Issuer's Trust Mark
-            Status endpoint. The Trust Mark Status endpoint will
-            check if the instance has been issued by itself and that it is
-            still valid, in both signature and expiration, and that it has not been revoked.
-          </t>
-          <t>
-            If the <spanx style="verb">trust_mark_type</spanx> of the instance
-            appears in the <spanx style="verb">trust_mark_owners</spanx> claim
-            of the Trust Anchor's Entity Configuration,
-            verify that the Trust Mark contains a
-            <spanx style="verb">delegation</spanx> claim. If the
-            <spanx style="verb">delegation</spanx> claim is missing, the
-            validation MUST fail. The claims
-            for the Trust Mark type identifier in
-            <spanx style="verb">trust_mark_owners</spanx> are used in
-            the following way:
-            <list style="letters">
-              <t>
-                A key from the <spanx style="verb">jwks</spanx> claim MUST be
-                able to validate the signature of the signed delegation JWT.
-              </t>
-              <t>
-                The <spanx style="verb">sub</spanx> claim of the instance MUST match the
-                issuer (<spanx style="verb">iss</spanx>) of the delegation JWT
-              </t>
-            </list>
-              Furthermore, the following requirements MUST be met:
-              <list style="letters">
-                  <t>
-                      If the delegation JWT has an <spanx style="verb">exp</spanx> claim,
-                      the expiration time MUST NOT have been reached.
-                  </t>
-                  <t>
-                      The <spanx style="verb">sub</spanx> claim in the delegation JWT
-                      MUST be equal to the issuer of the instance.
-                  </t>
-                  <t>
-                      The <spanx style="verb">trust_mark_type</spanx> MUST be the same
-                      in the delegation JWT as in the instance.
-                  </t>
-              </list>
-          </t>
+             <t>The instance MUST be a signed JWT</t>
+            <t>The instance MUST have a <spanx style="verb">typ</spanx> header with the value
+                <spanx style="verb">trust-mark+jwt</spanx>
+            </t>
+            <t>The instance MUST have an <spanx style="verb">alg</spanx> (algorithm) header parameter with a value
+                that is an acceptable JWS signing algorithm; it MUST NOT be none.
+            </t>
+            <t>The Entity Identifier of the Entity whose Entity Configuration contains the instance MUST
+                match the value of the claim <spanx style="verb">sub</spanx> in the Trust Mark</t>
+            <t>The current time MUST be after the time represented by the iat (issued at) Claim
+                (possibly allowing for some small leeway to account for clock skew).</t>
+            <t>The current time MUST be before the time represented by the exp (expiration) Claim
+                (possibly allowing for some small leeway to account for clock skew).</t>
+            <t>The instance's signature MUST validate using the Trust Mark issuer's key
+                identified by the <spanx style="verb">kid</spanx> value.
+            </t>
+            <t>If the <spanx style="verb">trust_mark_type</spanx> of the instance appears in the
+                <spanx style="verb">trust_mark_owners</spanx> claim in the Trust Anchor's
+                Entity Configuration, then the instance MUST contain a
+                <spanx style="verb">delegation</spanx> claim.</t>
+            <t>If there is a <spanx style="verb">delegation</spanx> claim in the instance, the value of that
+            claim MUST be validated according to <xref target="trust-mark-delegation-validation"/></t>
         </list>
       </t>
 	  <t>
@@ -3822,8 +3837,7 @@
 	  <t>
 	    As an alternative to the above procedure for validating Trust Marks,
 	    implementations MAY use the Trust Mark Status endpoint to verify that the
-	    Trust Mark is still active,
-	    as described in <xref target="status_endpoint"/>.
+	    Trust Mark is valid and still active, as described in <xref target="status_endpoint"/>.
 	  </t>
         </section>
         <section title="Trust Mark Examples" anchor="trust_example">
@@ -7710,12 +7724,13 @@ HTTP/1.1 302 Found
     </section>
     <section anchor="trust_mark_policy" title="Trust Mark policies">
         <t>
-            When validating an Entity Statement looking at the trust marks can be split into three parts.
+            When validating trust marks in an Entity Statement, it can be split into three parts.
             <list style="hanging">
                 <t hangText="Validating trust marks in the context of validating an Entity Statement">
             <vspace/>
-                    According to the text on Entity Statement Validation validating a Trust Mark is confined to
-                    validating the syntax of the claim value and verifying the trust_mark_type connection.
+                    According to the text on Entity Statement Validation (TODO reference to be added) validating a
+                    Trust Mark is confined to validating the syntax of the claim value and verifying the
+                    <spanx style="verb">trust_mark_type</spanx> connection.
                 </t>
                 <t hangText="Validating a specific Trust Mark">
                     <vspace/>
@@ -7727,8 +7742,10 @@ HTTP/1.1 302 Found
                 <t hangText="Deciding which Trust Marks to use">
                     <vspace/>
                     A federation may have a policy that states that only trust marks that
-                    match a certain critera SHOULD be used.
-                    Such a criteria could be that the Trust Mark's <spanx style="verb">trust_mark_type</spanx> must be
+                    match a certain criteria SHOULD be used.
+                    <vspace/>
+                    An example of such a criteria could be that the Trust Mark's
+                    <spanx style="verb">trust_mark_type</spanx> must be
                     listed in the Trust Anchor's <spanx style="verb">trust_mark_issuers</spanx>,
                     and if so, that the instance's <spanx style="verb">iss</spanx> appears in the corresponding list of
                     Entity Identifiers. Note that the list may be an empty list, which signifies that anyone can issue
@@ -7736,6 +7753,10 @@ HTTP/1.1 302 Found
                     Such Trust Marks can appear for various reasons, such as the Entity Configuration including Trust Marks
                     associated with another federation, or Trust Marks intended for specific
                     purposes or Entity audiences.
+                    <vspace/>
+                    An Entity MAY also choose, at its own discretion, to utilize Trust Marks presented to it that are not
+                    recognized within the federation, and where the accreditation authority is established by an
+                    out-of-band mechanism.
                 </t>
             </list>
         </t>
