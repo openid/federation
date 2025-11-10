@@ -752,12 +752,30 @@
               </list></t>
               </section>
 
-            <section title="Claims Specific to Explicit Registration Responses">
-                <list style="hanging">
+	<section title="Claims Specific to Explicit Registration Requests"
+		 anchor="explicit-reg-request-specific">
+	  <list style="hanging">
+            <t hangText="peer_trust_chain">
+              <vspace/>
+              OPTIONAL.  Array containing the sequence of Entity Statements
+	      that comprise the Trust Chain between
+	      the OP that the Authentication Request is being sent to
+	      and the Trust Anchor selected by the RP,
+	      as specified in <xref target="peer_trust_chain-claim"/>.
+	      This claim is specific to Explicit Registration requests
+	      and is not a general Entity Statement claim.
+            </t>
+          </list>
+        </section>
+
+	<section title="Claims Specific to Explicit Registration Responses"
+		 anchor="explicit-reg-response-specific">
+	  <list style="hanging">
             <t hangText="trust_anchor">
               <vspace/>
               OPTIONAL.  Its value MUST be the Entity Identifier of the Trust Anchor
-                that the OP selected to process the Explicit Registration request.
+                that the OP selected to process the Explicit Registration request,
+		as specified in <xref target="trust_anchor-claim"/>.
                 This claim is specific to Explicit Registration responses and is not a
                 general Entity Statement claim.
             </t>
@@ -933,6 +951,17 @@
 		from which the Entity Statement was issued.
 	      </t>
 	      <t>
+		If the <spanx style="verb">peer_trust_chain</spanx> Claim is present,
+		validate that its value is a syntactically valid Trust Chain,
+		as specified in <xref target="trust_chain"/>.
+		Implementations SHOULD validate that the Entity Identifier
+		for the Trust Anchor at the root of the Trust Chain matches
+		one of the Trust Anchors configured for the deployment.
+		This Claim MUST NOT be present in Entity Statements that are not
+		Explicit Registration requests
+		unless its use is otherwise specified in an extension being employed.
+	      </t>
+	      <t>
 		If the <spanx style="verb">trust_anchor</spanx> Claim is present,
 		validate that its value is a URL
 		using the <spanx style="verb">https</spanx> scheme.
@@ -943,7 +972,8 @@
 		information compatible with the configured Trust Anchor information
 		- especially the keys.
 		This Claim MUST NOT be present in Entity Statements that are not
-		Explicit Registration responses.
+		Explicit Registration responses
+		unless its use is otherwise specified in an extension being employed.
 	      </t>
 	    </list>
 	  </t>
@@ -1287,7 +1317,7 @@
           JSON array containing the sequence of the statements
           that proves the trust relationship between the issuer of the
           <xref target="RFC7515">JWS</xref>
-          and the selected Trust Anchor, sorted as shown in <xref target="trust_chain"/>.
+          and the selected Trust Anchor, sorted as specified in <xref target="trust_chain"/>.
           The Trust Chain contains the public key used to verify the
           <xref target="RFC7515">JWS</xref>.
           The issuer of the JWS SHOULD select the Trust Anchor that it has in common
@@ -1303,7 +1333,7 @@
           <spanx style="verb">trust_chain</spanx> header parameter, because
           the <spanx style="verb">trust_chain</spanx>
           parameter is intended to be part of its JWS payload, as defined in
-          <xref target="trust_chain_param"/>.
+          <xref target="trust_chain-param"/>.
           Use of this header parameter is OPTIONAL.
           </t>
 
@@ -4572,7 +4602,7 @@ Host: openid.sunet.se
             The resolve response JWT MUST return the Trust Chain
 	    from the subject to the Trust Anchor
 	    in its <spanx style="verb">trust_chain</spanx> parameter,
-            sorted as shown in <xref target="trust_chain"/>.
+            sorted as specified in <xref target="trust_chain"/>.
 	  </t>
           <t>
             The resolve response MAY also return the Trust Chain
@@ -4643,7 +4673,7 @@ Host: openid.sunet.se
                 REQUIRED. Array containing the sequence of Entity Statements
                 that compose the Trust Chain, starting with the subject and
                 ending with the selected Trust Anchor,
-                sorted as shown in <xref target="trust_chain"/>.
+                sorted as specified in <xref target="trust_chain"/>.
               </t>
               <t hangText="trust_marks">
                 <vspace/>
@@ -6363,17 +6393,32 @@ Content-Type: application/json
                   This is expressed as Seconds Since the Epoch, per
                   <xref target="RFC7519"/>.
                 </t>
-                <t hangText="trust_chain" anchor="trust_chain_param">
+                <t hangText="trust_chain" anchor="trust_chain-param">
                   <vspace/>
                   OPTIONAL. Array containing the sequence of Entity Statements
                   that comprise the Trust Chain between the RP making
                   the request and the selected Trust Anchor,
-                  sorted as in <xref target="trust_chain"/>.
+                  sorted as specified in <xref target="trust_chain"/>.
                   When the RP and the OP are part of the same federation,
                   the RP MUST select a Trust Anchor that it has in common
                   with the OP; otherwise, the RP is free to select the
                   Trust Anchor to use.
                 </t>
+                <t hangText="peer_trust_chain" anchor="peer_trust_chain-param">
+		  <vspace/>
+		  OPTIONAL. Array containing the sequence of Entity Statements
+		  that comprise the Trust Chain between
+		  the OP that the Authentication Request is being sent to
+		  and the selected Trust Anchor,
+		  sorted as specified in <xref target="trust_chain"/>.
+		  The <spanx style="verb">trust_chain</spanx> parameter
+		  MUST also be present
+		  when <spanx style="verb">peer_trust_chain</spanx> is used.
+		  The Trust Anchors selected in both Trust Chains MUST be the same.
+		  Inclusion of both Trust Chains guarantee
+		  the Federation Integrity and Metadata Integrity properties,
+		  as described in <xref target="App-Fed-Linkage"/>.
+		</t>
               </list>
             </t>
 
@@ -6486,7 +6531,7 @@ GET /authorize?
               <t>
                 An RP MAY present a Trust Chain related to itself to the OP in the Request Object using the
                 <spanx style="verb">trust_chain</spanx> request parameter
-		        defined in <xref target="trust_chain_param"/>.
+		defined in <xref target="trust_chain-param"/>.
                 If the OP does not have a valid registration for the RP or
                 its registration has expired, the OP MAY use the received
                 Trust Chain as a hint for which path to take from the
@@ -6939,6 +6984,21 @@ HTTP/1.1 302 Found
                   <vspace/>
                   OPTIONAL.
                 </t>
+                <t hangText="peer_trust_chain" anchor="peer_trust_chain-claim">
+                  <vspace/>
+                  OPTIONAL. Array containing the sequence of Entity Statements
+                  that comprise the Trust Chain between
+		  the OP that the Authentication Request is being sent to
+		  and the Trust Anchor selected by the RP,
+                  sorted as specified in <xref target="trust_chain"/>.
+		  The request MUST contain the complete Trust Chain
+		  between the RP and the Trust Anchor the RP selected
+		  when <spanx style="verb">peer_trust_chain</spanx> is used.
+		  The Trust Anchors selected in both Trust Chains MUST be the same.
+		  Inclusion of both Trust Chains guarantee the
+		  Federation Integrity and Metadata Integrity properties,
+		  as described in <xref target="App-Fed-Linkage"/>.
+                </t>
               </list>
             </t>
             <t>
@@ -7149,13 +7209,17 @@ HTTP/1.1 302 Found
 		    This claim is used in Explicit Registration responses
 		    but is not a general Entity Statement claim.
                   </t>
-                  <t hangText="trust_anchor">
+                  <t hangText="trust_anchor" anchor="trust_anchor-claim">
                     <vspace/>
                     REQUIRED.
                     Its value MUST be the Entity Identifier of the Trust Anchor
-                    that the OP selected to process the Explicit Registration
-                    request. This claim is specific to Explicit Registration
-                    responses and is not a general Entity Statement claim.
+                    that the OP selected to process the Explicit Registration request.
+		    If a complete Trust Chain to the Trust Anchor selected by the RP
+		    was provided in the request or
+		    a <spanx style="verb">peer_trust_chain</spanx> was provided,
+		    this MUST match the Trust Anchors at the root of those Trust Chains.
+		    This claim is specific to Explicit Registration responses
+		    and is not a general Entity Statement claim.
                   </t>
                   <t hangText="authority_hints">
                     <vspace/>
@@ -7224,6 +7288,11 @@ HTTP/1.1 302 Found
                     The RP MUST verify that the
                     <spanx style="verb">trust_anchor</spanx> represents one
                     of its own Trust Anchors.
+		    If a complete Trust Chain to the Trust Anchor selected by the RP
+		    was provided in the request or
+		    a <spanx style="verb">peer_trust_chain</spanx> was provided,
+		    the RP MUST verify that this matches
+		    the Trust Anchors at the root of those Trust Chains.
                   </t>
                   <t>
                     The RP MUST verify that at least one of the
@@ -8931,7 +9000,7 @@ HTTP/1.1 302 Found
 
       <section anchor="ParameterRegistry" title="OAuth Parameters Registration">
         <t>
-          This specification registers the following parameter name in the IANA "OAuth
+          This specification registers the following parameter names in the IANA "OAuth
           Parameters" registry <xref target="IANA.OAuth.Parameters"/> established
           by <xref target="RFC6749"/>.
         </t>
@@ -8951,11 +9020,29 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="trust_chain_authz"/> of this specification
+                Specification Document(s): <xref target="trust_chain-param"/> of this specification
+              </t>
+            </list>
+          </t>
+          <t>
+            <list style='symbols'>
+              <t>
+                Parameter Name:
+                <spanx style="verb">peer_trust_chain</spanx>
+              </t>
+              <t>
+                Parameter Usage Location: authorization request
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="peer_trust_chain-param"/> of this specification
               </t>
             </list>
           </t>
         </section>
+	<?rfc subcompact="no"?>
 
       </section>
 
@@ -8989,6 +9076,7 @@ HTTP/1.1 302 Found
             </list>
           </t>
         </section>
+	<?rfc subcompact="no"?>
 
       </section>
 
@@ -9276,6 +9364,22 @@ HTTP/1.1 302 Found
 	  <t>
 	    <list style="symbols">
 	      <t>
+		Claim Name: <spanx style="verb">peer_trust_chain</spanx>
+	      </t>
+	      <t>
+		Claim Description: Peer Trust Chain
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="peer_trust_chain-claim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
 		Claim Name: <spanx style="verb">trust_anchor</spanx>
 	      </t>
 	      <t>
@@ -9285,7 +9389,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): <xref target="ExplicitRegOP"/> of this specification
+		Specification Document(s): <xref target="trust_anchor-claim"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -9743,7 +9847,7 @@ HTTP/1.1 302 Found
           <title>Financial-grade API Security Profile 1.0 - Part 2: Advanced</title>
 
           <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
-            <organization abbrev="NRI">Nat Consulting</organization>
+            <organization>Nat Consulting</organization>
           </author>
 
           <author fullname="John Bradley" initials="J." surname="Bradley">
@@ -9806,6 +9910,19 @@ HTTP/1.1 302 Found
           </author>
 	  <date/>
         </front>
+      </reference>
+
+      <reference anchor="App-Fed-Linkage"
+		 target="https://connect2id.com/blog/how-to-link-an-app-protocol-to-an-openid-federation-trust-layer">
+	<front>
+	  <title>How to link an application protocol to an OpenID Federation 1.0 trust layer</title>
+
+	  <author fullname="Vladimir Dzhuvinov" initials="V." surname="Dzhuvinov">
+	    <organization>Connect2id</organization>
+	  </author>
+
+	  <date day="4" month="December" year="2024"/>
+	</front>
       </reference>
 
     </references>
@@ -11046,6 +11163,13 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #243: Be explicit about what to do when server validation fails in automatic registration.
+	  </t>
+	  <t>
+	    Fixed #100: Defined <spanx style="verb">peer_trust_chain</spanx>
+	    request parameter for Automatic Registration and
+	    <spanx style="verb">peer_trust_chain</spanx> Claim for
+	    Explicit Registration to enable achieving
+	    the Federation Integrity and Metadata Integrity properties.
 	  </t>
 	</list>
       </t>
