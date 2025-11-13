@@ -1520,6 +1520,9 @@ li > p:last-of-type:only-child {
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2.2.1">
                     <p id="section-toc.1-1.7.2.2.2.1.1"><a href="#section-7.2.1" class="auto internal xref">7.2.1</a>.  <a href="#name-trust-mark-delegation-jwt" class="internal xref">Trust Mark Delegation JWT</a></p>
 </li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2.2.2">
+                    <p id="section-toc.1-1.7.2.2.2.2.1"><a href="#section-7.2.2" class="auto internal xref">7.2.2</a>.  <a href="#name-validating-a-trust-mark-del" class="internal xref">Validating a Trust Mark Delegation</a></p>
+</li>
                 </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
@@ -1836,6 +1839,9 @@ li > p:last-of-type:only-child {
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.3">
                 <p id="section-toc.1-1.17.2.3.1"><a href="#section-17.3" class="auto internal xref">17.3</a>.  <a href="#name-one-entity-one-service" class="internal xref">One Entity, One Service</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.4">
+                <p id="section-toc.1-1.17.2.4.1"><a href="#section-17.4" class="auto internal xref">17.4</a>.  <a href="#name-trust-mark-policies" class="internal xref">Trust Mark Policies</a></p>
 </li>
             </ul>
 </li>
@@ -5859,6 +5865,63 @@ li > p:last-of-type:only-child {
      Additional claims MAY be defined and used in conjunction with the claims above.<a href="#section-7.2.1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
+<div id="trust-mark-delegation-validation">
+<section id="section-7.2.2">
+          <h4 id="name-validating-a-trust-mark-del">
+<a href="#section-7.2.2" class="section-number selfRef">7.2.2. </a><a href="#name-validating-a-trust-mark-del" class="section-name selfRef">Validating a Trust Mark Delegation</a>
+          </h4>
+<p id="section-7.2.2-1">
+                    Validating a Trust Mark Delegation means validating a Trust Mark Delegation instance represented
+                    by a specific signed JWT.<a href="#section-7.2.2-1" class="pilcrow">¶</a></p>
+<p id="section-7.2.2-2">Henceforth, "delegation" is used as a shorthand for a Trust Mark Delegation JWT.
+                    The Trust Anchor referenced below is a Trust Anchor that has been successfully used when
+                    establishing trust in the Trust Mark Issuer.<a href="#section-7.2.2-2" class="pilcrow">¶</a></p>
+<p id="section-7.2.2-3">
+                    To validate a delegation, the following validation steps MUST be performed.
+                    Please note that if any of these validation checks fail, the entire validation
+                    process fails and the delegation is considered invalid.<a href="#section-7.2.2-3" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-7.2.2-4">
+<li id="section-7.2.2-4.1">
+              <p id="section-7.2.2-4.1.1">The delegation MUST be a signed JWT<a href="#section-7.2.2-4.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-7.2.2-4.2">
+              <p id="section-7.2.2-4.2.1">The delegation MUST have a <code>typ</code> header with the value
+                <code>trust-mark-delegation+jwt</code><a href="#section-7.2.2-4.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-7.2.2-4.3">
+              <p id="section-7.2.2-4.3.1">The delegation MUST have an <code>alg</code> (algorithm) header parameter with a value
+                that is an acceptable JWS signing algorithm; it MUST NOT be <code>none</code><a href="#section-7.2.2-4.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-7.2.2-4.4">
+              <p id="section-7.2.2-4.4.1">The Entity Identifier of the Trust Mark Issuer MUST match the value of <code>sub</code>
+                in the delegation<a href="#section-7.2.2-4.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-7.2.2-4.5">
+              <p id="section-7.2.2-4.5.1">The Entity Identifier of the Trust Mark Owner MUST match the value of <code>iss</code>
+                in the delegation.<a href="#section-7.2.2-4.5.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-7.2.2-4.6">
+              <p id="section-7.2.2-4.6.1">The current time MUST be after the time represented by the iat (issued at) Claim in the delegation
+                (possibly allowing for some small leeway to account for clock skew).<a href="#section-7.2.2-4.6.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-7.2.2-4.7">
+              <p id="section-7.2.2-4.7.1">The current time MUST be before the time represented by the exp (expiration) Claim in the delegation
+                (possibly allowing for some small leeway to account for clock skew).<a href="#section-7.2.2-4.7.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-7.2.2-4.8">
+              <p id="section-7.2.2-4.8.1">
+                The value of the Claim <code>trust_mark_type</code> in the delegation MUST be the same
+                as the value of the Claim <code>trust_mark_type</code> in the Trust Mark.<a href="#section-7.2.2-4.8.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-7.2.2-4.9">
+              <p id="section-7.2.2-4.9.1">The delegation's signature MUST validate using one of the Trust Mark Owner's keys
+                identified by the value of the header parameter <code>kid</code>.
+                The Trust Mark Owner's keys can be found in the <code>trust_mark_owners</code> claim in
+                the Trust Anchor's Entity Configuration.<a href="#section-7.2.2-4.9.1" class="pilcrow">¶</a></p>
+</li>
+          </ol>
+</section>
+</div>
 </section>
 </div>
 <div id="trust-mark-validation">
@@ -5872,102 +5935,66 @@ li > p:last-of-type:only-child {
             It is NOT about validating whether a Trust Mark of a particular kind
             can exist or not.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
 <p id="section-7.3-2">
-     An Entity SHOULD NOT try to validate a Trust Mark until
-     it knows which Trust Anchor it is using.
-     To determine this, first resolve the Trust Chain
-     for the Trust Mark Issuer,
-     as described in <a href="#resolving_trust" class="auto internal xref">Section 10</a>.<a href="#section-7.3-2" class="pilcrow">¶</a></p>
+     The trust in the Trust Mark Issuer comes before the trust in the trust mark.
+              If the Trust Mark Issuer is not trusted then the trust mark cannot be trusted.
+              An Entity MUST therefore establish trust in the Trust Mark Issuer by following the procedure defined in
+              <a href="#resolving_trust" class="auto internal xref">Section 10</a> prior to starting the Trust Mark validation process defined below.<a href="#section-7.3-2" class="pilcrow">¶</a></p>
 <p id="section-7.3-3">
-        Henceforth, "instance" is used as a shorthand for Trust Mark instance. An
-        instance is a signed JWT.
+        Henceforth, "instance" is used as a shorthand for Trust Mark instance.
+          The Trust Anchor referenced below is a Trust Anchor that
+          has been successfully used when establishing trust in the Trust Mark Issuer.<a href="#section-7.3-3" class="pilcrow">¶</a></p>
+<p id="section-7.3-4">
         To validate an instance, the following validation steps MUST be performed.
         Please note that if any of these validation checks fail, the entire validation
-        process fails and the instance is considered invalid.<a href="#section-7.3-3" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-7.3-4">
-<li id="section-7.3-4.1">
-            <p id="section-7.3-4.1.1">
-            Verify that the value of the instance’s
-            <code>trust_mark_type</code> is listed in
-            the Trust Anchor's <code>trust_mark_issuers</code>, and if so,
-            that the instance's <code>iss</code> appears
-            in the corresponding list of Entity Identifiers. Note that the list may be
-            an empty list, which signifies that anyone can issue a Trust Mark
-            with the <code>trust_mark_type</code> in question.<a href="#section-7.3-4.1.1" class="pilcrow">¶</a></p>
+        process fails and the instance is considered invalid.<a href="#section-7.3-4" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-7.3-5">
+<li id="section-7.3-5.1">
+            <p id="section-7.3-5.1.1">The instance MUST be a signed JWT<a href="#section-7.3-5.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-7.3-4.2">
-            <p id="section-7.3-4.2.1">
-            Validate the signature of the instance and verify that it has not
-            expired and/or send a query to the Trust Mark Issuer's Trust Mark
-            Status endpoint. The Trust Mark Status endpoint will
-            check if the instance has been issued by itself and that it is
-            still valid, in both signature and expiration, and that it has not been revoked.<a href="#section-7.3-4.2.1" class="pilcrow">¶</a></p>
+          <li id="section-7.3-5.2">
+            <p id="section-7.3-5.2.1">The instance MUST have a <code>typ</code> header with the value
+                <code>trust-mark+jwt</code><a href="#section-7.3-5.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-7.3-4.3">
-            <p id="section-7.3-4.3.1">
-            If the <code>trust_mark_type</code> of the instance
-            appears in the <code>trust_mark_owners</code> claim
-            of the Trust Anchor's Entity Configuration,
-            verify that the Trust Mark contains a
-            <code>delegation</code> claim. If the
-            <code>delegation</code> claim is missing, the
-            validation MUST fail. The claims
-            for the Trust Mark type identifier in
-            <code>trust_mark_owners</code> are used in
-            the following way:<a href="#section-7.3-4.3.1" class="pilcrow">¶</a></p>
-<ol start="1" type="a" class="normal type-a" id="section-7.3-4.3.2">
-<li id="section-7.3-4.3.2.1">
-                <p id="section-7.3-4.3.2.1.1">
-                A key from the <code>jwks</code> claim MUST be
-                able to validate the signature of the signed delegation JWT.<a href="#section-7.3-4.3.2.1.1" class="pilcrow">¶</a></p>
+          <li id="section-7.3-5.3">
+            <p id="section-7.3-5.3.1">The instance MUST have an <code>alg</code> (algorithm) header parameter with a value
+                that is an acceptable JWS signing algorithm; it MUST NOT be <code>none</code>.<a href="#section-7.3-5.3.1" class="pilcrow">¶</a></p>
 </li>
-              <li id="section-7.3-4.3.2.2">
-                <p id="section-7.3-4.3.2.2.1">
-                The <code>sub</code> claim of the instance MUST match the
-                issuer (<code>iss</code>) of the delegation JWT<a href="#section-7.3-4.3.2.2.1" class="pilcrow">¶</a></p>
+          <li id="section-7.3-5.4">
+            <p id="section-7.3-5.4.1">The Entity Identifier of the Entity whose Entity Configuration contains the instance MUST
+                match the value of the claim <code>sub</code> in the Trust Mark.<a href="#section-7.3-5.4.1" class="pilcrow">¶</a></p>
 </li>
-            </ol>
-<p id="section-7.3-4.3.3">
-              Furthermore, the following requirements MUST be met:<a href="#section-7.3-4.3.3" class="pilcrow">¶</a></p>
-<ol start="1" type="a" class="normal type-a" id="section-7.3-4.3.4">
-<li id="section-7.3-4.3.4.1">
-                <p id="section-7.3-4.3.4.1.1">
-                      If the delegation JWT has an <code>exp</code> claim,
-                      the expiration time MUST NOT have been reached.<a href="#section-7.3-4.3.4.1.1" class="pilcrow">¶</a></p>
+          <li id="section-7.3-5.5">
+            <p id="section-7.3-5.5.1">The current time MUST be after the time represented by the <code>iat</code> (issued at) Claim
+                (possibly allowing for some small leeway to account for clock skew).<a href="#section-7.3-5.5.1" class="pilcrow">¶</a></p>
 </li>
-              <li id="section-7.3-4.3.4.2">
-                <p id="section-7.3-4.3.4.2.1">
-                      The <code>sub</code> claim in the delegation JWT
-                      MUST be equal to the issuer of the instance.<a href="#section-7.3-4.3.4.2.1" class="pilcrow">¶</a></p>
+          <li id="section-7.3-5.6">
+            <p id="section-7.3-5.6.1">The current time MUST be before the time represented by the <code>exp</code> (expiration) Claim
+                (possibly allowing for some small leeway to account for clock skew).<a href="#section-7.3-5.6.1" class="pilcrow">¶</a></p>
 </li>
-              <li id="section-7.3-4.3.4.3">
-                <p id="section-7.3-4.3.4.3.1">
-                      The <code>trust_mark_type</code> MUST be the same
-                      in the delegation JWT as in the instance.<a href="#section-7.3-4.3.4.3.1" class="pilcrow">¶</a></p>
+          <li id="section-7.3-5.7">
+            <p id="section-7.3-5.7.1">The instance's signature MUST validate using the Trust Mark issuer's key
+                identified by the <code>kid</code> value.<a href="#section-7.3-5.7.1" class="pilcrow">¶</a></p>
 </li>
-            </ol>
+          <li id="section-7.3-5.8">
+            <p id="section-7.3-5.8.1">If the <code>trust_mark_type</code> of the instance appears in the
+                <code>trust_mark_owners</code> claim in the Trust Anchor's
+                Entity Configuration, then the instance MUST contain a
+                <code>delegation</code> claim.<a href="#section-7.3-5.8.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-7.3-5.9">
+            <p id="section-7.3-5.9.1">If there is a <code>delegation</code> claim in the instance, the value of that
+            claim MUST be validated according to <a href="#trust-mark-delegation-validation" class="auto internal xref">Section 7.2.2</a>.<a href="#section-7.3-5.9.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-7.3-5">
-            Trust Marks that are not recognized within a federation SHOULD be ignored when
-            evaluating trust in the Entity that presented them. Such Trust Marks can
-            appear for various reasons, such as the Entity Configuration including Trust Marks
-            associated with another federation, or Trust Marks intended for specific
-            purposes or Entity audiences.<a href="#section-7.3-5" class="pilcrow">¶</a></p>
 <p id="section-7.3-6">
-            An Entity MAY choose, at its own discretion, to utilize Trust Marks presented
-            to it that are not recognized within the federation, and where the
-            accreditation authority is established by an out-of-band mechanism.
-            In that case, validation Step 1 becomes OPTIONAL.<a href="#section-7.3-6" class="pilcrow">¶</a></p>
-<p id="section-7.3-7">
      If Trust Marks are issued without an expiration time,
      it is RECOMMENDED that a mechanism be provided to validate them,
      such as the Trust Mark Status endpoint
-     and/or the Trust Marked Entities Listing endpoint.<a href="#section-7.3-7" class="pilcrow">¶</a></p>
-<p id="section-7.3-8">
+     and/or the Trust Marked Entities Listing endpoint.<a href="#section-7.3-6" class="pilcrow">¶</a></p>
+<p id="section-7.3-7">
      As an alternative to the above procedure for validating Trust Marks,
      implementations MAY use the Trust Mark Status endpoint to verify that the
-     Trust Mark is still active,
-     as described in <a href="#status_endpoint" class="auto internal xref">Section 8.4</a>.<a href="#section-7.3-8" class="pilcrow">¶</a></p>
+     Trust Mark is valid and still active, as described in <a href="#status_endpoint" class="auto internal xref">Section 8.4</a>.<a href="#section-7.3-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="trust_example">
@@ -7034,9 +7061,6 @@ trust_mark=eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6 ...
 <span id="name-active-trust-mark-status-re"></span><figure id="figure-36">
             <div class="alignLeft art-text artwork" id="section-8.4.2-8.1">
 <pre>
-200 OK
-Content-Type: application/json
-
 {
   "iss": "https://www.agid.gov.it",
   "trust_mark": "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2
@@ -7060,7 +7084,7 @@ Content-Type: application/json
 </pre>
 </div>
 <figcaption><a href="#figure-36" class="selfRef">Figure 36</a>:
-<a href="#name-active-trust-mark-status-re" class="selfRef">Active Trust Mark Status Response</a>
+<a href="#name-active-trust-mark-status-re" class="selfRef">Active Trust Mark Status Response JWT Claims Set</a>
             </figcaption></figure>
 <p id="section-8.4.2-9" class="keepWithNext">
                 The following is a non-normative example of the JWT Claims Set for
@@ -7068,9 +7092,6 @@ Content-Type: application/json
 <span id="name-revoked-trust-mark-status-r"></span><figure id="figure-37">
             <div class="alignLeft art-text artwork" id="section-8.4.2-10.1">
 <pre>
-200 OK
-Content-Type: application/json
-
 {
   "iss": "https://www.agid.gov.it",
   "trust_mark": "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2
@@ -7094,7 +7115,7 @@ Content-Type: application/json
 </pre>
 </div>
 <figcaption><a href="#figure-37" class="selfRef">Figure 37</a>:
-<a href="#name-revoked-trust-mark-status-r" class="selfRef">Revoked Trust Mark Status Response</a>
+<a href="#name-revoked-trust-mark-status-r" class="selfRef">Revoked Trust Mark Status Response JWT Claims Set</a>
             </figcaption></figure>
 <p id="section-8.4.2-11">
             An error response to a Trust Mark Status request
@@ -8935,7 +8956,7 @@ HTTP/1.1 302 Found
      OPs SHOULD accept any client authentication method that is mutually supported
      and RPs MUST only use mutually supported methods.
      Because some OPs may be coded in such a way that
-     they expect the RP to always the same client authentication method
+     they expect the RP to always use the same client authentication method
      for subsequent interactions, note that
      interoperability may be improved by the RP doing so.<a href="#section-12.1.4-2" class="pilcrow">¶</a></p>
 </section>
@@ -10054,6 +10075,53 @@ HTTP/1.1 302 Found
         Apart from letting an entity provide both the Trust Anchor and Resolver services, there is a good reason for
         having each entity only do one thing. The reason is that, later in time, it will be much easier to share specific services
         between federations.<a href="#section-17.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="trust_mark_policy">
+<section id="section-17.4">
+        <h3 id="name-trust-mark-policies">
+<a href="#section-17.4" class="section-number selfRef">17.4. </a><a href="#name-trust-mark-policies" class="section-name selfRef">Trust Mark Policies</a>
+        </h3>
+<p id="section-17.4-1">
+            When validating trust marks in an Entity Statement, it can be split into three parts.<a href="#section-17.4-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlNewline" id="section-17.4-2">
+          <dt id="section-17.4-2.1">Validating Trust Marks in the Context of Validating an Entity Statement</dt>
+          <dd style="margin-left: 1.5em" id="section-17.4-2.2">
+                    According to the text on Entity Statement Validation in <a href="#ESValidation" class="auto internal xref">Section 3.6</a>, validating a
+                    Trust Mark is confined to validating the syntax of the claim value,
+                    including that the <code>trust_mark_type</code> value is consistent.<a href="#section-17.4-2.2" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-17.4-2.3">Validating a Specific Trust Mark</dt>
+          <dd style="margin-left: 1.5em" id="section-17.4-2.4">
+                    This is what is described in <a href="#trust-mark-validation" class="auto internal xref">Section 7.3</a>.
+                    In order to validate a Trust Mark, the entity must find a Trust Chain for the Trust Mark Issuer to a
+                    Trust Anchor the Entity trusts. This has nothing to do with which federation that will later
+                    be used for the application protocol.<a href="#section-17.4-2.4" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-17.4-2.5">Deciding which Trust Marks to Use</dt>
+          <dd style="margin-left: 1.5em" id="section-17.4-2.6">
+            <p id="section-17.4-2.6.1">
+                    A federation MAY have a policy that states that only Trust Marks that
+                    match certain criteria SHOULD be used.<a href="#section-17.4-2.6.1" class="pilcrow">¶</a></p>
+<p id="section-17.4-2.6.2">
+                    An example of such criteria could be that the Trust Mark's
+                    <code>trust_mark_type</code> must be
+                    listed in the Trust Anchor's <code>trust_mark_issuers</code>,
+                    and if so, that the instance's <code>iss</code> appears in the corresponding list of
+                    Entity Identifiers. Note that the list may be an empty list, which signifies that anyone can issue
+                    a Trust Mark with the <code>trust_mark_type</code> in question.
+                    Such Trust Marks can appear for various reasons, such as the Entity Configuration including Trust Marks
+                    associated with another federation, or Trust Marks intended for specific
+                    purposes or Entity audiences.<a href="#section-17.4-2.6.2" class="pilcrow">¶</a></p>
+<p id="section-17.4-2.6.3">
+                    An Entity MAY also choose, at its own discretion, to utilize Trust Marks presented to it that are not
+                    recognized within the federation, and where the accreditation authority is established by an
+                    out-of-band mechanism.<a href="#section-17.4-2.6.3" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
 </section>
 </div>
 </section>
