@@ -2724,15 +2724,25 @@ li > p:last-of-type:only-child {
 <a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-claims-specific-to-explicit" class="section-name selfRef">Claims Specific to Explicit Registration Requests</a>
         </h3>
 <span class="break"></span><dl class="dlNewline" id="section-3.4-1">
-          <dt id="section-3.4-1.1">peer_trust_chain</dt>
+          <dt id="section-3.4-1.1">trust_chain</dt>
           <dd style="margin-left: 1.5em" id="section-3.4-1.2">
-              OPTIONAL.  Array containing the sequence of Entity Statements
+       OPTIONAL.  Array containing the sequence of Entity Statements
+       that comprise the Trust Chain between
+       the RP and the Trust Anchor selected by the RP,
+       as specified in <a href="#trust_chain-claim" class="auto internal xref">Section 12.2.1</a>.
+       This claim is specific to Explicit Registration requests
+       and is not a general Entity Statement claim.<a href="#section-3.4-1.2" class="pilcrow">¶</a>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-3.4-1.3">peer_trust_chain</dt>
+          <dd style="margin-left: 1.5em" id="section-3.4-1.4">
+       OPTIONAL.  Array containing the sequence of Entity Statements
        that comprise the Trust Chain between
        the OP that the Authentication Request is being sent to
        and the Trust Anchor selected by the RP,
        as specified in <a href="#peer_trust_chain-claim" class="auto internal xref">Section 12.2.1</a>.
        This claim is specific to Explicit Registration requests
-       and is not a general Entity Statement claim.<a href="#section-3.4-1.2" class="pilcrow">¶</a>
+       and is not a general Entity Statement claim.<a href="#section-3.4-1.4" class="pilcrow">¶</a>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -2952,11 +2962,13 @@ li > p:last-of-type:only-child {
 </li>
           <li id="section-3.6-2.23">
             <p id="section-3.6-2.23.1">
- If the <code>peer_trust_chain</code> Claim is present,
+ If the <code>trust_chain</code> Claim is present,
  validate that its value is a syntactically valid Trust Chain,
  as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
+ The first entry in the Trust Chain
+ MUST be an Entity Configuration for this Entity.
  Implementations SHOULD validate that the Entity Identifier
- for the Trust Anchor at the root of the Trust Chain matches
+ for the Trust Anchor at the end of the Trust Chain matches
  one of the Trust Anchors configured for the deployment.
  This Claim MUST NOT be present in Entity Statements that are not
  Explicit Registration requests
@@ -2964,6 +2976,18 @@ li > p:last-of-type:only-child {
 </li>
           <li id="section-3.6-2.24">
             <p id="section-3.6-2.24.1">
+ If the <code>peer_trust_chain</code> Claim is present,
+ validate that its value is a syntactically valid Trust Chain,
+ as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
+ Implementations SHOULD validate that the Entity Identifier
+ for the Trust Anchor at the end of the Trust Chain matches
+ one of the Trust Anchors configured for the deployment.
+ This Claim MUST NOT be present in Entity Statements that are not
+ Explicit Registration requests
+ unless its use is otherwise specified in an extension being employed.<a href="#section-3.6-2.24.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-3.6-2.25">
+            <p id="section-3.6-2.25.1">
  If the <code>trust_anchor</code> Claim is present,
  validate that its value is a URL
  using the <code>https</code> scheme.
@@ -2975,7 +2999,7 @@ li > p:last-of-type:only-child {
  - especially the keys.
  This Claim MUST NOT be present in Entity Statements that are not
  Explicit Registration responses
- unless its use is otherwise specified in an extension being employed.<a href="#section-3.6-2.24.1" class="pilcrow">¶</a></p>
+ unless its use is otherwise specified in an extension being employed.<a href="#section-3.6-2.25.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
 <p id="section-3.6-3">
@@ -8572,7 +8596,7 @@ Content-Type: application/json
    MUST also be present
    when <code>peer_trust_chain</code> is used.
    The Trust Anchors selected in both Trust Chains MUST be the same.
-   Inclusion of both Trust Chains guarantee
+   Inclusion of both Trust Chains guarantees
    the Federation Integrity and Metadata Integrity properties,
    as described in <span>[<a href="#App-Fed-Linkage" class="cite xref">App-Fed-Linkage</a>]</span>.<a href="#peer_trust_chain-param" class="pilcrow">¶</a>
 </div>
@@ -9163,20 +9187,36 @@ HTTP/1.1 302 Found
                   OPTIONAL.<a href="#section-12.2.1-4.20" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
-<dt id="section-12.2.1-4.21">peer_trust_chain</dt>
+<dt id="section-12.2.1-4.21">trust_chain</dt>
             <dd id="section-12.2.1-4.22" style="margin-left: 1.5em">
+<div id="trust_chain-claim">
+   OPTIONAL. Array containing the sequence of Entity Statements
+   that comprise the Trust Chain between
+   the RP and the Trust Anchor selected by the RP,
+   sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
+   When this Claim is used,
+   the request MUST consist of a single Entity Configuration
+   and not be a Trust Chain.<a href="#trust_chain-claim" class="pilcrow">¶</a>
+</div>
+            </dd>
+<dd class="break"></dd>
+<dt id="section-12.2.1-4.23">peer_trust_chain</dt>
+            <dd id="section-12.2.1-4.24" style="margin-left: 1.5em">
 <div id="peer_trust_chain-claim">
-                  OPTIONAL. Array containing the sequence of Entity Statements
-                  that comprise the Trust Chain between
+   OPTIONAL. Array containing the sequence of Entity Statements
+   that comprise the Trust Chain between
    the OP that the Authentication Request is being sent to
    and the Trust Anchor selected by the RP,
-                  sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
+   sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
    The request MUST contain the complete Trust Chain
    between the RP and the Trust Anchor the RP selected
-   when <code>peer_trust_chain</code> is used.
+   when <code>peer_trust_chain</code> is used;
+   this can be supplied either
+   as the <code>trust_chain</code> Claim value
+   or by using the Trust Chain as the request value.
    The Trust Anchors selected in both Trust Chains MUST be the same.
-   Inclusion of both Trust Chains guarantee the
-   Federation Integrity and Metadata Integrity properties,
+   Inclusion of both Trust Chains guarantees
+   the Federation Integrity and Metadata Integrity properties,
    as described in <span>[<a href="#App-Fed-Linkage" class="cite xref">App-Fed-Linkage</a>]</span>.<a href="#peer_trust_chain-claim" class="pilcrow">¶</a>
 </div>
           </dd>
@@ -12035,11 +12075,11 @@ HTTP/1.1 302 Found
 <ul class="compact">
 <li class="compact" id="section-20.7.1-18.1">
               <p id="section-20.7.1-18.1.1">
- Claim Name: <code>peer_trust_chain</code><a href="#section-20.7.1-18.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>trust_chain</code><a href="#section-20.7.1-18.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-20.7.1-18.2">
               <p id="section-20.7.1-18.2.1">
- Claim Description: Peer Trust Chain<a href="#section-20.7.1-18.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Self Trust Chain to the Trust Anchor<a href="#section-20.7.1-18.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-20.7.1-18.3">
               <p id="section-20.7.1-18.3.1">
@@ -12047,17 +12087,17 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-20.7.1-18.4">
               <p id="section-20.7.1-18.4.1">
- Specification Document(s): <a href="#peer_trust_chain-claim" class="auto internal xref">Section 12.2.1</a> of this specification<a href="#section-20.7.1-18.4.1" class="pilcrow">¶</a></p>
+ Specification Document(s): <a href="#trust_chain-claim" class="auto internal xref">Section 12.2.1</a> of this specification<a href="#section-20.7.1-18.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <ul class="compact">
 <li class="compact" id="section-20.7.1-19.1">
               <p id="section-20.7.1-19.1.1">
- Claim Name: <code>trust_anchor</code><a href="#section-20.7.1-19.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>peer_trust_chain</code><a href="#section-20.7.1-19.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-20.7.1-19.2">
               <p id="section-20.7.1-19.2.1">
- Claim Description: Trust Anchor ID<a href="#section-20.7.1-19.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Peer Trust Chain to the Trust Anchor<a href="#section-20.7.1-19.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="compact" id="section-20.7.1-19.3">
               <p id="section-20.7.1-19.3.1">
@@ -12065,7 +12105,25 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-20.7.1-19.4">
               <p id="section-20.7.1-19.4.1">
- Specification Document(s): <a href="#trust_anchor-claim" class="auto internal xref">Section 12.2.3</a> of this specification<a href="#section-20.7.1-19.4.1" class="pilcrow">¶</a></p>
+ Specification Document(s): <a href="#peer_trust_chain-claim" class="auto internal xref">Section 12.2.1</a> of this specification<a href="#section-20.7.1-19.4.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<ul class="compact">
+<li class="compact" id="section-20.7.1-20.1">
+              <p id="section-20.7.1-20.1.1">
+ Claim Name: <code>trust_anchor</code><a href="#section-20.7.1-20.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.7.1-20.2">
+              <p id="section-20.7.1-20.2.1">
+ Claim Description: Trust Anchor ID<a href="#section-20.7.1-20.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.7.1-20.3">
+              <p id="section-20.7.1-20.3.1">
+ Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-20.7.1-20.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.7.1-20.4">
+              <p id="section-20.7.1-20.4.1">
+ Specification Document(s): <a href="#trust_anchor-claim" class="auto internal xref">Section 12.2.3</a> of this specification<a href="#section-20.7.1-20.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -13849,9 +13907,11 @@ Host: op.umu.se
 </li>
         <li class="normal" id="appendix-C-3.7">
           <p id="appendix-C-3.7.1">
-     Fixed #100: Defined <code>peer_trust_chain</code>
-     request parameter for Automatic Registration and
-     <code>peer_trust_chain</code> Claim for
+     Fixed #100: Defined the <code>trust_chain</code>
+     and <code>peer_trust_chain</code>
+     request parameters for Automatic Registration and
+     the <code>trust_chain</code> and
+     <code>peer_trust_chain</code> Claims for
      Explicit Registration to enable achieving
      the Federation Integrity and Metadata Integrity properties.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
 </li>
