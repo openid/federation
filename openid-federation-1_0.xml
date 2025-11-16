@@ -12,7 +12,9 @@
   document and not a private document, as the private="..." declaration could
   be taken to indicate.
 -->
-<rfc category="std" docName="openid-federation-1_0" ipr="none" xmlns:xi="http://www.w3.org/2001/XInclude">
+<rfc category="std" docName="openid-federation-1_0" ipr="none"
+     submissionType="IETF" consensus="true"
+     xmlns:xi="http://www.w3.org/2001/XInclude">
 
   <?rfc toc="yes" ?>
   <?rfc tocdepth="5" ?>
@@ -24,7 +26,7 @@
 
   <front>
     <title abbrev="OpenID Federation">OpenID Federation 1.0 -
-      draft 44
+      draft 45
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -76,7 +78,7 @@
       </address>
     </author>
 
-    <date day="14" month="July" year="2025"/>
+    <date day="10" month="November" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -240,10 +242,13 @@
             </t>
             <t hangText="Entity Identifier">
               <vspace/>
-              A globally unique URL that is bound to one Entity.
-	      This URL MUST use the <spanx style="verb">https</spanx> scheme,
+              A globally unique string identifier that is bound to one Entity.
+	      All Entity Identifiers defined by this specification are
+	      URLs that use the <spanx style="verb">https</spanx> scheme,
 	      have a host component, and MAY contain port and path components.
 	      It MUST NOT contain query parameter or fragment components.
+	      Profiles of this specification MAY define other kinds of
+	      Entity Identifiers and processing rules that accompany them.
             </t>
             <t hangText="Trust Anchor">
               <vspace/>
@@ -371,7 +376,7 @@
             </t>
             <t hangText="Resolved Metadata">
               The metadata that results from applying the metadata policy
-              in the Trust Chain to the metadata in the Entity Configuration 
+              in the Trust Chain to the metadata in the Entity Configuration
               for the subject of the Trust Chain. The Resolved Metadata
               is the metadata that is used when interacting with
               the Entity.
@@ -499,8 +504,13 @@
 	  with its value being the Key ID of the signing key used.
 	</t>
         <t>
-          The claims in an Entity Statement are:
+          The claims in an Entity Statement are listed below.
+          Applications and protocols utilizing Entity Statements MAY specify
+          and use additional claims.
         </t>
+          <section title="Claims that MUST or MAY appear in both Entity Configurations and Subordinate Statements"
+                   anchor="common_claims">
+
         <t>
           <list style="hanging">
             <t hangText="iss">
@@ -555,23 +565,7 @@
 	      <spanx style="verb">openid_relying_party</spanx>
 	      Entity Type Identifiers.)
             </t>
-            <t hangText="authority_hints" anchor="authority_hints">
-              <vspace/>
-              OPTIONAL. An array of strings representing
-              the Entity Identifiers of Intermediate Entities or Trust Anchors
-              that are Immediate Superiors of the Entity.
-              This claim is REQUIRED in Entity Configurations of
-              the Entities that have at least one Superior above them,
-              such as Leaf and Intermediate Entities.
-              Its value MUST contain the Entity Identifiers of
-	      its Immediate Superiors and
-	      MUST NOT be the empty array
-              <spanx style="verb">[]</spanx>.
-              This claim MUST NOT be present in Entity Configurations
-              of Trust Anchors with no Superiors.
-	      It MUST NOT be present in Subordinate Statements.
-            </t>
-            <t hangText="metadata">
+                          <t hangText="metadata">
               <vspace/>
               OPTIONAL.
 	      JSON object that declares roles that the Entity plays -
@@ -607,26 +601,7 @@
               <spanx style="verb">metadata_policy</spanx>, as described in
               <xref target="metadata_policy_application"/>.
             </t>
-            <t hangText="metadata_policy">
-              <vspace/>
-              OPTIONAL. JSON object that defines a metadata policy, as described
-              in <xref target="metadata_policy"/>. Only Subordinate Statements
-              MAY include this claim. The metadata policy applies to the Entity
-              that is the subject of this Subordinate Statement as well as to
-              all Entities that are Subordinate to it. Applying to Subordinate
-              Entities distinguishes <spanx style="verb">metadata_policy</spanx>
-              from <spanx style="verb">metadata</spanx>, which only applies to
-              the subject itself.
-            </t>
-            <t hangText="constraints">
-              <vspace/>
-              OPTIONAL. JSON object that defines Trust Chain constraints, as
-              described in <xref target="chain_constraints"/>. Only Subordinate
-              Statements MAY include this claim. The constraints apply to the
-              Entity that is the subject of this Subordinate Statement as well
-              as to all Entities that are Subordinate to it.
-            </t>
-            <t hangText="crit">
+                          <t hangText="crit">
               <vspace/>
               OPTIONAL.
 	      Entity Statements require that
@@ -637,42 +612,46 @@
 	      Claims specified for use in Entity Statements by this specification
 	      MUST NOT be included in the list.
             </t>
-            <t hangText="metadata_policy_crit">
+
+          </list>
+        </t>
+                        </section>
+          <section anchor="ec_specific"
+                   title="Claims that MUST or MAY appear in Entity Configurations but not Subordinate Statements">
+              <t>
+                  <list style="hanging">
+            <t hangText="authority_hints" anchor="authority_hints">
               <vspace/>
-              OPTIONAL.
-              Array of strings specifying critical metadata policy operators
-              other than the standard ones defined in
-              <xref target="standard_metadata_policy_operators"/> that MUST be
-              understood and processed. Only Subordinate Statements MAY include
-              this claim and when included its value MUST NOT be the empty array
-              <spanx style="verb">[]</spanx>. If any of the listed policy
-              operators are not understood and supported, then the Subordinate
-              Statement and thus the Trust Chain that includes it MUST be
-              considered invalid.
+              OPTIONAL. An array of strings representing
+              the Entity Identifiers of Intermediate Entities or Trust Anchors
+              that are Immediate Superiors of the Entity.
+              This claim is REQUIRED in Entity Configurations of
+              the Entities that have at least one Superior above them,
+              such as Leaf and Intermediate Entities.
+              Its value MUST contain the Entity Identifiers of
+	      its Immediate Superiors and
+	      MUST NOT be the empty array
+              <spanx style="verb">[]</spanx>.
+              This claim MUST NOT be present in Entity Configurations
+              of Trust Anchors with no Superiors.
             </t>
-            <t hangText="trust_marks">
+                      <t hangText="trust_marks">
               <vspace/>
               OPTIONAL. An array of JSON objects, each representing
               a Trust Mark.
-              Each JSON object MUST contain the following two claims
-              and MAY contain other claims. The <spanx style="verb">trust_mark_type</spanx>
-              claim in this object MUST have the same value as the
-              <spanx style="verb">trust_mark_type</spanx> claim in the Trust Mark JWT.
-
               <list style="hanging">
                 <t hangText="trust_mark_type">
-                  Identifier for the type of the Trust Mark.
-                  It MUST be the same value as the
+                  REQUIRED. Identifier for the type of the Trust Mark.
+                  The value of this claim MUST be the same as the value of the
                   <spanx style="verb">trust_mark_type</spanx>
-                  claim contained in the
-                  Trust Mark JWT.
+                  claim contained in the Trust Mark JWT that is the value of the
+		  <spanx style="verb">trust_mark</spanx> claim in this object.
                 </t>
                 <t hangText="trust_mark">
-                  A signed JSON Web Token that represents a Trust Mark.
+                  REQUIRED. A signed JSON Web Token that represents a Trust Mark.
                 </t>
               </list>
               Trust Marks are described in <xref target="trust_marks"/>.
-	            This claim SHOULD only be used in Entity Configurations.
             </t>
             <t hangText="trust_mark_issuers">
               <vspace/>
@@ -687,7 +666,6 @@
 	      for Trust Marks with that identifier.
               If the array following a Trust Mark type identifier is empty,
               anyone MAY issue Trust Marks with that identifier.
-	      This claim MUST NOT be present in Subordinate Statements.
               Trust Marks are described in <xref target="trust_marks"/>.
             </t>
             <t hangText="trust_mark_owners">
@@ -714,8 +692,44 @@
                 </t>
               </list>
 	      Other members MAY also be defined and used.
-	      This claim MUST NOT be present in Subordinate Statements.
-	    </t>
+            </t>
+              </list>
+              </t>
+               </section>
+          <section anchor="ss_specific"
+                   title="Claims that MUST or MAY appear in Subordinate Statements but not Entity Configurations">
+              <t>
+              <list style="hanging">
+            <t hangText="constraints">
+              <vspace/>
+              OPTIONAL. JSON object that defines Trust Chain constraints, as
+              described in <xref target="chain_constraints"/>. The constraints apply to the
+              Entity that is the subject of this Subordinate Statement as well
+              as to all Entities that are Subordinate to it.
+            </t>
+                              <t hangText="metadata_policy">
+              <vspace/>
+              OPTIONAL. JSON object that defines a metadata policy, as described
+              in <xref target="metadata_policy"/>. The metadata policy applies to the Entity
+              that is the subject of this Subordinate Statement as well as to
+              all Entities that are Subordinate to it. Applying to Subordinate
+              Entities distinguishes <spanx style="verb">metadata_policy</spanx>
+              from <spanx style="verb">metadata</spanx>, which only applies to
+              the subject itself.
+            </t>
+
+                              <t hangText="metadata_policy_crit">
+              <vspace/>
+              OPTIONAL.
+              Array of strings specifying critical metadata policy operators
+              other than the standard ones defined in
+              <xref target="standard_metadata_policy_operators"/> that MUST be
+              understood and processed. When included its value MUST NOT be the empty array
+              <spanx style="verb">[]</spanx>. If any of the listed policy
+              operators are not understood and supported, then the Subordinate
+              Statement and thus the Trust Chain that includes it MUST be
+              considered invalid.
+            </t>
             <t hangText="source_endpoint">
               <vspace/>
               OPTIONAL. String containing the fetch endpoint URL
@@ -734,6 +748,12 @@
 	      location can be determined by retrieving
 	      the Entity Configuration of the issuer.
             </t>
+
+              </list></t>
+              </section>
+
+            <section title="Claims Specific to Explicit Registration Responses">
+                <list style="hanging">
             <t hangText="trust_anchor">
               <vspace/>
               OPTIONAL.  Its value MUST be the Entity Identifier of the Trust Anchor
@@ -742,11 +762,198 @@
                 general Entity Statement claim.
             </t>
           </list>
-        </t>
-        <t>
-          Applications and protocols utilizing Entity Statements MAY specify
-          and use additional claims.
-        </t>
+        </section>
+
+	<section anchor="ESValidation" title="Entity Statement Validation">
+	  <t>
+	    Entity Statements MUST be validated in the following manner.
+	    These steps MAY be performed in a different order, provided that
+	    the result - accepting or rejecting the Entity Statement - is the same.
+	    <list style="numbers">
+	      <t>
+		The Entity Statement MUST be a signed JWT.
+	      </t>
+	      <t>
+		The Entity Statement MUST have a
+		<spanx style="verb">typ</spanx> header parameter with the value
+		<spanx style="verb">entity-statement+jwt</spanx>.
+	      </t>
+	      <t>
+		The Entity Statement MUST have an
+		<spanx style="verb">alg</spanx> (algorithm) header parameter
+		with a value that is an acceptable JWS signing algorithm;
+		it MUST NOT be <spanx style="verb">none</spanx>.
+	      </t>
+	      <t>
+		The Entity Identifier of the Entity to which the Entity Statement refers
+		MUST match the value of the
+		<spanx style="verb">sub</spanx> (subject) Claim.
+	      </t>
+	      <t>
+		The Entity Statement MUST have an
+		<spanx style="verb">iss</spanx> (issuer) Claim
+		with a value that is a valid Entity Identifier.
+	      </t>
+	      <t>
+		When the <spanx style="verb">iss</spanx> (issuer) Claim value
+		matches the <spanx style="verb">sub</spanx> (subject) Claim value,
+		then the Entity Statement is this Entity's Entity Configuration.
+		When they do not match, the Entity Statement is a Subordinate Statement.
+		When the Entity Statement is a Subordinate Statement,
+		the <spanx style="verb">iss</spanx> Claim value MUST match
+		one of the values in the
+		<spanx style="verb">authority_hints</spanx> array
+		in the Entity Configuration for the Entity whose Entity Identifier
+		is the value of the <spanx style="verb">sub</spanx> Claim;
+		otherwise the Federation graph is not well-formed.
+	      </t>
+	      <t>
+		The current time MUST be after the time represented by the
+		<spanx style="verb">iat</spanx> (issued at) Claim
+		(possibly allowing for some small leeway to account for clock skew).
+	      </t>
+	      <t>
+		The current time MUST be before the time represented by the
+		<spanx style="verb">exp</spanx> (expiration) Claim
+		(possibly allowing for some small leeway to account for clock skew).
+	      </t>
+	      <t>
+		The <spanx style="verb">jwks</spanx> (JWK Set) Claim
+		MUST be present, with a value that is a valid
+		JWK Set <xref target="RFC7517"/>.
+	      </t>
+	      <t>
+		Obtain the Entity Configuration for the issuing Entity -
+		the Entity with the Issuer Identifer found in the Entity Statement's
+		<spanx style="verb">iss</spanx> (issuer) Claim.
+		When the <spanx style="verb">iss</spanx> and
+		<spanx style="verb">sub</spanx> Claim values match, this is
+		the Entity Statement being validated itself.
+		Otherwise, this can be obtained either from a Trust Chain or
+		by retrieving it as described in
+		<xref target="federation_configuration"/>.
+	      </t>
+	      <t>
+		The Entity Statement's
+		<spanx style="verb">kid</spanx> (Key ID) header parameter value
+		MUST be a non-zero length string and
+		MUST exactly match the <spanx style="verb">kid</spanx> value
+		for a key in the <spanx style="verb">jwks</spanx> (JWK Set) Claim
+		of the Entity Configuration of the issuing Entity.
+	      </t>
+	      <t>
+		The Entity Statement's signature MUST validate using
+		the issuing Entity's key identified by the
+		<spanx style="verb">kid</spanx> value.
+	      </t>
+	      <t>
+		If the <spanx style="verb">crit</spanx> Claim is present,
+		then each array element in this claim's value
+		MUST be a string representing an Entity Statement claim
+		that is not defined by this specification
+		and that claim MUST be understood
+		and be able to be processed by the implementation.
+	      </t>
+	      <t>
+		If the <spanx style="verb">authority_hints</spanx> Claim is present,
+		the Entity Statement MUST be an Entity Configuration.
+		Verify that its value is syntactially correct,
+		as specified in <xref target="authority_hints"/>.
+		Implementations MAY also validate that the Entity is a Subordinate
+		of each Entity whose Entity Identifier is listed in the
+		<spanx style="verb">authority_hints</spanx> array.
+	      </t>
+	      <t>
+		If the <spanx style="verb">metadata</spanx> Claim is present,
+		verify that its value is syntactially correct,
+		not using <spanx style="verb">null</spanx> as metadata values,
+		as specified in <xref target="metadata"/>.
+	      </t>
+	      <t>
+		If the <spanx style="verb">metadata_policy</spanx> Claim is present,
+		the Entity Statement be a Subordinate Statement.
+		Verify that its value is syntactially correct,
+		as specified in <xref target="metadata_policy"/>.
+	      </t>
+	      <t>
+		If the <spanx style="verb">metadata_policy_crit</spanx> Claim is present,
+		the Entity Statement be a Subordinate Statement.
+		Each array element in this claim's value
+		MUST be a string representing a Metadata Policy operator
+		that is not defined by this specification
+		and that operator MUST be understood
+		and be able to be processed by the implementation.
+	      </t>
+	      <t>
+		If the <spanx style="verb">constraints</spanx> Claim is present,
+		the Entity Statement be a Subordinate Statement.
+		Verify that its value is syntactically correct,
+		as specified in <xref target="chain_constraints"/>.
+	      </t>
+	      <t>
+		If the <spanx style="verb">trust_marks</spanx> Claim is present,
+		the Entity Statement MUST be an Entity Configuration.
+		Validate that the syntax of this Claim Value conforms to the
+		Claim definition.
+		In particular, for each element of the array that is the Claim value,
+		validate that there is a <spanx style="verb">trust_mark_type</spanx>
+		member whose value matches the
+		<spanx style="verb">trust_mark_type</spanx> Claim value in the
+		Trust Mark JWT that is the value of the
+		<spanx style="verb">trust_mark</spanx> member.
+		Validating the syntax is separate from evaluating whether particular
+		Trust Marks are issued by a trusted party and are trusted;
+		that process is described in <xref target="trust-mark-validation"/>
+		and MAY be performed as a separate step from syntactic validation.
+	      </t>
+	      <t>
+		If the <spanx style="verb">trust_mark_issuers</spanx> Claim is present,
+		the Entity Statement MUST be an Entity Configuration.
+		Validate that its Claim value is a JSON object with
+		Trust Mark type identifiers as the member names and
+		arrays of Entity Identifiers as the values.
+	      </t>
+	      <t>
+		If the <spanx style="verb">trust_mark_owners</spanx> Claim is present,
+		the Entity Statement MUST be an Entity Configuration.
+		Validate that its Claim value is a JSON object with
+		Trust Mark type identifiers as the member names and
+		values that are JSON objects containing
+		a <spanx style="verb">sub</spanx> member with a value that is
+		an Entity Identifier and
+		a <spanx style="verb">jwks</spanx> member with a value that is
+		a JSON Web Key Set.
+	      </t>
+	      <t>
+		If the <spanx style="verb">source_endpoint</spanx> Claim is present,
+		the Entity Statement MUST be a Subordinate Statement.
+		Validate that its Claim value is a URL.
+		Implementations MAY also make a fetch call to the URL
+		to validate that this is the fetch endpoint
+		from which the Entity Statement was issued.
+	      </t>
+	      <t>
+		If the <spanx style="verb">trust_anchor</spanx> Claim is present,
+		validate that its value is a URL
+		using the <spanx style="verb">https</spanx> scheme.
+		Implementations SHOULD validate that the Entity Identifier matches
+		one of the Trust Anchors configured for the deployment.
+		Furthermore, implementations SHOULD validate that the
+		Entity Configuration for the Entity Identifier contains
+		information compatible with the configured Trust Anchor information
+		- especially the keys.
+		This Claim MUST NOT be present in Entity Statements that are not
+		Explicit Registration responses.
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    If any of these validation steps fail,
+	    the Entity Statement MUST be rejected.
+	  </t>
+	</section>
+
+          <section title="Entity Statement Examples" anchor="es_example">
 
         <figure>
           <preamble>
@@ -859,6 +1066,8 @@
 }
 ]]></artwork>
         </figure>
+          </section>
+
       </section>
 
       <section title="Trust Chain" anchor="trust_chain">
@@ -1112,10 +1321,10 @@
   "alg": "RS256",
   "kid": "SUdtUndEWVY2cUFDeDV5NVlBWDhvOXJodVl2am1mNGNtR0pmd",
   "trust_chain": [
-      "eyJhbGciOiJSUzI1NiIsImtpZCI6ImMzWnlUR1ZTY0RNeFowd3dka1pQVVZZMFMyRkVRMnBYVjE4dFVFd3ROVlZIV21WVVEwTmlTM2xVU1EiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2OTY1ODMzMzQsImlhdCI6MTY5NjI4MzMzNCwiaXNzIjoiaHR0cHM6Ly9jcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZyIsInN1YiI6Imh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmciLCJqd2tzIjp7ImtleXMiOlt7Imt0eSI6IlJTQSIsImtpZCI6ImMzWnlUR1ZTY0RNeFowd3dka1pQVVZZMFMyRkVRMnBYVjE4dFVFd3ROVlZIV21WVVEwTmlTM2xVU1EiLCJlIjoiQVFBQiIsIm4iOiIwNmZfWUd0ejhyY29WQWZSUnlNbldYbmNteVRFc3lmUHh6OVlXdlRjT0c1WGtIQ244c1ZCa3hjVENleDFvdWtxZVlVLU0xcUE3ZXE4RmNMRDJHUEVxVHNITDBRNVNMLXVYSUlYd2hSSmx3bWpRNWh1dEdnV3ptMUVOc0g0SENyV3EwNmJGLTRpUFFpUVUxRm1kVXdxVTI5clVqTnlmeUlLTmd1cFJPZ2p1Y3ozcWYtWE1ZdU5SRnFFcld0b3N0dHE1bm4zdFlSNWh5UWpVWnVwNHZPUnFhUUROMUxiVEk5d2cxRzlxRjlxQUxDcGk0WlNmclJyWEphZDUtamwtS1VOdFM1cG5hbGlHRFF2a3AxTnJCaXBJT19haTFvR21BMTlHd1E4VGpNVkNFc3ZXUXpKcTVrd0N1eHVKZTlBODE1RzRuU2I1WFp1RXZ6anhNU1M4b3hpLVEifV19LCJtZXRhZGF0YSI6eyJvcGVuaWRfY3JlZGVudGlhbF9pc3N1ZXIiOnsiandrcyI6eyJrZXlzIjpbeyJrdHkiOiJSU0EiLCJraWQiOiJSMlJ6UlhBMFJWQnlkekZPVkcxZmRXUlRNVFozWVRSbU5uRTFWM0ZmTUUxb01VWkxla2xpWTFOWU9BIiwiZSI6IkFRQUIiLCJuIjoiNUhfWGg3eGdEV1R4UVZiSnFtT0d1cm9rRThrcjJlMUtnTVdjWU9BNzRPXzFQWGQydWdqeUlxOXQxbVZQU3V3eC10eVNrMlBLcGpwLS1XckhuM0E0VUtKa3VSMTF6aG1kTEJzVThUT0JCdTVNWjhhdER1amZSd0lMWGRLc0VYa2x2YUI2UExUNHpkWm9kZ0NzMDVLeTJlNXNiNXo2X0NpRHFnVVZuV1BtSkxNa2dwQnRaLWtNZF9sYjlTb29abGxmVUdsVGtzYXVKMl9nVlEtVnBGVU1YWWpvSmpOeDk3ZXVrYVluUkVvQ0MzVGFfLThiY1Jvc2x4MnhySWJ1X1VHVnFpcGVOM05QLW1lZmY5VlRaV1lNM2dtb2x3dXBuTUNYWGlpa2NSNVVTTFZnMGVfZ3o2T2ZvUlZHS0FXSXBSUkxUejJhaXF1a1ZIWmRaWDl0Tm16MG13In1dfX0sImZlZGVyYXRpb25fZW50aXR5Ijp7Im9yZ2FuaXphdGlvbl9uYW1lIjoiT3BlbklEIENyZWRlbnRpYWwgSXNzdWVyIGV4YW1wbGUiLCJvcmdhbml6YXRpb25fdXJpIjoiaHR0cHM6Ly9jcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZy9ob21lIiwicG9saWN5X3VyaSI6Imh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmcvcG9saWN5IiwibG9nb191cmkiOiJodHRwczovL2NyZWRlbnRpYWxfaXNzdWVyLmV4YW1wbGUub3JnL3N0YXRpYy9sb2dvLnN2ZyIsImNvbnRhY3RzIjpbInRlY2hAY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmciXX19LCJhdXRob3JpdHlfaGludHMiOlsiaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZWlkYXMuZXhhbXBsZS5vcmciXX0.WM0dOdLOhC9UTRi_y6lwwu6PmUWv1wc5f8MhKP2qz6b1haa-eyf4Y60iZ2SDeFeg105wHwPSKN8AfRoNyqubOGZMAFmP-sYBeqZatNsGNWjFEHzI9dJwx1oBab5_TDoULarpKSdvuub4NBOBTKFUSDffBG6jzlaK5JiQzMR30-jqSt9qPPWrJepyLQvyFxmvn94OiNQQwJ0oYB1MecJ7r8gmQMCAH4LixD6amKQoCuN0UeN7iEHTs3z_8ZUDihQ7BHf0dtwDCmG_G7xvaNkLPkG6cP2e2-l5kcYbNaUaK0IsX2yB0BkoQOOHlT-_M2TC2Zzg6Nmmw8WpTeraMrSkIQ",
-      "eyJhbGciOiJSUzI1NiIsImtpZCI6IlpsSndObTQ1VDJsVWNYbEhUR2cxWldobGJsZGpVV2xsY21RdFNVbFFXWHBIUzFKRVEwOHlUV1Z2TkEiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2OTY1ODMzMzQsImlhdCI6MTY5NjI4MzMzNCwiaXNzIjoiaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZWlkYXMuZXhhbXBsZS5vcmciLCJzdWIiOiJodHRwczovL2NyZWRlbnRpYWxfaXNzdWVyLmV4YW1wbGUub3JnIiwiandrcyI6eyJrZXlzIjpbeyJrdHkiOiJSU0EiLCJraWQiOiJjM1p5VEdWU2NETXhaMHd3ZGtaUFVWWTBTMkZFUTJwWFYxOHRVRXd0TlZWSFdtVlVRME5pUzNsVVNRIiwiZSI6IkFRQUIiLCJuIjoiMDZmX1lHdHo4cmNvVkFmUlJ5TW5XWG5jbXlURXN5ZlB4ejlZV3ZUY09HNVhrSENuOHNWQmt4Y1RDZXgxb3VrcWVZVS1NMXFBN2VxOEZjTEQyR1BFcVRzSEwwUTVTTC11WElJWHdoUkpsd21qUTVodXRHZ1d6bTFFTnNINEhDcldxMDZiRi00aVBRaVFVMUZtZFV3cVUyOXJVak55ZnlJS05ndXBST2dqdWN6M3FmLVhNWXVOUkZxRXJXdG9zdHRxNW5uM3RZUjVoeVFqVVp1cDR2T1JxYVFETjFMYlRJOXdnMUc5cUY5cUFMQ3BpNFpTZnJSclhKYWQ1LWpsLUtVTnRTNXBuYWxpR0RRdmtwMU5yQmlwSU9fYWkxb0dtQTE5R3dROFRqTVZDRXN2V1F6SnE1a3dDdXh1SmU5QTgxNUc0blNiNVhadUV2emp4TVNTOG94aS1RIn1dfX0.GxUAOCfVHTyBvJzq9BIV76fX-bRqIVcL-Y36B8NLO17lE0rkfDQQGUh-Vh1JmF_MF3Q4QhXjW-agXoKST3q9x5nDoYHTleQ-10Lw9qiU9I6K8mn1JMNXahzNaX_MLOA7R3_O0-HhxtARIEKpiGQTjup_f5PyqBLrwcERxhnbg0YrpgsvVQHC1SUgXiMtKxMZDWLUtk7q8YaNNhJ4nuEV2M1ZWcEVFloWYKWBJbJvmZ9jqsop6svMDOqusih3sNGWKZ9XmPqtUeGR8o1vsKsOk0WKVnEMH9ESGu54pUJahX05jd4UmTPOzfRJ61k9-_te6xNZUwJqtU9wJ--IrHz7ig",
-      "eyJhbGciOiJSUzI1NiIsImtpZCI6IlpXRlRRbWhmVFdaSVRuRlRZM0ZTV2pKdU5HMWZWV05hZWxkNmNtUjFRa0pEYlhaWlRYQm1hM1JWUVEiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2OTY1ODMzMzQsImlhdCI6MTY5NjI4MzMzNCwiaXNzIjoiaHR0cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5vcmciLCJzdWIiOiJodHRwczovL2ludGVybWVkaWF0ZS5laWRhcy5leGFtcGxlLm9yZyIsImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwia2lkIjoiWmxKd05tNDVUMmxVY1hsSFRHZzFaV2hsYmxkalVXbGxjbVF0U1VsUVdYcEhTMUpFUTA4eVRXVnZOQSIsImUiOiJBUUFCIiwibiI6ImtSQUlzLVRBblF6T29lc195RW9oaDNUeGlaWFlPRC1xekI2T25JalZCaVI0WFNGbkw4djhRQ0IxamJiSlZTQ1hBZmdObTlBZjdVRDNBX0E2T1pQOUtacldSUk00NEp0TVAzZmxVSU5CQ2xzNFBrdVd2RklmWEtaaWVUNGhBMzNYdUlTSndqT2NlNnRrbUZTUl9wQmI3S0JHbnB4d3dnRlJjeUM2RU1VQWtWUGdQRl9mbXM3NEEyTF83TGVaNzh2X053VUhsY2VxVHB1OUx6VTRuTTd1RTZQY0JPSmJweXI2SFFuUTR1VHN6WThsWHVmT3pHZ2IzVXNDNmRnQWVVVERIZlFROE4xYXV2bkJUNmR0SHNHNWMxS2NCT2QzLVp6ZTZ5WVE5c2JLUlUtWVoydDZKdUJIbS1xLTVOamxiRWVwNDAwbFgxSXlKdG9Tc3F0d3lCX1djdyJ9XX19.CvBvN0aG-r13UG4uITH72tC5CbAG0rT4qYQ5wwHOtGE021etZFQd40RFnQT5e-Gy_Y8Wiin-Zmc1hWW2rVyZ1RRInjYGUt26QI6ujR-5w9Y_LHVp-6RzYEF0lg9otpAyszQE4hf5qBZYAj8t39FvCYWTYVci6mtpovJQ380ha8I4QL__fZtEgDLQ-7VKS58nN1DOVdcIICMMfxpDR81bkY5i5Qxcy7AaZTN6xxE2SlCO-pKKub0jBUtnug20-BL2YgcPhLFOYWfj2cuyapOA9Omwu6CPhmZHgsL1P2oK_f4jA9JxNDYcV0losDbD86r8Wg3anM2lVM5BTHkiUr2grg",
-      "eyJhbGciOiJSUzI1NiIsImtpZCI6IlpXRlRRbWhmVFdaSVRuRlRZM0ZTV2pKdU5HMWZWV05hZWxkNmNtUjFRa0pEYlhaWlRYQm1hM1JWUVEiLCJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCJ9.eyJleHAiOjE2OTY1ODMzMzQsImlhdCI6MTY5NjI4MzMzNCwiaXNzIjoiaHR0cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5vcmciLCJzdWIiOiJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZyIsImp3a3MiOnsia2V5cyI6W3sia3R5IjoiUlNBIiwia2lkIjoiWldGVFFtaGZUV1pJVG5GVFkzRlNXakp1TkcxZlZXTmFlbGQ2Y21SMVFrSkRiWFpaVFhCbWEzUlZRUSIsImUiOiJBUUFCIiwibiI6InhPQnN0YnJUUE9SQ3JnTXowQ254Skk4cjd4TkwwYjZITExKY05NSkNQbGl0SmUzNUZUdGw1bVdMVXFoeFdiRXFYYnpVLW80VHd1ZHA5NHFrckI3Zks5cEk0bDBldEoxMFZTbTQ0dXNiakxoMTUwVXFlSnlmQmdyMzRWbWhINWo3ZFMzS3V5bjNvOEdER2ZjNDVjcmdsR3lNOUgzbFp6SGl6SXdncDVzSUhCeGFPRWQ1eXlOdXhBLXFFQU4zaFIxQi1LQ2JYaWVDRVRrcWNMWU1zX2psRHVsTVE0MzI5TEgwNkhaclhINElfUHVnWXd0WldUN0VqZUR6c3Y2Ny14TFFhOEg3cnV1N3JVME1FREl0TkVpS3ljdVk5b0pLWWtrX2hBQzFMNkt2VkNmeXpVOGVvem9KQzM4eGhXUklNTXJZd2hiSmFaa3dUdDZCRDByalNNRUp6USJ9XX0sIm1ldGFkYXRhIjp7ImZlZGVyYXRpb25fZW50aXR5Ijp7ImZlZGVyYXRpb25fZmV0Y2hfZW5kcG9pbnQiOiJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZy9mZXRjaCIsImZlZGVyYXRpb25fcmVzb2x2ZV9lbmRwb2ludCI6Imh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnL3Jlc29sdmUiLCJmZWRlcmF0aW9uX2xpc3RfZW5kcG9pbnQiOiJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZy9saXN0Iiwib3JnYW5pemF0aW9uX25hbWUiOiJUQSBleGFtcGxlIiwib3JnYW5pemF0aW9uX3VyaSI6Imh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnL2hvbWUiLCJwb2xpY3lfdXJpIjoiaHR0cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5vcmcvcG9saWN5IiwibG9nb191cmkiOiJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZy9zdGF0aWMvbG9nby5zdmciLCJjb250YWN0cyI6WyJ0ZWNoQHRydXN0LWFuY2hvci5leGFtcGxlLm9yZyJdfX0sImNvbnN0cmFpbnRzIjp7Im1heF9wYXRoX2xlbmd0aCI6MX19.ZenICRAm4zrd65A3tsSN77VLjheJAK09s8sBXQVo2l3r7RrN8pXFKqulZebxfSALF4am58Ry8GeK2N1ZK7B1GlfskAnnIINfi-IpjqquvPW_MXrSo0bLoXnnmruHJ1D0KbONbwdZaOZg4oJRo2PBU009pojheUwcRcNDujCRiQimsvEYlL4YLwpPHjEmt46WviPESnZCgez_oEdoXkNjN3PsOta9de_abjkASYdGgAlBTIbUjAutmErbubjKptxpvycibBLuJ58nkiQZ_KesLRPnDY9hbPf0ZMbtCB_gx8yLlQ9-8nE5_fuxICz1uKR4536txsQFmrCvireBchaZ1A"
+    "eyJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiVUdaSGF6aHVZalpoT0Y5amNUaHBWa05KU1VkWWQxVnlaR1JGVXpWd09FVXlSMDQwU2tjMk1XMXVPQSJ9.eyJtZXRhZGF0YSI6IHsib3BlbmlkX2NyZWRlbnRpYWxfaXNzdWVyIjogeyJqd2tzIjogeyJrZXlzIjogW3sia3R5IjogIlJTQSIsICJraWQiOiAiUjJSelJYQTBSVkJ5ZHpGT1ZHMWZkV1JUTVRaM1lUUm1ObkUxVjNGZk1FMW9NVVpMZWtsaVkxTllPQSIsICJlIjogIkFRQUIiLCAibiI6ICI1SF9YaDd4Z0RXVHhRVmJKcW1PR3Vyb2tFOGtyMmUxS2dNV2NZT0E3NE9fMVBYZDJ1Z2p5SXE5dDFtVlBTdXd4LXR5U2syUEtwanAtLVdySG4zQTRVS0prdVIxMXpobWRMQnNVOFRPQkJ1NU1aOGF0RHVqZlJ3SUxYZEtzRVhrbHZhQjZQTFQ0emRab2RnQ3MwNUt5MmU1c2I1ejZfQ2lEcWdVVm5XUG1KTE1rZ3BCdFota01kX2xiOVNvb1psbGZVR2xUa3NhdUoyX2dWUS1WcEZVTVhZam9Kak54OTdldWthWW5SRW9DQzNUYV8tOGJjUm9zbHgyeHJJYnVfVUdWcWlwZU4zTlAtbWVmZjlWVFpXWU0zZ21vbHd1cG5NQ1hYaWlrY1I1VVNMVmcwZV9nejZPZm9SVkdLQVdJcFJSTFR6MmFpcXVrVkhaZFpYOXRObXowbXcifV19fSwgImZlZGVyYXRpb25fZW50aXR5IjogeyJvcmdhbml6YXRpb25fbmFtZSI6ICJPcGVuSUQgQ3JlZGVudGlhbCBJc3N1ZXIgZXhhbXBsZSIsICJvcmdhbml6YXRpb25fdXJpIjogImh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmcvaG9tZSIsICJwb2xpY3lfdXJpIjogImh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmcvcG9saWN5IiwgImxvZ29fdXJpIjogImh0dHBzOi8vY3JlZGVudGlhbF9pc3N1ZXIuZXhhbXBsZS5vcmcvc3RhdGljL2xvZ28uc3ZnIiwgImNvbnRhY3RzIjogWyJ0ZWNoQGNyZWRlbnRpYWxfaXNzdWVyLmV4YW1wbGUub3JnIl19fSwgImF1dGhvcml0eV9oaW50cyI6IFsiaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZWlkYXMuZXhhbXBsZS5vcmciXSwgImp3a3MiOiB7ImtleXMiOiBbeyJrdHkiOiAiUlNBIiwgImtpZCI6ICJNR281VVY4dGIwRkpha2xEVm10aFpuTmpZWE50V1hvd1J6aG9OVzQwTTBkTVJqTlRTRWd3TWpNeE9BIiwgIm4iOiAielVITzlvQWJUOXg4TWhGNEdTY0JPU3BkaVRoMGM3dWh0eFo3WG9vRFMxckZyQXRXVUNRLV9nUUFjVmVsMEFjcUIxdEoyQmFTaEdobkdsX1ZVYTlqSXE5WkJpc2xQZS1tZ01STFFYNm1HdnhKR19Gb0FRQ3BOUGNXRWRCT21uNUFkVGxXeTFoYk9mMlY5YV9TUzdKeUpnaVJJMXBodm43bmhyNVVmMFRUX1B2NzJsS0tBZ3drUmdEOXZtWVRSOFBTSzF3b2d6WVJSMFYwYVg2M3I5Xy0wb2ZZN3hRRXIwR2xVY2dqZlVyS0dzS0JJNWswalQtQlIxdXpxaWJVSHlsblQ5UXBNajhBQ0docmktYXRnb2t0Z1ZtNklUTmJXYTBCcnIyMWVLVUpKaHZ1eGVQTUxhUDVPdUoxRy1CanhxakNwOHJGaTB0bWJOU0pWanNiUlplQ3lRIiwgImUiOiAiQVFBQiJ9XX0sICJzdWIiOiAiaHR0cHM6Ly9jcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZyIsICJpc3MiOiAiaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZWlkYXMuZXhhbXBsZS5vcmciLCAiaWF0IjogMTc1ODUyNzgxOCwgImV4cCI6IDE3NTg4Mjc4MTh9.W3fbv3JrAxcDsV0MHk00MzcgC1DddTrzkRN8vdT1IRwq3qy9NtsiC2532oInHoxxjlKBu7D8cqF9yG0Tb1v4gk_tejyUo0M9xJqyz32RU2iZP0lpbNHHUDrMxuGv1wPDap2mKisRgbb7pxm6dx_aaIrydhx0uKDM6EwX1RzpMxJeqNMeLK9992_xyCZvsi3kVGRCJDSqd-rXBS_2LFWKUViC1_5GcsWAkRABBgRDeARqQah3FvJVWiAcNv2Te2k6SMW1MNVCT7Q3uf3c2vVuaVA1OwY_wUTrkfFRjKEOmU1sgZ1TndxJKQW0XZZmTxcoJfmrjmCyxtteucYznESMnw",
+    "eyJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiVUdaSGF6aHVZalpoT0Y5amNUaHBWa05KU1VkWWQxVnlaR1JGVXpWd09FVXlSMDQwU2tjMk1XMXVPQSJ9.eyJzdWIiOiAiaHR0cHM6Ly9jcmVkZW50aWFsX2lzc3Vlci5leGFtcGxlLm9yZyIsICJqd2tzIjogeyJrZXlzIjogW3sia3R5IjogIlJTQSIsICJraWQiOiAiTUdvNVVWOHRiMEZKYWtsRFZtdGhabk5qWVhOdFdYb3dSemhvTlc0ME0wZE1Sak5UU0Vnd01qTXhPQSIsICJuIjogInpVSE85b0FiVDl4OE1oRjRHU2NCT1NwZGlUaDBjN3VodHhaN1hvb0RTMXJGckF0V1VDUS1fZ1FBY1ZlbDBBY3FCMXRKMkJhU2hHaG5HbF9WVWE5aklxOVpCaXNsUGUtbWdNUkxRWDZtR3Z4SkdfRm9BUUNwTlBjV0VkQk9tbjVBZFRsV3kxaGJPZjJWOWFfU1M3SnlKZ2lSSTFwaHZuN25ocjVVZjBUVF9QdjcybEtLQWd3a1JnRDl2bVlUUjhQU0sxd29nellSUjBWMGFYNjNyOV8tMG9mWTd4UUVyMEdsVWNnamZVcktHc0tCSTVrMGpULUJSMXV6cWliVUh5bG5UOVFwTWo4QUNHaHJpLWF0Z29rdGdWbTZJVE5iV2EwQnJyMjFlS1VKSmh2dXhlUE1MYVA1T3VKMUctQmp4cWpDcDhyRmkwdG1iTlNKVmpzYlJaZUN5USIsICJlIjogIkFRQUIifV19LCAiaXNzIjogImh0dHBzOi8vaW50ZXJtZWRpYXRlLmVpZGFzLmV4YW1wbGUub3JnIiwgImlhdCI6IDE3NTg1Mjc4MTgsICJleHAiOiAxNzU4ODI3ODE4fQ.hF0ABpYlQBPzeMJrANe-5VOStDbZrEFdYVnNVwRgxphCMEMyoBfHDVv9kQceJtKqKbzFyFFCiO6QPY-GGt-eI37YxdzG5F8GCr9hBXfoUtTSiWaEop3B0AVXH0SelRO5zvN8W2SlR0rPTJ75kLv2vaVbgES_IzMhneteRvx2HGvCxOdvA4kermxkFT7MSP3YGyuNGJ4JAEvLXT6TmL9wiitGJ3SO34ImWZ4uI9zmSzWqvRIFKZ05dD2_RVybJbKQcOuRS3Th2yn0uq4YPzPw-Na2mw0FcYXMKQhq-SvdkI4Rt4eQMbIyyminMuTxrdIeQD6-rvSOxUTjF31sjnekvA",
+    "eyJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiTjFsNWVWWTJhMmszU0ZCSGNtcFRjMVJJYkZGM1R6VmlZbkp2VTBNNGJuaE1ZMXBxTkdod01VcEZTUSJ9.eyJzdWIiOiAiaHR0cHM6Ly9pbnRlcm1lZGlhdGUuZWlkYXMuZXhhbXBsZS5vcmciLCAiandrcyI6IHsia2V5cyI6IFt7Imt0eSI6ICJSU0EiLCAia2lkIjogIlVHWkhhemh1WWpaaE9GOWpjVGhwVmtOSlNVZFlkMVZ5WkdSRlV6VndPRVV5UjA0MFNrYzJNVzF1T0EiLCAibiI6ICJvTlhGczdmajR5Q0k2TUotS3JSbDM0WkpBbGR1N2x3ZE5rdHk2N1FHTUx5Wmh6dFpkT0VYV2w3Z1ZRUldIeUM3M01kTGlhU1VJUFB0R2daak5iSVJEUDF0UDFJZWlObU52bmhWTnNCbWNiVjhLRUNkXy1GRGlYWDRTT0VNU0ItNXVhTGpsay1VTGpZajdwZGhPSjJqcWdIQ1dHMmFhMkozYXdUY25zSXc1NDF0YVdoc2NGZlZIT0ktMVZnbzVCTDdmRGdEakRLcGtpeGg4SE5PUVVQTXJrMWdZb2tiakt3V0RKZXphUndtamVNWldOczB1aTFvdmlFWW0xQzRfTVNSWW8wUEVOWHk0QmQ2QzVHLTVTanZyNU83U1dLN19GUWpsY09yZXhrUERyNmdQQWZHZVZnNW1CblJYOGp3b1l0TnlMal94SlpSRGZKMDdjTTRfNXl4cVEiLCAiZSI6ICJBUUFCIn1dfSwgImlzcyI6ICJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZyIsICJpYXQiOiAxNzU4NTI3ODE4LCAiZXhwIjogMTc1ODgyNzgxOH0.G3DP1Nqt8UTXwes0ozKzADd1KmAYl0K0DhyjQMJOKR7pgqYp_S91ObMKPrBJDh1Mnpy7mpHICUM23pUEMFt7v_-MdqjPTOG5ebrxqjFtemizFk6iHWvwhCcheQIsNMRXf-y64Ox6SgBVXP_JaKHtA_YInTQB9-_bdb-mWvwpOlvvGH-l5Hl7TQten_IoewT9bfC62UkOmKzn0L1VlVFtYn9R7sRFUtnfcqsvvRLIHNfJwaJi-lpODgNv2l7arHssS_FmfX5ZN-3WylJJbZhtkFku1ITKx7c4bvGsZSvEx9m_ixGJYunfD-iKWAmfE1suc6X-ywR7dgdp_BBpMvytlg",
+    "eyJ0eXAiOiJlbnRpdHktc3RhdGVtZW50K2p3dCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiTjFsNWVWWTJhMmszU0ZCSGNtcFRjMVJJYkZGM1R6VmlZbkp2VTBNNGJuaE1ZMXBxTkdod01VcEZTUSJ9.eyJtZXRhZGF0YSI6IHsiZmVkZXJhdGlvbl9lbnRpdHkiOiB7ImZlZGVyYXRpb25fZmV0Y2hfZW5kcG9pbnQiOiAiaHR0cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5vcmcvZmV0Y2giLCAiZmVkZXJhdGlvbl9yZXNvbHZlX2VuZHBvaW50IjogImh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnL3Jlc29sdmUiLCAiZmVkZXJhdGlvbl9saXN0X2VuZHBvaW50IjogImh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnL2xpc3QiLCAib3JnYW5pemF0aW9uX25hbWUiOiAiVEEgZXhhbXBsZSIsICJvcmdhbml6YXRpb25fdXJpIjogImh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnL2hvbWUiLCAicG9saWN5X3VyaSI6ICJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZy9wb2xpY3kiLCAibG9nb191cmkiOiAiaHR0cHM6Ly90cnVzdC1hbmNob3IuZXhhbXBsZS5vcmcvc3RhdGljL2xvZ28uc3ZnIiwgImNvbnRhY3RzIjogWyJ0ZWNoQHRydXN0LWFuY2hvci5leGFtcGxlLm9yZyJdfX0sICJjb25zdHJhaW50cyI6IHsibWF4X3BhdGhfbGVuZ3RoIjogMX0sICJqd2tzIjogeyJrZXlzIjogW3sia3R5IjogIlJTQSIsICJraWQiOiAiTjFsNWVWWTJhMmszU0ZCSGNtcFRjMVJJYkZGM1R6VmlZbkp2VTBNNGJuaE1ZMXBxTkdod01VcEZTUSIsICJuIjogIm9pcm5UMEVjMkNva2JPZFJQT0VlbTI0SXc5LXhUeW5DcGwtOWx0cjBQclNUTEJXbHp6VW1IbzNBS25qemttNUg4MmxudVRMVTd1Skd3a0tqMjJaeklCMmFiMDIzendEX09rdDRaOXFyeW1kZUFYc0MtYXFhcVQ5RjZjZjFsbUJVczBvQXlwdWlTSnh1bU5WSVVucF9wbWhvbjlfR3NHUnlYcnJnT3lJclNKZ2hoX3p4RXREb3BnN0NQb3Q3Mmk3QlRpd0U1cXp0MFhGOHBnczM2VndYM0F3WnNMVkhpaGo0WVNUYXlYUUV3aUszMDUxRnhXXzVCbWNIRXJxM0J5WkU0UmZOSjBzbU96Z1NwMEtET0dkVjUwNHR5cTZJS1BjM04ybkhJd3hjUl9NbmczaWlfVWlFVXFYVEkwYkk5TlY4VHV4VWtrUldRcFZab0w5T3V2am9NUSIsICJlIjogIkFRQUIifV19LCAic3ViIjogImh0dHBzOi8vdHJ1c3QtYW5jaG9yLmV4YW1wbGUub3JnIiwgImlzcyI6ICJodHRwczovL3RydXN0LWFuY2hvci5leGFtcGxlLm9yZyIsICJpYXQiOiAxNzU4NTI3ODE4LCAiZXhwIjogMTc1ODgyNzgxOH0.lYDvz35LPE0V6nVUfO6Qwe8-AVQ9HBBeup-hg79HPAV-PqGa9dI9YX7GMiwb_khVGL8ASLfru4pFjlk4kjvgWj6u-ZXmWeElo48rAubCTtHKU8XOkHhvPXp04havTUevTCs3J0rBZKiJBLCBS9046yTrLPP8yN2hh_wR_3YExfW9O6w5tuEkghP4pQHZbWVZjE2pXTd-iIL5OFOWF_3050bAMTUQP_XUH5ZAPlj2-_qyDmARM9sh83SMDFwWkSqsDQDrOpWs1Uy7uT_iwqgPBuMSwUl9s4iRV-_CJy3IOdP0DCJOM3IyTWoHSlcMotEKGLmf4zTSnABr9PCPc5Bgrg"
   ]
 }
 ]]>
@@ -1168,11 +1377,8 @@
           <spanx style="verb">federation_entity</spanx>.
         </t>
         <t>
-          All Entities in a federation MAY use this Entity Type.
-          The Entities that provide federation API endpoints
+          The Entities that contain any of Federation Entity properties defined below
           MUST use this Entity Type.
-        </t>
-        <t>
           The following Federation Entity properties are defined:
           <list style="hanging">
             <t hangText="federation_fetch_endpoint">
@@ -1280,6 +1486,9 @@
           </list>
         </t>
 	<t>
+	  Additional Federation Entity properties MAY be defined and used.
+	</t>
+	<t>
 	  It is RECOMMENDED that each Federation Entity contain
 	  an <spanx style="verb">organization_name</spanx> claim,
 	  as defined in <xref target="informational_metadata"/>.
@@ -1325,7 +1534,7 @@
           <list style="hanging">
             <t hangText="client_registration_types">
               <vspace/>
-              REQUIRED. An array of strings specifying the client registration
+              RECOMMENDED. An array of strings specifying the client registration
               types the RP supports. Values defined by this specification
               are
               <spanx style="verb">automatic</spanx>
@@ -1416,7 +1625,7 @@
           <list style="hanging">
             <t hangText="client_registration_types_supported">
               <vspace/>
-              REQUIRED. An array of strings specifying the client registration
+              RECOMMENDED. An array of strings specifying the client registration
               types the OP supports. Values defined by this specification are
               <spanx style="verb">automatic</spanx>
               and <spanx style="verb">explicit</spanx>.
@@ -1560,7 +1769,7 @@
           The Entity Type Identifier is
           <spanx style="verb">oauth_resource</spanx>.
 	  The parameters defined in <xref target="common_metadata"/> are applicable.
-	  In addition, while it is not yet a standard,
+	  In addition,
 	  deployments MAY use the protected resource metadata parameters
 	  defined in <xref target="RFC9728"/>.
         </t>
@@ -1739,6 +1948,15 @@
 	      However, there may be circumstances in which it is desirable to use multiple
 	      JWK Set representations, such as when an Entity is in multiple federations and the
 	      federations have different policies about the JWK Set representation to be used.
+	      Also note that some implementations might not understand
+	      all these representations.  For instance, while
+	      <spanx style="verb">jwks_uri</spanx> will certainly be understood
+	      in OpenID Connect OP metadata,
+	      <spanx style="verb">signed_jwks_uri</spanx> might not be understood
+	      by all OpenID Connect implementations, and so
+	      a JWK Set representation that is understood also needs to be present.
+	    </t>
+	    <t>
 	      When multiple JWK Set representations are used, the keys present in each
 	      representation SHOULD be the same.  Even if they are not completely the
 	      same at a given instant in time (which may be the case during key rollover operations),
@@ -1805,11 +2023,8 @@
             </t>
 	  </list>
 	  <t>
-	    It is RECOMMENDED that, when present, these metadata parameters occur in
-	    an Entity's <spanx style="verb">federation_entity</spanx> metadata.
-	    They MAY also be present in the Entity's metadata for other Entity Types,
-	    particularly when the values for those Entity Types differ from
-	    those for the <spanx style="verb">federation_entity</spanx> metadata.
+	    These metadata parameters MAY be present in
+	    the Entity's metadata for any Entity Types that it uses.
 	  </t>
 	</section>
       </section>
@@ -2070,8 +2285,9 @@
                 Trust Chain has a policy for an Entity Type metadata parameter
                 that uses the same operator, whether the operator values are
                 allowed to be merged to produce an identical or more restrictive
-                policy, and if so, under what conditions. If the operator does
-                not allow such a merge, it MUST produce a policy error.
+                policy, and if so, under what conditions.
+                  The order of the result of such an operator value merge is not defined.
+                  If the operator does not allow such a merge, it MUST produce a policy error.
               </t>
               <t>
                 An operator MUST NOT output a metadata parameter with the
@@ -3296,7 +3512,7 @@
                  anchor="entity_type_constraints">
           <t>
             The <spanx style="verb">allowed_entity_types</spanx> constraint
-            specifies the acceptable Entity Types of Subordinate Entities in a
+            specifies the acceptable metadata Entity Types of Subordinate Entities in a
             Trust Chain. If there is no
             <spanx style="verb">allowed_entity_types</spanx> constraint, it
             means that any Entity Type is allowed. The
@@ -3307,6 +3523,14 @@
             means that only the <spanx style="verb">federation_entity</spanx>
             Entity Type is allowed.
           </t>
+            <t>
+                To apply the <spanx style="verb">allowed_entity_types</spanx> constraint during Trust Chain Resolution
+                all Entity Types that are not listed in the <spanx style="verb">allowed_entity_types</spanx> constraint
+                MUST be removed from the metadata claim in the subject's Entity Configuration.
+                The <spanx style="verb">federation_entity</spanx> Entity Type MUST NOT be removed.
+                This MUST be done before applying Metadata Policies but after applying Metadata from a direct
+                superior's Subordinate Statement.
+            </t>
         </section>
       </section>
     </section>
@@ -3365,11 +3589,11 @@
             <list style="hanging">
               <t hangText="iss">
                 <vspace/>
-                REQUIRED. String. Issuer of the Trust Mark.
+                REQUIRED. String. The Entity Identifier of the issuer of the Trust Mark.
               </t>
               <t hangText="sub">
                 <vspace/>
-                REQUIRED. String. Entity this Trust Mark applies to.
+                REQUIRED. String. The Entity Identifier of the Entity this Trust Mark applies to.
               </t>
               <t hangText="trust_mark_type">
                 <vspace/>
@@ -3520,93 +3744,106 @@
 	    Additional claims MAY be defined and used in conjunction with the claims above.
 	  </t>
 	  </section>
+            <section title="Validating a Trust Mark Delegation" anchor="trust-mark-delegation-validation">
+                <t>
+                    Validating a Trust Mark Delegation means validating a Trust Mark Delegation instance represented
+                    by a specific signed JWT.
+                </t>
+                <t>Henceforth, "delegation" is used as a shorthand for a Trust Mark Delegation JWT.
+                    The Trust Anchor referenced below is a Trust Anchor that has been successfully used when
+                    establishing trust in the Trust Mark Issuer.
+                </t>
+                <t>
+                    To validate a delegation, the following validation steps MUST be performed.
+                    Please note that if any of these validation checks fail, the entire validation
+                    process fails and the delegation is considered invalid.
+        <list style="numbers">
+            <t>The delegation MUST be a signed JWT</t>
+            <t>The delegation MUST have a <spanx style="verb">typ</spanx> header with the value
+                <spanx style="verb">trust-mark-delegation+jwt</spanx>
+            </t>
+            <t>The delegation MUST have an <spanx style="verb">alg</spanx> (algorithm) header parameter with a value
+                that is an acceptable JWS signing algorithm; it MUST NOT be <spanx style="verb">none</spanx>
+            </t>
+            <t>The Entity Identifier of the Trust Mark Issuer MUST match the value of <spanx style="verb">sub</spanx>
+                in the delegation</t>
+            <t>The Entity Identifier of the Trust Mark Owner MUST match the value of <spanx style="verb">iss</spanx>
+                in the delegation.</t>
+            <t>The current time MUST be after the time represented by the iat (issued at) Claim in the delegation
+                (possibly allowing for some small leeway to account for clock skew).</t>
+            <t>The current time MUST be before the time represented by the exp (expiration) Claim in the delegation
+                (possibly allowing for some small leeway to account for clock skew).</t>
+            <t>
+                The value of the Claim <spanx style="verb">trust_mark_type</spanx> in the delegation MUST be the same
+                as the value of the Claim <spanx style="verb">trust_mark_type</spanx> in the Trust Mark.
+            </t>
+            <t>The delegation's signature MUST validate using one of the Trust Mark Owner's keys
+                identified by the value of the header parameter <spanx style="verb">kid</spanx>.
+                The Trust Mark Owner's keys can be found in the <spanx style="verb">trust_mark_owners</spanx> claim in
+                the Trust Anchor's Entity Configuration.
+            </t>
+        </list>
+      </t>
+            </section>
         </section>
-
-        <section title="Validating a Trust Mark" anchor="trust_valid">
+        <section title="Validating a Trust Mark" anchor="trust-mark-validation">
           <t>
-	    An Entity SHOULD NOT try to validate a Trust Mark until
-	    it knows which Trust Anchor it is using.
-	    To validate a Trust Mark Issuer, follow the procedure
-	    defined in <xref target="resolving_trust"/>.
-	    To validate a Trust Mark, either:
-            <list style="symbols">
-              <t>
-                Validate the signature of the Trust Mark JWT and verify that
-                it has not expired.
-              </t>
-              <t>
-                If the Trust Mark type identifier appears in the
-                <spanx style="verb">trust_mark_owners</spanx> claim
-		of the Trust Anchor's Entity Configuration,
-                verify that the Trust Mark contains
-                a <spanx style="verb">delegation</spanx>
-                claim.
-                The claims for the Trust Mark type identifier
-                in the <spanx style="verb">trust_mark_owners</spanx> value
-                are used in the following way:
-                <list style="symbols">
-                  <t>
-                    The signature of the <spanx style="verb">delegation</spanx> JWT
-                    MUST verify with a key from <spanx style="verb">jwks</spanx> claim.
-                  </t>
-                  <t>
-                    The issuer of the <spanx style="verb">delegation</spanx> JWT
-		    MUST match the <spanx style="verb">sub</spanx> value
-		    in this set of claims.
-                  </t>
-                </list>
-              </t>
-	    </list>
-	  or:
-            <list style="symbols">
-              <t>
-                Use the Trust Mark Issuer status endpoint to verify that the
-                Trust Mark is still active
-                as described in <xref target="status_endpoint"/>.
-              </t>
-            </list>
+            Validating a Trust Mark means validating a Trust Mark instance
+            represented by a specific signed JWT.
+            It is NOT about validating whether a Trust Mark of a particular kind
+            can exist or not.
           </t>
           <t>
-            Note that the Entity representing the accreditation authority
-            SHOULD be well known and trusted for a given Trust Mark type identifier.
-            A Trust Anchor MAY publish a list of accreditation authorities
-            of Trust Marks that SHOULD be trusted by other Entities.
-            A Trust Anchor uses the <spanx style="verb">trust_mark_issuers</spanx> claim
-            in its Entity Configuration to publish this information.
-          </t>
-          <t>
-            If a Trust Mark is issued on behalf of a Trust Mark Owner, then the Trust Anchor SHOULD
-            publish the connection between the Trust Mark type identifier
-	    and the corresponding Trust Mark Issuer in the
-            <spanx style="verb">trust_mark_issuers</spanx> claim. This
-            signifies that the Trust Anchor has validated
-            the Trust Mark Owner and that the
-            Trust Mark Owner has delegated the right to issue Trust Marks
-            with a designated Trust Mark type identifier to a specified Trust Mark Issuer.
-            Also, the Trust Anchor MAY provide an empty array following the Trust Mark type identifier
-            to signal that this Trust Mark can be issued by any Trust Mark Issuer to which the
-            Trust Mark Owner has delegated the right to do so.
-          </t>
-          <t>
-            Trust Marks that are not recognized within a federation SHOULD be ignored when
-            evaluating trust in the Entity that presented them. Such Trust Marks can
-            appear for various reasons, such as the Entity Configuration including Trust Marks
-            associated with another federation, or Trust Marks intended for specific
-            purposes or Entity audiences.
-          </t>
-          <t>
-            An Entity MAY choose, at its own discretion, to utilize Trust Marks presented
-            to it that are not recognized within the federation, and where the
-            accreditation authority is established by an out-of-band mechanism.
-          </t>
+	    The trust in the Trust Mark Issuer comes before the trust in the trust mark.
+              If the Trust Mark Issuer is not trusted then the trust mark cannot be trusted.
+              An Entity MUST therefore establish trust in the Trust Mark Issuer by following the procedure defined in
+              <xref target="resolving_trust"/> prior to starting the Trust Mark validation process defined below.
+	  </t>
+      <t>
+        Henceforth, "instance" is used as a shorthand for Trust Mark instance.
+          The Trust Anchor referenced below is a Trust Anchor that
+          has been successfully used when establishing trust in the Trust Mark Issuer.
+      </t><t>
+        To validate an instance, the following validation steps MUST be performed.
+        Please note that if any of these validation checks fail, the entire validation
+        process fails and the instance is considered invalid.
+        <list style="numbers">
+             <t>The instance MUST be a signed JWT</t>
+            <t>The instance MUST have a <spanx style="verb">typ</spanx> header with the value
+                <spanx style="verb">trust-mark+jwt</spanx>
+            </t>
+            <t>The instance MUST have an <spanx style="verb">alg</spanx> (algorithm) header parameter with a value
+                that is an acceptable JWS signing algorithm; it MUST NOT be <spanx style="verb">none</spanx>.
+            </t>
+            <t>The Entity Identifier of the Entity whose Entity Configuration contains the instance MUST
+                match the value of the claim <spanx style="verb">sub</spanx> in the Trust Mark.</t>
+            <t>The current time MUST be after the time represented by the <spanx style="verb">iat</spanx> (issued at) Claim
+                (possibly allowing for some small leeway to account for clock skew).</t>
+            <t>The current time MUST be before the time represented by the <spanx style="verb">exp</spanx> (expiration) Claim
+                (possibly allowing for some small leeway to account for clock skew).</t>
+            <t>The instance's signature MUST validate using the Trust Mark issuer's key
+                identified by the <spanx style="verb">kid</spanx> value.
+            </t>
+            <t>If the <spanx style="verb">trust_mark_type</spanx> of the instance appears in the
+                <spanx style="verb">trust_mark_owners</spanx> claim in the Trust Anchor's
+                Entity Configuration, then the instance MUST contain a
+                <spanx style="verb">delegation</spanx> claim.</t>
+            <t>If there is a <spanx style="verb">delegation</spanx> claim in the instance, the value of that
+            claim MUST be validated according to <xref target="trust-mark-delegation-validation"/>.</t>
+        </list>
+      </t>
 	  <t>
-	    If trust marks are issued without an expiration time,
+	    If Trust Marks are issued without an expiration time,
 	    it is RECOMMENDED that a mechanism be provided to validate them,
 	    such as the Trust Mark Status endpoint
 	    and/or the Trust Marked Entities Listing endpoint.
 	  </t>
+	  <t>
+	    As an alternative to the above procedure for validating Trust Marks,
+	    implementations MAY use the Trust Mark Status endpoint to verify that the
+	    Trust Mark is valid and still active, as described in <xref target="status_endpoint"/>.
+	  </t>
         </section>
-
         <section title="Trust Mark Examples" anchor="trust_example">
           <figure>
             <preamble>
@@ -4111,9 +4348,7 @@ Host: edugain.org
                 filtered to include only those that include the specified Entity Type. When
                 multiple <spanx style="verb">entity_type</spanx>
                 parameters are present, for example
-                <spanx style="verb">
-                    entity_type=openid_provider&amp;entity_type=openid_relying_party
-                </spanx>,
+                <spanx style="verb">entity_type=openid_provider&amp;entity_type=openid_relying_party</spanx>,
                 the result MUST be filtered to include all specified Entity Types.
 
                 If the responder does not support this feature, it MUST
@@ -4520,7 +4755,7 @@ Host: openid.sunet.se
 
       <section title="Trust Mark Status" anchor="status_endpoint">
         <t>
-          This enables determining whether a Trust Mark that has been issued to
+          This enables determining whether a Trust Mark Instance that has been issued to
           an Entity is still active. The query MUST be sent to the Trust Mark Issuer.
         </t>
 	<t>
@@ -4573,43 +4808,157 @@ trust_mark=eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6 ...
           <t>
             A successful response MUST use the HTTP status code 200
             with the content type
-            <spanx style="verb">application/json</spanx>.
-            The response body is a JSON object containing the data below:
+            <spanx style="verb">application/trust-mark-status-response+jwt</spanx>,
+	    containing a signed JWT that is a Trust Mark Status Response.
+	  </t>
+	  <t>
+            The Trust Mark Status Response is a signed JWT that is explicitly typed by setting the
+            <spanx style="verb">typ</spanx> header parameter to
+            <spanx style="verb">trust-mark-status-response+jwt</spanx> to prevent
+            cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
+	    Trust Mark Status Responses without a <spanx style="verb">typ</spanx> header parameter
+	    or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
+	    It is signed with a Federation Entity Key.
           </t>
-
+	  <t>
+	    The Trust Mark Status Response JWT MUST include the
+	    <spanx style="verb">kid</spanx> (Key ID) header parameter
+	    with its value being the Key ID of the signing key used.
+	  </t>
+          <t>
+	    The JWT Claims Set of the Trust Mark Status JWT
+	    is a JSON object containing the following claims:
+          </t>
           <t>
             <list style="hanging">
-              <t hangText="active">
+              <t hangText="iss">
                 <vspace/>
-                REQUIRED. Boolean. Whether the Trust Mark is active or not.
+                REQUIRED. String.
+                Entity Identifier of the issuer of the Trust Mark Status JWT.
               </t>
-            </list>
-          </t>
+              <t hangText="iat">
+                <vspace/>
+                REQUIRED. Number. Time when this Trust Mark Status JWT was issued.
+                This is expressed as Seconds Since the Epoch, per
+                <xref target="RFC7519"/>.
+              </t>
+              <t hangText="trust_mark">
+                <vspace/>
+                REQUIRED. String.
+                The Trust Mark JWT that this status response is about.
+              </t>
+              <t hangText="status">
+                <vspace/>
+                REQUIRED. Case-sensitive string value indicating the status of the Trust Mark.
+		Values defined by this specification are:
+
+		<list style="hanging">
+		  <t hangText="active">
+		    <vspace/>
+		    The Trust Mark is active
+		  </t>
+		  <t hangText="expired">
+		    <vspace/>
+		    The Trust Mark has expired
+		  </t>
+		  <t hangText="revoked">
+		    <vspace/>
+		    The Trust Mark was revoked
+		  </t>
+		  <t hangText="invalid">
+		    <vspace/>
+		    Signature validation failed or another error was detected
+		  </t>
+		</list>
+	      </t>
+	      <t>
+		Additional status values MAY be defined and used
+		in addition to those above.
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    Additional Trust Mark Status claims MAY be defined and used
+	    in addition to the one above.
+	  </t>
 
           <t>
-            An error response
-            is as defined in
-            <xref target="error_response"/>.
+            <figure>
+              <preamble>
+                The following is a non-normative example of the JWT Claims Set for
+		a response with the status <spanx style="verb">active</spanx>:
+              </preamble>
+	      <name>
+		Active Trust Mark Status Response JWT Claims Set
+	      </name>
+              <artwork><![CDATA[
+{
+  "iss": "https://www.agid.gov.it",
+  "trust_mark": "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2
+    lkIjoia29zR20yd3VaaDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.
+    eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8
+    vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYX
+    JrX3R5cGUiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZXJ0aWZpY2F0aW9uL
+    3JwIiwibG9nb191cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdC90aGVtZXMv
+    Y3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYiOiJodHRwczovL2RvY3MuaXRhbGl
+    hLml0L2RvY3Mvc3BpZC1jaWUtb2lkYy1kb2NzL2l0L3ZlcnNpb25lLWNvcnJlbn
+    RlLyJ9.
+    L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJW
+    QBdZpjxnHBBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzS
+    an5nOmkxuAtMinU8k_-aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0Y
+    AvbMlq2pPWO5OWKdZhiFRMSprwh0GYluQkK0j1aLNMGXD3keMJd2zEoWX9D7w2f
+    XShAA48W3cNhuXyBVnCoum1K4IWK3s_fx4nIkp6W-V4jCBOpxp7Yo8LZ30o_xpE
+    OzGTIECGWVR86azOAlwVC8XSiAA",
+  "iat": 1759897995,
+  "status": "active"
+}
+]]></artwork>
+            </figure>
           </t>
 
           <t>
             <figure>
               <preamble>
-                The following is a non-normative example of a Trust Mark status response:
+                The following is a non-normative example of the JWT Claims Set for
+		a response with the status <spanx style="verb">revoked</spanx>:
               </preamble>
 	      <name>
-		Trust Mark Status Response
+		Revoked Trust Mark Status Response JWT Claims Set
 	      </name>
               <artwork><![CDATA[
-200 OK
-Content-Type: application/json
-
 {
-  "active": true
+  "iss": "https://www.agid.gov.it",
+  "trust_mark": "eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6IlJTMjU2Iiwia2
+    lkIjoia29zR20yd3VaaDlER21OeEF0a3VPNDBwUGpwTDMtakNmMU4tcVBPLVllVSJ9.
+    eyJpc3MiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdCIsInN1YiI6Imh0dHBzOi8
+    vcnAuZXhhbXBsZS5pdC9zcGlkIiwiaWF0IjoxNTc5NjIxMTYwLCJ0cnVzdF9tYX
+    JrX3R5cGUiOiJodHRwczovL3d3dy5zcGlkLmdvdi5pdC9jZXJ0aWZpY2F0aW9uL
+    3JwIiwibG9nb191cmkiOiJodHRwczovL3d3dy5hZ2lkLmdvdi5pdC90aGVtZXMv
+    Y3VzdG9tL2FnaWQvbG9nby5zdmciLCJyZWYiOiJodHRwczovL2RvY3MuaXRhbGl
+    hLml0L2RvY3Mvc3BpZC1jaWUtb2lkYy1kb2NzL2l0L3ZlcnNpb25lLWNvcnJlbn
+    RlLyJ9.
+    L_pSh1InEiFAcs3E-1HBM7fNZYwF5ru3UGA_8yc80dGS3sszfA_sbj4AoW_zAJW
+    QBdZpjxnHBBmybYXFrfZBcqxcedsrvUYrmbt1nPYxbUE54fRRoZK-sJmVqh1GzS
+    an5nOmkxuAtMinU8k_-aWnPWj83sYe2AzT2mMgkXiz8zhda3jZm8hoxZ4jR6B0Y
+    AvbMlq2pPWO5OWKdZhiFRMSprwh0GYluQkK0j1aLNMGXD3keMJd2zEoWX9D7w2f
+    XShAA48W3cNhuXyBVnCoum1K4IWK3s_fx4nIkp6W-V4jCBOpxp7Yo8LZ30o_xpE
+    OzGTIECGWVR86azOAlwVC8XSiAA",
+  "iat": 1759898057,
+  "status": "revoked"
 }
 ]]></artwork>
             </figure>
           </t>
+
+          <t>
+            An error response to a Trust Mark Status request
+            is as defined in
+            <xref target="error_response"/>.
+          </t>
+	  <t>
+	    If the Trust Mark Issuer receives a request about the status of an unknown Trust Mark, something it did not issue or is not aware of,
+	    it MUST respond with an HTTP status code 404 (Not found).
+	  </t>
         </section>
       </section>
 
@@ -5364,12 +5713,15 @@ Content-Type: application/json
             title="Obtaining Federation Entity Configuration Information"
             anchor="federation_configuration">
       <t>
-	The Entity Configuration of every Federation Entity is published
-	at its configuration endpoint.
+	The Entity Configuration of all Trust Anchor and Intermediate
+	Federation Entities MUST be published
+	at their configuration endpoint
+	and the Entity Configuration for Leaf Entities SHOULD be published there.
 	Its location is determined by concatenating the string
 	<spanx style="verb">/.well-known/openid-federation</spanx>
 	to the Entity Identifier
-	(which MUST contain scheme and host components
+	(which MUST use the <spanx style="verb">https</spanx> scheme and
+	contain a host component
 	and MAY also contain port and path components).
 	For instance, the configuration endpoint for the Entity Identifier
 	<spanx style="verb">https://entity.example</spanx> is the URL
@@ -5379,12 +5731,23 @@ Content-Type: application/json
 	<spanx style="verb">/.well-known/openid-federation</spanx>.
       </t>
       <t>
-        Federation Entities MUST make an Entity Configuration document
-        available at their configuration endpoint.
-        The sole exception to this
-        rule is for an RP that only does Explicit Registration.
-        Since it posts the Entity Configuration to the OP during client
+	Furthermore, any Entity Configuration including the Entity Type Identifier
+	<spanx style="verb">federation_entity</spanx> MUST be published
+	at its configuration endpoint.
+      </t>
+      <t>
+        While Leaf Federation Entities SHOULD make an Entity Configuration document
+        available at their configuration endpoints,
+	an exception to this requirement is that
+	clients that use a client registration method that results in
+	the server having the client's Entity Configuration
+	MAY omit doing so.
+	For instance, since an RP using Explicit Registration
+	posts its Entity Configuration to the OP during client
         registration, the OP has everything it needs from the RP.
+	Profiles of this specification MAY define other exceptions for Leaf Entities
+	that do not use the the Entity Type Identifier <spanx style="verb">federation_entity</spanx>
+	and processing rules that accompany them.
       </t>
 
       <section anchor="ec-request" title="Federation Entity Configuration Request">
@@ -5553,8 +5916,7 @@ Content-Type: application/json
           Federation participants MUST NOT attempt to fetch
           Entity Statements they already have obtained during this
           process to prevent loops.
-	  An <spanx style="verb">invalid_trust_chain</spanx> error
-	  SHOULD be returned if a loop is encountered.
+          If a loop is detected, the authority hint that led to it MUST NOT be used.
         </t>
         <t>
           A successful operation will return one or more lists of
@@ -5623,11 +5985,11 @@ Content-Type: application/json
    |                               |<-------------------------              |
    |                               |                                        |
    |                               | Applies Metadata Policies              |
-   |                               |--------------------------              |       
-   |                               |                         |              |       
-   |                               |<-------------------------              |       
-   |                               |                                        |       
-   |                               | Applies Constraints                    |       
+   |                               |--------------------------              |
+   |                               |                         |              |
+   |                               |<-------------------------              |
+   |                               |                                        |
+   |                               | Applies Constraints                    |
    |                               |--------------------                    |
    |                               |                   |                    |
    |                               |<-------------------                    |
@@ -5873,6 +6235,11 @@ Content-Type: application/json
           The OP resolves the RP's Entity Configuration from the Client ID in the Authentication Request,
           following the process defined in <xref target="resolving_trust"/>.
         </t>
+          <t>
+              The RP MUST perform Trust Chain and metadata resolution for the OP, as specified in
+              <xref target="resolving_trust"/> before it sends the Authentication Request. If the resolution is not
+              successful, the RP MUST NOT attempt further interactions with the OP.
+          </t>
         <t>
           Automatic Registration has the following characteristics:
           <list style="symbols">
@@ -6345,6 +6712,33 @@ HTTP/1.1 302 Found
 ]]></artwork>
           </figure>
         </section>
+
+	<section title="Automatic Registration and Client Authentication"
+		 anchor="AutoClientAuth">
+	  <t>
+	    Note that when using Automatic Registration,
+	    the client authentication methods that the client can use
+	    are declared to the OP using RP Metadata parameters: either the
+	    <spanx style="verb">token_endpoint_auth_methods_supported</spanx>
+	    parameter defined in <xref target="OpenID.RP.Choices"/> or the
+	    <spanx style="verb">token_endpoint_auth_method</spanx> parameter.
+	    Those that the OP can use are likewise
+	    declared to the RP using OP Metadata parameters.
+	    However, if there are multiple methods supported by both
+	    the RP and the OP, the OP does not know which one the RP will pick
+	    in advance of it being used,
+	    since this isn't declared at the time the Automatic Registration occurs.
+	  </t>
+	  <t>
+	    OPs SHOULD accept any client authentication method that is mutually supported
+	    and RPs MUST only use mutually supported methods.
+	    Because some OPs may be coded in such a way that
+	    they expect the RP to always use the same client authentication method
+	    for subsequent interactions, note that
+	    interoperability may be improved by the RP doing so.
+	  </t>
+	</section>
+
         <section title="Possible Other Uses of Automatic Registration" anchor="AutomaticRegistrationOtherUses">
           <t>
             Automatic Registration is designed to be able to be
@@ -6354,6 +6748,15 @@ HTTP/1.1 302 Found
             bare <xref target="RFC6749">OAuth 2.0</xref> or
             <xref target="FAPI">FAPI</xref> can utilize Automatic Registration.
           </t>
+	  <t>
+	    Also note that Client ID values that are Entity Identifiers
+	    could be used to identify clients using Automatic Registration
+	    at endpoints other than the Authorization Endpoint and Token Endpoint
+	    in OAuth 2.0 deployments, such as
+	    the Pushed Authorization Request (PAR) Endpoint
+	    and Introspection Endpoint.
+	    Describing particular such scenarios is beyond the scope of this specification.
+	  </t>
         </section>
 
       </section>
@@ -7202,6 +7605,17 @@ HTTP/1.1 302 Found
 	</t>
       </section>
 
+      <section anchor="trust-mark-status-response+jwt"
+	       title='"application/trust-mark-status-response+jwt" Media Type'>
+	<t>
+	  The <spanx style="verb">application/trust-mark-status-response+jwt</spanx>
+	  media type is used to specify that the associated content is
+	  a Trust Mark Status Response,
+	  as defined in <xref target="tm-status-response"/>.
+	  No parameters are used with this media type.
+	</t>
+      </section>
+
     </section>
 
     <section anchor="StringOps" title="String Operations">
@@ -7305,7 +7719,60 @@ HTTP/1.1 302 Found
           as mandated in <xref target="fetching-es"/>.
 	</t>
       </section>
-
+          <section anchor="anchor_resolver" title="Trust Anchors and Resolvers Go Together">
+        <t>
+        If only one resolver is present in a federation, that entity should be
+        both Trust Anchor and Resolver. If so, users of the resolver will not have to
+        collect and evaluate Trust Chains for the Resolver. The Trust Anchor is by definition trusted
+        and if the entity also serves as Resolver, that service will be implicitly trusted.
+        </t>
+</section>
+    <section anchor="one_service" title="One Entity, One Service">
+        <t>
+        Apart from letting an entity provide both the Trust Anchor and Resolver services, there is a good reason for
+        having each entity only do one thing. The reason is that, later in time, it will be much easier to share specific services
+        between federations.
+        </t>
+    </section>
+    <section anchor="trust_mark_policy" title="Trust Mark Policies">
+        <t>
+            When validating trust marks in an Entity Statement, it can be split into three parts.
+            <list style="hanging">
+                <t hangText="Validating Trust Marks in the Context of Validating an Entity Statement">
+            <vspace/>
+                    According to the text on Entity Statement Validation in <xref target="ESValidation"/>, validating a
+                    Trust Mark is confined to validating the syntax of the claim value,
+                    including that the <spanx style="verb">trust_mark_type</spanx> value is consistent.
+                </t>
+                <t hangText="Validating a Specific Trust Mark">
+                    <vspace/>
+                    This is what is described in <xref target="trust-mark-validation"/>.
+                    In order to validate a Trust Mark, the entity must find a Trust Chain for the Trust Mark Issuer to a
+                    Trust Anchor the Entity trusts. This has nothing to do with which federation that will later
+                    be used for the application protocol.
+                </t>
+                <t hangText="Deciding which Trust Marks to Use">
+                    <vspace/>
+                    A federation MAY have a policy that states that only Trust Marks that
+                    match certain criteria SHOULD be used.
+                    <vspace/>
+                    An example of such criteria could be that the Trust Mark's
+                    <spanx style="verb">trust_mark_type</spanx> must be
+                    listed in the Trust Anchor's <spanx style="verb">trust_mark_issuers</spanx>,
+                    and if so, that the instance's <spanx style="verb">iss</spanx> appears in the corresponding list of
+                    Entity Identifiers. Note that the list may be an empty list, which signifies that anyone can issue
+                    a Trust Mark with the <spanx style="verb">trust_mark_type</spanx> in question.
+                    Such Trust Marks can appear for various reasons, such as the Entity Configuration including Trust Marks
+                    associated with another federation, or Trust Marks intended for specific
+                    purposes or Entity audiences.
+                    <vspace/>
+                    An Entity MAY also choose, at its own discretion, to utilize Trust Marks presented to it that are not
+                    recognized within the federation, and where the accreditation authority is established by an
+                    out-of-band mechanism.
+                </t>
+            </list>
+        </t>
+    </section>
     </section>
 
     <section anchor="Security" title="Security Considerations">
@@ -8142,7 +8609,6 @@ HTTP/1.1 302 Found
             <?rfc subcompact="no"?>
           </t>
 
-
           <t>
             <?rfc subcompact="yes"?>
             <list style="symbols">
@@ -8418,6 +8884,76 @@ HTTP/1.1 302 Found
             </list>
             <?rfc subcompact="no"?>
           </t>
+
+          <t>
+            <?rfc subcompact="yes"?>
+            <list style="symbols">
+              <t>
+                Type name: application
+              </t>
+              <t>
+                Subtype name: trust-mark-status-response+jwt
+              </t>
+              <t>
+                Required parameters: n/a
+              </t>
+              <t>
+                Optional parameters: n/a
+              </t>
+              <t>
+                Encoding considerations: binary;
+                A Trust Mark Status Response is a signed JWT;
+                JWT values are encoded as a
+                series of base64url-encoded values (some of which may be the
+                empty string) separated by period ('.') characters.
+              </t>
+              <t>
+                Security considerations: See <xref target="Security"/> of this specification
+              </t>
+              <t>
+                Interoperability considerations: n/a
+              </t>
+              <t>
+                Published specification: <xref target="trust-mark-status-response+jwt"/> of this specification
+              </t>
+              <t>
+                Applications that use this media type:
+                Applications that use this specification
+              </t>
+              <t>
+                Fragment identifier considerations: n/a
+              </t>
+              <t>
+                Additional information:<list style="empty">
+                <t>Magic number(s): n/a</t>
+                <t>File extension(s): n/a</t>
+                <t>Macintosh file type code(s): n/a </t></list>
+                <vspace/>
+              </t>
+              <t>
+                Person &amp; email address to contact for further information:
+                <vspace/>
+                Michael B. Jones, michael_b_jones@hotmail.com
+              </t>
+              <t>
+                Intended usage: COMMON
+              </t>
+              <t>
+                Restrictions on usage: none
+              </t>
+              <t>
+                Author: Michael B. Jones, michael_b_jones@hotmail.com
+              </t>
+              <t>
+                Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Provisional registration? No
+              </t>
+            </list>
+            <?rfc subcompact="no"?>
+          </t>
+
         </section>
 
       </section>
@@ -10518,10 +11054,81 @@ Host: op.umu.se
       <t>[[ To be removed from the final specification ]]</t>
 
       <t>
+	-45
+	<list style="symbols">
+	  <t>
+	    Fixed #233: Gave examples of the use of Automatic Registration
+	    at OAuth 2.0 endpoints other than the Authorization Endpoint
+	    and Token Endpoint.
+	  </t>
+	  <t>
+	    Fixed #216: Added two more implementation considerations.
+	  </t>
+	  <t>
+	    Fixed #237: The order of the elements resulting from merging two sets is not defined.
+	  </t>
+	  <t>
+	    Fixed #241: Restructured Entity Statement section.
+	  </t>
+	  <t>
+	    Fixed #84: Added section on validating Entity Statements.
+	  </t>
+	  <t>
+	    Fixed #243: Be explicit about what to do when server validation fails in automatic registration.
+	  </t>
+	</list>
+      </t>
+
+      <t>
 	-44
 	<list style="symbols">
 	  <t>
+	    Fixed #127: Explained Trust Mark Issuer validation in more detail.
+	  </t>
+	  <t>
 	    Corrected location of Constraints in Trust Chain Example figure.
+	  </t>
+	  <t>
+	    Fixed #147: Added a note about client authentication methods
+	    and Automatic Registration.
+	  </t>
+	  <t>
+	    Applied must-have feature requests for Swedish government use cases, specifically:
+	    <list style="symbols">
+	      <t>
+		Make it optional to publish an Entity Configuration at the
+		Entity Identifier's
+		<spanx style="verb">/.well-known/openid-federation</spanx> URL
+		(which is already true when using Explicit Registration).
+	      </t>
+	      <t>
+		Allow non-https Entity Identifiers
+		(while leaving defining how to retrieve Entity Configurations
+		for them to future extensions).
+	      </t>
+	      <t>
+		Make use of <spanx style="verb">client_registration_types</spanx>
+		and <spanx style="verb">client_registration_types_supported</spanx>
+		RECOMMENDED rather than REQUIRED.
+	      </t>
+	      <t>
+		Remove recommendation that informational metadata values be in
+		the Entity's <spanx style="verb">federation_entity</spanx> metadata.
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    Applied strong requests for Swedish government use cases, specifically:
+	    <list style="symbols">
+	      <t>
+		Fixes #244: Sign Trust Mark Status responses
+		and extend the set of defined status values.
+	      </t>
+	      <t>
+		Added warning about using JWKS representations
+		where they may not be understood.
+	      </t>
+	    </list>
 	  </t>
 	</list>
       </t>
