@@ -1264,7 +1264,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-11-10" class="published">10 November 2025</time>
+<time datetime="2025-11-17" class="published">17 November 2025</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -1835,10 +1835,10 @@ li > p:last-of-type:only-child {
                 <p id="section-toc.1-1.17.2.2.1"><a href="#section-17.2" class="auto internal xref">17.2</a>.  <a href="#name-federation-discovery-and-tr" class="internal xref">Federation Discovery and Trust Chain Resolution Patterns</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.2.2.1">
-                    <p id="section-toc.1-1.17.2.2.2.1.1"><a href="#section-17.2.1" class="auto internal xref">17.2.1</a>.  <a href="#name-top-down-discovery" class="internal xref">Top-Down Discovery</a></p>
+                    <p id="section-toc.1-1.17.2.2.2.1.1"><a href="#section-17.2.1" class="auto internal xref">17.2.1</a>.  <a href="#name-bottom-up-trust-chain-resol" class="internal xref">Bottom-Up Trust Chain Resolution</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.2.2.2">
-                    <p id="section-toc.1-1.17.2.2.2.2.1"><a href="#section-17.2.2" class="auto internal xref">17.2.2</a>.  <a href="#name-bottom-up-trust-chain-resol" class="internal xref">Bottom-Up Trust Chain Resolution</a></p>
+                    <p id="section-toc.1-1.17.2.2.2.2.1"><a href="#section-17.2.2" class="auto internal xref">17.2.2</a>.  <a href="#name-top-down-discovery" class="internal xref">Top-Down Discovery</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.17.2.2.2.3">
                     <p id="section-toc.1-1.17.2.2.2.3.1"><a href="#section-17.2.3" class="auto internal xref">17.2.3</a>.  <a href="#name-single-point-of-trust-resol" class="internal xref">Single Point of Trust Resolution</a></p>
@@ -9988,7 +9988,7 @@ HTTP/1.1 302 Found
 <a href="#section-17.2" class="section-number selfRef">17.2. </a><a href="#name-federation-discovery-and-tr" class="section-name selfRef">Federation Discovery and Trust Chain Resolution Patterns</a>
         </h3>
 <p id="section-17.2-1">
-   This section describes different patterns that implementers may use for discovering
+   This section describes different patterns that implementations may use for discovering
    entities within a federation and for resolving Trust Chains. It is important to distinguish
    between two related but distinct concepts:<a href="#section-17.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -10001,29 +10001,29 @@ HTTP/1.1 302 Found
             <p id="section-17.2-2.2.1">
        <strong>Trust Chain Resolution</strong>: The process of building and validating a Trust Chain
        from a known entity to a Trust Anchor, as described in <a href="#resolving_trust" class="auto internal xref">Section 10</a>.
-       This process is also known as Federation Entity Discovery in this specification (see the
-       definition in the Terminology section).<a href="#section-17.2-2.2.1" class="pilcrow">¶</a></p>
+       This process is also known as Federation Entity Discovery in this specification
+       (per the definition in <a href="#Terminology" class="auto internal xref">Section 1.2</a>).<a href="#section-17.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-17.2-3">
    While these patterns may involve both discovery and Trust Chain resolution, they serve different
-   purposes and may be used independently depending on the use case. For example, a discovery service
+   purposes and may be used independently, depending on the use case. For example, a discovery service
    building a directory of OpenID Providers may collect entity identifiers without necessarily
    resolving Trust Chains for all discovered entities, since the actual Trust Chain resolution
-   may occur later on, for instance: when an RP and OP engage in an authentication transaction,
-    and according to the Trust Chain resolution process described in <a href="#resolving_trust" class="auto internal xref">Section 10</a>.<a href="#section-17.2-3" class="pilcrow">¶</a></p>
+   may occur later on, for example, when an RP and OP engage in an authentication transaction,
+          and use the Trust Chain resolution process described in <a href="#resolving_trust" class="auto internal xref">Section 10</a>.<a href="#section-17.2-3" class="pilcrow">¶</a></p>
 <p id="section-17.2-4">
-   Implementers may support one or more of the following patterns:<a href="#section-17.2-4" class="pilcrow">¶</a></p>
+   Implementations may support one or more of the following patterns:<a href="#section-17.2-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-17.2-5.1">
             <p id="section-17.2-5.1.1">
-       <span><a href="#top_down_discovery" class="internal xref">Top-Down Discovery</a> (<a href="#top_down_discovery" class="auto internal xref">Section 17.2.1</a>)</span>: Finding entities within a federation
-       by starting from a Trust Anchor and traversing down the hierarchy.<a href="#section-17.2-5.1.1" class="pilcrow">¶</a></p>
+       <span><a href="#bottom_up_discovery" class="internal xref">Bottom-Up Trust Chain Resolution</a> (<a href="#bottom_up_discovery" class="auto internal xref">Section 17.2.1</a>)</span>: Resolving Trust Chains
+       starting from a known entity identifier, as described in <a href="#resolving_trust" class="auto internal xref">Section 10</a>.<a href="#section-17.2-5.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-17.2-5.2">
             <p id="section-17.2-5.2.1">
-       <span><a href="#bottom_up_discovery" class="internal xref">Bottom-Up Trust Chain Resolution</a> (<a href="#bottom_up_discovery" class="auto internal xref">Section 17.2.2</a>)</span>: Resolving Trust Chains
-       starting from a known entity identifier, as described in <a href="#resolving_trust" class="auto internal xref">Section 10</a>.<a href="#section-17.2-5.2.1" class="pilcrow">¶</a></p>
+       <span><a href="#top_down_discovery" class="internal xref">Top-Down Discovery</a> (<a href="#top_down_discovery" class="auto internal xref">Section 17.2.2</a>)</span>: Finding entities within a federation
+       by starting from a Trust Anchor and traversing down the hierarchy.<a href="#section-17.2-5.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-17.2-5.3">
             <p id="section-17.2-5.3.1">
@@ -10035,112 +10035,112 @@ HTTP/1.1 302 Found
    Federation operators may choose to support multiple patterns to accommodate different use cases
    and integration scenarios. The choice of supported patterns affects the federation's usability
    and the types of applications that can effectively integrate with it.<a href="#section-17.2-6" class="pilcrow">¶</a></p>
-<div id="top_down_discovery">
+<div id="bottom_up_discovery">
 <section id="section-17.2.1">
-          <h4 id="name-top-down-discovery">
-<a href="#section-17.2.1" class="section-number selfRef">17.2.1. </a><a href="#name-top-down-discovery" class="section-name selfRef">Top-Down Discovery</a>
+          <h4 id="name-bottom-up-trust-chain-resol">
+<a href="#section-17.2.1" class="section-number selfRef">17.2.1. </a><a href="#name-bottom-up-trust-chain-resol" class="section-name selfRef">Bottom-Up Trust Chain Resolution</a>
           </h4>
 <p id="section-17.2.1-1">
-     Top-down discovery is the process of finding entities that are part of a federation by starting
-     from a known Trust Anchor and traversing down the federation hierarchy. This pattern is used
-     when the goal is to discover available entities, particularly entities of specific Entity Types,
-     without necessarily knowing their Entity Identifiers in advance.<a href="#section-17.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-17.2.1-2">
-     This pattern is particularly useful for:<a href="#section-17.2.1-2" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-17.2.1-3.1">
-              <p id="section-17.2.1-3.1.1">Service discovery by Relying Parties looking for OpenID Providers<a href="#section-17.2.1-3.1.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-17.2.1-3.2">
-              <p id="section-17.2.1-3.2.1">Resource discovery by Clients looking for specific service types<a href="#section-17.2.1-3.2.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-17.2.1-3.3">
-              <p id="section-17.2.1-3.3.1">Federation browsing and exploration<a href="#section-17.2.1-3.3.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-17.2.1-3.4">
-              <p id="section-17.2.1-3.4.1">Building provider directories and catalogs (e.g., WAYF services, Seamless Access)<a href="#section-17.2.1-3.4.1" class="pilcrow">¶</a></p>
-</li>
-          </ul>
-<p id="section-17.2.1-4">
-     The top-down discovery process follows these steps:<a href="#section-17.2.1-4" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-17.2.1-5">
-<li id="section-17.2.1-5.1">
-              <p id="section-17.2.1-5.1.1">Start with a known Trust Anchor that the discovering entity trusts<a href="#section-17.2.1-5.1.1" class="pilcrow">¶</a></p>
-</li>
-            <li id="section-17.2.1-5.2">
-              <p id="section-17.2.1-5.2.1">Use the list endpoint (as defined in <a href="#entity_listing" class="auto internal xref">Section 8.2</a>) to discover Immediate Subordinate entities<a href="#section-17.2.1-5.2.1" class="pilcrow">¶</a></p>
-</li>
-            <li id="section-17.2.1-5.3">
-              <p id="section-17.2.1-5.3.1">Filter by <code>entity_type</code> parameter to find protocol-specific providers (e.g., <code>openid_provider</code>)<a href="#section-17.2.1-5.3.1" class="pilcrow">¶</a></p>
-</li>
-            <li id="section-17.2.1-5.4">
-              <p id="section-17.2.1-5.4.1">For Intermediate entities, recursively traverse their Subordinates<a href="#section-17.2.1-5.4.1" class="pilcrow">¶</a></p>
-</li>
-            <li id="section-17.2.1-5.5">
-              <p id="section-17.2.1-5.5.1">Collect Entity Identifiers and optionally Entity Configurations for discovered entities<a href="#section-17.2.1-5.5.1" class="pilcrow">¶</a></p>
-</li>
-          </ol>
-<p id="section-17.2.1-6">
-     Note that top-down discovery may or may not include Trust Chain resolution, depending on the use case.
-     For example, when building a directory of OpenID Providers for user selection at login time, the discovery
-     service may collect entity identifiers and basic metadata without resolving Trust Chains for all discovered
-     entities. However, if the discovery service needs to verify that entities
-     are properly registered in the federation before including them in the directory, it may choose to perform Trust Chain resolution as part of the discovery process.<a href="#section-17.2.1-6" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="bottom_up_discovery">
-<section id="section-17.2.2">
-          <h4 id="name-bottom-up-trust-chain-resol">
-<a href="#section-17.2.2" class="section-number selfRef">17.2.2. </a><a href="#name-bottom-up-trust-chain-resol" class="section-name selfRef">Bottom-Up Trust Chain Resolution</a>
-          </h4>
-<p id="section-17.2.2-1">
      Bottom-up Trust Chain resolution is the process described in <a href="#resolving_trust" class="auto internal xref">Section 10</a>,
      also known as Federation Entity Discovery (see the definition in the Terminology section).
      This process starts with a known Entity Identifier and builds a Trust Chain by traversing up the
      federation hierarchy until reaching a Trust Anchor. This pattern is not discovery in the sense of
-     finding unknown entities, but rather trust resolution for a known entity.<a href="#section-17.2.2-1" class="pilcrow">¶</a></p>
-<p id="section-17.2.2-2">
+     finding unknown entities, but rather trust resolution for a known entity.<a href="#section-17.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-17.2.1-2">
      This pattern is used when an entity needs to verify the trustworthiness of another entity whose
-     Entity Identifier is already known. This is typically used for:<a href="#section-17.2.2-2" class="pilcrow">¶</a></p>
+     Entity Identifier is already known. This is typically used for:<a href="#section-17.2.1-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-17.2.1-3.1">
+              <p id="section-17.2.1-3.1.1">OpenID Providers verifying Relying Parties during authentication requests,<a href="#section-17.2.1-3.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-17.2.1-3.2">
+              <p id="section-17.2.1-3.2.1">Resource servers verifying Client trustworthiness,<a href="#section-17.2.1-3.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-17.2.1-3.3">
+              <p id="section-17.2.1-3.3.1">Any Entity validating incoming requests from known parties, and<a href="#section-17.2.1-3.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-17.2.1-3.4">
+              <p id="section-17.2.1-3.4.1">Dynamic trust establishment in federated environments.<a href="#section-17.2.1-3.4.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-17.2.1-4">
+     The bottom-up Trust Chain resolution process follows these steps, as described in <a href="#resolving_trust" class="auto internal xref">Section 10</a>:<a href="#section-17.2.1-4" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-17.2.1-5">
+<li id="section-17.2.1-5.1">
+              <p id="section-17.2.1-5.1.1">Start with the subject entity's Entity Configuration (provided or fetched using the process defined in <a href="#federation_configuration" class="auto internal xref">Section 9</a>).<a href="#section-17.2.1-5.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-17.2.1-5.2">
+              <p id="section-17.2.1-5.2.1">Use <code>authority_hints</code> to identify immediate superior entities.<a href="#section-17.2.1-5.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-17.2.1-5.3">
+              <p id="section-17.2.1-5.3.1">Fetch Entity Configuration for each Superior Entity.<a href="#section-17.2.1-5.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-17.2.1-5.4">
+              <p id="section-17.2.1-5.4.1">Use Fetch Endpoints (as defined in <a href="#fetch_statement" class="auto internal xref">Section 8.1.1</a>) to obtain Subordinate Statements about the subject entity.<a href="#section-17.2.1-5.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-17.2.1-5.5">
+              <p id="section-17.2.1-5.5.1">Recursively traverse up the hierarchy until reaching a Trust Anchor.<a href="#section-17.2.1-5.5.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-17.2.1-5.6">
+              <p id="section-17.2.1-5.6.1">Build and validate the complete Trust Chain.<a href="#section-17.2.1-5.6.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-17.2.1-5.7">
+              <p id="section-17.2.1-5.7.1">Apply federation policies to derive resolved metadata.<a href="#section-17.2.1-5.7.1" class="pilcrow">¶</a></p>
+</li>
+          </ol>
+</section>
+</div>
+<div id="top_down_discovery">
+<section id="section-17.2.2">
+          <h4 id="name-top-down-discovery">
+<a href="#section-17.2.2" class="section-number selfRef">17.2.2. </a><a href="#name-top-down-discovery" class="section-name selfRef">Top-Down Discovery</a>
+          </h4>
+<p id="section-17.2.2-1">
+     Top-down discovery is the process of finding entities that are part of a federation by starting
+     from a known Trust Anchor and traversing down the federation hierarchy. This pattern is used
+     when the goal is to discover available entities, particularly entities of specific Entity Types,
+     without necessarily knowing their Entity Identifiers in advance.<a href="#section-17.2.2-1" class="pilcrow">¶</a></p>
+<p id="section-17.2.2-2">
+     This pattern is particularly useful for:<a href="#section-17.2.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-17.2.2-3.1">
-              <p id="section-17.2.2-3.1.1">OpenID Providers verifying Relying Parties during authentication requests<a href="#section-17.2.2-3.1.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.2-3.1.1">Service discovery by Relying Parties looking for OpenID Providers,<a href="#section-17.2.2-3.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-17.2.2-3.2">
-              <p id="section-17.2.2-3.2.1">Resource servers verifying Client trustworthiness<a href="#section-17.2.2-3.2.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.2-3.2.1">Resource discovery by Clients looking for specific service types,<a href="#section-17.2.2-3.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-17.2.2-3.3">
-              <p id="section-17.2.2-3.3.1">Any Entity validating incoming requests from known parties<a href="#section-17.2.2-3.3.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.2-3.3.1">Federation browsing and exploration, and<a href="#section-17.2.2-3.3.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-17.2.2-3.4">
-              <p id="section-17.2.2-3.4.1">Dynamic trust establishment in federated environments<a href="#section-17.2.2-3.4.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.2-3.4.1">Building provider directories and catalogs (e.g., WAYF services, Seamless Access).<a href="#section-17.2.2-3.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-17.2.2-4">
-     The bottom-up Trust Chain resolution process follows these steps, as described in <a href="#resolving_trust" class="auto internal xref">Section 10</a>:<a href="#section-17.2.2-4" class="pilcrow">¶</a></p>
+     The top-down discovery process follows these steps:<a href="#section-17.2.2-4" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-17.2.2-5">
 <li id="section-17.2.2-5.1">
-              <p id="section-17.2.2-5.1.1">Start with the subject entity's Entity Configuration (provided or fetched using the process defined in <a href="#federation_configuration" class="auto internal xref">Section 9</a>)<a href="#section-17.2.2-5.1.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.2-5.1.1">Start with a known Trust Anchor that the discovering entity trusts.<a href="#section-17.2.2-5.1.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-17.2.2-5.2">
-              <p id="section-17.2.2-5.2.1">Use <code>authority_hints</code> to identify immediate superior entities<a href="#section-17.2.2-5.2.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.2-5.2.1">Use the list endpoint (as defined in <a href="#entity_listing" class="auto internal xref">Section 8.2</a>) to discover Immediate Subordinate entities.<a href="#section-17.2.2-5.2.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-17.2.2-5.3">
-              <p id="section-17.2.2-5.3.1">Fetch Entity Configuration for each Superior Entity<a href="#section-17.2.2-5.3.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.2-5.3.1">Filter by <code>entity_type</code> parameter to find protocol-specific providers (e.g., <code>openid_provider</code>).<a href="#section-17.2.2-5.3.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-17.2.2-5.4">
-              <p id="section-17.2.2-5.4.1">Use Fetch Endpoints (as defined in <a href="#fetch_statement" class="auto internal xref">Section 8.1.1</a>) to obtain Subordinate Statements about the subject entity<a href="#section-17.2.2-5.4.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.2-5.4.1">For Intermediate entities, recursively traverse their Subordinates.<a href="#section-17.2.2-5.4.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-17.2.2-5.5">
-              <p id="section-17.2.2-5.5.1">Recursively traverse up the hierarchy until reaching a Trust Anchor<a href="#section-17.2.2-5.5.1" class="pilcrow">¶</a></p>
-</li>
-            <li id="section-17.2.2-5.6">
-              <p id="section-17.2.2-5.6.1">Build and validate the complete Trust Chain<a href="#section-17.2.2-5.6.1" class="pilcrow">¶</a></p>
-</li>
-            <li id="section-17.2.2-5.7">
-              <p id="section-17.2.2-5.7.1">Apply federation policies to derive resolved metadata<a href="#section-17.2.2-5.7.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.2-5.5.1">Collect Entity Identifiers and optionally Entity Configurations for discovered entities.<a href="#section-17.2.2-5.5.1" class="pilcrow">¶</a></p>
 </li>
           </ol>
+<p id="section-17.2.2-6">
+     Note that top-down discovery may or may not include Trust Chain resolution, depending on the use case.
+     For example, when building a directory of OpenID Providers for user selection at login time, the discovery
+     service may collect entity identifiers and basic metadata without resolving Trust Chains for all discovered
+     entities. However, if the discovery service needs to verify that entities
+     are properly registered in the federation before including them in the directory, it may choose to perform Trust Chain resolution as part of the discovery process.<a href="#section-17.2.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="single_point_discovery">
@@ -10156,16 +10156,16 @@ HTTP/1.1 302 Found
      This pattern is useful for:<a href="#section-17.2.3-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-17.2.3-3.1">
-              <p id="section-17.2.3-3.1.1">Entities that want to offload Trust Chain resolution complexity<a href="#section-17.2.3-3.1.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.3-3.1.1">Entities that want to offload Trust Chain resolution complexity,<a href="#section-17.2.3-3.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-17.2.3-3.2">
-              <p id="section-17.2.3-3.2.1">Centralized trust evaluation services<a href="#section-17.2.3-3.2.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.3-3.2.1">Centralized trust evaluation services,<a href="#section-17.2.3-3.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-17.2.3-3.3">
-              <p id="section-17.2.3-3.3.1">Performance optimization by caching resolved metadata<a href="#section-17.2.3-3.3.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.3-3.3.1">Performance optimization by caching resolved metadata, and<a href="#section-17.2.3-3.3.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-17.2.3-3.4">
-              <p id="section-17.2.3-3.4.1">Simplified integration for lightweight clients<a href="#section-17.2.3-3.4.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.3-3.4.1">Simplified integration for lightweight clients.<a href="#section-17.2.3-3.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-17.2.3-4">
@@ -10175,22 +10175,22 @@ HTTP/1.1 302 Found
      The single point of trust resolution process follows these steps:<a href="#section-17.2.3-5" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-17.2.3-6">
 <li id="section-17.2.3-6.1">
-              <p id="section-17.2.3-6.1.1">Identify a trusted resolver with a Resolve Endpoint<a href="#section-17.2.3-6.1.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.3-6.1.1">Identify a trusted resolver with a Resolve Endpoint.<a href="#section-17.2.3-6.1.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-17.2.3-6.2">
-              <p id="section-17.2.3-6.2.1">Submit the subject Entity Identifier and Trust Anchor to the resolver<a href="#section-17.2.3-6.2.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.3-6.2.1">Submit the subject Entity Identifier and Trust Anchor to the resolver.<a href="#section-17.2.3-6.2.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-17.2.3-6.3">
-              <p id="section-17.2.3-6.3.1">The resolver performs complete Trust Chain resolution internally (following the bottom-up pattern)<a href="#section-17.2.3-6.3.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.3-6.3.1">The resolver performs complete Trust Chain resolution internally (following the bottom-up pattern).<a href="#section-17.2.3-6.3.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-17.2.3-6.4">
-              <p id="section-17.2.3-6.4.1">The resolver returns resolved metadata and Trust Marks<a href="#section-17.2.3-6.4.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.3-6.4.1">The resolver returns resolved metadata and Trust Marks.<a href="#section-17.2.3-6.4.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-17.2.3-6.5">
-              <p id="section-17.2.3-6.5.1">Optionally verify the resolver's own Trust Chain<a href="#section-17.2.3-6.5.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.3-6.5.1">Optionally verify the resolver's own Trust Chain.<a href="#section-17.2.3-6.5.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-17.2.3-6.6">
-              <p id="section-17.2.3-6.6.1">Use resolved metadata for protocol operations<a href="#section-17.2.3-6.6.1" class="pilcrow">¶</a></p>
+              <p id="section-17.2.3-6.6.1">Use resolved metadata for protocol operations.<a href="#section-17.2.3-6.6.1" class="pilcrow">¶</a></p>
 </li>
           </ol>
 </section>
@@ -10393,7 +10393,7 @@ HTTP/1.1 302 Found
      evaluating Trust Marks about other Entities
      through standard network diagnostic tools like
      IPv4/IPv6 addresses and DNS Whois entries.
-     To mitigate tracking risks, implementers can use short-lived Trust Marks,
+     To mitigate tracking risks, implementations can use short-lived Trust Marks,
      or use the Trust Marked Entities Listing (<a href="#tm_listing" class="auto internal xref">Section 8.5</a>)
      with only the <code>trust_mark_type</code> parameter
      and not the <code>sub</code> parameter,
@@ -13935,23 +13935,28 @@ Host: op.umu.se
 </li>
         <li class="normal" id="appendix-C-3.3">
           <p id="appendix-C-3.3.1">
-     Fixed #237: The order of the elements resulting from merging two sets is not defined.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
+     Added Implementation Considerations section
+     "Federation Discovery and Trust Chain Resolution Patterns".<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.4">
           <p id="appendix-C-3.4.1">
-     Fixed #241: Restructured Entity Statement section.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
+     Fixed #237: The order of the elements resulting from merging two sets is not defined.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.5">
           <p id="appendix-C-3.5.1">
-     Fixed #84: Added section on validating Entity Statements.<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
+     Fixed #241: Restructured Entity Statement section.<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.6">
           <p id="appendix-C-3.6.1">
-     Fixed #243: Be explicit about what to do when server validation fails in automatic registration.<a href="#appendix-C-3.6.1" class="pilcrow">¶</a></p>
+     Fixed #84: Added section on validating Entity Statements.<a href="#appendix-C-3.6.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.7">
           <p id="appendix-C-3.7.1">
-     Added Discovery and Trust Chain Resolution Patterns considerations.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
+     Fixed #243: Be explicit about what to do when server validation fails in automatic registration.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.8">
+          <p id="appendix-C-3.8.1">
+     Added Discovery and Trust Chain Resolution Patterns considerations.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
