@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="10" month="November" year="2025"/>
+    <date day="17" month="November" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -7724,7 +7724,7 @@ HTTP/1.1 302 Found
 
       <section title="Federation Discovery and Trust Chain Resolution Patterns" anchor="discovery_patterns">
 	<t>
-	  This section describes different patterns that implementers may use for discovering
+	  This section describes different patterns that implementations may use for discovering
 	  entities within a federation and for resolving Trust Chains. It is important to distinguish
 	  between two related but distinct concepts:
 	  <list style="symbols">
@@ -7735,31 +7735,31 @@ HTTP/1.1 302 Found
 	    <t>
 	      <strong>Trust Chain Resolution</strong>: The process of building and validating a Trust Chain
 	      from a known entity to a Trust Anchor, as described in <xref target="resolving_trust"/>.
-	      This process is also known as Federation Entity Discovery in this specification (see the
-	      definition in the Terminology section).
+	      This process is also known as Federation Entity Discovery in this specification
+	      (per the definition in <xref target="Terminology"/>).
 	    </t>
 	  </list>
 	</t>
 
 	<t>
 	  While these patterns may involve both discovery and Trust Chain resolution, they serve different
-	  purposes and may be used independently depending on the use case. For example, a discovery service
+	  purposes and may be used independently, depending on the use case. For example, a discovery service
 	  building a directory of OpenID Providers may collect entity identifiers without necessarily
 	  resolving Trust Chains for all discovered entities, since the actual Trust Chain resolution
-	  may occur later on, for instance: when an RP and OP engage in an authentication transaction,
-    and according to the Trust Chain resolution process described in <xref target="resolving_trust"/>.
+	  may occur later on, for example, when an RP and OP engage in an authentication transaction,
+          and use the Trust Chain resolution process described in <xref target="resolving_trust"/>.
 	</t>
 
 	<t>
-	  Implementers may support one or more of the following patterns:
+	  Implementations may support one or more of the following patterns:
 	  <list style="symbols">
-	    <t>
-	      <xref target="top_down_discovery">Top-Down Discovery</xref>: Finding entities within a federation
-	      by starting from a Trust Anchor and traversing down the hierarchy.
-	    </t>
 	    <t>
 	      <xref target="bottom_up_discovery">Bottom-Up Trust Chain Resolution</xref>: Resolving Trust Chains
 	      starting from a known entity identifier, as described in <xref target="resolving_trust"/>.
+	    </t>
+	    <t>
+	      <xref target="top_down_discovery">Top-Down Discovery</xref>: Finding entities within a federation
+	      by starting from a Trust Anchor and traversing down the hierarchy.
 	    </t>
 	    <t>
 	      <xref target="single_point_discovery">Single Point of Trust Resolution</xref>: Delegating Trust Chain
@@ -7774,45 +7774,6 @@ HTTP/1.1 302 Found
 	  and the types of applications that can effectively integrate with it.
 	</t>
 
-	<section title="Top-Down Discovery" anchor="top_down_discovery">
-	  <t>
-	    Top-down discovery is the process of finding entities that are part of a federation by starting
-	    from a known Trust Anchor and traversing down the federation hierarchy. This pattern is used
-	    when the goal is to discover available entities, particularly entities of specific Entity Types,
-	    without necessarily knowing their Entity Identifiers in advance.
-	  </t>
-
-	  <t>
-	    This pattern is particularly useful for:
-	    <list style="symbols">
-	      <t>Service discovery by Relying Parties looking for OpenID Providers</t>
-	      <t>Resource discovery by Clients looking for specific service types</t>
-	      <t>Federation browsing and exploration</t>
-	      <t>Building provider directories and catalogs (e.g., WAYF services, Seamless Access)</t>
-	    </list>
-	  </t>
-
-	  <t>
-	    The top-down discovery process follows these steps:
-	    <list style="numbers">
-	      <t>Start with a known Trust Anchor that the discovering entity trusts</t>
-	      <t>Use the list endpoint (as defined in <xref target="entity_listing"/>) to discover Immediate Subordinate entities</t>
-	      <t>Filter by <spanx style="verb">entity_type</spanx> parameter to find protocol-specific providers (e.g., <spanx style="verb">openid_provider</spanx>)</t>
-	      <t>For Intermediate entities, recursively traverse their Subordinates</t>
-	      <t>Collect Entity Identifiers and optionally Entity Configurations for discovered entities</t>
-	    </list>
-	  </t>
-
-	  <t>
-	    Note that top-down discovery may or may not include Trust Chain resolution, depending on the use case.
-	    For example, when building a directory of OpenID Providers for user selection at login time, the discovery
-	    service may collect entity identifiers and basic metadata without resolving Trust Chains for all discovered
-	    entities. However, if the discovery service needs to verify that entities
-	    are properly registered in the federation before including them in the directory, it may choose to perform Trust Chain resolution as part of the discovery process.
-	  </t>
-
-	</section>
-
 	<section title="Bottom-Up Trust Chain Resolution" anchor="bottom_up_discovery">
 	  <t>
 	    Bottom-up Trust Chain resolution is the process described in <xref target="resolving_trust"/>,
@@ -7826,25 +7787,64 @@ HTTP/1.1 302 Found
 	    This pattern is used when an entity needs to verify the trustworthiness of another entity whose
 	    Entity Identifier is already known. This is typically used for:
 	    <list style="symbols">
-	      <t>OpenID Providers verifying Relying Parties during authentication requests</t>
-	      <t>Resource servers verifying Client trustworthiness</t>
-	      <t>Any Entity validating incoming requests from known parties</t>
-	      <t>Dynamic trust establishment in federated environments</t>
+	      <t>OpenID Providers verifying Relying Parties during authentication requests,</t>
+	      <t>Resource servers verifying Client trustworthiness,</t>
+	      <t>Any Entity validating incoming requests from known parties, and</t>
+	      <t>Dynamic trust establishment in federated environments.</t>
 	    </list>
 	  </t>
 
 	  <t>
 	    The bottom-up Trust Chain resolution process follows these steps, as described in <xref target="resolving_trust"/>:
 	    <list style="numbers">
-	      <t>Start with the subject entity's Entity Configuration (provided or fetched using the process defined in <xref target="federation_configuration"/>)</t>
-	      <t>Use <spanx style="verb">authority_hints</spanx> to identify immediate superior entities</t>
-	      <t>Fetch Entity Configuration for each Superior Entity</t>
-	      <t>Use Fetch Endpoints (as defined in <xref target="fetch_statement"/>) to obtain Subordinate Statements about the subject entity</t>
-	      <t>Recursively traverse up the hierarchy until reaching a Trust Anchor</t>
-	      <t>Build and validate the complete Trust Chain</t>
-	      <t>Apply federation policies to derive resolved metadata</t>
+	      <t>Start with the subject entity's Entity Configuration (provided or fetched using the process defined in <xref target="federation_configuration"/>).</t>
+	      <t>Use <spanx style="verb">authority_hints</spanx> to identify immediate superior entities.</t>
+	      <t>Fetch Entity Configuration for each Superior Entity.</t>
+	      <t>Use Fetch Endpoints (as defined in <xref target="fetch_statement"/>) to obtain Subordinate Statements about the subject entity.</t>
+	      <t>Recursively traverse up the hierarchy until reaching a Trust Anchor.</t>
+	      <t>Build and validate the complete Trust Chain.</t>
+	      <t>Apply federation policies to derive resolved metadata.</t>
 	    </list>
 	  </t>
+	</section>
+
+	<section title="Top-Down Discovery" anchor="top_down_discovery">
+	  <t>
+	    Top-down discovery is the process of finding entities that are part of a federation by starting
+	    from a known Trust Anchor and traversing down the federation hierarchy. This pattern is used
+	    when the goal is to discover available entities, particularly entities of specific Entity Types,
+	    without necessarily knowing their Entity Identifiers in advance.
+	  </t>
+
+	  <t>
+	    This pattern is particularly useful for:
+	    <list style="symbols">
+	      <t>Service discovery by Relying Parties looking for OpenID Providers,</t>
+	      <t>Resource discovery by Clients looking for specific service types,</t>
+	      <t>Federation browsing and exploration, and</t>
+	      <t>Building provider directories and catalogs (e.g., WAYF services, Seamless Access).</t>
+	    </list>
+	  </t>
+
+	  <t>
+	    The top-down discovery process follows these steps:
+	    <list style="numbers">
+	      <t>Start with a known Trust Anchor that the discovering entity trusts.</t>
+	      <t>Use the list endpoint (as defined in <xref target="entity_listing"/>) to discover Immediate Subordinate entities.</t>
+	      <t>Filter by <spanx style="verb">entity_type</spanx> parameter to find protocol-specific providers (e.g., <spanx style="verb">openid_provider</spanx>).</t>
+	      <t>For Intermediate entities, recursively traverse their Subordinates.</t>
+	      <t>Collect Entity Identifiers and optionally Entity Configurations for discovered entities.</t>
+	    </list>
+	  </t>
+
+	  <t>
+	    Note that top-down discovery may or may not include Trust Chain resolution, depending on the use case.
+	    For example, when building a directory of OpenID Providers for user selection at login time, the discovery
+	    service may collect entity identifiers and basic metadata without resolving Trust Chains for all discovered
+	    entities. However, if the discovery service needs to verify that entities
+	    are properly registered in the federation before including them in the directory, it may choose to perform Trust Chain resolution as part of the discovery process.
+	  </t>
+
 	</section>
 
 	<section title="Single Point of Trust Resolution" anchor="single_point_discovery">
@@ -7857,10 +7857,10 @@ HTTP/1.1 302 Found
 	  <t>
 	    This pattern is useful for:
 	    <list style="symbols">
-	      <t>Entities that want to offload Trust Chain resolution complexity</t>
-	      <t>Centralized trust evaluation services</t>
-	      <t>Performance optimization by caching resolved metadata</t>
-	      <t>Simplified integration for lightweight clients</t>
+	      <t>Entities that want to offload Trust Chain resolution complexity,</t>
+	      <t>Centralized trust evaluation services,</t>
+	      <t>Performance optimization by caching resolved metadata, and</t>
+	      <t>Simplified integration for lightweight clients.</t>
 	    </list>
 	  </t>
 
@@ -7872,26 +7872,25 @@ HTTP/1.1 302 Found
 	  <t>
 	    The single point of trust resolution process follows these steps:
 	    <list style="numbers">
-	      <t>Identify a trusted resolver with a Resolve Endpoint</t>
-	      <t>Submit the subject Entity Identifier and Trust Anchor to the resolver</t>
-	      <t>The resolver performs complete Trust Chain resolution internally (following the bottom-up pattern)</t>
-	      <t>The resolver returns resolved metadata and Trust Marks</t>
-	      <t>Optionally verify the resolver's own Trust Chain</t>
-	      <t>Use resolved metadata for protocol operations</t>
+	      <t>Identify a trusted resolver with a Resolve Endpoint.</t>
+	      <t>Submit the subject Entity Identifier and Trust Anchor to the resolver.</t>
+	      <t>The resolver performs complete Trust Chain resolution internally (following the bottom-up pattern).</t>
+	      <t>The resolver returns resolved metadata and Trust Marks.</t>
+	      <t>Optionally verify the resolver's own Trust Chain.</t>
+	      <t>Use resolved metadata for protocol operations.</t>
 	    </list>
 	  </t>
 	</section>
       </section>
 
-
-          <section anchor="anchor_resolver" title="Trust Anchors and Resolvers Go Together">
+      <section anchor="anchor_resolver" title="Trust Anchors and Resolvers Go Together">
         <t>
         If only one resolver is present in a federation, that entity should be
         both Trust Anchor and Resolver. If so, users of the resolver will not have to
         collect and evaluate Trust Chains for the Resolver. The Trust Anchor is by definition trusted
         and if the entity also serves as Resolver, that service will be implicitly trusted.
         </t>
-</section>
+      </section>
     <section anchor="one_service" title="One Entity, One Service">
         <t>
         Apart from letting an entity provide both the Trust Anchor and Resolver services, there is a good reason for
@@ -7904,7 +7903,7 @@ HTTP/1.1 302 Found
             When validating trust marks in an Entity Statement, it can be split into three parts.
             <list style="hanging">
                 <t hangText="Validating Trust Marks in the Context of Validating an Entity Statement">
-            <vspace/>
+                    <vspace/>
                     According to the text on Entity Statement Validation in <xref target="ESValidation"/>, validating a
                     Trust Mark is confined to validating the syntax of the claim value,
                     including that the <spanx style="verb">trust_mark_type</spanx> value is consistent.
@@ -8056,7 +8055,7 @@ HTTP/1.1 302 Found
 	    evaluating Trust Marks about other Entities
 	    through standard network diagnostic tools like
 	    IPv4/IPv6 addresses and DNS Whois entries.
-	    To mitigate tracking risks, implementers can use short-lived Trust Marks,
+	    To mitigate tracking risks, implementations can use short-lived Trust Marks,
 	    or use the Trust Marked Entities Listing (<xref target="tm_listing"/>)
 	    with only the <spanx style="verb">trust_mark_type</spanx> parameter
 	    and not the <spanx style="verb">sub</spanx> parameter,
@@ -11228,6 +11227,10 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #216: Added two more implementation considerations.
+	  </t>
+	  <t>
+	    Added Implementation Considerations section
+	    "Federation Discovery and Trust Chain Resolution Patterns".
 	  </t>
 	  <t>
 	    Fixed #237: The order of the elements resulting from merging two sets is not defined.
