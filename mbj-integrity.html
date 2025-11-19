@@ -9265,65 +9265,79 @@ HTTP/1.1 302 Found
 </li>
             <li id="section-12.2.2-2.4">
               <p id="section-12.2.2-2.4.1">
-                    If the request contains a Trust Chain, the OP MAY evaluate
+                    If the request body is a Trust Chain, the OP MAY evaluate
                     the statements in the Trust Chain to save the HTTP calls
                     that are necessary to perform the Federation Entity Discovery,
                     especially if the RP included more than one
                     authority hint in its Entity Configuration. Otherwise, the
-                    OP MUST extract the RP Entity Configuration from the Trust Chain
-                    and proceed according to Step 2,
-     as if only an Entity Configuration was received.
-     The same savings hold when the Trust Chain is provided using the
-     <code>trust_chain</code> header parameter
-     defined in <a href="#trust_chain_head_param" class="auto internal xref">Section 4.3</a>.<a href="#section-12.2.2-2.4.1" class="pilcrow">¶</a></p>
+                    OP MUST extract the RP's Entity Configuration from the Trust Chain
+                    and proceed according to Step 3,
+     as if only an Entity Configuration was received.<a href="#section-12.2.2-2.4.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-12.2.2-2.5">
               <p id="section-12.2.2-2.5.1">
+     When a Trust Chain is provided using the
+     <code>trust_chain</code> header parameter
+     in the request's Entity Configuration,
+     the OP MAY likewise evaluate
+     the statements in the Trust Chain to save the HTTP calls
+     that are necessary to perform the Federation Entity Discovery.
+     Note that in this case, the RP's Entity Configuration
+     in the Trust Chain is only used to establish that
+     there is a path from the RP to the Trust Anchor;
+     it is the metadata, etc. in the request Entity Configuration,
+     which may be tailored by the RP for the OP,
+     that is used when processing the registration request.
+     If the provided Trust Chain is not used,
+     the OP MUST proceed according to Step 3,
+     using the request Entity Configuration.<a href="#section-12.2.2-2.5.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-12.2.2-2.6">
+              <p id="section-12.2.2-2.6.1">
      If the request uses
      the <code>peer_trust_chain</code> header parameter
-     defined in <a href="#peer_trust_chain_head_param" class="auto internal xref">Section 4.4</a>
      to include a Trust Chain from the OP
      to the Trust Anchor that the RP selected,
      verify that it begins at the OP.
      Furthermore, verify that it ends at the same Trust Anchor
-     as any provided Trust chain from the RP to the Trust Anchor.<a href="#section-12.2.2-2.5.1" class="pilcrow">¶</a></p>
+     as any provided Trust chain from the RP to the Trust Anchor.<a href="#section-12.2.2-2.6.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-12.2.2-2.6">
-              <p id="section-12.2.2-2.6.1">
+            <li id="section-12.2.2-2.7">
+              <p id="section-12.2.2-2.7.1">
                     At this point, if the OP finds that it already has an
                     existing client registration for the requesting RP, then
                     that registration MUST be invalidated. The precise time of
                     the invalidation is at the OP's discretion, as the OP may
                     want to ensure the completion of concurrent OpenID
                     authentication requests initiated by the RP while the
-                    registration request is being processed.<a href="#section-12.2.2-2.6.1" class="pilcrow">¶</a></p>
-<p id="section-12.2.2-2.6.2">
+                    registration request is being processed.<a href="#section-12.2.2-2.7.1" class="pilcrow">¶</a></p>
+<p id="section-12.2.2-2.7.2">
 
                     The OP MAY retain client credentials and key material from
                     the invalidated registration in order to verify past RP
                     signatures and perform other cryptographic operations on
-                    past RP data.<a href="#section-12.2.2-2.6.2" class="pilcrow">¶</a></p>
+                    past RP data.<a href="#section-12.2.2-2.7.2" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-12.2.2-2.7">
-              <p id="section-12.2.2-2.7.1">
+            <li id="section-12.2.2-2.8">
+              <p id="section-12.2.2-2.8.1">
                     The OP uses the Resolved Metadata for the RP to create a client
                     registration compliant with its own OP metadata and other
-                    applicable policies.<a href="#section-12.2.2-2.7.1" class="pilcrow">¶</a></p>
-<p id="section-12.2.2-2.7.2">
+                    applicable policies.<a href="#section-12.2.2-2.8.1" class="pilcrow">¶</a></p>
+<p id="section-12.2.2-2.8.2">
 
                     The OP MAY provision the RP with a
                     <code>client_id</code> other than the RP's
                     Entity Identifier. This enables Explicit Registration to be
                     implemented on top of the
                     <span><a href="#OpenID.Registration" class="internal xref">OpenID Connect Dynamic
-                    Client Registration 1.0</a> [<a href="#OpenID.Registration" class="cite xref">OpenID.Registration</a>]</span> endpoint of an OP.<a href="#section-12.2.2-2.7.2" class="pilcrow">¶</a></p>
-<p id="section-12.2.2-2.7.3">
+                    Client Registration 1.0</a> [<a href="#OpenID.Registration" class="cite xref">OpenID.Registration</a>]</span> endpoint of an OP.<a href="#section-12.2.2-2.8.2" class="pilcrow">¶</a></p>
+<p id="section-12.2.2-2.8.3">
 
                     If the RP is provisioned with a
                     <code>client_secret</code> it MUST NOT
                     expire before the expiration of the registration Entity Statement
-                    that will be returned to the RP.<a href="#section-12.2.2-2.7.3" class="pilcrow">¶</a></p>
-<p id="section-12.2.2-2.7.4">
+                    that will be returned to the RP.<a href="#section-12.2.2-2.8.3" class="pilcrow">¶</a></p>
+<p id="section-12.2.2-2.8.4">
 
                     The OP SHOULD NOT provision the RP with a
                     <code>registration_access_token</code> and a
@@ -9334,8 +9348,8 @@ HTTP/1.1 302 Found
                     <code>registration_access_token</code> for
                     some purpose, for example to let it independently check its
                     registered metadata, the token MUST NOT allow modification
-                    of the registration.<a href="#section-12.2.2-2.7.4" class="pilcrow">¶</a></p>
-<p id="section-12.2.2-2.7.5">
+                    of the registration.<a href="#section-12.2.2-2.8.4" class="pilcrow">¶</a></p>
+<p id="section-12.2.2-2.8.5">
 
                     The OP MAY modify the received RP metadata, for example by
                     substituting an invalid or unsupported parameter,
@@ -9347,13 +9361,13 @@ HTTP/1.1 302 Found
                     <code>invalid_client_metadata</code> or
                     <code>invalid_redirect_uri</code>, as
                     specified in Section 3.3 of
-                    <span>[<a href="#OpenID.Registration" class="cite xref">OpenID.Registration</a>]</span>.<a href="#section-12.2.2-2.7.5" class="pilcrow">¶</a></p>
+                    <span>[<a href="#OpenID.Registration" class="cite xref">OpenID.Registration</a>]</span>.<a href="#section-12.2.2-2.8.5" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-12.2.2-2.8">
-              <p id="section-12.2.2-2.8.1">
+            <li id="section-12.2.2-2.9">
+              <p id="section-12.2.2-2.9.1">
                     The OP MUST assign an expiration time to the created
                     registration. This time MUST NOT exceed the expiration time
-                    of the Trust Chain that the OP selected to process the request.<a href="#section-12.2.2-2.8.1" class="pilcrow">¶</a></p>
+                    of the Trust Chain that the OP selected to process the request.<a href="#section-12.2.2-2.9.1" class="pilcrow">¶</a></p>
 </li>
           </ol>
 </section>
