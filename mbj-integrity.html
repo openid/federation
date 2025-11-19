@@ -8683,6 +8683,18 @@ GET /authorize?
 <figcaption><a href="#figure-50" class="selfRef">Figure 50</a>:
 <a href="#name-authentication-request-usin" class="selfRef">Authentication Request Using Request Object</a>
                 </figcaption></figure>
+<p id="section-12.1.1.1.1-7">
+       When the <code>trust_chain</code> header parameter
+       is included,
+       the <code>peer_trust_chain</code> header parameter
+       MAY also be included to provide a Trust Chain between the OP
+       and the Trust Anchor the RP selected.
+       The Peer Trust Chain contains metadata and policy values
+       that the RP has chosen for the OP to use during the registration.
+       The Trust Anchors selected in both Trust Chains MUST be the same.
+       Inclusion of both Trust Chains enables achieving
+       the Federation Integrity and Metadata Integrity properties,
+       as defined in <span>[<a href="#App-Fed-Linkage" class="cite xref">App-Fed-Linkage</a>]</span>.<a href="#section-12.1.1.1.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="AuthzRequestProcessing">
@@ -8729,6 +8741,8 @@ GET /authorize?
  in the Request Object using the
                 <code>peer_trust_chain</code> header parameter
  defined in <a href="#peer_trust_chain_head_param" class="auto internal xref">Section 4.4</a>.
+ The OP SHOULD use the metadata and policy values
+ that the RP has chosen during the registration.
  Inclusion of both Trust Chains enables achieving
  the Federation Integrity and Metadata Integrity properties,
  as defined in <span>[<a href="#App-Fed-Linkage" class="cite xref">App-Fed-Linkage</a>]</span>.<a href="#section-12.1.1.1.2-4" class="pilcrow">¶</a></p>
@@ -9144,6 +9158,8 @@ HTTP/1.1 302 Found
    the <code>peer_trust_chain</code> header parameter
    MAY also be included to provide a Trust Chain between the OP
    and the Trust Anchor the RP selected.
+   The Peer Trust Chain contains metadata and policy values
+   that the RP has chosen for the OP to use during the registration.
    The <code>peer_trust_chain</code> header parameter
    MUST NOT be used when the request body is a Trust Chain.
    The Trust Anchors selected in both Trust Chains MUST be the same.
@@ -9300,7 +9316,9 @@ HTTP/1.1 302 Found
      to the Trust Anchor that the RP selected,
      verify that it begins at the OP.
      Furthermore, verify that it ends at the same Trust Anchor
-     as any provided Trust chain from the RP to the Trust Anchor.<a href="#section-12.2.2-2.6.1" class="pilcrow">¶</a></p>
+     as any provided Trust chain from the RP to the Trust Anchor.
+     The OP SHOULD use the metadata and policy values
+     that the RP has chosen during the registration.<a href="#section-12.2.2-2.6.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-12.2.2-2.7">
               <p id="section-12.2.2-2.7.1">
