@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="17" month="November" year="2025"/>
+    <date day="18" month="November" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -752,12 +752,14 @@
               </list></t>
               </section>
 
-            <section title="Claims Specific to Explicit Registration Responses">
-                <list style="hanging">
+	<section title="Claims Specific to Explicit Registration Responses"
+		 anchor="explicit-reg-response-specific">
+	  <list style="hanging">
             <t hangText="trust_anchor">
               <vspace/>
               OPTIONAL.  Its value MUST be the Entity Identifier of the Trust Anchor
-                that the OP selected to process the Explicit Registration request.
+                that the OP selected to process the Explicit Registration request,
+		as specified in <xref target="trust_anchor-claim"/>.
                 This claim is specific to Explicit Registration responses and is not a
                 general Entity Statement claim.
             </t>
@@ -943,7 +945,26 @@
 		information compatible with the configured Trust Anchor information
 		- especially the keys.
 		This Claim MUST NOT be present in Entity Statements that are not
-		Explicit Registration responses.
+		Explicit Registration responses
+		unless its use is otherwise specified in an extension being employed.
+	      </t>
+	      <t>
+		If the <spanx style="verb">trust_chain</spanx> header parameter is present,
+		validate that its value is a syntactically valid Trust Chain,
+		as specified in <xref target="trust_chain"/>.
+		The first entry in the Trust Chain
+		MUST be an Entity Configuration for this Entity.
+		Implementations SHOULD validate that the Entity Identifier
+		for the Trust Anchor at the end of the Trust Chain matches
+		one of the Trust Anchors configured for the deployment.
+	      </t>
+	      <t>
+		If the <spanx style="verb">peer_trust_chain</spanx> header parameter is present,
+		validate that its value is a syntactically valid Trust Chain,
+		as specified in <xref target="trust_chain"/>.
+		Implementations SHOULD validate that the Entity Identifier
+		for the Trust Anchor at the end of the Trust Chain matches
+		one of the Trust Anchors configured for the deployment.
 	      </t>
 	    </list>
 	  </t>
@@ -1284,26 +1305,21 @@
         <section title="Trust Chain Header Parameter" anchor="trust_chain_head_param">
          <t>
           The <spanx style="verb">trust_chain</spanx> JWS header parameter is a
-          JSON array containing the sequence of the statements
-          that proves the trust relationship between the issuer of the
-          <xref target="RFC7515">JWS</xref>
-          and the selected Trust Anchor, sorted as shown in <xref target="trust_chain"/>.
-          The Trust Chain contains the public key used to verify the
-          <xref target="RFC7515">JWS</xref>.
-          The issuer of the JWS SHOULD select the Trust Anchor that it has in common
-          with the audience of the JWS.
-	      Otherwise, the issuer is free to select a Trust Anchor.
+          JSON array containing the sequence of Entity Statements
+          that proves the trust relationship between the subject of the JWT
+          and the selected Trust Anchor,
+	  sorted as specified in <xref target="trust_chain"/>.
+	  The subject of the JWT MUST be the Entity Identifier of the
+	  Entity at the beginning of the Trust Chain.
+          The issuer of the JWT SHOULD select a Trust Anchor
+	  that the subject has in common with the audience of the JWT.
+	  Otherwise, the issuer is free to select the Trust Anchor to use.
           Most signed JWTs MAY include the
           <spanx style="verb">trust_chain</spanx> JWS header parameter,
           with a few exceptions.
           Entity Configurations and Subordinate Statements MUST NOT
           contain the <spanx style="verb">trust_chain</spanx> header parameter,
-          as they are integral components of a Trust Chain. Additionally,
-          the Authorization Signed Request Object SHOULD NOT contain the
-          <spanx style="verb">trust_chain</spanx> header parameter, because
-          the <spanx style="verb">trust_chain</spanx>
-          parameter is intended to be part of its JWS payload, as defined in
-          <xref target="trust_chain_param"/>.
+          as they are integral components of a Trust Chain.
           Use of this header parameter is OPTIONAL.
           </t>
 
@@ -1331,6 +1347,24 @@
 	    </artwork>
 	  </figure>
         </section>
+
+	<section title="Peer Trust Chain Header Parameter" anchor="peer_trust_chain_head_param">
+	  <t>
+	    The <spanx style="verb">peer_trust_chain</spanx> JWS header parameter is a
+	    JSON array containing the sequence of Entity Statements
+	    that comprise the Trust Chain between
+	    an Entity that this Entity is establishing trust with
+	    and the selected Trust Anchor,
+	    sorted as specified in <xref target="trust_chain"/>.
+	    If the <spanx style="verb">trust_chain</spanx> header parameter
+	    is also present,
+	    the Trust Anchor for both Trust Chains SHOULD be the same.
+	    Inclusion of both Trust Chains enables achieving
+	    the Federation Integrity and Metadata Integrity properties,
+	    as defined in <xref target="App-Fed-Linkage"/>.
+	    Use of this header parameter is OPTIONAL.
+	  </t>
+	</section>
 
       </section>
 
@@ -4571,7 +4605,7 @@ Host: openid.sunet.se
             The resolve response JWT MUST return the Trust Chain
 	    from the subject to the Trust Anchor
 	    in its <spanx style="verb">trust_chain</spanx> parameter,
-            sorted as shown in <xref target="trust_chain"/>.
+            sorted as specified in <xref target="trust_chain"/>.
 	  </t>
           <t>
             The resolve response MAY also return the Trust Chain
@@ -4642,7 +4676,7 @@ Host: openid.sunet.se
                 REQUIRED. Array containing the sequence of Entity Statements
                 that compose the Trust Chain, starting with the subject and
                 ending with the selected Trust Anchor,
-                sorted as shown in <xref target="trust_chain"/>.
+                sorted as specified in <xref target="trust_chain"/>.
               </t>
               <t hangText="trust_marks">
                 <vspace/>
@@ -6356,16 +6390,23 @@ Content-Type: application/json
                   This is expressed as Seconds Since the Epoch, per
                   <xref target="RFC7519"/>.
                 </t>
-                <t hangText="trust_chain" anchor="trust_chain_param">
+                <t hangText="trust_chain" anchor="trust_chain-param">
                   <vspace/>
                   OPTIONAL. Array containing the sequence of Entity Statements
                   that comprise the Trust Chain between the RP making
                   the request and the selected Trust Anchor,
-                  sorted as in <xref target="trust_chain"/>.
+                  sorted as specified in <xref target="trust_chain"/>.
                   When the RP and the OP are part of the same federation,
                   the RP MUST select a Trust Anchor that it has in common
                   with the OP; otherwise, the RP is free to select the
                   Trust Anchor to use.
+		  <vspace blankLine="1"/>
+
+		  NOTE: The use of the
+		  <spanx style="verb">trust_chain</spanx> header parameter,
+		  as specified in <xref target="trust_chain_head_param"/>,
+		  is RECOMMENDED over the use of this parameter;
+		  it is retained for historical reasons.
                 </t>
               </list>
             </t>
@@ -6373,7 +6414,7 @@ Content-Type: application/json
             <section title="Authorization Request with a Trust Chain" anchor="trust_chain_authz">
               <t>
               When the <spanx style="verb">trust_chain</spanx>
-              request parameter
+              header parameter
               is used in the authentication request, the Relying Party
               informs the OP of the sequence of Entity Statements
               that proves the trust relationship between it
@@ -6389,7 +6430,8 @@ Content-Type: application/json
 
             <figure>
               <preamble>
-                The following is a non-normative example of the JWT Claims Set in a
+                The following is a non-normative example of the
+		header parameters and JWT Claims Set in a
                 Request Object:
               </preamble>
 	      <name>
@@ -6400,6 +6442,11 @@ Content-Type: application/json
   "typ": "oauth-authz-req+jwt",
   "alg": "RS256",
   "kid": "that-kid-which-points-to-a-jwk-contained-in-the-trust-chain",
+  "trust_chain" : [
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6Ims1NEhRdERpYnlHY3M5WldWTWZ2aUhm ...",
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ...",
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ..."
+  ]
 }
 .
 {
@@ -6413,12 +6460,7 @@ Content-Type: application/json
   "redirect_uri": "https://rp.example.com/authz_cb",
   "response_type": "code",
   "scope": "openid profile email address phone",
-  "state": "YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ",
-  "trust_chain" : [
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6Ims1NEhRdERpYnlHY3M5WldWTWZ2aUhm ...",
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ...",
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ..."
-  ]
+  "state": "YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ"
 }
 ]]></artwork>
             </figure>
@@ -6464,6 +6506,19 @@ GET /authorize?
 
 ]]></artwork>
             </figure>
+	    <t>
+	      When the <spanx style="verb">trust_chain</spanx> header parameter
+	      is included,
+	      the <spanx style="verb">peer_trust_chain</spanx> header parameter
+	      MAY also be included to provide a Trust Chain between the OP
+	      and the Trust Anchor the RP selected.
+	      The Peer Trust Chain contains metadata and policy values
+	      that the RP has chosen for the OP to use during the registration.
+	      The Trust Anchors selected in both Trust Chains MUST be the same.
+	      Inclusion of both Trust Chains enables achieving
+	      the Federation Integrity and Metadata Integrity properties,
+	      as defined in <xref target="App-Fed-Linkage"/>.
+	    </t>
             </section>
 
             <section title="Processing the Authentication Request" anchor="AuthzRequestProcessing">
@@ -6477,9 +6532,11 @@ GET /authorize?
                 related to the requestor.
               </t>
               <t>
-                An RP MAY present a Trust Chain related to itself to the OP in the Request Object using the
-                <spanx style="verb">trust_chain</spanx> request parameter
-		        defined in <xref target="trust_chain_param"/>.
+                An RP MAY include a Trust Chain from itself
+		to the Trust Anchor that it selected
+		in the Request Object using the
+                <spanx style="verb">trust_chain</spanx> header parameter
+		defined in <xref target="trust_chain_head_param"/>.
                 If the OP does not have a valid registration for the RP or
                 its registration has expired, the OP MAY use the received
                 Trust Chain as a hint for which path to take from the
@@ -6501,10 +6558,22 @@ GET /authorize?
 		In both cases, the OP MUST fully verify the Trust Chain
 		including every Entity Statement contained in it.
               </t>
+	      <t>
+		The RP MAY likewise include a Trust Chain from the OP
+		to the Trust Anchor that the RP selected
+		in the Request Object using the
+                <spanx style="verb">peer_trust_chain</spanx> header parameter
+		defined in <xref target="peer_trust_chain_head_param"/>.
+		The OP SHOULD use the metadata and policy values
+		that the RP has chosen during the registration.
+		Inclusion of both Trust Chains enables achieving
+		the Federation Integrity and Metadata Integrity properties,
+		as defined in <xref target="App-Fed-Linkage"/>.
+	      </t>
               <t>
                 If the RP does not include the
                 <spanx style="verb">trust_chain</spanx>
-                request parameter in the Request Object,
+                header parameter in the Request Object,
 		the OP for some reason decides not to use the provided Trust Chain,
                 or the OP does not support this feature, it then MUST
                 validate the possible Trust Chains, starting with the RP's Entity Configuration,
@@ -6836,11 +6905,23 @@ HTTP/1.1 302 Found
                 <t>
                   The RP MAY include its Entity Configuration
                   in a Trust Chain regarding itself.
-                  In that case, the Registration Request will contain an
+                  There are two ways to do this.
+		  The first way is for the Registration Request to contain an
                   array with the sequence of
                   Entity Statements that compose the Trust Chain
                   between the RP that is making the request and the
                   selected Trust Anchor.
+		  The second way is to use the
+		  <spanx style="verb">trust_chain</spanx> header parameter,
+		  as specified in <xref target="trust_chain_head_param"/>.
+		  <vspace blankLine="1"/>
+
+		  NOTE: The use of the
+		  <spanx style="verb">trust_chain</spanx> header parameter
+		  in the request JWT is RECOMMENDED over the first syntax;
+		  it is retained for historical reasons.
+		</t>
+		<t>
                   The RP MUST include its
                   metadata in its Entity Configuration and use the
                   <spanx style="verb">authority_hints</spanx> selected above.
@@ -6865,8 +6946,8 @@ HTTP/1.1 302 Found
                 <t>
                   The content type of the Registration Request MUST be
                   <spanx style="verb">application/entity-statement+jwt</spanx>
-                  when it contains only the Entity Configuration of the
-                  requestor. Otherwise, when it contains the Trust Chain, the
+                  when it is the Entity Configuration of the requestor.
+                  Otherwise, when it is a Trust Chain, the
                   content type of the Registration Request MUST be
                   <spanx style="verb">application/trust-chain+json</spanx>.
                   The RP MAY include its Entity Configuration in a Trust Chain
@@ -6875,6 +6956,26 @@ HTTP/1.1 302 Found
                   statements that make up the Trust Chain between the RP and
                   the Trust Anchor the RP selected.
                 </t>
+		<t>
+		  The <spanx style="verb">trust_chain</spanx> header parameter
+		  MAY be included to provide a Trust Chain between the RP
+		  and the Trust Anchor the RP selected
+		  when the request is the Entity Configuration of the RP.
+		  This is equivalent to providing the Trust Chain as the request body.
+		  When the <spanx style="verb">trust_chain</spanx> header parameter
+		  is included,
+		  the <spanx style="verb">peer_trust_chain</spanx> header parameter
+		  MAY also be included to provide a Trust Chain between the OP
+		  and the Trust Anchor the RP selected.
+		  The Peer Trust Chain contains metadata and policy values
+		  that the RP has chosen for the OP to use during the registration.
+		  The <spanx style="verb">peer_trust_chain</spanx> header parameter
+		  MUST NOT be used when the request body is a Trust Chain.
+		  The Trust Anchors selected in both Trust Chains MUST be the same.
+		  Inclusion of both Trust Chains enables achieving
+		  the Federation Integrity and Metadata Integrity properties,
+		  as defined in <xref target="App-Fed-Linkage"/>.
+		</t>
               </list>
             </t>
             <t>
@@ -6967,8 +7068,9 @@ HTTP/1.1 302 Found
 		    then the request MUST be rejected.
 		  </t>
                   <t>
-                    If the request contains an Entity Configuration the OP
-                    MUST use it to complete the Federation Entity Discovery by
+                    If no Trust Chain is provided from the RP to the Trust Anchor
+		    in the request, the OP MUST use the provided Entity Configuration
+		    to complete the Federation Entity Discovery by
                     collecting and evaluating the Trust Chains that start with
                     the <spanx style="verb">authority_hints</spanx> in the
                     Entity Configuration of the RP. After validating at least
@@ -6978,15 +7080,43 @@ HTTP/1.1 302 Found
                     from among them as the one to proceed with.
                   </t>
                   <t>
-                    If the request contains a Trust Chain, the OP MAY evaluate
+                    If the request body is a Trust Chain, the OP MAY evaluate
                     the statements in the Trust Chain to save the HTTP calls
                     that are necessary to perform the Federation Entity Discovery,
                     especially if the RP included more than one
                     authority hint in its Entity Configuration. Otherwise, the
-                    OP MUST extract the RP Entity Configuration from the Trust Chain
-                    and proceed according to Step 2,
+                    OP MUST extract the RP's Entity Configuration from the Trust Chain
+                    and proceed according to Step 3,
 		    as if only an Entity Configuration was received.
-                  </t>
+		  </t>
+		  <t>
+		    When a Trust Chain is provided using the
+		    <spanx style="verb">trust_chain</spanx> header parameter
+		    in the request's Entity Configuration,
+		    the OP MAY likewise evaluate
+		    the statements in the Trust Chain to save the HTTP calls
+		    that are necessary to perform the Federation Entity Discovery.
+		    Note that in this case, the RP's Entity Configuration
+		    in the Trust Chain is only used to establish that
+		    there is a path from the RP to the Trust Anchor;
+		    it is the metadata, etc. in the request Entity Configuration,
+		    which may be tailored by the RP for the OP,
+		    that is used when processing the registration request.
+		    If the provided Trust Chain is not used,
+		    the OP MUST proceed according to Step 3,
+		    using the request Entity Configuration.
+		  </t>
+		  <t>
+		    If the request uses
+		    the <spanx style="verb">peer_trust_chain</spanx> header parameter
+		    to include a Trust Chain from the OP
+		    to the Trust Anchor that the RP selected,
+		    verify that it begins at the OP.
+		    Furthermore, verify that it ends at the same Trust Anchor
+		    as any provided Trust chain from the RP to the Trust Anchor.
+		    The OP SHOULD use the metadata and policy values
+		    that the RP has chosen during the registration.
+		  </t>
                   <t>
                     At this point, if the OP finds that it already has an
                     existing client registration for the requesting RP, then
@@ -7142,13 +7272,17 @@ HTTP/1.1 302 Found
 		    This claim is used in Explicit Registration responses
 		    but is not a general Entity Statement claim.
                   </t>
-                  <t hangText="trust_anchor">
+                  <t hangText="trust_anchor" anchor="trust_anchor-claim">
                     <vspace/>
                     REQUIRED.
                     Its value MUST be the Entity Identifier of the Trust Anchor
-                    that the OP selected to process the Explicit Registration
-                    request. This claim is specific to Explicit Registration
-                    responses and is not a general Entity Statement claim.
+                    that the OP selected to process the Explicit Registration request.
+		    If complete Trust Chains to the Trust Anchor selected by the RP
+		    were provided in the request and/or by using the
+		    <spanx style="verb">peer_trust_chain</spanx> header parameter,
+		    this MUST match the Trust Anchors at the roots of those Trust Chains.
+		    This claim is specific to Explicit Registration responses
+		    and is not a general Entity Statement claim.
                   </t>
                   <t hangText="authority_hints">
                     <vspace/>
@@ -7217,6 +7351,11 @@ HTTP/1.1 302 Found
                     The RP MUST verify that the
                     <spanx style="verb">trust_anchor</spanx> represents one
                     of its own Trust Anchors.
+		    If complete Trust Chains to the Trust Anchor selected by the RP
+		    were provided in the request and/or by using the
+		    <spanx style="verb">peer_trust_chain</spanx> header parameter,
+		    the RP MUST verify that this matches
+		    the Trust Anchors at the root of those Trust Chains.
                   </t>
                   <t>
                     The RP MUST verify that at least one of the
@@ -9124,7 +9263,7 @@ HTTP/1.1 302 Found
 
       <section anchor="ParameterRegistry" title="OAuth Parameters Registration">
         <t>
-          This specification registers the following parameter name in the IANA "OAuth
+          This specification registers the following parameter in the IANA "OAuth
           Parameters" registry <xref target="IANA.OAuth.Parameters"/> established
           by <xref target="RFC6749"/>.
         </t>
@@ -9144,17 +9283,18 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="trust_chain_authz"/> of this specification
+                Specification Document(s): <xref target="trust_chain-param"/> of this specification
               </t>
             </list>
           </t>
         </section>
+	<?rfc subcompact="no"?>
 
       </section>
 
       <section anchor="JwsHeaderRegistry" title="JSON Web Signature and Encryption Header Parameters Registration">
         <t>
-	  This specification registers the following JWS header parameter in
+	  This specification registers the following JWS header parameters in
 	  the IANA "JSON Web Signature and Encryption Header Parameters" registry <xref target="IANA.JOSE"/>
 	  established by <xref target="RFC7515"/>.
         </t>
@@ -9177,11 +9317,32 @@ HTTP/1.1 302 Found
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="trust_chain"/> of this specification
+                Specification Document(s): <xref target="trust_chain_head_param"/> of this specification
+              </t>
+	    </list>
+	  </t>
+	  <t>
+            <list style='symbols'>
+              <t>
+                Header Parameter Name:
+                <spanx style="verb">peer_trust_chain</spanx>
+              </t>
+              <t>
+                Header Parameter Description: OpenID Federation Peer Trust Chain
+              </t>
+              <t>
+                Header Parameter Usage Location: JWS
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="peer_trust_chain_head_param"/> of this specification
               </t>
             </list>
           </t>
         </section>
+	<?rfc subcompact="no"?>
 
       </section>
 
@@ -9478,7 +9639,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): <xref target="ExplicitRegOP"/> of this specification
+		Specification Document(s): <xref target="trust_anchor-claim"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -9936,7 +10097,7 @@ HTTP/1.1 302 Found
           <title>Financial-grade API Security Profile 1.0 - Part 2: Advanced</title>
 
           <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
-            <organization abbrev="NRI">Nat Consulting</organization>
+            <organization>Nat Consulting</organization>
           </author>
 
           <author fullname="John Bradley" initials="J." surname="Bradley">
@@ -9999,6 +10160,19 @@ HTTP/1.1 302 Found
           </author>
 	  <date/>
         </front>
+      </reference>
+
+      <reference anchor="App-Fed-Linkage"
+		 target="https://connect2id.com/blog/how-to-link-an-app-protocol-to-an-openid-federation-trust-layer">
+	<front>
+	  <title>How to link an application protocol to an OpenID Federation 1.0 trust layer</title>
+
+	  <author fullname="Vladimir Dzhuvinov" initials="V." surname="Dzhuvinov">
+	    <organization>Connect2id</organization>
+	  </author>
+
+	  <date day="4" month="December" year="2024"/>
+	</front>
       </reference>
 
     </references>
@@ -11245,9 +11419,18 @@ Host: op.umu.se
 	    Fixed #243: Be explicit about what to do when server validation fails in automatic registration.
 	  </t>
 	  <t>
-	    Added Discovery and Trust Chain Resolution Patterns considerations.
+	    Fixed #100: Define the <spanx style="verb">peer_trust_chain</spanx>
+	    header parameter and use it in combination with the
+	    <spanx style="verb">trust_chain</spanx> header parameter to provide
+	    the Federation Integrity and Metadata Integrity properties.
+	    This PR leaves the existing <spanx style="verb">trust_chain</spanx>
+	    request parameter for Automatic Registration and
+	    the existing Trust Chain-as-request-body syntax for Explicit Registration
+	    in place for historical reasons, but defines that the use of
+	    the <spanx style="verb">trust_chain</spanx> header parameter
+	    is RECOMMENDED over either of those more ad-hoc methods.
 	  </t>
-</list>
+	</list>
       </t>
 
       <t>
