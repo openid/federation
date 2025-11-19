@@ -1264,7 +1264,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-11-17" class="published">17 November 2025</time>
+<time datetime="2025-11-18" class="published">18 November 2025</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -1377,6 +1377,9 @@ li > p:last-of-type:only-child {
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
                 <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-trust-chain-header-paramete" class="internal xref">Trust Chain Header Parameter</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.4">
+                <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="auto internal xref">4.4</a>.  <a href="#name-peer-trust-chain-header-par" class="internal xref">Peer Trust Chain Header Parameter</a></p>
 </li>
             </ul>
 </li>
@@ -2729,6 +2732,7 @@ li > p:last-of-type:only-child {
 </dl>
 </section>
 </div>
+<div id="explicit-reg-response-specific">
 <section id="section-3.4">
         <h3 id="name-claims-specific-to-explicit">
 <a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-claims-specific-to-explicit" class="section-name selfRef">Claims Specific to Explicit Registration Responses</a>
@@ -2737,13 +2741,15 @@ li > p:last-of-type:only-child {
           <dt id="section-3.4-1.1">trust_anchor</dt>
           <dd style="margin-left: 1.5em" id="section-3.4-1.2">
               OPTIONAL.  Its value MUST be the Entity Identifier of the Trust Anchor
-                that the OP selected to process the Explicit Registration request.
+                that the OP selected to process the Explicit Registration request,
+ as specified in <a href="#trust_anchor-claim" class="auto internal xref">Section 12.2.3</a>.
                 This claim is specific to Explicit Registration responses and is not a
                 general Entity Statement claim.<a href="#section-3.4-1.2" class="pilcrow">¶</a>
 </dd>
         <dd class="break"></dd>
 </dl>
 </section>
+</div>
 <div id="ESValidation">
 <section id="section-3.5">
         <h3 id="name-entity-statement-validation">
@@ -2950,7 +2956,28 @@ li > p:last-of-type:only-child {
  information compatible with the configured Trust Anchor information
  - especially the keys.
  This Claim MUST NOT be present in Entity Statements that are not
- Explicit Registration responses.<a href="#section-3.5-2.23.1" class="pilcrow">¶</a></p>
+ Explicit Registration responses
+ unless its use is otherwise specified in an extension being employed.<a href="#section-3.5-2.23.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-3.5-2.24">
+            <p id="section-3.5-2.24.1">
+ If the <code>trust_chain</code> header parameter is present,
+ validate that its value is a syntactically valid Trust Chain,
+ as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
+ The first entry in the Trust Chain
+ MUST be an Entity Configuration for this Entity.
+ Implementations SHOULD validate that the Entity Identifier
+ for the Trust Anchor at the end of the Trust Chain matches
+ one of the Trust Anchors configured for the deployment.<a href="#section-3.5-2.24.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-3.5-2.25">
+            <p id="section-3.5-2.25.1">
+ If the <code>peer_trust_chain</code> header parameter is present,
+ validate that its value is a syntactically valid Trust Chain,
+ as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
+ Implementations SHOULD validate that the Entity Identifier
+ for the Trust Anchor at the end of the Trust Chain matches
+ one of the Trust Anchors configured for the deployment.<a href="#section-3.5-2.25.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
 <p id="section-3.5-3">
@@ -3298,26 +3325,21 @@ li > p:last-of-type:only-child {
         </h3>
 <p id="section-4.3-1">
           The <code>trust_chain</code> JWS header parameter is a
-          JSON array containing the sequence of the statements
-          that proves the trust relationship between the issuer of the
-          <span><a href="#RFC7515" class="internal xref">JWS</a> [<a href="#RFC7515" class="cite xref">RFC7515</a>]</span>
-          and the selected Trust Anchor, sorted as shown in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
-          The Trust Chain contains the public key used to verify the
-          <span><a href="#RFC7515" class="internal xref">JWS</a> [<a href="#RFC7515" class="cite xref">RFC7515</a>]</span>.
-          The issuer of the JWS SHOULD select the Trust Anchor that it has in common
-          with the audience of the JWS.
-       Otherwise, the issuer is free to select a Trust Anchor.
+          JSON array containing the sequence of Entity Statements
+          that proves the trust relationship between the subject of the JWT
+          and the selected Trust Anchor,
+   sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
+   The subject of the JWT MUST be the Entity Identifier of the
+   Entity at the beginning of the Trust Chain.
+          The issuer of the JWT SHOULD select a Trust Anchor
+   that the subject has in common with the audience of the JWT.
+   Otherwise, the issuer is free to select the Trust Anchor to use.
           Most signed JWTs MAY include the
           <code>trust_chain</code> JWS header parameter,
           with a few exceptions.
           Entity Configurations and Subordinate Statements MUST NOT
           contain the <code>trust_chain</code> header parameter,
-          as they are integral components of a Trust Chain. Additionally,
-          the Authorization Signed Request Object SHOULD NOT contain the
-          <code>trust_chain</code> header parameter, because
-          the <code>trust_chain</code>
-          parameter is intended to be part of its JWS payload, as defined in
-          <a href="#trust_chain_param" class="auto internal xref">Section 12.1.1.1</a>.
+          as they are integral components of a Trust Chain.
           Use of this header parameter is OPTIONAL.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
 <p id="section-4.3-2" class="keepWithNext">
        The following is a non-normative example of a JWS header with
@@ -3342,6 +3364,27 @@ li > p:last-of-type:only-child {
 <figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
 <a href="#name-example-jws-header-with-a-t" class="selfRef">Example JWS Header with a <code>trust_chain</code> Parameter</a>
           </figcaption></figure>
+</section>
+</div>
+<div id="peer_trust_chain_head_param">
+<section id="section-4.4">
+        <h3 id="name-peer-trust-chain-header-par">
+<a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-peer-trust-chain-header-par" class="section-name selfRef">Peer Trust Chain Header Parameter</a>
+        </h3>
+<p id="section-4.4-1">
+     The <code>peer_trust_chain</code> JWS header parameter is a
+     JSON array containing the sequence of Entity Statements
+     that comprise the Trust Chain between
+     an Entity that this Entity is establishing trust with
+     and the selected Trust Anchor,
+     sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
+     If the <code>trust_chain</code> header parameter
+     is also present,
+     the Trust Anchor for both Trust Chains SHOULD be the same.
+     Inclusion of both Trust Chains enables achieving
+     the Federation Integrity and Metadata Integrity properties,
+     as defined in <span>[<a href="#App-Fed-Linkage" class="cite xref">App-Fed-Linkage</a>]</span>.
+     Use of this header parameter is OPTIONAL.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -6709,7 +6752,7 @@ Host: openid.sunet.se
             The resolve response JWT MUST return the Trust Chain
      from the subject to the Trust Anchor
      in its <code>trust_chain</code> parameter,
-            sorted as shown in <a href="#trust_chain" class="auto internal xref">Section 4</a>.<a href="#section-8.3.2-4" class="pilcrow">¶</a></p>
+            sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.<a href="#section-8.3.2-4" class="pilcrow">¶</a></p>
 <p id="section-8.3.2-5">
             The resolve response MAY also return the Trust Chain
             from its issuer to the Trust Anchor
@@ -6779,7 +6822,7 @@ Host: openid.sunet.se
                 REQUIRED. Array containing the sequence of Entity Statements
                 that compose the Trust Chain, starting with the subject and
                 ending with the selected Trust Anchor,
-                sorted as shown in <a href="#trust_chain" class="auto internal xref">Section 4</a>.<a href="#section-8.3.2-9.12" class="pilcrow">¶</a>
+                sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.<a href="#section-8.3.2-9.12" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-8.3.2-9.13">trust_marks</dt>
@@ -8523,15 +8566,23 @@ Content-Type: application/json
               <dd class="break"></dd>
 <dt id="section-12.1.1.1-2.15">trust_chain</dt>
               <dd id="section-12.1.1.1-2.16" style="margin-left: 1.5em">
-<div id="trust_chain_param">
+<div id="trust_chain-param">
+                <p id="section-12.1.1.1-2.16.1">
                   OPTIONAL. Array containing the sequence of Entity Statements
                   that comprise the Trust Chain between the RP making
                   the request and the selected Trust Anchor,
-                  sorted as in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
+                  sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
                   When the RP and the OP are part of the same federation,
                   the RP MUST select a Trust Anchor that it has in common
                   with the OP; otherwise, the RP is free to select the
-                  Trust Anchor to use.<a href="#trust_chain_param" class="pilcrow">¶</a>
+                  Trust Anchor to use.<a href="#section-12.1.1.1-2.16.1" class="pilcrow">¶</a></p>
+<p id="section-12.1.1.1-2.16.2">
+
+   NOTE: The use of the
+   <code>trust_chain</code> header parameter,
+   as specified in <a href="#trust_chain_head_param" class="auto internal xref">Section 4.3</a>,
+   is RECOMMENDED over the use of this parameter;
+   it is retained for historical reasons.<a href="#section-12.1.1.1-2.16.2" class="pilcrow">¶</a></p>
 </div>
             </dd>
 <dd class="break"></dd>
@@ -8543,7 +8594,7 @@ Content-Type: application/json
               </h6>
 <p id="section-12.1.1.1.1-1">
               When the <code>trust_chain</code>
-              request parameter
+              header parameter
               is used in the authentication request, the Relying Party
               informs the OP of the sequence of Entity Statements
               that proves the trust relationship between it
@@ -8555,7 +8606,8 @@ Content-Type: application/json
               a <span><a href="#RFC9126" class="internal xref">Pushed Authorization Request</a> [<a href="#RFC9126" class="cite xref">RFC9126</a>]</span>
               for the request.<a href="#section-12.1.1.1.1-2" class="pilcrow">¶</a></p>
 <p id="section-12.1.1.1.1-3" class="keepWithNext">
-                The following is a non-normative example of the JWT Claims Set in a
+                The following is a non-normative example of the
+ header parameters and JWT Claims Set in a
                 Request Object:<a href="#section-12.1.1.1.1-3" class="pilcrow">¶</a></p>
 <span id="name-request-object-jwt-claims-s"></span><figure id="figure-49">
                 <div class="alignLeft art-text artwork" id="section-12.1.1.1.1-4.1">
@@ -8564,6 +8616,11 @@ Content-Type: application/json
   "typ": "oauth-authz-req+jwt",
   "alg": "RS256",
   "kid": "that-kid-which-points-to-a-jwk-contained-in-the-trust-chain",
+  "trust_chain" : [
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6Ims1NEhRdERpYnlHY3M5WldWTWZ2aUhm ...",
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ...",
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ..."
+  ]
 }
 .
 {
@@ -8577,12 +8634,7 @@ Content-Type: application/json
   "redirect_uri": "https://rp.example.com/authz_cb",
   "response_type": "code",
   "scope": "openid profile email address phone",
-  "state": "YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ",
-  "trust_chain" : [
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6Ims1NEhRdERpYnlHY3M5WldWTWZ2aUhm ...",
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ...",
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ..."
-  ]
+  "state": "YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ"
 }
 </pre>
 </div>
@@ -8631,6 +8683,18 @@ GET /authorize?
 <figcaption><a href="#figure-50" class="selfRef">Figure 50</a>:
 <a href="#name-authentication-request-usin" class="selfRef">Authentication Request Using Request Object</a>
                 </figcaption></figure>
+<p id="section-12.1.1.1.1-7">
+       When the <code>trust_chain</code> header parameter
+       is included,
+       the <code>peer_trust_chain</code> header parameter
+       MAY also be included to provide a Trust Chain between the OP
+       and the Trust Anchor the RP selected.
+       The Peer Trust Chain contains metadata and policy values
+       that the RP has chosen for the OP to use during the registration.
+       The Trust Anchors selected in both Trust Chains MUST be the same.
+       Inclusion of both Trust Chains enables achieving
+       the Federation Integrity and Metadata Integrity properties,
+       as defined in <span>[<a href="#App-Fed-Linkage" class="cite xref">App-Fed-Linkage</a>]</span>.<a href="#section-12.1.1.1.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="AuthzRequestProcessing">
@@ -8647,9 +8711,11 @@ GET /authorize?
                 client, then the OP SHOULD resolve the Trust Chains
                 related to the requestor.<a href="#section-12.1.1.1.2-1" class="pilcrow">¶</a></p>
 <p id="section-12.1.1.1.2-2">
-                An RP MAY present a Trust Chain related to itself to the OP in the Request Object using the
-                <code>trust_chain</code> request parameter
-         defined in <a href="#trust_chain_param" class="auto internal xref">Section 12.1.1.1</a>.
+                An RP MAY include a Trust Chain from itself
+ to the Trust Anchor that it selected
+ in the Request Object using the
+                <code>trust_chain</code> header parameter
+ defined in <a href="#trust_chain_head_param" class="auto internal xref">Section 4.3</a>.
                 If the OP does not have a valid registration for the RP or
                 its registration has expired, the OP MAY use the received
                 Trust Chain as a hint for which path to take from the
@@ -8670,26 +8736,37 @@ GET /authorize?
  In both cases, the OP MUST fully verify the Trust Chain
  including every Entity Statement contained in it.<a href="#section-12.1.1.1.2-3" class="pilcrow">¶</a></p>
 <p id="section-12.1.1.1.2-4">
+ The RP MAY likewise include a Trust Chain from the OP
+ to the Trust Anchor that the RP selected
+ in the Request Object using the
+                <code>peer_trust_chain</code> header parameter
+ defined in <a href="#peer_trust_chain_head_param" class="auto internal xref">Section 4.4</a>.
+ The OP SHOULD use the metadata and policy values
+ that the RP has chosen during the registration.
+ Inclusion of both Trust Chains enables achieving
+ the Federation Integrity and Metadata Integrity properties,
+ as defined in <span>[<a href="#App-Fed-Linkage" class="cite xref">App-Fed-Linkage</a>]</span>.<a href="#section-12.1.1.1.2-4" class="pilcrow">¶</a></p>
+<p id="section-12.1.1.1.2-5">
                 If the RP does not include the
                 <code>trust_chain</code>
-                request parameter in the Request Object,
+                header parameter in the Request Object,
  the OP for some reason decides not to use the provided Trust Chain,
                 or the OP does not support this feature, it then MUST
                 validate the possible Trust Chains, starting with the RP's Entity Configuration,
                 as described in <a href="#fetching-es" class="auto internal xref">Section 10.1</a>,
                 and resolve the RP metadata with Entity Type
-                <code>openid_relying_party</code>.<a href="#section-12.1.1.1.2-4" class="pilcrow">¶</a></p>
-<p id="section-12.1.1.1.2-5">
+                <code>openid_relying_party</code>.<a href="#section-12.1.1.1.2-5" class="pilcrow">¶</a></p>
+<p id="section-12.1.1.1.2-6">
                 The OP SHOULD furthermore verify that the Resolved Metadata of the RP
                 complies with the client metadata specification
-                <span><a href="#OpenID.Registration" class="internal xref">OpenID Connect Dynamic Client Registration 1.0</a> [<a href="#OpenID.Registration" class="cite xref">OpenID.Registration</a>]</span>.<a href="#section-12.1.1.1.2-5" class="pilcrow">¶</a></p>
-<p id="section-12.1.1.1.2-6">
+                <span><a href="#OpenID.Registration" class="internal xref">OpenID Connect Dynamic Client Registration 1.0</a> [<a href="#OpenID.Registration" class="cite xref">OpenID.Registration</a>]</span>.<a href="#section-12.1.1.1.2-6" class="pilcrow">¶</a></p>
+<p id="section-12.1.1.1.2-7">
                 Once the OP has the RP's metadata, it MUST verify that the client
                 was actually the one sending the Authentication Request by
                 verifying the signature of the Request Object using the key
                 material the client published in its metadata for the
                 <code>openid_relying_party</code> Entity Type.
- If the signature does not verify, the OP MUST reject the request.<a href="#section-12.1.1.1.2-6" class="pilcrow">¶</a></p>
+ If the signature does not verify, the OP MUST reject the request.<a href="#section-12.1.1.1.2-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -9016,45 +9093,79 @@ HTTP/1.1 302 Found
               <p id="section-12.2.1-2.4.1">
                   The RP MAY include its Entity Configuration
                   in a Trust Chain regarding itself.
-                  In that case, the Registration Request will contain an
+                  There are two ways to do this.
+   The first way is for the Registration Request to contain an
                   array with the sequence of
                   Entity Statements that compose the Trust Chain
                   between the RP that is making the request and the
                   selected Trust Anchor.
+   The second way is to use the
+   <code>trust_chain</code> header parameter,
+   as specified in <a href="#trust_chain_head_param" class="auto internal xref">Section 4.3</a>.<a href="#section-12.2.1-2.4.1" class="pilcrow">¶</a></p>
+<p id="section-12.2.1-2.4.2">
+
+   NOTE: The use of the
+   <code>trust_chain</code> header parameter
+   in the request JWT is RECOMMENDED over the first syntax;
+   it is retained for historical reasons.<a href="#section-12.2.1-2.4.2" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-12.2.1-2.5">
+              <p id="section-12.2.1-2.5.1">
                   The RP MUST include its
                   metadata in its Entity Configuration and use the
-                  <code>authority_hints</code> selected above.<a href="#section-12.2.1-2.4.1" class="pilcrow">¶</a></p>
-<p id="section-12.2.1-2.4.2">
+                  <code>authority_hints</code> selected above.<a href="#section-12.2.1-2.5.1" class="pilcrow">¶</a></p>
+<p id="section-12.2.1-2.5.2">
 
                   The RP SHOULD select its metadata parameters to comply with
                   the resolved OP metadata and thus ensure a successful
                   registration with the OP. Note that if the submitted RP
                   metadata is not compliant with the metadata of the OP, the
                   OP may choose to modify it to make it compliant
-                  rather than reject the request with an error response.<a href="#section-12.2.1-2.4.2" class="pilcrow">¶</a></p>
+                  rather than reject the request with an error response.<a href="#section-12.2.1-2.5.2" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-12.2.1-2.5">
-              <p id="section-12.2.1-2.5.1">
+            <li id="section-12.2.1-2.6">
+              <p id="section-12.2.1-2.6.1">
                   The Entity Configuration, or the entire Trust Chain,
                   is sent, using HTTP POST, to the
                   <code>federation_registration_endpoint</code>.
                   The Entity Configuration or Trust Chain is the entire POST body.
                   The RP MUST sign its Entity Configuration with a current
-                  Federation Entity Key in its possession.<a href="#section-12.2.1-2.5.1" class="pilcrow">¶</a></p>
+                  Federation Entity Key in its possession.<a href="#section-12.2.1-2.6.1" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-12.2.1-2.6">
-              <p id="section-12.2.1-2.6.1">
+            <li id="section-12.2.1-2.7">
+              <p id="section-12.2.1-2.7.1">
                   The content type of the Registration Request MUST be
                   <code>application/entity-statement+jwt</code>
-                  when it contains only the Entity Configuration of the
-                  requestor. Otherwise, when it contains the Trust Chain, the
+                  when it is the Entity Configuration of the requestor.
+                  Otherwise, when it is a Trust Chain, the
                   content type of the Registration Request MUST be
                   <code>application/trust-chain+json</code>.
                   The RP MAY include its Entity Configuration in a Trust Chain
                   that leads to the RP. In this case, the registration request
                   will contain an array consisting of the sequence of
                   statements that make up the Trust Chain between the RP and
-                  the Trust Anchor the RP selected.<a href="#section-12.2.1-2.6.1" class="pilcrow">¶</a></p>
+                  the Trust Anchor the RP selected.<a href="#section-12.2.1-2.7.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-12.2.1-2.8">
+              <p id="section-12.2.1-2.8.1">
+   The <code>trust_chain</code> header parameter
+   MAY be included to provide a Trust Chain between the RP
+   and the Trust Anchor the RP selected
+   when the request is the Entity Configuration of the RP.
+   This is equivalent to providing the Trust Chain as the request body.
+   When the <code>trust_chain</code> header parameter
+   is included,
+   the <code>peer_trust_chain</code> header parameter
+   MAY also be included to provide a Trust Chain between the OP
+   and the Trust Anchor the RP selected.
+   The Peer Trust Chain contains metadata and policy values
+   that the RP has chosen for the OP to use during the registration.
+   The <code>peer_trust_chain</code> header parameter
+   MUST NOT be used when the request body is a Trust Chain.
+   The Trust Anchors selected in both Trust Chains MUST be the same.
+   Inclusion of both Trust Chains enables achieving
+   the Federation Integrity and Metadata Integrity properties,
+   as defined in <span>[<a href="#App-Fed-Linkage" class="cite xref">App-Fed-Linkage</a>]</span>.<a href="#section-12.2.1-2.8.1" class="pilcrow">¶</a></p>
 </li>
           </ol>
 <p id="section-12.2.1-3">
@@ -9157,8 +9268,9 @@ HTTP/1.1 302 Found
 </li>
             <li id="section-12.2.2-2.3">
               <p id="section-12.2.2-2.3.1">
-                    If the request contains an Entity Configuration the OP
-                    MUST use it to complete the Federation Entity Discovery by
+                    If no Trust Chain is provided from the RP to the Trust Anchor
+     in the request, the OP MUST use the provided Entity Configuration
+     to complete the Federation Entity Discovery by
                     collecting and evaluating the Trust Chains that start with
                     the <code>authority_hints</code> in the
                     Entity Configuration of the RP. After validating at least
@@ -9169,51 +9281,81 @@ HTTP/1.1 302 Found
 </li>
             <li id="section-12.2.2-2.4">
               <p id="section-12.2.2-2.4.1">
-                    If the request contains a Trust Chain, the OP MAY evaluate
+                    If the request body is a Trust Chain, the OP MAY evaluate
                     the statements in the Trust Chain to save the HTTP calls
                     that are necessary to perform the Federation Entity Discovery,
                     especially if the RP included more than one
                     authority hint in its Entity Configuration. Otherwise, the
-                    OP MUST extract the RP Entity Configuration from the Trust Chain
-                    and proceed according to Step 2,
+                    OP MUST extract the RP's Entity Configuration from the Trust Chain
+                    and proceed according to Step 3,
      as if only an Entity Configuration was received.<a href="#section-12.2.2-2.4.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-12.2.2-2.5">
               <p id="section-12.2.2-2.5.1">
+     When a Trust Chain is provided using the
+     <code>trust_chain</code> header parameter
+     in the request's Entity Configuration,
+     the OP MAY likewise evaluate
+     the statements in the Trust Chain to save the HTTP calls
+     that are necessary to perform the Federation Entity Discovery.
+     Note that in this case, the RP's Entity Configuration
+     in the Trust Chain is only used to establish that
+     there is a path from the RP to the Trust Anchor;
+     it is the metadata, etc. in the request Entity Configuration,
+     which may be tailored by the RP for the OP,
+     that is used when processing the registration request.
+     If the provided Trust Chain is not used,
+     the OP MUST proceed according to Step 3,
+     using the request Entity Configuration.<a href="#section-12.2.2-2.5.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-12.2.2-2.6">
+              <p id="section-12.2.2-2.6.1">
+     If the request uses
+     the <code>peer_trust_chain</code> header parameter
+     to include a Trust Chain from the OP
+     to the Trust Anchor that the RP selected,
+     verify that it begins at the OP.
+     Furthermore, verify that it ends at the same Trust Anchor
+     as any provided Trust chain from the RP to the Trust Anchor.
+     The OP SHOULD use the metadata and policy values
+     that the RP has chosen during the registration.<a href="#section-12.2.2-2.6.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="section-12.2.2-2.7">
+              <p id="section-12.2.2-2.7.1">
                     At this point, if the OP finds that it already has an
                     existing client registration for the requesting RP, then
                     that registration MUST be invalidated. The precise time of
                     the invalidation is at the OP's discretion, as the OP may
                     want to ensure the completion of concurrent OpenID
                     authentication requests initiated by the RP while the
-                    registration request is being processed.<a href="#section-12.2.2-2.5.1" class="pilcrow">¶</a></p>
-<p id="section-12.2.2-2.5.2">
+                    registration request is being processed.<a href="#section-12.2.2-2.7.1" class="pilcrow">¶</a></p>
+<p id="section-12.2.2-2.7.2">
 
                     The OP MAY retain client credentials and key material from
                     the invalidated registration in order to verify past RP
                     signatures and perform other cryptographic operations on
-                    past RP data.<a href="#section-12.2.2-2.5.2" class="pilcrow">¶</a></p>
+                    past RP data.<a href="#section-12.2.2-2.7.2" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-12.2.2-2.6">
-              <p id="section-12.2.2-2.6.1">
+            <li id="section-12.2.2-2.8">
+              <p id="section-12.2.2-2.8.1">
                     The OP uses the Resolved Metadata for the RP to create a client
                     registration compliant with its own OP metadata and other
-                    applicable policies.<a href="#section-12.2.2-2.6.1" class="pilcrow">¶</a></p>
-<p id="section-12.2.2-2.6.2">
+                    applicable policies.<a href="#section-12.2.2-2.8.1" class="pilcrow">¶</a></p>
+<p id="section-12.2.2-2.8.2">
 
                     The OP MAY provision the RP with a
                     <code>client_id</code> other than the RP's
                     Entity Identifier. This enables Explicit Registration to be
                     implemented on top of the
                     <span><a href="#OpenID.Registration" class="internal xref">OpenID Connect Dynamic
-                    Client Registration 1.0</a> [<a href="#OpenID.Registration" class="cite xref">OpenID.Registration</a>]</span> endpoint of an OP.<a href="#section-12.2.2-2.6.2" class="pilcrow">¶</a></p>
-<p id="section-12.2.2-2.6.3">
+                    Client Registration 1.0</a> [<a href="#OpenID.Registration" class="cite xref">OpenID.Registration</a>]</span> endpoint of an OP.<a href="#section-12.2.2-2.8.2" class="pilcrow">¶</a></p>
+<p id="section-12.2.2-2.8.3">
 
                     If the RP is provisioned with a
                     <code>client_secret</code> it MUST NOT
                     expire before the expiration of the registration Entity Statement
-                    that will be returned to the RP.<a href="#section-12.2.2-2.6.3" class="pilcrow">¶</a></p>
-<p id="section-12.2.2-2.6.4">
+                    that will be returned to the RP.<a href="#section-12.2.2-2.8.3" class="pilcrow">¶</a></p>
+<p id="section-12.2.2-2.8.4">
 
                     The OP SHOULD NOT provision the RP with a
                     <code>registration_access_token</code> and a
@@ -9224,8 +9366,8 @@ HTTP/1.1 302 Found
                     <code>registration_access_token</code> for
                     some purpose, for example to let it independently check its
                     registered metadata, the token MUST NOT allow modification
-                    of the registration.<a href="#section-12.2.2-2.6.4" class="pilcrow">¶</a></p>
-<p id="section-12.2.2-2.6.5">
+                    of the registration.<a href="#section-12.2.2-2.8.4" class="pilcrow">¶</a></p>
+<p id="section-12.2.2-2.8.5">
 
                     The OP MAY modify the received RP metadata, for example by
                     substituting an invalid or unsupported parameter,
@@ -9237,13 +9379,13 @@ HTTP/1.1 302 Found
                     <code>invalid_client_metadata</code> or
                     <code>invalid_redirect_uri</code>, as
                     specified in Section 3.3 of
-                    <span>[<a href="#OpenID.Registration" class="cite xref">OpenID.Registration</a>]</span>.<a href="#section-12.2.2-2.6.5" class="pilcrow">¶</a></p>
+                    <span>[<a href="#OpenID.Registration" class="cite xref">OpenID.Registration</a>]</span>.<a href="#section-12.2.2-2.8.5" class="pilcrow">¶</a></p>
 </li>
-            <li id="section-12.2.2-2.7">
-              <p id="section-12.2.2-2.7.1">
+            <li id="section-12.2.2-2.9">
+              <p id="section-12.2.2-2.9.1">
                     The OP MUST assign an expiration time to the created
                     registration. This time MUST NOT exceed the expiration time
-                    of the Trust Chain that the OP selected to process the request.<a href="#section-12.2.2-2.7.1" class="pilcrow">¶</a></p>
+                    of the Trust Chain that the OP selected to process the request.<a href="#section-12.2.2-2.9.1" class="pilcrow">¶</a></p>
 </li>
           </ol>
 </section>
@@ -9338,14 +9480,20 @@ HTTP/1.1 302 Found
 </dd>
             <dd class="break"></dd>
 <dt id="section-12.2.3-8.13">trust_anchor</dt>
-            <dd style="margin-left: 1.5em" id="section-12.2.3-8.14">
+            <dd id="section-12.2.3-8.14" style="margin-left: 1.5em">
+<div id="trust_anchor-claim">
                     REQUIRED.
                     Its value MUST be the Entity Identifier of the Trust Anchor
-                    that the OP selected to process the Explicit Registration
-                    request. This claim is specific to Explicit Registration
-                    responses and is not a general Entity Statement claim.<a href="#section-12.2.3-8.14" class="pilcrow">¶</a>
-</dd>
-            <dd class="break"></dd>
+                    that the OP selected to process the Explicit Registration request.
+     If complete Trust Chains to the Trust Anchor selected by the RP
+     were provided in the request and/or by using the
+     <code>peer_trust_chain</code> header parameter,
+     this MUST match the Trust Anchors at the roots of those Trust Chains.
+     This claim is specific to Explicit Registration responses
+     and is not a general Entity Statement claim.<a href="#trust_anchor-claim" class="pilcrow">¶</a>
+</div>
+            </dd>
+<dd class="break"></dd>
 <dt id="section-12.2.3-8.15">authority_hints</dt>
             <dd style="margin-left: 1.5em" id="section-12.2.3-8.16">
                     REQUIRED.
@@ -9422,7 +9570,12 @@ HTTP/1.1 302 Found
               <p id="section-12.2.5-1.3.1">
                     The RP MUST verify that the
                     <code>trust_anchor</code> represents one
-                    of its own Trust Anchors.<a href="#section-12.2.5-1.3.1" class="pilcrow">¶</a></p>
+                    of its own Trust Anchors.
+     If complete Trust Chains to the Trust Anchor selected by the RP
+     were provided in the request and/or by using the
+     <code>peer_trust_chain</code> header parameter,
+     the RP MUST verify that this matches
+     the Trust Anchors at the root of those Trust Chains.<a href="#section-12.2.5-1.3.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-12.2.5-1.4">
               <p id="section-12.2.5-1.4.1">
@@ -11764,7 +11917,7 @@ HTTP/1.1 302 Found
 <a href="#section-20.5" class="section-number selfRef">20.5. </a><a href="#name-oauth-parameters-registrati" class="section-name selfRef">OAuth Parameters Registration</a>
         </h3>
 <p id="section-20.5-1">
-          This specification registers the following parameter name in the IANA "OAuth
+          This specification registers the following parameter in the IANA "OAuth
           Parameters" registry <span>[<a href="#IANA.OAuth.Parameters" class="cite xref">IANA.OAuth.Parameters</a>]</span> established
           by <span>[<a href="#RFC6749" class="cite xref">RFC6749</a>]</span>.<a href="#section-20.5-1" class="pilcrow">¶</a></p>
 <div id="ParameterContents">
@@ -11788,7 +11941,7 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-20.5.1-1.4">
               <p id="section-20.5.1-1.4.1">
-                Specification Document(s): <a href="#trust_chain_authz" class="auto internal xref">Section 12.1.1.1.1</a> of this specification<a href="#section-20.5.1-1.4.1" class="pilcrow">¶</a></p>
+                Specification Document(s): <a href="#trust_chain-param" class="auto internal xref">Section 12.1.1.1</a> of this specification<a href="#section-20.5.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -11801,7 +11954,7 @@ HTTP/1.1 302 Found
 <a href="#section-20.6" class="section-number selfRef">20.6. </a><a href="#name-json-web-signature-and-encr" class="section-name selfRef">JSON Web Signature and Encryption Header Parameters Registration</a>
         </h3>
 <p id="section-20.6-1">
-   This specification registers the following JWS header parameter in
+   This specification registers the following JWS header parameters in
    the IANA "JSON Web Signature and Encryption Header Parameters" registry <span>[<a href="#IANA.JOSE" class="cite xref">IANA.JOSE</a>]</span>
    established by <span>[<a href="#RFC7515" class="cite xref">RFC7515</a>]</span>.<a href="#section-20.6-1" class="pilcrow">¶</a></p>
 <div id="HeaderContents">
@@ -11829,7 +11982,30 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-20.6.1-1.5">
               <p id="section-20.6.1-1.5.1">
-                Specification Document(s): <a href="#trust_chain" class="auto internal xref">Section 4</a> of this specification<a href="#section-20.6.1-1.5.1" class="pilcrow">¶</a></p>
+                Specification Document(s): <a href="#trust_chain_head_param" class="auto internal xref">Section 4.3</a> of this specification<a href="#section-20.6.1-1.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<ul class="compact">
+<li class="compact" id="section-20.6.1-2.1">
+              <p id="section-20.6.1-2.1.1">
+                Header Parameter Name:
+                <code>peer_trust_chain</code><a href="#section-20.6.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.6.1-2.2">
+              <p id="section-20.6.1-2.2.1">
+                Header Parameter Description: OpenID Federation Peer Trust Chain<a href="#section-20.6.1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.6.1-2.3">
+              <p id="section-20.6.1-2.3.1">
+                Header Parameter Usage Location: JWS<a href="#section-20.6.1-2.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.6.1-2.4">
+              <p id="section-20.6.1-2.4.1">
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net<a href="#section-20.6.1-2.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="compact" id="section-20.6.1-2.5">
+              <p id="section-20.6.1-2.5.1">
+                Specification Document(s): <a href="#peer_trust_chain_head_param" class="auto internal xref">Section 4.4</a> of this specification<a href="#section-20.6.1-2.5.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -12171,7 +12347,7 @@ HTTP/1.1 302 Found
 </li>
             <li class="compact" id="section-20.7.1-18.4">
               <p id="section-20.7.1-18.4.1">
- Specification Document(s): <a href="#ExplicitRegOP" class="auto internal xref">Section 12.2.2</a> of this specification<a href="#section-20.7.1-18.4.1" class="pilcrow">¶</a></p>
+ Specification Document(s): <a href="#trust_anchor-claim" class="auto internal xref">Section 12.2.3</a> of this specification<a href="#section-20.7.1-18.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -12621,6 +12797,10 @@ HTTP/1.1 302 Found
 <a href="#section-21.2" class="section-number selfRef">21.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
+<dt id="App-Fed-Linkage">[App-Fed-Linkage]</dt>
+        <dd>
+<span class="refAuthor">Dzhuvinov, V.</span>, <span class="refTitle">"How to link an application protocol to an OpenID Federation 1.0 trust layer"</span>, <time datetime="2024-12-04" class="refDate">4 December 2024</time>, <span>&lt;<a href="https://connect2id.com/blog/how-to-link-an-app-protocol-to-an-openid-federation-trust-layer">https://connect2id.com/blog/how-to-link-an-app-protocol-to-an-openid-federation-trust-layer</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="FAPI">[FAPI]</dt>
         <dd>
 <span class="refAuthor">Sakimura, N.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">E. Jay</span>, <span class="refTitle">"Financial-grade API Security Profile 1.0 - Part 2: Advanced"</span>, <time datetime="2021-03-12" class="refDate">12 March 2021</time>, <span>&lt;<a href="https://openid.net/specs/openid-financial-api-part-2-1_0.html">https://openid.net/specs/openid-financial-api-part-2-1_0.html</a>&gt;</span>. </dd>
@@ -13956,7 +14136,16 @@ Host: op.umu.se
 </li>
         <li class="normal" id="appendix-C-3.8">
           <p id="appendix-C-3.8.1">
-     Added Discovery and Trust Chain Resolution Patterns considerations.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
+     Fixed #100: Define the <code>peer_trust_chain</code>
+     header parameter and use it in combination with the
+     <code>trust_chain</code> header parameter to provide
+     the Federation Integrity and Metadata Integrity properties.
+     This PR leaves the existing <code>trust_chain</code>
+     request parameter for Automatic Registration and
+     the existing Trust Chain-as-request-body syntax for Explicit Registration
+     in place for historical reasons, but defines that the use of
+     the <code>trust_chain</code> header parameter
+     is RECOMMENDED over either of those more ad-hoc methods.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
