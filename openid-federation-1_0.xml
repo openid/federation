@@ -635,7 +635,17 @@
               This claim MUST NOT be present in Entity Configurations
               of Trust Anchors with no Superiors.
             </t>
-                      <t hangText="trust_marks">
+            <t hangText="trust_anchor_hints" anchor="trust_anchor_hints">
+              <vspace/>
+              OPTIONAL. An array of strings representing
+              the Entity Identifiers of Trust Anchors
+              trusted by the Entity.
+              Its value MUST NOT be the empty array
+              <spanx style="verb">[]</spanx>.
+              This claim MUST NOT be present in Entity Configurations
+              of Trust Anchors with no Superiors.
+            </t>
+            <t hangText="trust_marks">
               <vspace/>
               OPTIONAL. An array of JSON objects, each representing
               a Trust Mark.
@@ -864,6 +874,12 @@
 		Implementations MAY also validate that the Entity is a Subordinate
 		of each Entity whose Entity Identifier is listed in the
 		<spanx style="verb">authority_hints</spanx> array.
+	      </t>
+	      <t>
+		If the <spanx style="verb">trust_anchor_hints</spanx> Claim is present,
+		the Entity Statement MUST be an Entity Configuration.
+		Verify that its value is syntactially correct,
+		as specified in <xref target="trust_anchor_hints"/>.
 	      </t>
 	      <t>
 		If the <spanx style="verb">metadata</spanx> Claim is present,
@@ -6265,6 +6281,12 @@ Content-Type: application/json
 	or possibly other Entity Type Identifiers defined for the specific
 	OAuth 2.0 profile being used.
       </t>
+      <t>
+	When using both methods, <spanx style="verb">trust_anchor_hints</spanx>
+	values can be used to determine Trust Anchors that the RP and OP share.
+	When building Trust Chains, RPs SHOULD choose a Trust Anchor
+	in common with the OP, when possible.
+      </t>
 
       <section title="Automatic Registration" anchor="automatic">
         <t>
@@ -9488,6 +9510,22 @@ HTTP/1.1 302 Found
 	  <t>
 	    <list style="symbols">
 	      <t>
+		Claim Name: <spanx style="verb">trust_anchor_hints</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Anchor Hints
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="entity-statement"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
 		Claim Name: <spanx style="verb">metadata_policy</spanx>
 	      </t>
 	      <t>
@@ -11420,7 +11458,7 @@ Host: op.umu.se
 	  <t>
 	    Fixed #243: Be explicit about what to do when server validation fails in automatic registration.
 	  </t>
-	  <t>
+	  </t>
 	    Fixed #100: Define the <spanx style="verb">peer_trust_chain</spanx>
 	    header parameter and use it in combination with the
 	    <spanx style="verb">trust_chain</spanx> header parameter to provide
@@ -11434,6 +11472,9 @@ Host: op.umu.se
 	  </t>
     <t>
     	Fixed #283: Provided better description of "crit" claim in IANA registration.
+    </t>
+    <t>
+	    Fixed #215: Added <spanx style="verb">trust_anchor_hints</spanx> Entity Configuration Claim.
     </t>
 	</list>
       </t>
