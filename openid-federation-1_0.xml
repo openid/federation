@@ -7063,22 +7063,35 @@ HTTP/1.1 302 Found
                     from among them as the one to proceed with.
                   </t>
                   <t>
-                    If the request contains a Trust Chain, the OP MAY evaluate
+                    If the request body is a Trust Chain, the OP MAY evaluate
                     the statements in the Trust Chain to save the HTTP calls
                     that are necessary to perform the Federation Entity Discovery,
                     especially if the RP included more than one
                     authority hint in its Entity Configuration. Otherwise, the
-                    OP MUST extract the RP Entity Configuration from the Trust Chain
-                    and proceed according to Step 2,
+                    OP MUST extract the RP's Entity Configuration from the Trust Chain
+                    and proceed according to Step 3,
 		    as if only an Entity Configuration was received.
-		    The same savings hold when the Trust Chain is provided using the
+		  </t>
+		  <t>
+		    When a Trust Chain is provided using the
 		    <spanx style="verb">trust_chain</spanx> header parameter
-		    defined in <xref target="trust_chain_head_param"/>.
-                  </t>
+		    in the request's Entity Configuration,
+		    the OP MAY likewise evaluate
+		    the statements in the Trust Chain to save the HTTP calls
+		    that are necessary to perform the Federation Entity Discovery.
+		    Note that in this case, the RP's Entity Configuration
+		    in the Trust Chain is only used to establish that
+		    there is a path from the RP to the Trust Anchor;
+		    it is the metadata, etc. in the request Entity Configuration,
+		    which may be tailored by the RP for the OP,
+		    that is used when processing the registration request.
+		    If the provided Trust Chain is not used,
+		    the OP MUST proceed according to Step 3,
+		    using the request Entity Configuration.
+		  </t>
 		  <t>
 		    If the request uses
 		    the <spanx style="verb">peer_trust_chain</spanx> header parameter
-		    defined in <xref target="peer_trust_chain_head_param"/>
 		    to include a Trust Chain from the OP
 		    to the Trust Anchor that the RP selected,
 		    verify that it begins at the OP.
