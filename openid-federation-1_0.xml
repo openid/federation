@@ -6506,6 +6506,19 @@ GET /authorize?
 
 ]]></artwork>
             </figure>
+	    <t>
+	      When the <spanx style="verb">trust_chain</spanx> header parameter
+	      is included,
+	      the <spanx style="verb">peer_trust_chain</spanx> header parameter
+	      MAY also be included to provide a Trust Chain between the OP
+	      and the Trust Anchor the RP selected.
+	      The Peer Trust Chain contains metadata and policy values
+	      that the RP has chosen for the OP to use during the registration.
+	      The Trust Anchors selected in both Trust Chains MUST be the same.
+	      Inclusion of both Trust Chains enables achieving
+	      the Federation Integrity and Metadata Integrity properties,
+	      as defined in <xref target="App-Fed-Linkage"/>.
+	    </t>
             </section>
 
             <section title="Processing the Authentication Request" anchor="AuthzRequestProcessing">
@@ -6551,6 +6564,8 @@ GET /authorize?
 		in the Request Object using the
                 <spanx style="verb">peer_trust_chain</spanx> header parameter
 		defined in <xref target="peer_trust_chain_head_param"/>.
+		The OP SHOULD use the metadata and policy values
+		that the RP has chosen during the registration.
 		Inclusion of both Trust Chains enables achieving
 		the Federation Integrity and Metadata Integrity properties,
 		as defined in <xref target="App-Fed-Linkage"/>.
@@ -6952,6 +6967,8 @@ HTTP/1.1 302 Found
 		  the <spanx style="verb">peer_trust_chain</spanx> header parameter
 		  MAY also be included to provide a Trust Chain between the OP
 		  and the Trust Anchor the RP selected.
+		  The Peer Trust Chain contains metadata and policy values
+		  that the RP has chosen for the OP to use during the registration.
 		  The <spanx style="verb">peer_trust_chain</spanx> header parameter
 		  MUST NOT be used when the request body is a Trust Chain.
 		  The Trust Anchors selected in both Trust Chains MUST be the same.
@@ -7097,6 +7114,8 @@ HTTP/1.1 302 Found
 		    verify that it begins at the OP.
 		    Furthermore, verify that it ends at the same Trust Anchor
 		    as any provided Trust chain from the RP to the Trust Anchor.
+		    The OP SHOULD use the metadata and policy values
+		    that the RP has chosen during the registration.
 		  </t>
                   <t>
                     At this point, if the OP finds that it already has an
