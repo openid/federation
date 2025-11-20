@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="18" month="November" year="2025"/>
+    <date day="19" month="November" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -504,9 +504,9 @@
 	  with its value being the Key ID of the signing key used.
 	</t>
         <t>
-          The claims in an Entity Statement are listed below.
+          The Claims in an Entity Statement are listed below.
           Applications and protocols utilizing Entity Statements MAY specify
-          and use additional claims.
+          and use additional Claims.
         </t>
           <section title="Claims that MUST or MAY appear in both Entity Configurations and Subordinate Statements"
                    anchor="common_claims">
@@ -549,7 +549,7 @@
 	      to sign Subordinate Statements about their Immediate Subordinates,
 	      and for other signatures made by Federation Entities,
 	      such as Trust Mark signatures.
-              This claim is only OPTIONAL for the Entity Statement returned
+              This Claim is only OPTIONAL for the Entity Statement returned
               from an OP when the client is doing Explicit Registration;
               in all other cases, it is REQUIRED.
               Every JWK in the JWK Set MUST have a unique <spanx style="verb">kid</spanx> (Key ID) value.
@@ -577,7 +577,7 @@
               <vspace blankLines="1" />
               When an Entity participates in a federation or federations with
               one or more Entity Types, its Entity Configuration MUST contain a
-              <spanx style="verb">metadata</spanx> claim with JSON object values
+              <spanx style="verb">metadata</spanx> Claim with JSON object values
               for each of the corresponding Entity Type Identifiers, even if the
               values are the empty JSON object <spanx style="verb">{}</spanx>
               (when the Entity Type has no associated metadata or Immediate
@@ -585,7 +585,7 @@
               <vspace blankLines="1"/>
               An Immediate Superior MAY provide selected or all metadata
               parameters for an Immediate Subordinate, by using the
-              <spanx style="verb">metadata</spanx> claim in a Subordinate
+              <spanx style="verb">metadata</spanx> Claim in a Subordinate
               Statement. When <spanx style="verb">metadata</spanx> is used in a
               Subordinate Statement, it applies only to those Entity Types that
               are present in the subject's Entity Configuration. Furthermore,
@@ -605,10 +605,10 @@
               <vspace/>
               OPTIONAL.
 	      Entity Statements require that
-	      the <spanx style="verb">crit</spanx> (critical) claim
+	      the <spanx style="verb">crit</spanx> (critical) Claim
 	      defined in <xref target="critClaim"/> be understood and processed.
-	      Claims in the Entity Statement whose claim names are in the array
-	      that is the value of this claim MUST be understood and processed.
+	      Claims in the Entity Statement whose Claim Names are in the array
+	      that is the value of this Claim MUST be understood and processed.
 	      Claims specified for use in Entity Statements by this specification
 	      MUST NOT be included in the list.
             </t>
@@ -625,14 +625,14 @@
               OPTIONAL. An array of strings representing
               the Entity Identifiers of Intermediate Entities or Trust Anchors
               that are Immediate Superiors of the Entity.
-              This claim is REQUIRED in Entity Configurations of
+              This Claim is REQUIRED in Entity Configurations of
               the Entities that have at least one Superior above them,
               such as Leaf and Intermediate Entities.
               Its value MUST contain the Entity Identifiers of
 	      its Immediate Superiors and
 	      MUST NOT be the empty array
               <spanx style="verb">[]</spanx>.
-              This claim MUST NOT be present in Entity Configurations
+              This Claim MUST NOT be present in Entity Configurations
               of Trust Anchors with no Superiors.
             </t>
             <t hangText="trust_anchor_hints" anchor="trust_anchor_hints">
@@ -642,7 +642,7 @@
               trusted by the Entity.
               Its value MUST NOT be the empty array
               <spanx style="verb">[]</spanx>.
-              This claim MUST NOT be present in Entity Configurations
+              This Claim MUST NOT be present in Entity Configurations
               of Trust Anchors with no Superiors.
             </t>
             <t hangText="trust_marks">
@@ -652,10 +652,10 @@
               <list style="hanging">
                 <t hangText="trust_mark_type">
                   REQUIRED. Identifier for the type of the Trust Mark.
-                  The value of this claim MUST be the same as the value of the
+                  The value of this Claim MUST be the same as the value of the
                   <spanx style="verb">trust_mark_type</spanx>
-                  claim contained in the Trust Mark JWT that is the value of the
-		  <spanx style="verb">trust_mark</spanx> claim in this object.
+                  Claim contained in the Trust Mark JWT that is the value of the
+		  <spanx style="verb">trust_mark</spanx> Claim in this object.
                 </t>
                 <t hangText="trust_mark">
                   REQUIRED. A signed JSON Web Token that represents a Trust Mark.
@@ -666,9 +666,9 @@
             <t hangText="trust_mark_issuers">
               <vspace/>
               OPTIONAL.
-              A Trust Anchor MAY use this claim to tell which combination of
+              A Trust Anchor MAY use this Claim to tell which combination of
               Trust Mark type identifiers and issuers are trusted by the federation.
-              This claim MUST be ignored if present in an Entity Configuration
+              This Claim MUST be ignored if present in an Entity Configuration
               for an Entity that is not a Trust Anchor.
               It is a JSON object with member names that are Trust Mark type identifiers and
               each corresponding value being an array of Entity Identifiers
@@ -683,8 +683,8 @@
               OPTIONAL.
               If a Federation Operator knows that a Trust Mark type identifier is owned
               by an Entity different from the Trust Mark Issuer, then that
-              knowledge MUST be expressed in this claim.
-              This claim MUST be ignored if present in an Entity Configuration
+              knowledge MUST be expressed in this Claim.
+              This Claim MUST be ignored if present in an Entity Configuration
               for an Entity that is not a Trust Anchor.
               It is a JSON object with member names that are Trust Mark type identifiers and
               each corresponding value being a JSON object with these members:
@@ -770,8 +770,8 @@
               OPTIONAL.  Its value MUST be the Entity Identifier of the Trust Anchor
                 that the OP selected to process the Explicit Registration request,
 		as specified in <xref target="trust_anchor-claim"/>.
-                This claim is specific to Explicit Registration responses and is not a
-                general Entity Statement claim.
+                This Claim is specific to Explicit Registration responses and is not a
+                general Entity Statement Claim.
             </t>
           </list>
         </section>
@@ -807,12 +807,12 @@
 		with a value that is a valid Entity Identifier.
 	      </t>
 	      <t>
-		When the <spanx style="verb">iss</spanx> (issuer) Claim value
-		matches the <spanx style="verb">sub</spanx> (subject) Claim value,
+		When the <spanx style="verb">iss</spanx> (issuer) Claim Value
+		matches the <spanx style="verb">sub</spanx> (subject) Claim Value,
 		then the Entity Statement is this Entity's Entity Configuration.
 		When they do not match, the Entity Statement is a Subordinate Statement.
 		When the Entity Statement is a Subordinate Statement,
-		the <spanx style="verb">iss</spanx> Claim value MUST match
+		the <spanx style="verb">iss</spanx> Claim Value MUST match
 		one of the values in the
 		<spanx style="verb">authority_hints</spanx> array
 		in the Entity Configuration for the Entity whose Entity Identifier
@@ -839,7 +839,7 @@
 		the Entity with the Issuer Identifer found in the Entity Statement's
 		<spanx style="verb">iss</spanx> (issuer) Claim.
 		When the <spanx style="verb">iss</spanx> and
-		<spanx style="verb">sub</spanx> Claim values match, this is
+		<spanx style="verb">sub</spanx> Claim Values match, this is
 		the Entity Statement being validated itself.
 		Otherwise, this can be obtained either from a Trust Chain or
 		by retrieving it as described in
@@ -860,10 +860,10 @@
 	      </t>
 	      <t>
 		If the <spanx style="verb">crit</spanx> Claim is present,
-		then each array element in this claim's value
-		MUST be a string representing an Entity Statement claim
+		then each array element in this Claim's value
+		MUST be a string representing an Entity Statement Claim
 		that is not defined by this specification
-		and that claim MUST be understood
+		and that Claim MUST be understood
 		and be able to be processed by the implementation.
 	      </t>
 	      <t>
@@ -896,7 +896,7 @@
 	      <t>
 		If the <spanx style="verb">metadata_policy_crit</spanx> Claim is present,
 		the Entity Statement be a Subordinate Statement.
-		Each array element in this claim's value
+		Each array element in this Claim's value
 		MUST be a string representing a Metadata Policy operator
 		that is not defined by this specification
 		and that operator MUST be understood
@@ -913,10 +913,10 @@
 		the Entity Statement MUST be an Entity Configuration.
 		Validate that the syntax of this Claim Value conforms to the
 		Claim definition.
-		In particular, for each element of the array that is the Claim value,
+		In particular, for each element of the array that is the Claim Value,
 		validate that there is a <spanx style="verb">trust_mark_type</spanx>
 		member whose value matches the
-		<spanx style="verb">trust_mark_type</spanx> Claim value in the
+		<spanx style="verb">trust_mark_type</spanx> Claim Value in the
 		Trust Mark JWT that is the value of the
 		<spanx style="verb">trust_mark</spanx> member.
 		Validating the syntax is separate from evaluating whether particular
@@ -927,14 +927,14 @@
 	      <t>
 		If the <spanx style="verb">trust_mark_issuers</spanx> Claim is present,
 		the Entity Statement MUST be an Entity Configuration.
-		Validate that its Claim value is a JSON object with
+		Validate that its Claim Value is a JSON object with
 		Trust Mark type identifiers as the member names and
 		arrays of Entity Identifiers as the values.
 	      </t>
 	      <t>
 		If the <spanx style="verb">trust_mark_owners</spanx> Claim is present,
 		the Entity Statement MUST be an Entity Configuration.
-		Validate that its Claim value is a JSON object with
+		Validate that its Claim Value is a JSON object with
 		Trust Mark type identifiers as the member names and
 		values that are JSON objects containing
 		a <spanx style="verb">sub</spanx> member with a value that is
@@ -945,7 +945,7 @@
 	      <t>
 		If the <spanx style="verb">source_endpoint</spanx> Claim is present,
 		the Entity Statement MUST be a Subordinate Statement.
-		Validate that its Claim value is a URL.
+		Validate that its Claim Value is a URL.
 		Implementations MAY also make a fetch call to the URL
 		to validate that this is the fetch endpoint
 		from which the Entity Statement was issued.
@@ -1060,7 +1060,7 @@
         <figure>
           <preamble>
             The following is a non-normative example of
-            a <spanx style="verb">trust_mark_owners</spanx> claim value:
+            a <spanx style="verb">trust_mark_owners</spanx> Claim Value:
           </preamble>
           <name>
             Example <spanx style="verb">trust_mark_owners</spanx> Claim Value
@@ -1090,7 +1090,7 @@
         <figure>
           <preamble>
             The following is a non-normative example of
-            a <spanx style="verb">trust_mark_issuers</spanx> claim value:
+            a <spanx style="verb">trust_mark_issuers</spanx> Claim Value:
           </preamble>
           <name>
             Example <spanx style="verb">trust_mark_issuers</spanx> Claim Value
@@ -1177,15 +1177,15 @@
 	      is signed using a key in ES[0]["jwks"].
 	    </t>
             <t>
-	      The <spanx style="verb">iss</spanx> claim in an Entity Statement
-	      is equal to the <spanx style="verb">sub</spanx> claim in the next.
+	      The <spanx style="verb">iss</spanx> Claim in an Entity Statement
+	      is equal to the <spanx style="verb">sub</spanx> Claim in the next.
 	      Restating this symbolically,
 	      for each j = 0,...,i-1,
 	      ES[j]["iss"] == ES[j+1]["sub"].
             </t>
             <t>
 	      An Entity Statement is signed using a key from
-	      the <spanx style="verb">jwks</spanx> claim in the next.
+	      the <spanx style="verb">jwks</spanx> Claim in the next.
 	      Restating this symbolically,
 	      for each j = 0,...,i-1,
 	      ES[j] is signed by a key in ES[j+1]["jwks"].
@@ -1393,7 +1393,7 @@
       <t>
 	As described in <xref target="entity-statement"/>,
 	Entity metadata is located in the <spanx style="verb">metadata</spanx>
-	claim of an Entity Statement, whose value is a JSON object.
+	Claim of an Entity Statement, whose value is a JSON object.
 	The member names of this object are Entity Type Identifiers,
 	as specified in <xref target="entity_types"/>.
 	The metadata data structure following each Entity Type Identifier is a JSON object;
@@ -1540,7 +1540,7 @@
 	</t>
 	<t>
 	  It is RECOMMENDED that each Federation Entity contain
-	  an <spanx style="verb">organization_name</spanx> claim,
+	  an <spanx style="verb">organization_name</spanx> Claim,
 	  as defined in <xref target="informational_metadata"/>.
 	</t>
         <figure>
@@ -1694,7 +1694,7 @@
               it MUST NOT contain a fragment component.
               If the OP supports Explicit Client
               Registration as described in <xref target="explicit"/>,
-              then this claim is REQUIRED.
+              then this Claim is REQUIRED.
             </t>
           </list>
         </t>
@@ -1796,7 +1796,7 @@
           The <spanx style="verb">issuer</spanx> parameter value
           in the <spanx style="verb">oauth_authorization_server</spanx> metadata MUST
           match the Federation Entity identifier
-          (the <spanx style="verb">iss</spanx> claim in the Entity Configuration).
+          (the <spanx style="verb">iss</spanx> Claim in the Entity Configuration).
         </t>
 
       </section>
@@ -1843,8 +1843,8 @@
 	    JWK Sets for an Entity Type of the Entity.
 	    Note that these keys are distinct from the Federation Entity Keys
 	    used to sign Entity Statements, which are in
-	    the <spanx style="verb">jwks</spanx> claim of the Entity Statement,
-	    and not within the <spanx style="verb">metadata</spanx> claim.
+	    the <spanx style="verb">jwks</spanx> Claim of the Entity Statement,
+	    and not within the <spanx style="verb">metadata</spanx> Claim.
 	    These extensions for JWK Sets MUST NOT be used in
 	    <spanx style="verb">federation_entity</spanx> Entity Type metadata.
 	  </t>
@@ -1878,7 +1878,7 @@
 		with its value being the Key ID of the signing key used.
 	      </t>
 	      <t>
-		The following claims are specified for use in the payload,
+		The following Claims are specified for use in the payload,
 		all of which except <spanx style="verb">keys</spanx>
 		are defined in <xref target="RFC7519"/>:
 		<list style="hanging">
@@ -1889,12 +1889,12 @@
 		  </t>
 		  <t hangText="iss">
 		    <vspace/>
-		    REQUIRED. The "iss" (issuer) claim identifies the principal
+		    REQUIRED. The "iss" (issuer) Claim identifies the principal
 		    that issued the JWT.
 		  </t>
 		  <t hangText="sub">
 		    <vspace/>
-		    REQUIRED. This claim identifies the owner of the keys.
+		    REQUIRED. This Claim identifies the owner of the keys.
 		    It SHOULD be the same as the issuer.
 		  </t>
 		  <t hangText="iat">
@@ -1905,19 +1905,19 @@
 		  </t>
 		  <t hangText="exp">
 		    <vspace/>
-		    OPTIONAL. Number. This claim identifies the time when the JWT is
+		    OPTIONAL. Number. This Claim identifies the time when the JWT is
 		    no longer valid. This is expressed as Seconds
         Since the Epoch, per <xref target="RFC7519"/>.
 		  </t>
 		</list>
-		More claims are defined in <xref target="RFC7519"/>; of
+		More Claims are defined in <xref target="RFC7519"/>; of
 		these, <spanx style="verb">aud</spanx> SHOULD NOT be used since
 		the issuer cannot know who the audience is.
 		<spanx style="verb">nbf</spanx> and <spanx style="verb">jti</spanx>
 		are not particularly useful in this context and SHOULD be omitted.
 	      </t>
 	      <t>
-		Additional claims MAY be defined and used in conjunction with the claims above.
+		Additional Claims MAY be defined and used in conjunction with the Claims above.
 
 		<figure>
 		  <preamble>
@@ -2208,9 +2208,9 @@
 
           <t>
             Metadata policies are expressed in the
-            <spanx style="verb">metadata_policy</spanx> claim of a Subordinate
+            <spanx style="verb">metadata_policy</spanx> Claim of a Subordinate
             Statement, as described in <xref target="entity-statement"/>. The
-            claim value is a JSON object that has a data structure consisting of
+            Claim Value is a JSON object that has a data structure consisting of
             three levels:
           </t>
 
@@ -2257,7 +2257,7 @@
           <t>
             Duplicate JSON object member names MUST NOT be present at any of
             the three levels of the <spanx style="verb">metadata_policy</spanx>
-            claim data structure.
+            Claim data structure.
           </t>
 
           <t>
@@ -2964,7 +2964,7 @@
               Implementations MUST ignore additional operators that are not
               understood, unless the operator name is included in the
               <spanx style="verb">metadata_policy_crit</spanx> Subordinate
-              Statement claim, in which case the operator MUST be understood
+              Statement Claim, in which case the operator MUST be understood
               and processed. If an additional operator listed in
               <spanx style="verb">metadata_policy_crit</spanx> is not understood
               or cannot be processed, then this MUST produce a policy error and
@@ -2994,7 +2994,7 @@
               <t>
                 The metadata policy for a Trust Chain is determined by the
                 sequence of the present <spanx style="verb">metadata_policy</spanx>
-                claims of the Subordinate Statements that make up the chain.
+                Claims of the Subordinate Statements that make up the chain.
               </t>
 
               <t>
@@ -3003,7 +3003,7 @@
                 <xref target="standard_metadata_policy_operators"/> that are
                 declared as critical. This is done by checking each Subordinate
                 Statement in the Trust Chain for the optional
-                <spanx style="verb">metadata_policy_crit</spanx> claim,
+                <spanx style="verb">metadata_policy_crit</spanx> Claim,
                 described in <xref target="entity-statement"/>, and collecting
                 any operator names that are found in it.
               </t>
@@ -3033,7 +3033,7 @@
               <t>
                 At each iteration step, the Subordinate Statement MUST be checked
                 for the presence of a <spanx style="verb">metadata_policy</spanx>
-                claim. The first encountered
+                Claim. The first encountered
                 <spanx style="verb">metadata_policy</spanx> MUST be validated as
                 described above, after which it becomes the current metadata
                 policy.
@@ -3041,7 +3041,7 @@
 
               <t>
                 If the iteration yields a next subordinate
-                <spanx style="verb">metadata_policy</spanx> claim, it MUST be
+                <spanx style="verb">metadata_policy</spanx> Claim, it MUST be
                 validated as described above, then merged into the current
                 metadata policy.
               </t>
@@ -3074,7 +3074,7 @@
                   <list style="symbols">
                     <t>
                       If the next subordinate
-                      <spanx style="verb">metadata_policy</spanx> claim contains
+                      <spanx style="verb">metadata_policy</spanx> Claim contains
                       a metadata policy for an Entity Type that is already
                       present in the current metadata policy, it MUST be merged
                       according to the rules of the next lower level (the
@@ -3082,7 +3082,7 @@
                     </t>
                     <t>
                       Entity Type metadata policies in the next subordinate
-                      <spanx style="verb">metadata_policy</spanx> claim that are
+                      <spanx style="verb">metadata_policy</spanx> Claim that are
                       not present in the current metadata policy MUST be copied
                       to it.
                     </t>
@@ -3138,7 +3138,7 @@
 
               <t>
                 If no further Subordinate Statements with a
-                <spanx style="verb">metadata_policy</spanx> claim are found, the
+                <spanx style="verb">metadata_policy</spanx> Claim are found, the
                 current metadata policy becomes the resolved one for the Trust Chain.
               </t>
 
@@ -3148,8 +3148,8 @@
 
               <t>
                 If the Subordinate Statement about the Trust Chain subject
-                contains a <spanx style="verb">metadata</spanx> claim, this MUST
-                first be applied, as described in the claim definition in
+                contains a <spanx style="verb">metadata</spanx> Claim, this MUST
+                first be applied, as described in the Claim definition in
                 <xref target="entity-statement"/>, and only then it can be
                 proceeded with applying the resolved metadata policy.
               </t>
@@ -3158,7 +3158,7 @@
                 If the process described in
                 <xref target="metadata_policy_resolution"/> found no Subordinate
                 Statements in the Trust Chain with a
-                <spanx style="verb">metadata_policy</spanx> claim, the metadata
+                <spanx style="verb">metadata_policy</spanx> Claim, the metadata
                 of the Trust Chain subject resolves simply to the
                 <spanx style="verb">metadata</spanx> found in its Entity
                 Configuration, with any <spanx style="verb">metadata</spanx>
@@ -3407,7 +3407,7 @@
 	<t>
       Trust Anchors and Intermediate Entities MAY define constraining criteria
       that apply to their Subordinates. They are expressed in the
-      <spanx style="verb">constraints</spanx> claim of a Subordinate Statement,
+      <spanx style="verb">constraints</spanx> Claim of a Subordinate Statement,
       as described in <xref target="entity-statement"/>.
 	</t>
     <t>
@@ -3467,7 +3467,7 @@
         </figure>
         <t>
           When resolving the Trust Chain for an Entity the
-          <spanx style="verb">constraints</spanx> claim in each Subordinate
+          <spanx style="verb">constraints</spanx> Claim in each Subordinate
           Statement MUST be independently applied, if present. If any of the
           <spanx style="verb">constraints</spanx> checks fails, the Trust Chain
           MUST be considered invalid.
@@ -3580,7 +3580,7 @@
             <t>
                 To apply the <spanx style="verb">allowed_entity_types</spanx> constraint during Trust Chain Resolution
                 all Entity Types that are not listed in the <spanx style="verb">allowed_entity_types</spanx> constraint
-                MUST be removed from the metadata claim in the subject's Entity Configuration.
+                MUST be removed from the metadata Claim in the subject's Entity Configuration.
                 The <spanx style="verb">federation_entity</spanx> Entity Type MUST NOT be removed.
                 This MUST be done before applying Metadata Policies but after applying Metadata from a direct
                 superior's Subordinate Statement.
@@ -3597,7 +3597,7 @@
 	  Trust Marks used by this specification are signed JWTs.
 	  Entity Statements MAY include Trust Marks,
 	  as described in the <spanx style="verb">trust_marks</spanx>
-	  claim definition in <xref target="entity-statement"/>.
+	  Claim definition in <xref target="entity-statement"/>.
         </t>
         <t>
           Trust Marks are signed by a federation-accredited
@@ -3605,7 +3605,7 @@
 	  All Trust Mark Issuers MUST be represented in the
           federation by an Entity. The fact that a Trust Mark Issuer is
           accepted by the federation is expressed in the
-          <spanx style="verb">trust_mark_issuers</spanx> claim of the
+          <spanx style="verb">trust_mark_issuers</spanx> Claim of the
           Trust Anchor's Entity Configuration.
         </t>
         <t>
@@ -3637,7 +3637,7 @@
 
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
           <t>
-	    The claims in a Trust Mark are:
+	    The Claims in a Trust Mark are:
 	  </t>
           <t>
             <list style="hanging">
@@ -3652,7 +3652,7 @@
               <t hangText="trust_mark_type">
                 <vspace/>
 		REQUIRED.
-		The <spanx style="verb">trust_mark_type</spanx> claim
+		The <spanx style="verb">trust_mark_type</spanx> Claim
 		defined in <xref target="trust_mark_claims"/> is used in Trust Marks
 		to provide the identifier of the type of the Trust Mark.
                 The Trust Mark type identifier
@@ -3687,7 +3687,7 @@
               <t hangText="ref">
                 <vspace/>
 		OPTIONAL.
-		The <spanx style="verb">ref</spanx> (reference) claim
+		The <spanx style="verb">ref</spanx> (reference) Claim
 		defined in <xref target="refClaim"/> is used in Trust Marks
 		to provide a URL referring to human-readable information
 		about the issuance of the Trust Mark.
@@ -3695,7 +3695,7 @@
               <t hangText="delegation">
                 <vspace/>
 		OPTIONAL.
-		The <spanx style="verb">delegation</spanx> claim
+		The <spanx style="verb">delegation</spanx> Claim
 		defined in <xref target="delegationClaim"/> is used in Trust Marks
 		to delegate the right to issue Trust Marks
 		with a particular identifier.
@@ -3705,7 +3705,7 @@
             </list>
           </t>
           <t>
-            Additional claims MAY be defined and used in conjunction with the claims above.
+            Additional Claims MAY be defined and used in conjunction with the Claims above.
           </t>
         </section>
 
@@ -3724,7 +3724,7 @@
           <t>
             The fact that a Trust Mark is issued by a Trust Mark Issuer that is
             not the owner of the Trust Mark is expressed by including
-	    a <spanx style="verb">delegation</spanx> claim in the Trust Mark,
+	    a <spanx style="verb">delegation</spanx> Claim in the Trust Mark,
 	    whose value is a Trust Mark delegation JWT,
 	    as defined in <xref target="delegation_jwt"/>.
           </t>
@@ -3733,7 +3733,7 @@
             certain Trust Mark type identifier may legitimately be issued by Trust Mark Issuers
             that are not the owner of the Trust Mark type identifier, then information
             about the owner and the Trust Mark type identifier MUST be included in the
-            <spanx style="verb">trust_mark_owners</spanx> claim in
+            <spanx style="verb">trust_mark_owners</spanx> Claim in
 	    the Trust Anchor's Entity Configuration.
           </t>
 
@@ -3759,7 +3759,7 @@
 	    with its value being the Key ID of the signing key used.
 	  </t>
           <t>
-            The claims in a Trust Mark delegation JWT are:
+            The Claims in a Trust Mark delegation JWT are:
           </t>
           <t>
             <list style="hanging">
@@ -3795,7 +3795,7 @@
             </list>
           </t>
 	  <t>
-	    Additional claims MAY be defined and used in conjunction with the claims above.
+	    Additional Claims MAY be defined and used in conjunction with the Claims above.
 	  </t>
 	  </section>
             <section title="Validating a Trust Mark Delegation" anchor="trust-mark-delegation-validation">
@@ -3833,7 +3833,7 @@
             </t>
             <t>The delegation's signature MUST validate using one of the Trust Mark Owner's keys
                 identified by the value of the header parameter <spanx style="verb">kid</spanx>.
-                The Trust Mark Owner's keys can be found in the <spanx style="verb">trust_mark_owners</spanx> claim in
+                The Trust Mark Owner's keys can be found in the <spanx style="verb">trust_mark_owners</spanx> Claim in
                 the Trust Anchor's Entity Configuration.
             </t>
         </list>
@@ -3870,7 +3870,7 @@
                 that is an acceptable JWS signing algorithm; it MUST NOT be <spanx style="verb">none</spanx>.
             </t>
             <t>The Entity Identifier of the Entity whose Entity Configuration contains the instance MUST
-                match the value of the claim <spanx style="verb">sub</spanx> in the Trust Mark.</t>
+                match the value of the Claim <spanx style="verb">sub</spanx> in the Trust Mark.</t>
             <t>The current time MUST be after the time represented by the <spanx style="verb">iat</spanx> (issued at) Claim
                 (possibly allowing for some small leeway to account for clock skew).</t>
             <t>The current time MUST be before the time represented by the <spanx style="verb">exp</spanx> (expiration) Claim
@@ -3879,11 +3879,11 @@
                 identified by the <spanx style="verb">kid</spanx> value.
             </t>
             <t>If the <spanx style="verb">trust_mark_type</spanx> of the instance appears in the
-                <spanx style="verb">trust_mark_owners</spanx> claim in the Trust Anchor's
+                <spanx style="verb">trust_mark_owners</spanx> Claim in the Trust Anchor's
                 Entity Configuration, then the instance MUST contain a
-                <spanx style="verb">delegation</spanx> claim.</t>
-            <t>If there is a <spanx style="verb">delegation</spanx> claim in the instance, the value of that
-            claim MUST be validated according to <xref target="trust-mark-delegation-validation"/>.</t>
+                <spanx style="verb">delegation</spanx> Claim.</t>
+            <t>If there is a <spanx style="verb">delegation</spanx> Claim in the instance, the value of that
+            Claim MUST be validated according to <xref target="trust-mark-delegation-validation"/>.</t>
         </list>
       </t>
 	  <t>
@@ -3902,7 +3902,7 @@
           <figure>
             <preamble>
               A non-normative example of a <spanx style="verb">trust_marks</spanx>
-	      claim in the JWT Claims Set for an Entity Configuration is:
+	      Claim in the JWT Claims Set for an Entity Configuration is:
             </preamble>
 	    <name>
 	      Trust Mark in an Entity Configuration JWT Claims Set
@@ -4081,12 +4081,12 @@
           <figure>
             <preamble>
               A non-normative example of a <spanx style="verb">trust_marks</spanx>
-	          claim in the JWT Claims Set for an Entity Configuration in which the
+	          Claim in the JWT Claims Set for an Entity Configuration in which the
               Trust Mark is issued by an Entity that issues Trust Marks on behalf of
               another Entity.
               The fact that a Trust Mark is issued by a Trust Mark Issuer that is not
               the owner of the Trust Mark is expressed by including a
-              <spanx style="verb">delegation</spanx> claim
+              <spanx style="verb">delegation</spanx> Claim
               in the Trust Mark, whose value is a signed JWT.
             </preamble>
 	    <name>
@@ -4120,7 +4120,7 @@
           <figure>
             <preamble>
               JWS Header Parameters for the Trust Mark delegation JWT in
-              the "delegation" claim above
+              the "delegation" Claim above
             </preamble>
 	    <name>
 	      Trust Mark delegation JWT JWS Header Parameters
@@ -4135,7 +4135,7 @@
           </figure>
 	  <figure>
 	    <preamble>
-	      JWT Claims Set of the Trust Mark delegation JWT in the "delegation" claim above
+	      JWT Claims Set of the Trust Mark delegation JWT in the "delegation" Claim above
 	    </preamble>
 	    <name>
 	      Trust Mark delegation JWT Claim Set
@@ -4646,14 +4646,14 @@ Host: openid.sunet.se
           </t>
 	  <t>
             The response SHOULD contain the
-            <spanx style="verb">aud</spanx> claim only
+            <spanx style="verb">aud</spanx> Claim only
             if the requesting party is authenticated,
 	    in which case, the value MUST be the Entity Identifier
 	    of the requesting party
 	    and MUST NOT include any other values.
           </t>
           <t>
-	    The claims in a resolve response are:
+	    The Claims in a resolve response are:
 	  </t>
           <t>
             <list style="hanging">
@@ -4708,7 +4708,7 @@ Host: openid.sunet.se
           </t>
 
           <t>
-            Additional claims MAY be defined and used in conjunction with the claims above.
+            Additional Claims MAY be defined and used in conjunction with the Claims above.
           </t>
           <t>
             An error response
@@ -4881,7 +4881,7 @@ trust_mark=eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6 ...
 	  </t>
           <t>
 	    The JWT Claims Set of the Trust Mark Status JWT
-	    is a JSON object containing the following claims:
+	    is a JSON object containing the following Claims:
           </t>
           <t>
             <list style="hanging">
@@ -4932,7 +4932,7 @@ trust_mark=eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6 ...
 	    </list>
 	  </t>
 	  <t>
-	    Additional Trust Mark Status claims MAY be defined and used
+	    Additional Trust Mark Status Claims MAY be defined and used
 	    in addition to the one above.
 	  </t>
 
@@ -5288,7 +5288,7 @@ Host: trust-anchor.example.com
 	    with its value being the Key ID of the signing key used.
 	  </t>
 	  <t>
-            The claims in a historical keys JWT are:
+            The Claims in a historical keys JWT are:
           </t>
           <t>
             <list style="hanging">
@@ -5310,7 +5310,7 @@ Host: trust-anchor.example.com
 
                 <t>
                   JWKs in the <spanx style="verb">keys</spanx>
-                  claim use the following parameters:
+                  Claim use the following parameters:
                 </t>
 
                 <t>
@@ -5346,7 +5346,7 @@ Host: trust-anchor.example.com
                           REQUIRED. Time when the key was revoked
                           or must be considered revoked,
                           using the time format defined for the
-                          <spanx style="verb">iat</spanx> claim in
+                          <spanx style="verb">iat</spanx> Claim in
                       <xref target="RFC7519"/>.
                         </t>
 
@@ -5371,11 +5371,11 @@ Host: trust-anchor.example.com
             </list>
           </t>
 	  <t>
-	    Additional claims MAY be defined and used in conjunction with the claims above.
+	    Additional Claims MAY be defined and used in conjunction with the Claims above.
 	  </t>
 
 	  <t>
-	    JWKs in the <spanx style="verb">keys</spanx> claim MAY also contain the
+	    JWKs in the <spanx style="verb">keys</spanx> Claim MAY also contain the
 	    <spanx style="verb">nbf</spanx> parameter.  For use in Historical Keys,
 	    <spanx style="verb">iat</spanx> and <spanx style="verb">exp</spanx>
 	    are sufficient to establish the key lifetime,
@@ -5390,7 +5390,7 @@ Host: trust-anchor.example.com
                 <vspace/>
 		OPTIONAL. Time before which the key is not valid,
 		using the time format defined for the
-		<spanx style="verb">nbf</spanx> claim in
+		<spanx style="verb">nbf</spanx> Claim in
 		<xref target="RFC7519"/>.
 	      </t>
 	    </list>
@@ -5529,10 +5529,10 @@ Host: trust-anchor.example.com
             requests and responses.
             For example, an Entity Statement issued for a Leaf
             MAY also include the
-            <spanx style="verb">jwks</spanx> claim for the Leaf's Entity Types,
+            <spanx style="verb">jwks</spanx> Claim for the Leaf's Entity Types,
 	    in its
             <spanx style="verb">metadata</spanx> or
-            <spanx style="verb">metadata_policy</spanx> claims.
+            <spanx style="verb">metadata_policy</spanx> Claims.
 	  </t>
             <t>
               A simple example: In the following Trust Chain, the
@@ -5549,7 +5549,7 @@ Host: trust-anchor.example.com
                 </t>
                 <t>
                   a Subordinate Statement about the RP published by Organization A,
-                  with the claim <spanx style="verb">jwks</spanx> contained in
+                  with the Claim <spanx style="verb">jwks</spanx> contained in
                   <spanx style="verb">metadata</spanx> or
                   <spanx style="verb">metadata_policy</spanx> attesting the
                   Leaf's OpenID Connect RP <spanx style="verb">jwks</spanx>, and
@@ -6077,7 +6077,7 @@ Content-Type: application/json
               For each Entity Statement ES[j], where j = 0,..,i:
               <list style="symbols">
                 <t>
-                  Verify that the statement contains all the required claims.
+                  Verify that the statement contains all the required Claims.
                 </t>
                 <t>
                   Verify that <spanx style="verb">iat</spanx> has a value in the
@@ -6657,7 +6657,7 @@ GET /authorize?
 		  as described in Section 2.2 of <xref target="RFC8705"/>.
                   In this case, the self-signed certificate MUST be present as
                   the value of an <spanx style="verb">x5c</spanx>
-                  claim for a key in the Entity's RP JWK Set.
+                  Claim for a key in the Entity's RP JWK Set.
 		  In this case, the server MUST omit certificate chain validation.
                 </t>
               </list>
@@ -6732,7 +6732,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                     If mTLS is used with a self-signed certificate,
 		    then the certificate MUST be present as the
                     value of an <spanx style="verb">x5c</spanx>
-                    claim for a key in the JWK Set containing the RP's keys.
+                    Claim for a key in the JWK Set containing the RP's keys.
                   </t>
                 </list>
               </t>
@@ -7003,7 +7003,7 @@ HTTP/1.1 302 Found
               </list>
             </t>
             <t>
-              The following Entity Configuration claims are specified for use
+              The following Entity Configuration Claims are specified for use
               in Explicit Registration requests. Their full descriptions are in
               <xref target="entity-statement"/>.
             </t>
@@ -7035,8 +7035,8 @@ HTTP/1.1 302 Found
                   <vspace/>
                   REQUIRED.
                   Its value MUST be the Entity Identifier of the OP.
-		  This claim is only used in Explicit Registration requests,
-		  since it is not a general Entity Statement claim.
+		  This Claim is only used in Explicit Registration requests,
+		  since it is not a general Entity Statement Claim.
                 </t>
                 <t hangText="authority_hints">
                   <vspace/>
@@ -7088,7 +7088,7 @@ HTTP/1.1 302 Found
 		    The OP MUST validate the RP's explicit registration request JWT.
 		    All the normal Entity Statement validation rules apply.
 		    In addition, if the <spanx style="verb">aud</spanx> (audience)
-		    claim value is not the Entity Identifier of the OP,
+		    Claim Value is not the Entity Identifier of the OP,
 		    then the request MUST be rejected.
 		  </t>
                   <t>
@@ -7216,14 +7216,14 @@ HTTP/1.1 302 Found
 		  </t>
 		  <t>
                     The OP MUST set the <spanx style="verb">trust_anchor</spanx>
-                    claim of the Entity Statement to the Trust Anchor it
+                    Claim of the Entity Statement to the Trust Anchor it
                     selected to process the request. The
-                    <spanx style="verb">authority_hints</spanx> claim MUST be
+                    <spanx style="verb">authority_hints</spanx> Claim MUST be
                     set to the RP's Immediate Superior in the
                     selected Trust Chain.
 		  </t>
 		  <t>
-                    The OP MUST set the <spanx style="verb">exp</spanx> claim
+                    The OP MUST set the <spanx style="verb">exp</spanx> Claim
                     to the expiration time of the created registration. The OP
                     MAY choose to invalidate the registration before that, as
                     explained in <xref target="AfterExplicitReg"/>.
@@ -7231,7 +7231,7 @@ HTTP/1.1 302 Found
 		  <t>
                     The OP MUST express the client registration it created for
                     the RP by means of the <spanx style="verb">metadata</spanx>
-                    claim, by placing the metadata parameters under the
+                    Claim, by placing the metadata parameters under the
 		    <spanx style="verb">openid_relying_party</spanx>
 		    Entity Type Identifier.
 		    The parameters MUST include the
@@ -7253,7 +7253,7 @@ HTTP/1.1 302 Found
                     current Federation Entity Key in its possession.
                   </t>
               <t>
-		The following Entity Statement claims
+		The following Entity Statement Claims
 		are used in Explicit Registration responses,
 		as specified in <xref target="entity-statement"/>:
               </t>
@@ -7284,7 +7284,7 @@ HTTP/1.1 302 Found
                     <vspace/>
                     OPTIONAL.
 		    If present, it MUST be a verbatim copy of the
-		    <spanx style="verb">jwks</spanx> Entity Statement claim
+		    <spanx style="verb">jwks</spanx> Entity Statement Claim
                     from the received Entity Configuration of the RP.
 		    Note that this is distinct from the identically named RP metadata parameter.
                   </t>
@@ -7293,8 +7293,8 @@ HTTP/1.1 302 Found
                     REQUIRED.
                     Its value MUST be the RP's Entity Identifier
 		    and MUST NOT include any other values.
-		    This claim is used in Explicit Registration responses
-		    but is not a general Entity Statement claim.
+		    This Claim is used in Explicit Registration responses
+		    but is not a general Entity Statement Claim.
                   </t>
                   <t hangText="trust_anchor" anchor="trust_anchor-claim">
                     <vspace/>
@@ -7305,8 +7305,8 @@ HTTP/1.1 302 Found
 		    were provided in the request and/or by using the
 		    <spanx style="verb">peer_trust_chain</spanx> header parameter,
 		    this MUST match the Trust Anchors at the roots of those Trust Chains.
-		    This claim is specific to Explicit Registration responses
-		    and is not a general Entity Statement claim.
+		    This Claim is specific to Explicit Registration responses
+		    and is not a general Entity Statement Claim.
                   </t>
                   <t hangText="authority_hints">
                     <vspace/>
@@ -7325,7 +7325,7 @@ HTTP/1.1 302 Found
                   <t hangText="crit">
                     <vspace/>
                     OPTIONAL.
-		    Set of claims that MUST be understood and processed,
+		    Set of Claims that MUST be understood and processed,
 		    as specified in <xref target="entity-statement"/>.
                   </t>
                 </list>
@@ -7362,14 +7362,14 @@ HTTP/1.1 302 Found
 
                     The RP MUST ensure the signing Federation Entity Key used
                     by the OP is present in the
-                    <spanx style="verb">jwks</spanx> claim of the Subordinate Statement
+                    <spanx style="verb">jwks</spanx> Claim of the Subordinate Statement
                     issued by the OP's Immediate Superior
                     in a Trust Chain that the RP successfully resolved for the
                     OP when it prepared the Explicit Registration request.
                   </t>
 		  <t>
 		    The RP MUST verify that the <spanx style="verb">aud</spanx> (audience)
-		    claim value is its Entity Identifier.
+		    Claim Value is its Entity Identifier.
 		  </t>
                   <t>
                     The RP MUST verify that the
@@ -7386,12 +7386,12 @@ HTTP/1.1 302 Found
                     <spanx style="verb">authority_hints</spanx> it specified in
                     the Explicit Registration request leads to the Trust Anchor
                     that the OP set in the
-                    <spanx style="verb">trust_anchor</spanx> claim.
+                    <spanx style="verb">trust_anchor</spanx> Claim.
                   </t>
                   <t>
                     The RP MUST first ensure that the information it was registered with
                     at the OP contains the same set of entity_types as the request does.
-                    After having collected a Trust Chain using the response claim
+                    After having collected a Trust Chain using the response Claim
                     <spanx style="verb">trust_anchor</spanx> as the
                     Entity Identifier for the Trust Anchor and
                     <spanx style="verb">authority_hints</spanx> as starting points
@@ -7414,7 +7414,7 @@ HTTP/1.1 302 Found
 
         <section title="After an Explicit Client Registration" anchor="AfterExplicitReg">
           <t>
-            An RP can utilize the <spanx style="verb">exp</spanx> claim of the
+            An RP can utilize the <spanx style="verb">exp</spanx> Claim of the
             registration Entity Statement to devise a suitable strategy for
             renewing its client registration. RP implementers should note that
             if the OP expiration of the <spanx style="verb">client_id</spanx>
@@ -7528,86 +7528,86 @@ HTTP/1.1 302 Found
 
     <section anchor="GeneralPurposeClaims" title="General-Purpose JWT Claims">
       <t>
-	This section defines general-purpose JWT claims designed to be used
+	This section defines general-purpose JWT Claims designed to be used
 	by many different JWT profiles.
 	They are also used in specific kinds of JWTs defined by this specification.
       </t>
 
       <section anchor="jwksClaim" title='"jwks" (JSON Web Key Set) Claim'>
 	<t>
-	  The <spanx style="verb">jwks</spanx> (JSON Web Key Set) claim
+	  The <spanx style="verb">jwks</spanx> (JSON Web Key Set) Claim
 	  value is a JWK Set, as defined in <xref target="RFC7517"/>.
 	  It is used to convey a set of cryptographic keys.
-	  Use of this claim is OPTIONAL.
+	  Use of this Claim is OPTIONAL.
 	</t>
 	<t>
-	  For instance, the <spanx style="verb">jwks</spanx> (JSON Web Key Set) claim
+	  For instance, the <spanx style="verb">jwks</spanx> (JSON Web Key Set) Claim
 	  might be used to represent a set of signing keys for an application.
-	  This claim is used in this specification in <xref target="entity-statement"/>
+	  This Claim is used in this specification in <xref target="entity-statement"/>
 	  to represent the public keys used to sign the Entity Statement.
 	</t>
       </section>
 
       <section anchor="metadataClaim" title='"metadata" Claim'>
 	<t>
-	  The <spanx style="verb">metadata</spanx> claim
+	  The <spanx style="verb">metadata</spanx> Claim
 	  is used for conveying metadata pertaining to the JWT.
 	  Its value is a JSON object.
 	  The details of the metadata contained are application-specific.
-	  Use of this claim is OPTIONAL.
+	  Use of this Claim is OPTIONAL.
 	</t>
 	<t>
-	  For instance, the <spanx style="verb">metadata</spanx> claim
+	  For instance, the <spanx style="verb">metadata</spanx> Claim
 	  might be used to represent a set of endpoint URLs
 	  and algorithm identifiers in an API description.
-	  This claim is used in this specification in <xref target="entity-statement"/>
+	  This Claim is used in this specification in <xref target="entity-statement"/>
 	  to represent metadata about the Entity.
 	</t>
       </section>
 
       <section anchor="constraintsClaim" title='"constraints" Claim'>
 	<t>
-	  The <spanx style="verb">constraints</spanx> claim
+	  The <spanx style="verb">constraints</spanx> Claim
 	  is used for conveying constraints pertaining to the JWT.
 	  Its value is a JSON object.
 	  The details of the constraints contained are application-specific.
-	  Use of this claim is OPTIONAL.
+	  Use of this Claim is OPTIONAL.
 	</t>
 	<t>
-	  For instance, the <spanx style="verb">constraints</spanx> claim
+	  For instance, the <spanx style="verb">constraints</spanx> Claim
 	  might be used to impose material thickness limits for a physical object.
-	  This claim is used in this specification in <xref target="entity-statement"/>
+	  This Claim is used in this specification in <xref target="entity-statement"/>
 	  to represent constraints on the Trust Chain for the Entity.
 	</t>
       </section>
 
       <section anchor="critClaim" title='"crit" (Critical) Claim'>
 	<t>
-	  The <spanx style="verb">crit</spanx> (critical) claim
-	  indicates that extensions to the set of claims
+	  The <spanx style="verb">crit</spanx> (critical) Claim
+	  indicates that extensions to the set of Claims
 	  specified for use in this type of JWT are being used
 	  that MUST be understood and processed.
 	  It is used in the same way that
 	  the <spanx style="verb">crit</spanx> header parameter
 	  is used for extension JOSE header parameters
 	  that MUST be understood and processed.
-	  Its value is an array listing the claim names
+	  Its value is an array listing the Claim Names
 	  present in the JWT that use those extensions.
-	  If any of the listed claims are not
+	  If any of the listed Claims are not
 	  understood and supported by the recipient, then the JWT is invalid.
-	  Producers MUST NOT include claim names already
+	  Producers MUST NOT include Claim Names already
 	  specified for use in this type of JWT,
 	  duplicate names, or
-	  names that do not occur as claim names in the JWT
+	  names that do not occur as Claim Names in the JWT
 	  in the <spanx style="verb">crit</spanx> list.
 	  Producers MUST NOT use the empty array
 	  <spanx style="verb">[]</spanx>
 	  as the <spanx style="verb">crit</spanx> value.
-	  Use of this claim is OPTIONAL.
+	  Use of this Claim is OPTIONAL.
 	</t>
 	<t>
-	  This claim is used in this specification in <xref target="entity-statement"/>
-	  to identify claims not defined by this specification
+	  This Claim is used in this specification in <xref target="entity-statement"/>
+	  to identify Claims not defined by this specification
 	  that MUST be understood and processed
 	  when used in Entity Statements.
 	</t>
@@ -7615,7 +7615,7 @@ HTTP/1.1 302 Found
 
       <section anchor="refClaim" title='"ref" (Reference) Claim'>
 	<t>
-	  The <spanx style="verb">ref</spanx> (reference) claim
+	  The <spanx style="verb">ref</spanx> (reference) Claim
 	  is used for conveying the URI for a resource pertaining to the JWT.
 	  It plays a similar role in a JWT as
 	  the <spanx style="verb">href</spanx> property does in HTML.
@@ -7623,13 +7623,13 @@ HTTP/1.1 302 Found
 	  is generally application specific.
 	  The <spanx style="verb">ref</spanx> value is a case-sensitive string
 	  containing a URI value.
-	  Use of this claim is OPTIONAL.
+	  Use of this Claim is OPTIONAL.
 	</t>
 	<t>
 	  For instance, a JWT referring to a contract between two parties might use
-	  the <spanx style="verb">ref</spanx> (reference) claim
+	  the <spanx style="verb">ref</spanx> (reference) Claim
 	  to refer to a resource at which the contract terms can be read.
-	  This claim is used in this specification in <xref target="trust_mark_claims"/>
+	  This Claim is used in this specification in <xref target="trust_mark_claims"/>
 	  to provide a URL referring to human-readable information
 	  about the issuance of the Trust Mark.
 	</t>
@@ -7637,17 +7637,17 @@ HTTP/1.1 302 Found
 
       <section anchor="delegationClaim" title='"delegation" Claim'>
 	<t>
-	  The <spanx style="verb">delegation</spanx> claim expresses that
-	  authority is being delegated to the party referenced in the claim value.
+	  The <spanx style="verb">delegation</spanx> Claim expresses that
+	  authority is being delegated to the party referenced in the Claim Value.
 	  The <spanx style="verb">delegation</spanx> value is a case-sensitive string
 	  containing a StringOrURI value.
-	  Use of this claim is OPTIONAL.
+	  Use of this Claim is OPTIONAL.
 	</t>
 	<t>
-	  For instance, the <spanx style="verb">delegation</spanx> claim
+	  For instance, the <spanx style="verb">delegation</spanx> Claim
 	  might be used to express that the referenced party may sign
 	  a legal document on behalf of the subject.
-	  This claim is used in this specification in <xref target="trust_mark_claims"/>
+	  This Claim is used in this specification in <xref target="trust_mark_claims"/>
 	  to represent delegation of the right to issue Trust Marks
 	  with a particular identifier.
 	</t>
@@ -7655,15 +7655,15 @@ HTTP/1.1 302 Found
 
       <section anchor="logo_uriClaim" title='"logo_uri" (Logo URI) Claim'>
 	<t>
-	  The <spanx style="verb">logo_uri</spanx> claim
+	  The <spanx style="verb">logo_uri</spanx> Claim
 	  value is a URI that references a logo pertaining to the JWT.
-	  Use of this claim is OPTIONAL.
+	  Use of this Claim is OPTIONAL.
 	</t>
 	<t>
-	  For instance, the <spanx style="verb">logo_uri</spanx> claim
+	  For instance, the <spanx style="verb">logo_uri</spanx> Claim
 	  might be used to represent the location from which to retrieve
 	  the logo of an organization to display in a user interface.
-	  This claim is used in this specification in <xref target="trust_mark_claims"/>
+	  This Claim is used in this specification in <xref target="trust_mark_claims"/>
 	  to convey a URL that references a logo for the Entity.
 	</t>
       </section>
@@ -7671,7 +7671,7 @@ HTTP/1.1 302 Found
 
     <section anchor="ClaimsLanguagesAndScripts" title="Claims Languages and Scripts">
       <t>
-        Human-readable claim values and claim values that reference human-readable values
+        Human-readable Claim Values and Claim Values that reference human-readable values
         MAY be represented in multiple languages and scripts.
         This specification enables such representations in the same manner as defined in
         Section 5.2 of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
@@ -7788,8 +7788,8 @@ HTTP/1.1 302 Found
 	Processing some OpenID Federation messages requires comparing
 	values in the messages to other values.
 	For example, the Entity Identifier in
-	an <spanx style="verb">iss</spanx> claim might be compared to
-	the Entity Identifier in a <spanx style="verb">sub</spanx> claim.
+	an <spanx style="verb">iss</spanx> Claim might be compared to
+	the Entity Identifier in a <spanx style="verb">sub</spanx> Claim.
 	Comparing Unicode <xref target="UNICODE"/> strings,
 	however, has significant security implications.
       </t>
@@ -8068,7 +8068,7 @@ HTTP/1.1 302 Found
                 <t hangText="Validating Trust Marks in the Context of Validating an Entity Statement">
                     <vspace/>
                     According to the text on Entity Statement Validation in <xref target="ESValidation"/>, validating a
-                    Trust Mark is confined to validating the syntax of the claim value,
+                    Trust Mark is confined to validating the syntax of the Claim Value,
                     including that the <spanx style="verb">trust_mark_type</spanx> value is consistent.
                 </t>
                 <t hangText="Validating a Specific Trust Mark">
@@ -9372,7 +9372,7 @@ HTTP/1.1 302 Found
 
       <section anchor="ClaimsRegistry" title="JSON Web Token Claims Registration">
 	<t>
-	  This specification registers the following claims in
+	  This specification registers the following Claims in
 	  the IANA "JSON Web Token Claims" registry <xref target="IANA.JWT.Claims"/>
 	  established by <xref target="RFC7519"/>.
 	</t>
@@ -9433,7 +9433,7 @@ HTTP/1.1 302 Found
 		Claim Name: <spanx style="verb">crit</spanx>
 	      </t>
 	      <t>
-		Claim Description: List of claims in this JWT defined by extensions to this kind of JWT that MUST be understood and processed
+		Claim Description: List of Claims in this JWT defined by extensions to this kind of JWT that MUST be understood and processed
 	      </t>
 	      <t>
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
@@ -11458,7 +11458,7 @@ Host: op.umu.se
 	  <t>
 	    Fixed #243: Be explicit about what to do when server validation fails in automatic registration.
 	  </t>
-	  </t>
+	  <t>
 	    Fixed #100: Define the <spanx style="verb">peer_trust_chain</spanx>
 	    header parameter and use it in combination with the
 	    <spanx style="verb">trust_chain</spanx> header parameter to provide
@@ -11470,17 +11470,19 @@ Host: op.umu.se
 	    the <spanx style="verb">trust_chain</spanx> header parameter
 	    is RECOMMENDED over either of those more ad-hoc methods.
 	  </t>
-    <t>
-    	Fixed #283: Provided better description of "crit" claim in IANA registration.
-    </t>
-    <t>
+	  <t>
+	    Fixed #283: Provided better description of "crit" Claim in IANA registration.
+	  </t>
+	  <t>
 	    Fixed #215: Added <spanx style="verb">trust_anchor_hints</spanx> Entity Configuration Claim.
-    </t>
+	  </t>
+	  <t>
+	    Fixed #275: Uppercased "Claim", "Claim Name", and "Claim Value".
+	  </t>
 	</list>
       </t>
 
       <t>
-
 	-44
 	<list style="symbols">
 	  <t>
