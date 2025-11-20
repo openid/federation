@@ -508,8 +508,9 @@
           Applications and protocols utilizing Entity Statements MAY specify
           and use additional Claims.
         </t>
-          <section title="Claims that MUST or MAY appear in both Entity Configurations and Subordinate Statements"
-                   anchor="common_claims">
+
+	<section title="Claims that MUST or MAY appear in both Entity Configurations and Subordinate Statements"
+		 anchor="common-claims">
 
         <t>
           <list style="hanging">
@@ -565,7 +566,7 @@
 	      <spanx style="verb">openid_relying_party</spanx>
 	      Entity Type Identifiers.)
             </t>
-                          <t hangText="metadata">
+	    <t hangText="metadata">
               <vspace/>
               OPTIONAL.
 	      JSON object that declares roles that the Entity plays -
@@ -601,7 +602,7 @@
               <spanx style="verb">metadata_policy</spanx>, as described in
               <xref target="metadata_policy_application"/>.
             </t>
-                          <t hangText="crit">
+	    <t hangText="crit">
               <vspace/>
               OPTIONAL.
 	      Entity Statements require that
@@ -615,11 +616,12 @@
 
           </list>
         </t>
-                        </section>
-          <section anchor="ec_specific"
-                   title="Claims that MUST or MAY appear in Entity Configurations but not Subordinate Statements">
-              <t>
-                  <list style="hanging">
+      </section>
+
+      <section anchor="ec-specific"
+	       title="Claims that MUST or MAY appear in Entity Configurations but not Subordinate Statements">
+	<t>
+	  <list style="hanging">
             <t hangText="authority_hints" anchor="authority_hints">
               <vspace/>
               OPTIONAL. An array of strings representing
@@ -703,13 +705,14 @@
               </list>
 	      Other members MAY also be defined and used.
             </t>
-              </list>
-              </t>
-               </section>
-          <section anchor="ss_specific"
-                   title="Claims that MUST or MAY appear in Subordinate Statements but not Entity Configurations">
-              <t>
-              <list style="hanging">
+	  </list>
+	</t>
+      </section>
+
+      <section anchor="ss-specific"
+	       title="Claims that MUST or MAY appear in Subordinate Statements but not Entity Configurations">
+	<t>
+	  <list style="hanging">
             <t hangText="constraints">
               <vspace/>
               OPTIONAL. JSON object that defines Trust Chain constraints, as
@@ -717,7 +720,7 @@
               Entity that is the subject of this Subordinate Statement as well
               as to all Entities that are Subordinate to it.
             </t>
-                              <t hangText="metadata_policy">
+	    <t hangText="metadata_policy">
               <vspace/>
               OPTIONAL. JSON object that defines a metadata policy, as described
               in <xref target="metadata_policy"/>. The metadata policy applies to the Entity
@@ -728,7 +731,7 @@
               the subject itself.
             </t>
 
-                              <t hangText="metadata_policy_crit">
+	    <t hangText="metadata_policy_crit">
               <vspace/>
               OPTIONAL.
               Array of strings specifying critical metadata policy operators
@@ -759,8 +762,9 @@
 	      the Entity Configuration of the issuer.
             </t>
 
-              </list></t>
-              </section>
+	  </list>
+	</t>
+      </section>
 
 	<section title="Claims Specific to Explicit Registration Responses"
 		 anchor="explicit-reg-response-specific">
@@ -1391,7 +1395,7 @@
 	that are applicable to each Entity Type.
       </t>
       <t>
-	As described in <xref target="entity-statement"/>,
+	As described in <xref target="common-claims"/>,
 	Entity metadata is located in the <spanx style="verb">metadata</spanx>
 	Claim of an Entity Statement, whose value is a JSON object.
 	The member names of this object are Entity Type Identifiers,
@@ -2209,7 +2213,7 @@
           <t>
             Metadata policies are expressed in the
             <spanx style="verb">metadata_policy</spanx> Claim of a Subordinate
-            Statement, as described in <xref target="entity-statement"/>. The
+            Statement, as described in <xref target="ss-specific"/>. The
             Claim Value is a JSON object that has a data structure consisting of
             three levels:
           </t>
@@ -3004,7 +3008,7 @@
                 declared as critical. This is done by checking each Subordinate
                 Statement in the Trust Chain for the optional
                 <spanx style="verb">metadata_policy_crit</spanx> Claim,
-                described in <xref target="entity-statement"/>, and collecting
+                described in <xref target="ss-specific"/>, and collecting
                 any operator names that are found in it.
               </t>
 
@@ -3150,7 +3154,7 @@
                 If the Subordinate Statement about the Trust Chain subject
                 contains a <spanx style="verb">metadata</spanx> Claim, this MUST
                 first be applied, as described in the Claim definition in
-                <xref target="entity-statement"/>, and only then it can be
+                <xref target="common-claims"/>, and only then it can be
                 proceeded with applying the resolved metadata policy.
               </t>
 
@@ -3408,9 +3412,9 @@
       Trust Anchors and Intermediate Entities MAY define constraining criteria
       that apply to their Subordinates. They are expressed in the
       <spanx style="verb">constraints</spanx> Claim of a Subordinate Statement,
-      as described in <xref target="entity-statement"/>.
+      as described in <xref target="ss-specific"/>.
 	</t>
-    <t>
+	<t>
 	  The following constraint parameters are defined:
 	</t>
         <t>
@@ -3597,7 +3601,7 @@
 	  Trust Marks used by this specification are signed JWTs.
 	  Entity Statements MAY include Trust Marks,
 	  as described in the <spanx style="verb">trust_marks</spanx>
-	  Claim definition in <xref target="entity-statement"/>.
+	  Claim definition in <xref target="ec-specific"/>.
         </t>
         <t>
           Trust Marks are signed by a federation-accredited
@@ -3653,7 +3657,7 @@
                 <vspace/>
 		REQUIRED.
 		The <spanx style="verb">trust_mark_type</spanx> Claim
-		defined in <xref target="trust_mark_claims"/> is used in Trust Marks
+		is used in Trust Marks
 		to provide the identifier of the type of the Trust Mark.
                 The Trust Mark type identifier
                 MUST be collision-resistant
@@ -4687,7 +4691,7 @@ Host: openid.sunet.se
                 REQUIRED. JSON object containing the resolved subject metadata,
                 according to the requested <spanx style="verb">type</spanx>
                 and expressed in the <spanx style="verb">metadata</spanx> format
-                defined in <xref target="entity-statement"/>.
+                defined in <xref target="common-claims"/>.
               </t>
               <t hangText="trust_chain">
                 <vspace/>
@@ -4699,7 +4703,7 @@ Host: openid.sunet.se
               <t hangText="trust_marks">
                 <vspace/>
                 OPTIONAL. Array of objects, each representing a Trust Mark,
-                as defined in <xref target="entity-statement"/>.
+                as defined in <xref target="ec-specific"/>.
 		Only valid Trust Marks that have been issued by Trust Mark
                 issuers trusted by the Trust Anchor to issue such Trust Marks
 		MAY appear in the resolver response.
@@ -5828,8 +5832,8 @@ Content-Type: application/json
       </section>
 
       <section anchor="ec-response" title="Federation Entity Configuration Response">
-        <t>The response is an Entity Configuration, as described in
-          <xref target="entity-statement"/>.
+        <t>
+	  The response is an Entity Configuration.
           If the Entity is an Intermediate Entity or a Trust Anchor, the
           response MUST contain metadata for a federation Entity
           (<spanx style="verb">federation_entity</spanx>).
@@ -7326,7 +7330,7 @@ HTTP/1.1 302 Found
                     <vspace/>
                     OPTIONAL.
 		    Set of Claims that MUST be understood and processed,
-		    as specified in <xref target="entity-statement"/>.
+		    as specified in <xref target="common-claims"/>.
                   </t>
                 </list>
               </t>
@@ -7543,7 +7547,7 @@ HTTP/1.1 302 Found
 	<t>
 	  For instance, the <spanx style="verb">jwks</spanx> (JSON Web Key Set) Claim
 	  might be used to represent a set of signing keys for an application.
-	  This Claim is used in this specification in <xref target="entity-statement"/>
+	  This Claim is used in this specification as specified in <xref target="common-claims"/>
 	  to represent the public keys used to sign the Entity Statement.
 	</t>
       </section>
@@ -7560,7 +7564,7 @@ HTTP/1.1 302 Found
 	  For instance, the <spanx style="verb">metadata</spanx> Claim
 	  might be used to represent a set of endpoint URLs
 	  and algorithm identifiers in an API description.
-	  This Claim is used in this specification in <xref target="entity-statement"/>
+	  This Claim is used in this specification as specified in <xref target="common-claims"/>
 	  to represent metadata about the Entity.
 	</t>
       </section>
@@ -7576,7 +7580,7 @@ HTTP/1.1 302 Found
 	<t>
 	  For instance, the <spanx style="verb">constraints</spanx> Claim
 	  might be used to impose material thickness limits for a physical object.
-	  This Claim is used in this specification in <xref target="entity-statement"/>
+	  This Claim is used in this specification as specified in <xref target="ss-specific"/>
 	  to represent constraints on the Trust Chain for the Entity.
 	</t>
       </section>
@@ -7606,7 +7610,7 @@ HTTP/1.1 302 Found
 	  Use of this Claim is OPTIONAL.
 	</t>
 	<t>
-	  This Claim is used in this specification in <xref target="entity-statement"/>
+	  This Claim is used in this specification as specified in <xref target="common-claims"/>
 	  to identify Claims not defined by this specification
 	  that MUST be understood and processed
 	  when used in Entity Statements.
@@ -7629,7 +7633,7 @@ HTTP/1.1 302 Found
 	  For instance, a JWT referring to a contract between two parties might use
 	  the <spanx style="verb">ref</spanx> (reference) Claim
 	  to refer to a resource at which the contract terms can be read.
-	  This Claim is used in this specification in <xref target="trust_mark_claims"/>
+	  This Claim is used in this specification as specified in <xref target="trust_mark_claims"/>
 	  to provide a URL referring to human-readable information
 	  about the issuance of the Trust Mark.
 	</t>
@@ -7647,7 +7651,7 @@ HTTP/1.1 302 Found
 	  For instance, the <spanx style="verb">delegation</spanx> Claim
 	  might be used to express that the referenced party may sign
 	  a legal document on behalf of the subject.
-	  This Claim is used in this specification in <xref target="trust_mark_claims"/>
+	  This Claim is used in this specification as specified in <xref target="trust_mark_claims"/>
 	  to represent delegation of the right to issue Trust Marks
 	  with a particular identifier.
 	</t>
@@ -7663,7 +7667,7 @@ HTTP/1.1 302 Found
 	  For instance, the <spanx style="verb">logo_uri</spanx> Claim
 	  might be used to represent the location from which to retrieve
 	  the logo of an organization to display in a user interface.
-	  This Claim is used in this specification in <xref target="trust_mark_claims"/>
+	  This Claim is used in this specification as specified in <xref target="trust_mark_claims"/>
 	  to convey a URL that references a logo for the Entity.
 	</t>
       </section>
@@ -9488,7 +9492,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): <xref target="entity-statement"/> of this specification
+		Specification Document(s): <xref target="ec-specific"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -9504,7 +9508,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): <xref target="entity-statement"/> of this specification
+		Specification Document(s): <xref target="ec-specific"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -9520,7 +9524,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): <xref target="entity-statement"/> of this specification
+		Specification Document(s): <xref target="ss-specific"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -9536,7 +9540,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): <xref target="entity-statement"/> of this specification
+		Specification Document(s): <xref target="ss-specific"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -9552,7 +9556,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): <xref target="entity-statement"/> of this specification
+		Specification Document(s): <xref target="ec-specific"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -9568,7 +9572,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): <xref target="entity-statement"/> of this specification
+		Specification Document(s): <xref target="ec-specific"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -9584,7 +9588,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): <xref target="entity-statement"/> of this specification
+		Specification Document(s): <xref target="ec-specific"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -9600,7 +9604,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): <xref target="entity-statement"/> of this specification
+		Specification Document(s): <xref target="ss-specific"/> of this specification
 	      </t>
 	    </list>
 	  </t>
