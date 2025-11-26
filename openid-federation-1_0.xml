@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="24" month="November" year="2025"/>
+    <date day="25" month="November" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -416,8 +416,9 @@
         the federation rooted at the Trust Anchor.
       </t>
       <t>
-        The chain that links the statements to one another is verified with
-        the signature of each statement, as described in <xref target="trust_chain"/>.
+        The Trust Chain that links the Entity Configurations to one another
+	is verified with the signature of each Entity Configuration,
+	as described in <xref target="trust_chain"/>.
       </t>
       <t>
         Once there is a verified Trust Chain, the federation policy is applied
@@ -1326,9 +1327,8 @@
          <t>
           The <spanx style="verb">trust_chain</spanx> JWS header parameter is a
           JSON array containing the sequence of Entity Statements
-          that proves the trust relationship between the subject of the JWT
-          and the selected Trust Anchor,
-	  sorted as specified in <xref target="trust_chain"/>.
+	  that comprise the Trust Chain between
+	  the Entity that is the subject of the JWT and the selected Trust Anchor.
 	  The subject of the JWT MUST be the Entity Identifier of the
 	  Entity at the beginning of the Trust Chain.
           The issuer of the JWT SHOULD select a Trust Anchor
@@ -1374,8 +1374,7 @@
 	    JSON array containing the sequence of Entity Statements
 	    that comprise the Trust Chain between
 	    an Entity that this Entity is establishing trust with
-	    and the selected Trust Anchor,
-	    sorted as specified in <xref target="trust_chain"/>.
+	    and the selected Trust Anchor.
 	    If the <spanx style="verb">trust_chain</spanx> header parameter
 	    is also present,
 	    the Trust Anchor for both Trust Chains SHOULD be the same.
@@ -4626,8 +4625,7 @@ Host: openid.sunet.se
           <t>
             The resolve response JWT MUST return the Trust Chain
 	    from the subject to the Trust Anchor
-	    in its <spanx style="verb">trust_chain</spanx> parameter,
-            sorted as specified in <xref target="trust_chain"/>.
+	    in its <spanx style="verb">trust_chain</spanx> parameter.
 	  </t>
           <t>
             The resolve response MAY also return the Trust Chain
@@ -4697,8 +4695,7 @@ Host: openid.sunet.se
                 <vspace/>
                 REQUIRED. Array containing the sequence of Entity Statements
                 that compose the Trust Chain, starting with the subject and
-                ending with the selected Trust Anchor,
-                sorted as specified in <xref target="trust_chain"/>.
+                ending with the selected Trust Anchor.
               </t>
               <t hangText="trust_marks">
                 <vspace/>
@@ -6422,8 +6419,7 @@ Content-Type: application/json
                   <vspace/>
                   OPTIONAL. Array containing the sequence of Entity Statements
                   that comprise the Trust Chain between the RP making
-                  the request and the selected Trust Anchor,
-                  sorted as specified in <xref target="trust_chain"/>.
+                  the request and the selected Trust Anchor.
                   When the RP and the OP are part of the same federation,
                   the RP MUST select a Trust Anchor that it has in common
                   with the OP; otherwise, the RP is free to select the
@@ -11418,7 +11414,8 @@ Host: op.umu.se
 	-46
 	<list style="symbols">
 	  <t>
-	    TBD
+	    Fixed #295: Removed unnecessary
+	    "sorted as specified in <xref target="trust_chain"/>" phrases.
 	  </t>
 	</list>
       </t>
