@@ -26,7 +26,7 @@
 
   <front>
     <title abbrev="OpenID Federation">OpenID Federation 1.0 -
-      draft 45
+      draft 46
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="10" month="November" year="2025"/>
+    <date day="24" month="November" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -508,12 +508,13 @@
 	  with its value being the Key ID of the signing key used.
 	</t>
         <t>
-          The claims in an Entity Statement are listed below.
+          The Claims in an Entity Statement are listed below.
           Applications and protocols utilizing Entity Statements MAY specify
-          and use additional claims.
+          and use additional Claims.
         </t>
-          <section title="Claims that MUST or MAY appear in both Entity Configurations and Subordinate Statements"
-                   anchor="common_claims">
+
+	<section title="Claims that MUST or MAY appear in both Entity Configurations and Subordinate Statements"
+		 anchor="common-claims">
 
         <t>
           <list style="hanging">
@@ -580,7 +581,7 @@
               <vspace blankLines="1" />
               When an Entity participates in a federation or federations with
               one or more Entity Types, its Entity Configuration MUST contain a
-              <spanx style="verb">metadata</spanx> claim with JSON object values
+              <spanx style="verb">metadata</spanx> Claim with JSON object values
               for each of the corresponding Entity Type Identifiers, even if the
               values are the empty JSON object <spanx style="verb">{}</spanx>
               (when the Entity Type has no associated metadata or Immediate
@@ -588,7 +589,7 @@
               <vspace blankLines="1"/>
               An Immediate Superior MAY provide selected or all metadata
               parameters for an Immediate Subordinate, by using the
-              <spanx style="verb">metadata</spanx> claim in a Subordinate
+              <spanx style="verb">metadata</spanx> Claim in a Subordinate
               Statement. When <spanx style="verb">metadata</spanx> is used in a
               Subordinate Statement, it applies only to those Entity Types that
               are present in the subject's Entity Configuration. Furthermore,
@@ -607,38 +608,51 @@
               This claim is REQUIRED for Explicit Registration Responses, as described in <xref target="cliregresp"/>,
               in which case it MUST contain the registered RP metadata.
             </t>
-                          <t hangText="crit">
+	    <t hangText="crit">
               <vspace/>
               OPTIONAL.
 	      Entity Statements require that
-	      the <spanx style="verb">crit</spanx> (critical) claim
+	      the <spanx style="verb">crit</spanx> (critical) Claim
 	      defined in <xref target="critClaim"/> be understood and processed.
-	      Claims in the Entity Statement whose claim names are in the array
-	      that is the value of this claim MUST be understood and processed.
+	      Claims in the Entity Statement whose Claim Names are in the array
+	      that is the value of this Claim MUST be understood and processed.
 	      Claims specified for use in Entity Statements by this specification
 	      MUST NOT be included in the list.
             </t>
 
           </list>
         </t>
-                        </section>
-          <section anchor="ec_specific"
-                   title="Claims that MUST or MAY appear in Entity Configurations but not in Subordinate Statements">
-              <t>
-                  <list style="hanging">
+      </section>
+
+      <section anchor="ec-specific"
+	       title="Claims that MUST or MAY appear in Entity Configurations but not Subordinate Statements">
+	<t>
+	  <list style="hanging">
             <t hangText="authority_hints" anchor="authority_hints">
               <vspace/>
-              OPTIONAL. An array of strings containing
-              the Entity Identifiers of Immediate Superiors (Trust Anchors or Intermediate Entities)
-              of the Entity which is subject of the Entity Configuration.
-              This claim is REQUIRED in Entity Configurations of
+              OPTIONAL. An array of strings representing
+              the Entity Identifiers of Intermediate Entities or Trust Anchors
+              that are Immediate Superiors of the Entity.
+              This Claim is REQUIRED in Entity Configurations of
               the Entities that have at least one Superior above them,
               such as Leaf and Intermediate Entities.
-              Its value MUST contain the Entity Identifiers of its Immediate Superiors and 
-              MUST NOT be the empty array <spanx style="verb">[]</spanx>.
-              This claim MUST NOT be present in Entity Configurations
+              Its value MUST contain the Entity Identifiers of
+	      its Immediate Superiors and
+	      MUST NOT be the empty array
+              <spanx style="verb">[]</spanx>.
+              This Claim MUST NOT be present in Entity Configurations
               of Trust Anchors with no Superiors. As described in <xref target="cliregresp"/>, this claim is REQUIRED
               in Explicit Registration Responses and its value MUST be a single-element array.
+            </t>
+            <t hangText="trust_anchor_hints" anchor="trust_anchor_hints">
+              <vspace/>
+              OPTIONAL. An array of strings representing
+              the Entity Identifiers of Trust Anchors
+              trusted by the Entity.
+              Its value MUST NOT be the empty array
+              <spanx style="verb">[]</spanx>.
+              This Claim MUST NOT be present in Entity Configurations
+              of Trust Anchors with no Superiors.
             </t>
             <t hangText="trust_marks">
               <vspace/>
@@ -647,7 +661,7 @@
               <list style="hanging">
                 <t hangText="trust_mark_type">
                   REQUIRED. Identifier for the type of the Trust Mark.
-                  The value of this claim MUST be the same as the value of the
+                  The value of this Claim MUST be the same as the value of the
                   <spanx style="verb">trust_mark_type</spanx>
                   claim contained in the Trust Mark JWT that is the value of the
 		              <spanx style="verb">trust_mark</spanx> claim in this object.
@@ -661,9 +675,9 @@
             <t hangText="trust_mark_issuers">
               <vspace/>
               OPTIONAL.
-              A Trust Anchor MAY use this claim to tell which combination of
+              A Trust Anchor MAY use this Claim to tell which combination of
               Trust Mark type identifiers and issuers are trusted by the federation.
-              This claim MUST be ignored if present in an Entity Configuration
+              This Claim MUST be ignored if present in an Entity Configuration
               for an Entity that is not a Trust Anchor.
               It is a JSON object with member names that are Trust Mark type identifiers and
               each corresponding value being an array of Entity Identifiers
@@ -678,8 +692,8 @@
               OPTIONAL.
               If a Federation Operator knows that a Trust Mark type identifier is owned
               by an Entity different from the Trust Mark Issuer, then that
-              knowledge MUST be expressed in this claim.
-              This claim MUST be ignored if present in an Entity Configuration
+              knowledge MUST be expressed in this Claim.
+              This Claim MUST be ignored if present in an Entity Configuration
               for an Entity that is not a Trust Anchor.
               It is a JSON object with member names that are Trust Mark type identifiers and
               each corresponding value being a JSON object with these members:
@@ -698,13 +712,14 @@
               </list>
 	      Other members MAY also be defined and used.
             </t>
-              </list>
-              </t>
-               </section>
-          <section anchor="ss_specific"
-                   title="Claims that MUST or MAY appear in Subordinate Statements but not Entity Configurations">
-              <t>
-              <list style="hanging">
+	  </list>
+	</t>
+      </section>
+
+      <section anchor="ss-specific"
+	       title="Claims that MUST or MAY appear in Subordinate Statements but not Entity Configurations">
+	<t>
+	  <list style="hanging">
             <t hangText="constraints">
               <vspace/>
               OPTIONAL. JSON object that defines Trust Chain constraints, as
@@ -712,7 +727,7 @@
               Entity that is the subject of this Subordinate Statement as well
               as to all Entities that are Subordinate to it.
             </t>
-                              <t hangText="metadata_policy">
+	    <t hangText="metadata_policy">
               <vspace/>
               OPTIONAL. JSON object that defines a metadata policy, as described
               in <xref target="metadata_policy"/>. The metadata policy applies to the Entity
@@ -723,7 +738,7 @@
               the subject itself.
             </t>
 
-                              <t hangText="metadata_policy_crit">
+	    <t hangText="metadata_policy_crit">
               <vspace/>
               OPTIONAL.
               Array of strings specifying critical metadata policy operators
@@ -754,16 +769,20 @@
 	      the Entity Configuration of the issuer.
             </t>
 
-              </list></t>
-              </section>
-        <section title="Claims Specific to Explicit Registration Responses">
-          <list style="hanging">
+	  </list>
+	</t>
+      </section>
+
+	<section title="Claims Specific to Explicit Registration Responses"
+		 anchor="explicit-reg-response-specific">
+	  <list style="hanging">
             <t hangText="trust_anchor">
               <vspace/>
               OPTIONAL.  Its value MUST be the Entity Identifier of the Trust Anchor
-                that the OP selected to process the Explicit Registration request.
-                This claim is specific to Explicit Registration responses and is not a
-                general Entity Statement claim.
+                that the OP selected to process the Explicit Registration request,
+		as specified in <xref target="trust_anchor-claim"/>.
+                This Claim is specific to Explicit Registration responses and is not a
+                general Entity Statement Claim.
             </t>
           </list>
         </section>
@@ -799,17 +818,17 @@
 		with a value that is a valid Entity Identifier.
 	      </t>
 	      <t>
-		When the <spanx style="verb">iss</spanx> (issuer) Claim value
-		matches the <spanx style="verb">sub</spanx> (subject) Claim value,
+		When the <spanx style="verb">iss</spanx> (issuer) Claim Value
+		matches the <spanx style="verb">sub</spanx> (subject) Claim Value,
 		then the Entity Statement is this Entity's Entity Configuration.
 		When they do not match, the Entity Statement is a Subordinate Statement.
 		When the Entity Statement is a Subordinate Statement,
-		the <spanx style="verb">iss</spanx> Claim value MUST match
+		the <spanx style="verb">iss</spanx> Claim Value MUST match
 		one of the values in the
 		<spanx style="verb">authority_hints</spanx> array
 		in the Entity Configuration for the Entity whose Entity Identifier
 		is the value of the <spanx style="verb">sub</spanx> Claim;
-		otherwise the Federation graph is not well-formed.
+		otherwise, the Federation graph is not well-formed.
 	      </t>
 	      <t>
 		The current time MUST be after the time represented by the
@@ -828,10 +847,10 @@
 	      </t>
 	      <t>
 		Obtain the Entity Configuration for the issuing Entity -
-		the Entity with the Issuer Identifer found in the Entity Statement's
+		the Entity with the Issuer Identifier found in the Entity Statement's
 		<spanx style="verb">iss</spanx> (issuer) Claim.
 		When the <spanx style="verb">iss</spanx> and
-		<spanx style="verb">sub</spanx> Claim values match, this is
+		<spanx style="verb">sub</spanx> Claim Values match, this is
 		the Entity Statement being validated itself.
 		Otherwise, this can be obtained either from a Trust Chain or
 		by retrieving it as described in
@@ -852,37 +871,43 @@
 	      </t>
 	      <t>
 		If the <spanx style="verb">crit</spanx> Claim is present,
-		then each array element in this claim's value
-		MUST be a string representing an Entity Statement claim
+		then each array element in this Claim's value
+		MUST be a string representing an Entity Statement Claim
 		that is not defined by this specification
-		and that claim MUST be understood
+		and that Claim MUST be understood
 		and be able to be processed by the implementation.
 	      </t>
 	      <t>
 		If the <spanx style="verb">authority_hints</spanx> Claim is present,
 		the Entity Statement MUST be an Entity Configuration.
-		Verify that its value is syntactially correct,
+		Verify that its value is syntactically correct,
 		as specified in <xref target="authority_hints"/>.
 		Implementations MAY also validate that the Entity is a Subordinate
 		of each Entity whose Entity Identifier is listed in the
 		<spanx style="verb">authority_hints</spanx> array.
 	      </t>
 	      <t>
+		If the <spanx style="verb">trust_anchor_hints</spanx> Claim is present,
+		the Entity Statement MUST be an Entity Configuration.
+		Verify that its value is syntactically correct,
+		as specified in <xref target="trust_anchor_hints"/>.
+	      </t>
+	      <t>
 		If the <spanx style="verb">metadata</spanx> Claim is present,
-		verify that its value is syntactially correct,
+		verify that its value is syntactically correct,
 		not using <spanx style="verb">null</spanx> as metadata values,
 		as specified in <xref target="metadata"/>.
 	      </t>
 	      <t>
 		If the <spanx style="verb">metadata_policy</spanx> Claim is present,
 		the Entity Statement be a Subordinate Statement.
-		Verify that its value is syntactially correct,
+		Verify that its value is syntactically correct,
 		as specified in <xref target="metadata_policy"/>.
 	      </t>
 	      <t>
 		If the <spanx style="verb">metadata_policy_crit</spanx> Claim is present,
 		the Entity Statement be a Subordinate Statement.
-		Each array element in this claim's value
+		Each array element in this Claim's value
 		MUST be a string representing a Metadata Policy operator
 		that is not defined by this specification
 		and that operator MUST be understood
@@ -899,10 +924,10 @@
 		the Entity Statement MUST be an Entity Configuration.
 		Validate that the syntax of this Claim Value conforms to the
 		Claim definition.
-		In particular, for each element of the array that is the Claim value,
+		In particular, for each element of the array that is the Claim Value,
 		validate that there is a <spanx style="verb">trust_mark_type</spanx>
 		member whose value matches the
-		<spanx style="verb">trust_mark_type</spanx> Claim value in the
+		<spanx style="verb">trust_mark_type</spanx> Claim Value in the
 		Trust Mark JWT that is the value of the
 		<spanx style="verb">trust_mark</spanx> member.
 		Validating the syntax is separate from evaluating whether particular
@@ -913,14 +938,14 @@
 	      <t>
 		If the <spanx style="verb">trust_mark_issuers</spanx> Claim is present,
 		the Entity Statement MUST be an Entity Configuration.
-		Validate that its Claim value is a JSON object with
+		Validate that its Claim Value is a JSON object with
 		Trust Mark type identifiers as the member names and
 		arrays of Entity Identifiers as the values.
 	      </t>
 	      <t>
 		If the <spanx style="verb">trust_mark_owners</spanx> Claim is present,
 		the Entity Statement MUST be an Entity Configuration.
-		Validate that its Claim value is a JSON object with
+		Validate that its Claim Value is a JSON object with
 		Trust Mark type identifiers as the member names and
 		values that are JSON objects containing
 		a <spanx style="verb">sub</spanx> member with a value that is
@@ -931,7 +956,7 @@
 	      <t>
 		If the <spanx style="verb">source_endpoint</spanx> Claim is present,
 		the Entity Statement MUST be a Subordinate Statement.
-		Validate that its Claim value is a URL.
+		Validate that its Claim Value is a URL.
 		Implementations MAY also make a fetch call to the URL
 		to validate that this is the fetch endpoint
 		from which the Entity Statement was issued.
@@ -947,7 +972,26 @@
 		information compatible with the configured Trust Anchor information
 		- especially the keys.
 		This Claim MUST NOT be present in Entity Statements that are not
-		Explicit Registration responses.
+		Explicit Registration responses
+		unless its use is otherwise specified in an extension being employed.
+	      </t>
+	      <t>
+		If the <spanx style="verb">trust_chain</spanx> header parameter is present,
+		validate that its value is a syntactically valid Trust Chain,
+		as specified in <xref target="trust_chain"/>.
+		The first entry in the Trust Chain
+		MUST be an Entity Configuration for this Entity.
+		Implementations SHOULD validate that the Entity Identifier
+		for the Trust Anchor at the end of the Trust Chain matches
+		one of the Trust Anchors configured for the deployment.
+	      </t>
+	      <t>
+		If the <spanx style="verb">peer_trust_chain</spanx> header parameter is present,
+		validate that its value is a syntactically valid Trust Chain,
+		as specified in <xref target="trust_chain"/>.
+		Implementations SHOULD validate that the Entity Identifier
+		for the Trust Anchor at the end of the Trust Chain matches
+		one of the Trust Anchors configured for the deployment.
 	      </t>
 	    </list>
 	  </t>
@@ -1027,7 +1071,7 @@
         <figure>
           <preamble>
             The following is a non-normative example of
-            a <spanx style="verb">trust_mark_owners</spanx> claim value:
+            a <spanx style="verb">trust_mark_owners</spanx> Claim Value:
           </preamble>
           <name>
             Example <spanx style="verb">trust_mark_owners</spanx> Claim Value
@@ -1057,7 +1101,7 @@
         <figure>
           <preamble>
             The following is a non-normative example of
-            a <spanx style="verb">trust_mark_issuers</spanx> claim value:
+            a <spanx style="verb">trust_mark_issuers</spanx> Claim Value:
           </preamble>
           <name>
             Example <spanx style="verb">trust_mark_issuers</spanx> Claim Value
@@ -1144,15 +1188,15 @@
 	      is signed using a key in ES[0]["jwks"].
 	    </t>
             <t>
-	      The <spanx style="verb">iss</spanx> claim in an Entity Statement
-	      is equal to the <spanx style="verb">sub</spanx> claim in the next.
+	      The <spanx style="verb">iss</spanx> Claim in an Entity Statement
+	      is equal to the <spanx style="verb">sub</spanx> Claim in the next.
 	      Restating this symbolically,
 	      for each j = 0,...,i-1,
 	      ES[j]["iss"] == ES[j+1]["sub"].
             </t>
             <t>
 	      An Entity Statement is signed using a key from
-	      the <spanx style="verb">jwks</spanx> claim in the next.
+	      the <spanx style="verb">jwks</spanx> Claim in the next.
 	      Restating this symbolically,
 	      for each j = 0,...,i-1,
 	      ES[j] is signed by a key in ES[j+1]["jwks"].
@@ -1288,26 +1332,21 @@
         <section title="Trust Chain Header Parameter" anchor="trust_chain_head_param">
          <t>
           The <spanx style="verb">trust_chain</spanx> JWS header parameter is a
-          JSON array containing the sequence of the statements
-          that proves the trust relationship between the issuer of the
-          <xref target="RFC7515">JWS</xref>
-          and the selected Trust Anchor, sorted as shown in <xref target="trust_chain"/>.
-          The Trust Chain contains the public key used to verify the
-          <xref target="RFC7515">JWS</xref>.
-          The issuer of the JWS SHOULD select the Trust Anchor that it has in common
-          with the audience of the JWS.
-	      Otherwise, the issuer is free to select a Trust Anchor.
+          JSON array containing the sequence of Entity Statements
+          that proves the trust relationship between the subject of the JWT
+          and the selected Trust Anchor,
+	  sorted as specified in <xref target="trust_chain"/>.
+	  The subject of the JWT MUST be the Entity Identifier of the
+	  Entity at the beginning of the Trust Chain.
+          The issuer of the JWT SHOULD select a Trust Anchor
+	  that the subject has in common with the audience of the JWT.
+	  Otherwise, the issuer is free to select the Trust Anchor to use.
           Most signed JWTs MAY include the
           <spanx style="verb">trust_chain</spanx> JWS header parameter,
           with a few exceptions.
           Entity Configurations and Subordinate Statements MUST NOT
           contain the <spanx style="verb">trust_chain</spanx> header parameter,
-          as they are integral components of a Trust Chain. Additionally,
-          the Authorization Signed Request Object SHOULD NOT contain the
-          <spanx style="verb">trust_chain</spanx> header parameter, because
-          the <spanx style="verb">trust_chain</spanx>
-          parameter is intended to be part of its JWS payload, as defined in
-          <xref target="trust_chain_param"/>.
+          as they are integral components of a Trust Chain.
           Use of this header parameter is OPTIONAL.
           </t>
 
@@ -1336,6 +1375,24 @@
 	  </figure>
         </section>
 
+	<section title="Peer Trust Chain Header Parameter" anchor="peer_trust_chain_head_param">
+	  <t>
+	    The <spanx style="verb">peer_trust_chain</spanx> JWS header parameter is a
+	    JSON array containing the sequence of Entity Statements
+	    that comprise the Trust Chain between
+	    an Entity that this Entity is establishing trust with
+	    and the selected Trust Anchor,
+	    sorted as specified in <xref target="trust_chain"/>.
+	    If the <spanx style="verb">trust_chain</spanx> header parameter
+	    is also present,
+	    the Trust Anchor for both Trust Chains SHOULD be the same.
+	    Inclusion of both Trust Chains enables achieving
+	    the Federation Integrity and Metadata Integrity properties,
+	    as defined in <xref target="App-Fed-Linkage"/>.
+	    Use of this header parameter is OPTIONAL.
+	  </t>
+	</section>
+
       </section>
 
     <section anchor="metadata" title="Metadata">
@@ -1345,9 +1402,9 @@
 	that are applicable to each Entity Type.
       </t>
       <t>
-	As described in <xref target="entity-statement"/>,
+	As described in <xref target="common-claims"/>,
 	Entity metadata is located in the <spanx style="verb">metadata</spanx>
-	claim of an Entity Statement, whose value is a JSON object.
+	Claim of an Entity Statement, whose value is a JSON object.
 	The member names of this object are Entity Type Identifiers,
 	as specified in <xref target="entity_types"/>.
 	The metadata data structure following each Entity Type Identifier is a JSON object;
@@ -1494,12 +1551,12 @@
 	</t>
 	<t>
 	  It is RECOMMENDED that each Federation Entity contain
-	  an <spanx style="verb">organization_name</spanx> claim,
+	  an <spanx style="verb">organization_name</spanx> Claim,
 	  as defined in <xref target="informational_metadata"/>.
 	</t>
         <figure>
 	  <preamble>
-	    The following is a non-normative example of the <spanx style="verb">federation_entity</spanx> Entity Type:
+	    The following is a non-normative example of metadata for the <spanx style="verb">federation_entity</spanx> Entity Type:
 	  </preamble>
           <name>
             Example of <spanx style="verb">federation_entity</spanx> Entity Type
@@ -1531,7 +1588,9 @@
           and in <xref target="common_metadata"/> are applicable,
 	  as well as additional parameters registered in the
 	  IANA "OAuth Dynamic Client Registration Metadata" registry
-	  <xref target="IANA.OAuth.Parameters"/>.
+	  <xref target="IANA.OAuth.Parameters"/>,
+	  excluding those parameters that are defined in the registry solely for use in
+	  registration responses (for example, <spanx style="verb">client_secret</spanx>).
         </t>
         <t>
           In addition, the following RP metadata parameter is defined:
@@ -1572,7 +1631,7 @@
             "authorization_code",
             "implicit"
           ],
-          "signed_jwks_uri":"https://openid.sunet.se/rp/signed_jwks.jose",
+          "signed_jwks_uri": "https://openid.sunet.se/rp/signed_jwks.jose",
           "jwks_uri": "https://openid.sunet.se/rp/jwks.json",
           "client_registration_types": ["automatic"]
         }
@@ -1646,7 +1705,7 @@
               it MUST NOT contain a fragment component.
               If the OP supports Explicit Client
               Registration as described in <xref target="explicit"/>,
-              then this claim is REQUIRED.
+              then this Claim is REQUIRED.
             </t>
           </list>
         </t>
@@ -1660,15 +1719,15 @@
           </name>
           <artwork><![CDATA[
 {
-   "iss":"https://op.umu.se",
-   "sub":"https://op.umu.se",
-   "exp":1568397247,
-   "iat":1568310847,
+   "iss": "https://op.umu.se",
+   "sub": "https://op.umu.se",
+   "exp": 1568397247,
+   "iat": 1568310847,
    "metadata":{
       "openid_provider":{
-         "issuer":"https://op.umu.se",
-         "signed_jwks_uri":"https://op.umu.se/openid/signed_jwks.jose",
-         "authorization_endpoint":"https://op.umu.se/openid/authorization",
+         "issuer": "https://op.umu.se",
+         "signed_jwks_uri": "https://op.umu.se/openid/signed_jwks.jose",
+         "authorization_endpoint": "https://op.umu.se/openid/authorization",
          "client_registration_types_supported":[
             "automatic",
             "explicit"
@@ -1682,8 +1741,8 @@
             "ES256",
             "RS256"
          ],
-         "logo_uri":"https://www.umu.se/img/umu-logo-left-neg-SE.svg",
-         "op_policy_uri":"https://www.umu.se/en/legal-information/",
+         "logo_uri": "https://www.umu.se/img/umu-logo-left-neg-SE.svg",
+         "op_policy_uri": "https://www.umu.se/en/legal-information/",
          "response_types_supported":[
             "code",
             "code id_token",
@@ -1693,15 +1752,15 @@
             "pairwise",
             "public"
          ],
-         "token_endpoint":"https://op.umu.se/openid/token",
-         "federation_registration_endpoint":"https://op.umu.se/openid/fedreg",
+         "token_endpoint": "https://op.umu.se/openid/token",
+         "federation_registration_endpoint": "https://op.umu.se/openid/fedreg",
          "token_endpoint_auth_methods_supported":[
             "client_secret_post",
             "client_secret_basic",
             "client_secret_jwt",
             "private_key_jwt"
          ],
-         "pushed_authorization_request_endpoint":"https://op.umu.se/openid/par",
+         "pushed_authorization_request_endpoint": "https://op.umu.se/openid/par",
          "request_object_signing_alg_values_supported": [
             "ES256",
             "RS256"
@@ -1718,10 +1777,10 @@
    "jwks":{
       "keys":[
          {
-            "e":"AQAB",
-            "kid":"dEEtRjlzY3djcENuT01wOGxrZlkxb3RIQVJlMTY0...",
-            "kty":"RSA",
-            "n":"x97YKqc9Cs-DNtFrQ7_vhXoH9bwkDWW6En2jJ044yH..."
+            "e": "AQAB",
+            "kid": "dEEtRjlzY3djcENuT01wOGxrZlkxb3RIQVJlMTY0...",
+            "kty": "RSA",
+            "n": "x97YKqc9Cs-DNtFrQ7_vhXoH9bwkDWW6En2jJ044yH..."
          }
       ]
    }
@@ -1748,7 +1807,7 @@
           The <spanx style="verb">issuer</spanx> parameter value
           in the <spanx style="verb">oauth_authorization_server</spanx> metadata MUST
           match the Federation Entity identifier
-          (the <spanx style="verb">iss</spanx> claim in the Entity Configuration).
+          (the <spanx style="verb">iss</spanx> Claim in the Entity Configuration).
         </t>
 
       </section>
@@ -1795,8 +1854,8 @@
 	    JWK Sets for an Entity Type of the Entity.
 	    Note that these keys are distinct from the Federation Entity Keys
 	    used to sign Entity Statements, which are in
-	    the <spanx style="verb">jwks</spanx> claim of the Entity Statement,
-	    and not within the <spanx style="verb">metadata</spanx> claim.
+	    the <spanx style="verb">jwks</spanx> Claim of the Entity Statement,
+	    and not within the <spanx style="verb">metadata</spanx> Claim.
 	    These extensions for JWK Sets MUST NOT be used in
 	    <spanx style="verb">federation_entity</spanx> Entity Type metadata.
 	  </t>
@@ -1830,7 +1889,7 @@
 		with its value being the Key ID of the signing key used.
 	      </t>
 	      <t>
-		The following claims are specified for use in the payload,
+		The following Claims are specified for use in the payload,
 		all of which except <spanx style="verb">keys</spanx>
 		are defined in <xref target="RFC7519"/>:
 		<list style="hanging">
@@ -1841,12 +1900,12 @@
 		  </t>
 		  <t hangText="iss">
 		    <vspace/>
-		    REQUIRED. The "iss" (issuer) claim identifies the principal
+		    REQUIRED. The "iss" (issuer) Claim identifies the principal
 		    that issued the JWT.
 		  </t>
 		  <t hangText="sub">
 		    <vspace/>
-		    REQUIRED. This claim identifies the owner of the keys.
+		    REQUIRED. This Claim identifies the owner of the keys.
 		    It SHOULD be the same as the issuer.
 		  </t>
 		  <t hangText="iat">
@@ -1857,19 +1916,19 @@
 		  </t>
 		  <t hangText="exp">
 		    <vspace/>
-		    OPTIONAL. Number. This claim identifies the time when the JWT is
+		    OPTIONAL. Number. This Claim identifies the time when the JWT is
 		    no longer valid. This is expressed as Seconds
         Since the Epoch, per <xref target="RFC7519"/>.
 		  </t>
 		</list>
-		More claims are defined in <xref target="RFC7519"/>; of
+		More Claims are defined in <xref target="RFC7519"/>; of
 		these, <spanx style="verb">aud</spanx> SHOULD NOT be used since
 		the issuer cannot know who the audience is.
 		<spanx style="verb">nbf</spanx> and <spanx style="verb">jti</spanx>
 		are not particularly useful in this context and SHOULD be omitted.
 	      </t>
 	      <t>
-		Additional claims MAY be defined and used in conjunction with the claims above.
+		Additional Claims MAY be defined and used in conjunction with the Claims above.
 
 		<figure>
 		  <preamble>
@@ -2034,6 +2093,8 @@
       </section>
 
     </section>
+
+
     <section title="Federation Policy" anchor="federation_policy">
       <section title="Metadata Policy" anchor="metadata_policy">
         <t>
@@ -2158,9 +2219,9 @@
 
           <t>
             Metadata policies are expressed in the
-            <spanx style="verb">metadata_policy</spanx> claim of a Subordinate
-            Statement, as described in <xref target="entity-statement"/>. The
-            claim value is a JSON object that has a data structure consisting of
+            <spanx style="verb">metadata_policy</spanx> Claim of a Subordinate
+            Statement, as described in <xref target="ss-specific"/>. The
+            Claim Value is a JSON object that has a data structure consisting of
             three levels:
           </t>
 
@@ -2207,7 +2268,7 @@
           <t>
             Duplicate JSON object member names MUST NOT be present at any of
             the three levels of the <spanx style="verb">metadata_policy</spanx>
-            claim data structure.
+            Claim data structure.
           </t>
 
           <t>
@@ -2914,7 +2975,7 @@
               Implementations MUST ignore additional operators that are not
               understood, unless the operator name is included in the
               <spanx style="verb">metadata_policy_crit</spanx> Subordinate
-              Statement claim, in which case the operator MUST be understood
+              Statement Claim, in which case the operator MUST be understood
               and processed. If an additional operator listed in
               <spanx style="verb">metadata_policy_crit</spanx> is not understood
               or cannot be processed, then this MUST produce a policy error and
@@ -2944,7 +3005,7 @@
               <t>
                 The metadata policy for a Trust Chain is determined by the
                 sequence of the present <spanx style="verb">metadata_policy</spanx>
-                claims of the Subordinate Statements that make up the chain.
+                Claims of the Subordinate Statements that make up the chain.
               </t>
 
               <t>
@@ -2953,8 +3014,8 @@
                 <xref target="standard_metadata_policy_operators"/> that are
                 declared as critical. This is done by checking each Subordinate
                 Statement in the Trust Chain for the optional
-                <spanx style="verb">metadata_policy_crit</spanx> claim,
-                described in <xref target="entity-statement"/>, and collecting
+                <spanx style="verb">metadata_policy_crit</spanx> Claim,
+                described in <xref target="ss-specific"/>, and collecting
                 any operator names that are found in it.
               </t>
 
@@ -2983,7 +3044,7 @@
               <t>
                 At each iteration step, the Subordinate Statement MUST be checked
                 for the presence of a <spanx style="verb">metadata_policy</spanx>
-                claim. The first encountered
+                Claim. The first encountered
                 <spanx style="verb">metadata_policy</spanx> MUST be validated as
                 described above, after which it becomes the current metadata
                 policy.
@@ -2991,7 +3052,7 @@
 
               <t>
                 If the iteration yields a next subordinate
-                <spanx style="verb">metadata_policy</spanx> claim, it MUST be
+                <spanx style="verb">metadata_policy</spanx> Claim, it MUST be
                 validated as described above, then merged into the current
                 metadata policy.
               </t>
@@ -3024,7 +3085,7 @@
                   <list style="symbols">
                     <t>
                       If the next subordinate
-                      <spanx style="verb">metadata_policy</spanx> claim contains
+                      <spanx style="verb">metadata_policy</spanx> Claim contains
                       a metadata policy for an Entity Type that is already
                       present in the current metadata policy, it MUST be merged
                       according to the rules of the next lower level (the
@@ -3032,7 +3093,7 @@
                     </t>
                     <t>
                       Entity Type metadata policies in the next subordinate
-                      <spanx style="verb">metadata_policy</spanx> claim that are
+                      <spanx style="verb">metadata_policy</spanx> Claim that are
                       not present in the current metadata policy MUST be copied
                       to it.
                     </t>
@@ -3088,7 +3149,7 @@
 
               <t>
                 If no further Subordinate Statements with a
-                <spanx style="verb">metadata_policy</spanx> claim are found, the
+                <spanx style="verb">metadata_policy</spanx> Claim are found, the
                 current metadata policy becomes the resolved one for the Trust Chain.
               </t>
 
@@ -3098,9 +3159,9 @@
 
               <t>
                 If the Subordinate Statement about the Trust Chain subject
-                contains a <spanx style="verb">metadata</spanx> claim, this MUST
-                first be applied, as described in the claim definition in
-                <xref target="entity-statement"/>, and only then it can be
+                contains a <spanx style="verb">metadata</spanx> Claim, this MUST
+                first be applied, as described in the Claim definition in
+                <xref target="common-claims"/>, and only then it can be
                 proceeded with applying the resolved metadata policy.
               </t>
 
@@ -3108,7 +3169,7 @@
                 If the process described in
                 <xref target="metadata_policy_resolution"/> found no Subordinate
                 Statements in the Trust Chain with a
-                <spanx style="verb">metadata_policy</spanx> claim, the metadata
+                <spanx style="verb">metadata_policy</spanx> Claim, the metadata
                 of the Trust Chain subject resolves simply to the
                 <spanx style="verb">metadata</spanx> found in its Entity
                 Configuration, with any <spanx style="verb">metadata</spanx>
@@ -3357,10 +3418,10 @@
 	<t>
       Trust Anchors and Intermediate Entities MAY define constraining criteria
       that apply to their Subordinates. They are expressed in the
-      <spanx style="verb">constraints</spanx> claim of a Subordinate Statement,
-      as described in <xref target="entity-statement"/>.
+      <spanx style="verb">constraints</spanx> Claim of a Subordinate Statement,
+      as described in <xref target="ss-specific"/>.
 	</t>
-    <t>
+	<t>
 	  The following constraint parameters are defined:
 	</t>
         <t>
@@ -3417,7 +3478,7 @@
         </figure>
         <t>
           When resolving the Trust Chain for an Entity the
-          <spanx style="verb">constraints</spanx> claim in each Subordinate
+          <spanx style="verb">constraints</spanx> Claim in each Subordinate
           Statement MUST be independently applied, if present. If any of the
           <spanx style="verb">constraints</spanx> checks fails, the Trust Chain
           MUST be considered invalid.
@@ -3530,7 +3591,7 @@
             <t>
                 To apply the <spanx style="verb">allowed_entity_types</spanx> constraint during Trust Chain Resolution
                 all Entity Types that are not listed in the <spanx style="verb">allowed_entity_types</spanx> constraint
-                MUST be removed from the metadata claim in the subject's Entity Configuration.
+                MUST be removed from the metadata Claim in the subject's Entity Configuration.
                 The <spanx style="verb">federation_entity</spanx> Entity Type MUST NOT be removed.
                 This MUST be done before applying Metadata Policies but after applying Metadata from a direct
                 superior's Subordinate Statement.
@@ -3547,7 +3608,7 @@
 	  Trust Marks used by this specification are signed JWTs.
 	  Entity Statements MAY include Trust Marks,
 	  as described in the <spanx style="verb">trust_marks</spanx>
-	  claim definition in <xref target="entity-statement"/>.
+	  Claim definition in <xref target="ec-specific"/>.
         </t>
         <t>
           Trust Marks are signed by a federation-accredited
@@ -3555,7 +3616,7 @@
 	  All Trust Mark Issuers MUST be represented in the
           federation by an Entity. The fact that a Trust Mark Issuer is
           accepted by the federation is expressed in the
-          <spanx style="verb">trust_mark_issuers</spanx> claim of the
+          <spanx style="verb">trust_mark_issuers</spanx> Claim of the
           Trust Anchor's Entity Configuration.
         </t>
         <t>
@@ -3587,7 +3648,7 @@
 
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
           <t>
-	    The claims in a Trust Mark are:
+	    The Claims in a Trust Mark are:
 	  </t>
           <t>
             <list style="hanging">
@@ -3602,8 +3663,8 @@
               <t hangText="trust_mark_type">
                 <vspace/>
 		REQUIRED.
-		The <spanx style="verb">trust_mark_type</spanx> claim
-		defined in <xref target="trust_mark_claims"/> is used in Trust Marks
+		The <spanx style="verb">trust_mark_type</spanx> Claim
+		is used in Trust Marks
 		to provide the identifier of the type of the Trust Mark.
                 The Trust Mark type identifier
                 MUST be collision-resistant
@@ -3637,7 +3698,7 @@
               <t hangText="ref">
                 <vspace/>
 		OPTIONAL.
-		The <spanx style="verb">ref</spanx> (reference) claim
+		The <spanx style="verb">ref</spanx> (reference) Claim
 		defined in <xref target="refClaim"/> is used in Trust Marks
 		to provide a URL referring to human-readable information
 		about the issuance of the Trust Mark.
@@ -3645,7 +3706,7 @@
               <t hangText="delegation">
                 <vspace/>
 		OPTIONAL.
-		The <spanx style="verb">delegation</spanx> claim
+		The <spanx style="verb">delegation</spanx> Claim
 		defined in <xref target="delegationClaim"/> is used in Trust Marks
 		to delegate the right to issue Trust Marks
 		with a particular identifier.
@@ -3655,7 +3716,7 @@
             </list>
           </t>
           <t>
-            Additional claims MAY be defined and used in conjunction with the claims above.
+            Additional Claims MAY be defined and used in conjunction with the Claims above.
           </t>
         </section>
 
@@ -3674,7 +3735,7 @@
           <t>
             The fact that a Trust Mark is issued by a Trust Mark Issuer that is
             not the owner of the Trust Mark is expressed by including
-	    a <spanx style="verb">delegation</spanx> claim in the Trust Mark,
+	    a <spanx style="verb">delegation</spanx> Claim in the Trust Mark,
 	    whose value is a Trust Mark delegation JWT,
 	    as defined in <xref target="delegation_jwt"/>.
           </t>
@@ -3683,7 +3744,7 @@
             certain Trust Mark type identifier may legitimately be issued by Trust Mark Issuers
             that are not the owner of the Trust Mark type identifier, then information
             about the owner and the Trust Mark type identifier MUST be included in the
-            <spanx style="verb">trust_mark_owners</spanx> claim in
+            <spanx style="verb">trust_mark_owners</spanx> Claim in
 	    the Trust Anchor's Entity Configuration.
           </t>
 
@@ -3709,7 +3770,7 @@
 	    with its value being the Key ID of the signing key used.
 	  </t>
           <t>
-            The claims in a Trust Mark delegation JWT are:
+            The Claims in a Trust Mark delegation JWT are:
           </t>
           <t>
             <list style="hanging">
@@ -3745,7 +3806,7 @@
             </list>
           </t>
 	  <t>
-	    Additional claims MAY be defined and used in conjunction with the claims above.
+	    Additional Claims MAY be defined and used in conjunction with the Claims above.
 	  </t>
 	  </section>
             <section title="Validating a Trust Mark Delegation" anchor="trust-mark-delegation-validation">
@@ -3783,7 +3844,7 @@
             </t>
             <t>The delegation's signature MUST validate using one of the Trust Mark Owner's keys
                 identified by the value of the header parameter <spanx style="verb">kid</spanx>.
-                The Trust Mark Owner's keys can be found in the <spanx style="verb">trust_mark_owners</spanx> claim in
+                The Trust Mark Owner's keys can be found in the <spanx style="verb">trust_mark_owners</spanx> Claim in
                 the Trust Anchor's Entity Configuration.
             </t>
         </list>
@@ -3820,7 +3881,7 @@
                 that is an acceptable JWS signing algorithm; it MUST NOT be <spanx style="verb">none</spanx>.
             </t>
             <t>The Entity Identifier of the Entity whose Entity Configuration contains the instance MUST
-                match the value of the claim <spanx style="verb">sub</spanx> in the Trust Mark.</t>
+                match the value of the Claim <spanx style="verb">sub</spanx> in the Trust Mark.</t>
             <t>The current time MUST be after the time represented by the <spanx style="verb">iat</spanx> (issued at) Claim
                 (possibly allowing for some small leeway to account for clock skew).</t>
             <t>The current time MUST be before the time represented by the <spanx style="verb">exp</spanx> (expiration) Claim
@@ -3829,11 +3890,11 @@
                 identified by the <spanx style="verb">kid</spanx> value.
             </t>
             <t>If the <spanx style="verb">trust_mark_type</spanx> of the instance appears in the
-                <spanx style="verb">trust_mark_owners</spanx> claim in the Trust Anchor's
+                <spanx style="verb">trust_mark_owners</spanx> Claim in the Trust Anchor's
                 Entity Configuration, then the instance MUST contain a
-                <spanx style="verb">delegation</spanx> claim.</t>
-            <t>If there is a <spanx style="verb">delegation</spanx> claim in the instance, the value of that
-            claim MUST be validated according to <xref target="trust-mark-delegation-validation"/>.</t>
+                <spanx style="verb">delegation</spanx> Claim.</t>
+            <t>If there is a <spanx style="verb">delegation</spanx> Claim in the instance, the value of that
+            Claim MUST be validated according to <xref target="trust-mark-delegation-validation"/>.</t>
         </list>
       </t>
 	  <t>
@@ -3852,7 +3913,7 @@
           <figure>
             <preamble>
               A non-normative example of a <spanx style="verb">trust_marks</spanx>
-	      claim in the JWT Claims Set for an Entity Configuration is:
+	      Claim in the JWT Claims Set for an Entity Configuration is:
             </preamble>
 	    <name>
 	      Trust Mark in an Entity Configuration JWT Claims Set
@@ -3909,7 +3970,7 @@
 	    </name>
             <artwork><![CDATA[
 {
-  "trust_mark_type":"https://mushrooms.federation.example.com/openid_relying_party/public/",
+  "trust_mark_type": "https://mushrooms.federation.example.com/openid_relying_party/public/",
   "iss": "https://epigeo.tm-issuer.example.it",
   "sub": "https://porcino.example.com/rp",
   "iat": 1579621160,
@@ -3934,7 +3995,7 @@
 	    </name>
             <artwork><![CDATA[
 {
-  "trust_mark_type":"https://mushrooms.federation.example.com/openid_relying_party/private/under-age",
+  "trust_mark_type": "https://mushrooms.federation.example.com/openid_relying_party/private/under-age",
   "iss": "https://trustissuer.pinarolo.example.it",
   "sub": "https://vavuso.example.com/rp",
   "iat": 1579621160,
@@ -4031,12 +4092,12 @@
           <figure>
             <preamble>
               A non-normative example of a <spanx style="verb">trust_marks</spanx>
-	          claim in the JWT Claims Set for an Entity Configuration in which the
+	          Claim in the JWT Claims Set for an Entity Configuration in which the
               Trust Mark is issued by an Entity that issues Trust Marks on behalf of
               another Entity.
               The fact that a Trust Mark is issued by a Trust Mark Issuer that is not
               the owner of the Trust Mark is expressed by including a
-              <spanx style="verb">delegation</spanx> claim
+              <spanx style="verb">delegation</spanx> Claim
               in the Trust Mark, whose value is a signed JWT.
             </preamble>
 	    <name>
@@ -4070,7 +4131,7 @@
           <figure>
             <preamble>
               JWS Header Parameters for the Trust Mark delegation JWT in
-              the "delegation" claim above
+              the "delegation" Claim above
             </preamble>
 	    <name>
 	      Trust Mark delegation JWT JWS Header Parameters
@@ -4085,7 +4146,7 @@
           </figure>
 	  <figure>
 	    <preamble>
-	      JWT Claims Set of the Trust Mark delegation JWT in the "delegation" claim above
+	      JWT Claims Set of the Trust Mark delegation JWT in the "delegation" Claim above
 	    </preamble>
 	    <name>
 	      Trust Mark delegation JWT Claim Set
@@ -4226,7 +4287,7 @@ Host: edugain.org
   },
   "metadata":{
     "federation_entity": {
-        "organization_name":"SUNET"
+        "organization_name": "SUNET"
     }
   }
   "metadata_policy": {
@@ -4532,7 +4593,7 @@ Content-Type: application/json
 	  </t>
           <figure>
             <preamble>
-              The following is a non-normative example of a resolve request:
+              The following is a non-normative example of a Resolve Request:
             </preamble>
             <name>
               Example Resolve Request
@@ -4573,7 +4634,7 @@ Host: openid.sunet.se
             The resolve response JWT MUST return the Trust Chain
 	    from the subject to the Trust Anchor
 	    in its <spanx style="verb">trust_chain</spanx> parameter,
-            sorted as shown in <xref target="trust_chain"/>.
+            sorted as specified in <xref target="trust_chain"/>.
 	  </t>
           <t>
             The resolve response MAY also return the Trust Chain
@@ -4596,14 +4657,14 @@ Host: openid.sunet.se
           </t>
 	  <t>
             The response SHOULD contain the
-            <spanx style="verb">aud</spanx> claim only
+            <spanx style="verb">aud</spanx> Claim only
             if the requesting party is authenticated,
 	    in which case, the value MUST be the Entity Identifier
 	    of the requesting party
 	    and MUST NOT include any other values.
           </t>
           <t>
-	    The claims in a resolve response are:
+	    The Claims in a resolve response are:
 	  </t>
           <t>
             <list style="hanging">
@@ -4637,19 +4698,19 @@ Host: openid.sunet.se
                 REQUIRED. JSON object containing the resolved subject metadata,
                 according to the requested <spanx style="verb">type</spanx>
                 and expressed in the <spanx style="verb">metadata</spanx> format
-                defined in <xref target="entity-statement"/>.
+                defined in <xref target="common-claims"/>.
               </t>
               <t hangText="trust_chain">
                 <vspace/>
                 REQUIRED. Array containing the sequence of Entity Statements
                 that compose the Trust Chain, starting with the subject and
                 ending with the selected Trust Anchor,
-                sorted as shown in <xref target="trust_chain"/>.
+                sorted as specified in <xref target="trust_chain"/>.
               </t>
               <t hangText="trust_marks">
                 <vspace/>
                 OPTIONAL. Array of objects, each representing a Trust Mark,
-                as defined in <xref target="entity-statement"/>.
+                as defined in <xref target="ec-specific"/>.
 		Only valid Trust Marks that have been issued by Trust Mark
                 issuers trusted by the Trust Anchor to issue such Trust Marks
 		MAY appear in the resolver response.
@@ -4658,7 +4719,7 @@ Host: openid.sunet.se
           </t>
 
           <t>
-            Additional claims MAY be defined and used in conjunction with the claims above.
+            Additional Claims MAY be defined and used in conjunction with the Claims above.
           </t>
           <t>
             An error response
@@ -4686,7 +4747,7 @@ Host: openid.sunet.se
         "https://op.example.it/static/img/op-logo.svg",
       "op_policy_uri":
         "https://op.example.it/en/about-the-website/legal-information",
-      "federation_registration_endpoint":"https://op.example.it/spid/fedreg",
+      "federation_registration_endpoint": "https://op.example.it/spid/fedreg",
       "authorization_endpoint":
         "https://op.example.it/spid/authorization",
       "token_endpoint": "https://op.example.it/spid/token",
@@ -4831,7 +4892,7 @@ trust_mark=eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6 ...
 	  </t>
           <t>
 	    The JWT Claims Set of the Trust Mark Status JWT
-	    is a JSON object containing the following claims:
+	    is a JSON object containing the following Claims:
           </t>
           <t>
             <list style="hanging">
@@ -5238,7 +5299,7 @@ Host: trust-anchor.example.com
 	    with its value being the Key ID of the signing key used.
 	  </t>
 	  <t>
-            The claims in a historical keys JWT are:
+            The Claims in a historical keys JWT are:
           </t>
           <t>
             <list style="hanging">
@@ -5260,7 +5321,7 @@ Host: trust-anchor.example.com
 
                 <t>
                   JWKs in the <spanx style="verb">keys</spanx>
-                  claim use the following parameters:
+                  Claim use the following parameters:
                 </t>
 
                 <t>
@@ -5296,7 +5357,7 @@ Host: trust-anchor.example.com
                           REQUIRED. Time when the key was revoked
                           or must be considered revoked,
                           using the time format defined for the
-                          <spanx style="verb">iat</spanx> claim in
+                          <spanx style="verb">iat</spanx> Claim in
                       <xref target="RFC7519"/>.
                         </t>
 
@@ -5321,11 +5382,11 @@ Host: trust-anchor.example.com
             </list>
           </t>
 	  <t>
-	    Additional claims MAY be defined and used in conjunction with the claims above.
+	    Additional Claims MAY be defined and used in conjunction with the Claims above.
 	  </t>
 
 	  <t>
-	    JWKs in the <spanx style="verb">keys</spanx> claim MAY also contain the
+	    JWKs in the <spanx style="verb">keys</spanx> Claim MAY also contain the
 	    <spanx style="verb">nbf</spanx> parameter.  For use in Historical Keys,
 	    <spanx style="verb">iat</spanx> and <spanx style="verb">exp</spanx>
 	    are sufficient to establish the key lifetime,
@@ -5340,7 +5401,7 @@ Host: trust-anchor.example.com
                 <vspace/>
 		OPTIONAL. Time before which the key is not valid,
 		using the time format defined for the
-		<spanx style="verb">nbf</spanx> claim in
+		<spanx style="verb">nbf</spanx> Claim in
 		<xref target="RFC7519"/>.
 	      </t>
 	    </list>
@@ -5360,18 +5421,18 @@ Host: trust-anchor.example.com
     "keys":
         [
             {
-                "kty":"RSA",
-                "n":"5s4qi …",
-                "e":"AQAB",
-                "kid":"2HnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMEEs",
+                "kty": "RSA",
+                "n": "5s4qi ...",
+                "e": "AQAB",
+                "kid": "2HnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMEEs",
                 "iat": 123972394872,
                 "exp": 123974395972
             },
             {
-                "kty":"RSA",
-                "n":"ng5jr …",
-                "e":"AQAB",
-                "kid":"8KnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMJJr",
+                "kty": "RSA",
+                "n": "ng5jr ...",
+                "e": "AQAB",
+                "kid": "8KnoFS3YnC9tjiCaivhWLVUJ3AxwGGz_98uRFaqMJJr",
                 "iat": 123972394872,
                 "exp": 123974394972,
                 "revoked": {
@@ -5479,10 +5540,10 @@ Host: trust-anchor.example.com
             requests and responses.
             For example, an Entity Statement issued for a Leaf
             MAY also include the
-            <spanx style="verb">jwks</spanx> claim for the Leaf's Entity Types,
+            <spanx style="verb">jwks</spanx> Claim for the Leaf's Entity Types,
 	    in its
             <spanx style="verb">metadata</spanx> or
-            <spanx style="verb">metadata_policy</spanx> claims.
+            <spanx style="verb">metadata_policy</spanx> Claims.
 	  </t>
             <t>
               A simple example: In the following Trust Chain, the
@@ -5499,7 +5560,7 @@ Host: trust-anchor.example.com
                 </t>
                 <t>
                   a Subordinate Statement about the RP published by Organization A,
-                  with the claim <spanx style="verb">jwks</spanx> contained in
+                  with the Claim <spanx style="verb">jwks</spanx> contained in
                   <spanx style="verb">metadata</spanx> or
                   <spanx style="verb">metadata_policy</spanx> attesting the
                   Leaf's OpenID Connect RP <spanx style="verb">jwks</spanx>, and
@@ -5750,7 +5811,7 @@ Content-Type: application/json
 	posts its Entity Configuration to the OP during client
         registration, the OP has everything it needs from the RP.
 	Profiles of this specification MAY define other exceptions for Leaf Entities
-	that do not use the the Entity Type Identifier <spanx style="verb">federation_entity</spanx>
+	that do not use the Entity Type Identifier <spanx style="verb">federation_entity</spanx>
 	and processing rules that accompany them.
       </t>
 
@@ -5778,8 +5839,8 @@ Content-Type: application/json
       </section>
 
       <section anchor="ec-response" title="Federation Entity Configuration Response">
-        <t>The response is an Entity Configuration, as described in
-          <xref target="entity-statement"/>.
+        <t>
+	  The response is an Entity Configuration.
           If the Entity is an Intermediate Entity or a Trust Anchor, the
           response MUST contain metadata for a federation Entity
           (<spanx style="verb">federation_entity</spanx>).
@@ -6027,7 +6088,7 @@ Content-Type: application/json
               For each Entity Statement ES[j], where j = 0,..,i:
               <list style="symbols">
                 <t>
-                  Verify that the statement contains all the required claims.
+                  Verify that the statement contains all the required Claims.
                 </t>
                 <t>
                   Verify that <spanx style="verb">iat</spanx> has a value in the
@@ -6231,6 +6292,12 @@ Content-Type: application/json
 	or possibly other Entity Type Identifiers defined for the specific
 	OAuth 2.0 profile being used.
       </t>
+      <t>
+	When using both methods, <spanx style="verb">trust_anchor_hints</spanx>
+	values can be used to determine Trust Anchors that the RP and OP share.
+	When building Trust Chains, RPs SHOULD choose a Trust Anchor
+	in common with the OP, when possible.
+      </t>
 
       <section title="Automatic Registration" anchor="automatic">
         <t>
@@ -6358,16 +6425,23 @@ Content-Type: application/json
                   This is expressed as Seconds Since the Epoch, per
                   <xref target="RFC7519"/>.
                 </t>
-                <t hangText="trust_chain" anchor="trust_chain_param">
+                <t hangText="trust_chain" anchor="trust_chain-param">
                   <vspace/>
                   OPTIONAL. Array containing the sequence of Entity Statements
                   that comprise the Trust Chain between the RP making
                   the request and the selected Trust Anchor,
-                  sorted as in <xref target="trust_chain"/>.
+                  sorted as specified in <xref target="trust_chain"/>.
                   When the RP and the OP are part of the same federation,
                   the RP MUST select a Trust Anchor that it has in common
                   with the OP; otherwise, the RP is free to select the
                   Trust Anchor to use.
+		  <vspace blankLine="1"/>
+
+		  NOTE: The use of the
+		  <spanx style="verb">trust_chain</spanx> header parameter,
+		  as specified in <xref target="trust_chain_head_param"/>,
+		  is RECOMMENDED over the use of this parameter;
+		  it is retained for historical reasons.
                 </t>
               </list>
             </t>
@@ -6375,7 +6449,7 @@ Content-Type: application/json
             <section title="Authorization Request with a Trust Chain" anchor="trust_chain_authz">
               <t>
               When the <spanx style="verb">trust_chain</spanx>
-              request parameter
+              header parameter
               is used in the authentication request, the Relying Party
               informs the OP of the sequence of Entity Statements
               that proves the trust relationship between it
@@ -6391,7 +6465,8 @@ Content-Type: application/json
 
             <figure>
               <preamble>
-                The following is a non-normative example of the JWT Claims Set in a
+                The following is a non-normative example of the
+		header parameters and JWT Claims Set in a
                 Request Object:
               </preamble>
 	      <name>
@@ -6402,6 +6477,11 @@ Content-Type: application/json
   "typ": "oauth-authz-req+jwt",
   "alg": "RS256",
   "kid": "that-kid-which-points-to-a-jwk-contained-in-the-trust-chain",
+  "trust_chain" : [
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6Ims1NEhRdERpYnlHY3M5WldWTWZ2aUhm ...",
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ...",
+    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ..."
+  ]
 }
 .
 {
@@ -6415,12 +6495,7 @@ Content-Type: application/json
   "redirect_uri": "https://rp.example.com/authz_cb",
   "response_type": "code",
   "scope": "openid profile email address phone",
-  "state": "YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ",
-  "trust_chain" : [
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6Ims1NEhRdERpYnlHY3M5WldWTWZ2aUhm ...",
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ...",
-    "eyJhbGciOiJSUzI1NiIsImtpZCI6IkJYdmZybG5oQU11SFIwN2FqVW1BY0JS ..."
-  ]
+  "state": "YmX8PM9I7WbNoMnnieKKBiptVW0sP2OZ"
 }
 ]]></artwork>
             </figure>
@@ -6466,6 +6541,19 @@ GET /authorize?
 
 ]]></artwork>
             </figure>
+	    <t>
+	      When the <spanx style="verb">trust_chain</spanx> header parameter
+	      is included,
+	      the <spanx style="verb">peer_trust_chain</spanx> header parameter
+	      MAY also be included to provide a Trust Chain between the OP
+	      and the Trust Anchor the RP selected.
+	      The Peer Trust Chain contains metadata and policy values
+	      that the RP has chosen for the OP to use during the registration.
+	      The Trust Anchors selected in both Trust Chains MUST be the same.
+	      Inclusion of both Trust Chains enables achieving
+	      the Federation Integrity and Metadata Integrity properties,
+	      as defined in <xref target="App-Fed-Linkage"/>.
+	    </t>
             </section>
 
             <section title="Processing the Authentication Request" anchor="AuthzRequestProcessing">
@@ -6479,9 +6567,11 @@ GET /authorize?
                 related to the requestor.
               </t>
               <t>
-                An RP MAY present a Trust Chain related to itself to the OP in the Request Object using the
-                <spanx style="verb">trust_chain</spanx> request parameter
-		        defined in <xref target="trust_chain_param"/>.
+                An RP MAY include a Trust Chain from itself
+		to the Trust Anchor that it selected
+		in the Request Object using the
+                <spanx style="verb">trust_chain</spanx> header parameter
+		defined in <xref target="trust_chain_head_param"/>.
                 If the OP does not have a valid registration for the RP or
                 its registration has expired, the OP MAY use the received
                 Trust Chain as a hint for which path to take from the
@@ -6503,10 +6593,22 @@ GET /authorize?
 		In both cases, the OP MUST fully verify the Trust Chain
 		including every Entity Statement contained in it.
               </t>
+	      <t>
+		The RP MAY likewise include a Trust Chain from the OP
+		to the Trust Anchor that the RP selected
+		in the Request Object using the
+                <spanx style="verb">peer_trust_chain</spanx> header parameter
+		defined in <xref target="peer_trust_chain_head_param"/>.
+		The OP SHOULD use the metadata and policy values
+		that the RP has chosen during the registration.
+		Inclusion of both Trust Chains enables achieving
+		the Federation Integrity and Metadata Integrity properties,
+		as defined in <xref target="App-Fed-Linkage"/>.
+	      </t>
               <t>
                 If the RP does not include the
                 <spanx style="verb">trust_chain</spanx>
-                request parameter in the Request Object,
+                header parameter in the Request Object,
 		the OP for some reason decides not to use the provided Trust Chain,
                 or the OP does not support this feature, it then MUST
                 validate the possible Trust Chains, starting with the RP's Entity Configuration,
@@ -6566,7 +6668,7 @@ GET /authorize?
 		  as described in Section 2.2 of <xref target="RFC8705"/>.
                   In this case, the self-signed certificate MUST be present as
                   the value of an <spanx style="verb">x5c</spanx>
-                  claim for a key in the Entity's RP JWK Set.
+                  Claim for a key in the Entity's RP JWK Set.
 		  In this case, the server MUST omit certificate chain validation.
                 </t>
               </list>
@@ -6641,7 +6743,7 @@ redirect_uri=https%3A%2F%2Frp.example.com%2Fauthz_cb
                     If mTLS is used with a self-signed certificate,
 		    then the certificate MUST be present as the
                     value of an <spanx style="verb">x5c</spanx>
-                    claim for a key in the JWK Set containing the RP's keys.
+                    Claim for a key in the JWK Set containing the RP's keys.
                   </t>
                 </list>
               </t>
@@ -6731,7 +6833,7 @@ HTTP/1.1 302 Found
 	    However, if there are multiple methods supported by both
 	    the RP and the OP, the OP does not know which one the RP will pick
 	    in advance of it being used,
-	    since this isn't declared at the time the Automatic Registration occurs.
+	    since this is not declared at the time the Automatic Registration occurs.
 	  </t>
 	  <t>
 	    OPs SHOULD accept any client authentication method that is mutually supported
@@ -6838,11 +6940,23 @@ HTTP/1.1 302 Found
                 <t>
                   The RP MAY include its Entity Configuration
                   in a Trust Chain regarding itself.
-                  In that case, the Registration Request will contain an
+                  There are two ways to do this.
+		  The first way is for the Registration Request to contain an
                   array with the sequence of
                   Entity Statements that compose the Trust Chain
                   between the RP that is making the request and the
                   selected Trust Anchor.
+		  The second way is to use the
+		  <spanx style="verb">trust_chain</spanx> header parameter,
+		  as specified in <xref target="trust_chain_head_param"/>.
+		  <vspace blankLine="1"/>
+
+		  NOTE: The use of the
+		  <spanx style="verb">trust_chain</spanx> header parameter
+		  in the request JWT is RECOMMENDED over the first syntax;
+		  it is retained for historical reasons.
+		</t>
+		<t>
                   The RP MUST include its
                   metadata in its Entity Configuration and use the
                   <spanx style="verb">authority_hints</spanx> selected above.
@@ -6867,8 +6981,8 @@ HTTP/1.1 302 Found
                 <t>
                   The content type of the Registration Request MUST be
                   <spanx style="verb">application/entity-statement+jwt</spanx>
-                  when it contains only the Entity Configuration of the
-                  requestor. Otherwise, when it contains the Trust Chain, the
+                  when it is the Entity Configuration of the requestor.
+                  Otherwise, when it is a Trust Chain, the
                   content type of the Registration Request MUST be
                   <spanx style="verb">application/trust-chain+json</spanx>.
                   The RP MAY include its Entity Configuration in a Trust Chain
@@ -6877,10 +6991,30 @@ HTTP/1.1 302 Found
                   statements that make up the Trust Chain between the RP and
                   the Trust Anchor the RP selected.
                 </t>
+		<t>
+		  The <spanx style="verb">trust_chain</spanx> header parameter
+		  MAY be included to provide a Trust Chain between the RP
+		  and the Trust Anchor the RP selected
+		  when the request is the Entity Configuration of the RP.
+		  This is equivalent to providing the Trust Chain as the request body.
+		  When the <spanx style="verb">trust_chain</spanx> header parameter
+		  is included,
+		  the <spanx style="verb">peer_trust_chain</spanx> header parameter
+		  MAY also be included to provide a Trust Chain between the OP
+		  and the Trust Anchor the RP selected.
+		  The Peer Trust Chain contains metadata and policy values
+		  that the RP has chosen for the OP to use during the registration.
+		  The <spanx style="verb">peer_trust_chain</spanx> header parameter
+		  MUST NOT be used when the request body is a Trust Chain.
+		  The Trust Anchors selected in both Trust Chains MUST be the same.
+		  Inclusion of both Trust Chains enables achieving
+		  the Federation Integrity and Metadata Integrity properties,
+		  as defined in <xref target="App-Fed-Linkage"/>.
+		</t>
               </list>
             </t>
             <t>
-              The following Entity Configuration claims are specified for use
+              The following Entity Configuration Claims are specified for use
               in Explicit Registration requests. Their full descriptions are in
               <xref target="entity-statement"/>.
             </t>
@@ -6912,7 +7046,7 @@ HTTP/1.1 302 Found
                   <vspace/>
                   REQUIRED.
                   Its value MUST be the Entity Identifier of the OP.
-                  This claim is used in Explicit Registration requests but it is not
+                  This claim is used in Explicit Registration requests and it is not
                   a general Entity Statement claim.
                 </t>
                 <t hangText="authority_hints">
@@ -6965,12 +7099,13 @@ HTTP/1.1 302 Found
 		    The OP MUST validate the RP's explicit registration request JWT.
 		    All the normal Entity Statement validation rules apply.
 		    In addition, if the <spanx style="verb">aud</spanx> (audience)
-		    claim value is not the Entity Identifier of the OP,
+		    Claim Value is not the Entity Identifier of the OP,
 		    then the request MUST be rejected.
 		  </t>
                   <t>
-                    If the request contains an Entity Configuration the OP
-                    MUST use it to complete the Federation Entity Discovery by
+                    If no Trust Chain is provided from the RP to the Trust Anchor
+		    in the request, the OP MUST use the provided Entity Configuration
+		    to complete the Federation Entity Discovery by
                     collecting and evaluating the Trust Chains that start with
                     the <spanx style="verb">authority_hints</spanx> in the
                     Entity Configuration of the RP. After validating at least
@@ -6980,15 +7115,43 @@ HTTP/1.1 302 Found
                     from among them as the one to proceed with.
                   </t>
                   <t>
-                    If the request contains a Trust Chain, the OP MAY evaluate
+                    If the request body is a Trust Chain, the OP MAY evaluate
                     the statements in the Trust Chain to save the HTTP calls
                     that are necessary to perform the Federation Entity Discovery,
                     especially if the RP included more than one
                     authority hint in its Entity Configuration. Otherwise, the
-                    OP MUST extract the RP Entity Configuration from the Trust Chain
-                    and proceed according to Step 2,
+                    OP MUST extract the RP's Entity Configuration from the Trust Chain
+                    and proceed according to Step 3,
 		    as if only an Entity Configuration was received.
-                  </t>
+		  </t>
+		  <t>
+		    When a Trust Chain is provided using the
+		    <spanx style="verb">trust_chain</spanx> header parameter
+		    in the request's Entity Configuration,
+		    the OP MAY likewise evaluate
+		    the statements in the Trust Chain to save the HTTP calls
+		    that are necessary to perform the Federation Entity Discovery.
+		    Note that in this case, the RP's Entity Configuration
+		    in the Trust Chain is only used to establish that
+		    there is a path from the RP to the Trust Anchor;
+		    it is the metadata, etc. in the request Entity Configuration,
+		    which may be tailored by the RP for the OP,
+		    that is used when processing the registration request.
+		    If the provided Trust Chain is not used,
+		    the OP MUST proceed according to Step 3,
+		    using the request Entity Configuration.
+		  </t>
+		  <t>
+		    If the request uses
+		    the <spanx style="verb">peer_trust_chain</spanx> header parameter
+		    to include a Trust Chain from the OP
+		    to the Trust Anchor that the RP selected,
+		    verify that it begins at the OP.
+		    Furthermore, verify that it ends at the same Trust Anchor
+		    as any provided Trust chain from the RP to the Trust Anchor.
+		    The OP SHOULD use the metadata and policy values
+		    that the RP has chosen during the registration.
+		  </t>
                   <t>
                     At this point, if the OP finds that it already has an
                     existing client registration for the requesting RP, then
@@ -7064,14 +7227,14 @@ HTTP/1.1 302 Found
 		  </t>
 		  <t>
                     The OP MUST set the <spanx style="verb">trust_anchor</spanx>
-                    claim of the Entity Statement to the Trust Anchor it
+                    Claim of the Entity Statement to the Trust Anchor it
                     selected to process the request. The
-                    <spanx style="verb">authority_hints</spanx> claim MUST be
+                    <spanx style="verb">authority_hints</spanx> Claim MUST be
                     set to the RP's Immediate Superior in the
                     selected Trust Chain.
 		  </t>
 		  <t>
-                    The OP MUST set the <spanx style="verb">exp</spanx> claim
+                    The OP MUST set the <spanx style="verb">exp</spanx> Claim
                     to the expiration time of the created registration. The OP
                     MAY choose to invalidate the registration before that, as
                     explained in <xref target="AfterExplicitReg"/>.
@@ -7079,7 +7242,7 @@ HTTP/1.1 302 Found
 		  <t>
                     The OP MUST express the client registration it created for
                     the RP by means of the <spanx style="verb">metadata</spanx>
-                    claim, by placing the metadata parameters under the
+                    Claim, by placing the metadata parameters under the
 		    <spanx style="verb">openid_relying_party</spanx>
 		    Entity Type Identifier.
 		    The parameters MUST include the
@@ -7101,7 +7264,7 @@ HTTP/1.1 302 Found
                     current Federation Entity Key in its possession.
                   </t>
               <t>
-		The following Entity Statement claims
+		The following Entity Statement Claims
 		are used in Explicit Registration responses,
 		as specified in <xref target="entity-statement"/>:
               </t>
@@ -7132,7 +7295,7 @@ HTTP/1.1 302 Found
                     <vspace/>
                     OPTIONAL.
 		    If present, it MUST be a verbatim copy of the
-		    <spanx style="verb">jwks</spanx> Entity Statement claim
+		    <spanx style="verb">jwks</spanx> Entity Statement Claim
                     from the received Entity Configuration of the RP.
 		    Note that this is distinct from the identically named RP metadata parameter.
                   </t>
@@ -7141,16 +7304,20 @@ HTTP/1.1 302 Found
                     REQUIRED.
                     Its value MUST be the RP's Entity Identifier
 		    and MUST NOT include any other values.
-		    This claim is used in Explicit Registration responses
-		    but is not a general Entity Statement claim.
+		    This Claim is used in Explicit Registration responses
+		    but is not a general Entity Statement Claim.
                   </t>
-                  <t hangText="trust_anchor">
+                  <t hangText="trust_anchor" anchor="trust_anchor-claim">
                     <vspace/>
                     REQUIRED.
                     Its value MUST be the Entity Identifier of the Trust Anchor
-                    that the OP selected to process the Explicit Registration
-                    request. This claim is specific to Explicit Registration
-                    responses and is not a general Entity Statement claim.
+                    that the OP selected to process the Explicit Registration request.
+		    If complete Trust Chains to the Trust Anchor selected by the RP
+		    were provided in the request and/or by using the
+		    <spanx style="verb">peer_trust_chain</spanx> header parameter,
+		    this MUST match the Trust Anchors at the roots of those Trust Chains.
+		    This Claim is specific to Explicit Registration responses
+		    and is not a general Entity Statement Claim.
                   </t>
                   <t hangText="authority_hints">
                     <vspace/>
@@ -7169,8 +7336,8 @@ HTTP/1.1 302 Found
                   <t hangText="crit">
                     <vspace/>
                     OPTIONAL.
-		    Set of claims that MUST be understood and processed,
-		    as specified in <xref target="entity-statement"/>.
+		    Set of Claims that MUST be understood and processed,
+		    as specified in <xref target="common-claims"/>.
                   </t>
                 </list>
               </t>
@@ -7206,7 +7373,7 @@ HTTP/1.1 302 Found
 
                     The RP MUST ensure the signing Federation Entity Key used
                     by the OP is present in the
-                    <spanx style="verb">jwks</spanx> claim of the Subordinate Statement
+                    <spanx style="verb">jwks</spanx> Claim of the Subordinate Statement
                     issued by the OP's Immediate Superior
                     in a Trust Chain that the RP successfully resolved for the
                     OP when it prepared the Explicit Registration request.
@@ -7214,22 +7381,28 @@ HTTP/1.1 302 Found
                   <t>
                     The RP MUST verify that the <spanx style="verb">aud</spanx> (audience)
                     claim value is its Entity Identifier.
-                  </t>
+                  </t>  
                   <t>
-                    The RP MUST verify that the <spanx style="verb">trust_anchor</spanx>
-                    represents one of its own Trust Anchors.
+                    The RP MUST verify that the
+                    <spanx style="verb">trust_anchor</spanx> represents one
+                    of its own Trust Anchors.
+		    If complete Trust Chains to the Trust Anchor selected by the RP
+		    were provided in the request and/or by using the
+		    <spanx style="verb">peer_trust_chain</spanx> header parameter,
+		    the RP MUST verify that this matches
+		    the Trust Anchors at the root of those Trust Chains.
                   </t>
                   <t>
                     The RP MUST verify that at least one of the
                     <spanx style="verb">authority_hints</spanx> it specified in
                     the Explicit Registration request leads to the Trust Anchor
                     that the OP set in the
-                    <spanx style="verb">trust_anchor</spanx> claim.
+                    <spanx style="verb">trust_anchor</spanx> Claim.
                   </t>
                   <t>
                     The RP MUST first ensure that the information it was registered with
                     at the OP contains the same set of entity_types as the request does.
-                    After having collected a Trust Chain using the response claim
+                    After having collected a Trust Chain using the response Claim
                     <spanx style="verb">trust_anchor</spanx> as the
                     Entity Identifier for the Trust Anchor and
                     <spanx style="verb">authority_hints</spanx> as starting points
@@ -7252,7 +7425,7 @@ HTTP/1.1 302 Found
 
         <section title="After an Explicit Client Registration" anchor="AfterExplicitReg">
           <t>
-            An RP can utilize the <spanx style="verb">exp</spanx> claim of the
+            An RP can utilize the <spanx style="verb">exp</spanx> Claim of the
             registration Entity Statement to devise a suitable strategy for
             renewing its client registration. RP implementers should note that
             if the OP expiration of the <spanx style="verb">client_id</spanx>
@@ -7366,86 +7539,86 @@ HTTP/1.1 302 Found
 
     <section anchor="GeneralPurposeClaims" title="General-Purpose JWT Claims">
       <t>
-	This section defines general-purpose JWT claims designed to be used
+	This section defines general-purpose JWT Claims designed to be used
 	by many different JWT profiles.
 	They are also used in specific kinds of JWTs defined by this specification.
       </t>
 
       <section anchor="jwksClaim" title='"jwks" (JSON Web Key Set) Claim'>
 	<t>
-	  The <spanx style="verb">jwks</spanx> (JSON Web Key Set) claim
+	  The <spanx style="verb">jwks</spanx> (JSON Web Key Set) Claim
 	  value is a JWK Set, as defined in <xref target="RFC7517"/>.
 	  It is used to convey a set of cryptographic keys.
-	  Use of this claim is OPTIONAL.
+	  Use of this Claim is OPTIONAL.
 	</t>
 	<t>
-	  For instance, the <spanx style="verb">jwks</spanx> (JSON Web Key Set) claim
+	  For instance, the <spanx style="verb">jwks</spanx> (JSON Web Key Set) Claim
 	  might be used to represent a set of signing keys for an application.
-	  This claim is used in this specification in <xref target="entity-statement"/>
+	  This Claim is used in this specification as specified in <xref target="common-claims"/>
 	  to represent the public keys used to sign the Entity Statement.
 	</t>
       </section>
 
       <section anchor="metadataClaim" title='"metadata" Claim'>
 	<t>
-	  The <spanx style="verb">metadata</spanx> claim
+	  The <spanx style="verb">metadata</spanx> Claim
 	  is used for conveying metadata pertaining to the JWT.
 	  Its value is a JSON object.
 	  The details of the metadata contained are application-specific.
-	  Use of this claim is OPTIONAL.
+	  Use of this Claim is OPTIONAL.
 	</t>
 	<t>
-	  For instance, the <spanx style="verb">metadata</spanx> claim
+	  For instance, the <spanx style="verb">metadata</spanx> Claim
 	  might be used to represent a set of endpoint URLs
 	  and algorithm identifiers in an API description.
-	  This claim is used in this specification in <xref target="entity-statement"/>
+	  This Claim is used in this specification as specified in <xref target="common-claims"/>
 	  to represent metadata about the Entity.
 	</t>
       </section>
 
       <section anchor="constraintsClaim" title='"constraints" Claim'>
 	<t>
-	  The <spanx style="verb">constraints</spanx> claim
+	  The <spanx style="verb">constraints</spanx> Claim
 	  is used for conveying constraints pertaining to the JWT.
 	  Its value is a JSON object.
 	  The details of the constraints contained are application-specific.
-	  Use of this claim is OPTIONAL.
+	  Use of this Claim is OPTIONAL.
 	</t>
 	<t>
-	  For instance, the <spanx style="verb">constraints</spanx> claim
+	  For instance, the <spanx style="verb">constraints</spanx> Claim
 	  might be used to impose material thickness limits for a physical object.
-	  This claim is used in this specification in <xref target="entity-statement"/>
+	  This Claim is used in this specification as specified in <xref target="ss-specific"/>
 	  to represent constraints on the Trust Chain for the Entity.
 	</t>
       </section>
 
       <section anchor="critClaim" title='"crit" (Critical) Claim'>
 	<t>
-	  The <spanx style="verb">crit</spanx> (critical) claim
-	  indicates that extensions to the set of claims
+	  The <spanx style="verb">crit</spanx> (critical) Claim
+	  indicates that extensions to the set of Claims
 	  specified for use in this type of JWT are being used
 	  that MUST be understood and processed.
 	  It is used in the same way that
 	  the <spanx style="verb">crit</spanx> header parameter
 	  is used for extension JOSE header parameters
 	  that MUST be understood and processed.
-	  Its value is an array listing the claim names
+	  Its value is an array listing the Claim Names
 	  present in the JWT that use those extensions.
-	  If any of the listed claims are not
+	  If any of the listed Claims are not
 	  understood and supported by the recipient, then the JWT is invalid.
-	  Producers MUST NOT include claim names already
+	  Producers MUST NOT include Claim Names already
 	  specified for use in this type of JWT,
 	  duplicate names, or
-	  names that do not occur as claim names in the JWT
+	  names that do not occur as Claim Names in the JWT
 	  in the <spanx style="verb">crit</spanx> list.
 	  Producers MUST NOT use the empty array
 	  <spanx style="verb">[]</spanx>
 	  as the <spanx style="verb">crit</spanx> value.
-	  Use of this claim is OPTIONAL.
+	  Use of this Claim is OPTIONAL.
 	</t>
 	<t>
-	  This claim is used in this specification in <xref target="entity-statement"/>
-	  to identify claims not defined by this specification
+	  This Claim is used in this specification as specified in <xref target="common-claims"/>
+	  to identify Claims not defined by this specification
 	  that MUST be understood and processed
 	  when used in Entity Statements.
 	</t>
@@ -7453,7 +7626,7 @@ HTTP/1.1 302 Found
 
       <section anchor="refClaim" title='"ref" (Reference) Claim'>
 	<t>
-	  The <spanx style="verb">ref</spanx> (reference) claim
+	  The <spanx style="verb">ref</spanx> (reference) Claim
 	  is used for conveying the URI for a resource pertaining to the JWT.
 	  It plays a similar role in a JWT as
 	  the <spanx style="verb">href</spanx> property does in HTML.
@@ -7461,13 +7634,13 @@ HTTP/1.1 302 Found
 	  is generally application specific.
 	  The <spanx style="verb">ref</spanx> value is a case-sensitive string
 	  containing a URI value.
-	  Use of this claim is OPTIONAL.
+	  Use of this Claim is OPTIONAL.
 	</t>
 	<t>
 	  For instance, a JWT referring to a contract between two parties might use
-	  the <spanx style="verb">ref</spanx> (reference) claim
+	  the <spanx style="verb">ref</spanx> (reference) Claim
 	  to refer to a resource at which the contract terms can be read.
-	  This claim is used in this specification in <xref target="trust_mark_claims"/>
+	  This Claim is used in this specification as specified in <xref target="trust_mark_claims"/>
 	  to provide a URL referring to human-readable information
 	  about the issuance of the Trust Mark.
 	</t>
@@ -7475,17 +7648,17 @@ HTTP/1.1 302 Found
 
       <section anchor="delegationClaim" title='"delegation" Claim'>
 	<t>
-	  The <spanx style="verb">delegation</spanx> claim expresses that
-	  authority is being delegated to the party referenced in the claim value.
+	  The <spanx style="verb">delegation</spanx> Claim expresses that
+	  authority is being delegated to the party referenced in the Claim Value.
 	  The <spanx style="verb">delegation</spanx> value is a case-sensitive string
 	  containing a StringOrURI value.
-	  Use of this claim is OPTIONAL.
+	  Use of this Claim is OPTIONAL.
 	</t>
 	<t>
-	  For instance, the <spanx style="verb">delegation</spanx> claim
+	  For instance, the <spanx style="verb">delegation</spanx> Claim
 	  might be used to express that the referenced party may sign
 	  a legal document on behalf of the subject.
-	  This claim is used in this specification in <xref target="trust_mark_claims"/>
+	  This Claim is used in this specification as specified in <xref target="trust_mark_claims"/>
 	  to represent delegation of the right to issue Trust Marks
 	  with a particular identifier.
 	</t>
@@ -7493,15 +7666,15 @@ HTTP/1.1 302 Found
 
       <section anchor="logo_uriClaim" title='"logo_uri" (Logo URI) Claim'>
 	<t>
-	  The <spanx style="verb">logo_uri</spanx> claim
+	  The <spanx style="verb">logo_uri</spanx> Claim
 	  value is a URI that references a logo pertaining to the JWT.
-	  Use of this claim is OPTIONAL.
+	  Use of this Claim is OPTIONAL.
 	</t>
 	<t>
-	  For instance, the <spanx style="verb">logo_uri</spanx> claim
+	  For instance, the <spanx style="verb">logo_uri</spanx> Claim
 	  might be used to represent the location from which to retrieve
 	  the logo of an organization to display in a user interface.
-	  This claim is used in this specification in <xref target="trust_mark_claims"/>
+	  This Claim is used in this specification as specified in <xref target="trust_mark_claims"/>
 	  to convey a URL that references a logo for the Entity.
 	</t>
       </section>
@@ -7509,7 +7682,7 @@ HTTP/1.1 302 Found
 
     <section anchor="ClaimsLanguagesAndScripts" title="Claims Languages and Scripts">
       <t>
-        Human-readable claim values and claim values that reference human-readable values
+        Human-readable Claim Values and Claim Values that reference human-readable values
         MAY be represented in multiple languages and scripts.
         This specification enables such representations in the same manner as defined in
         Section 5.2 of <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
@@ -7626,8 +7799,8 @@ HTTP/1.1 302 Found
 	Processing some OpenID Federation messages requires comparing
 	values in the messages to other values.
 	For example, the Entity Identifier in
-	an <spanx style="verb">iss</spanx> claim might be compared to
-	the Entity Identifier in a <spanx style="verb">sub</spanx> claim.
+	an <spanx style="verb">iss</spanx> Claim might be compared to
+	the Entity Identifier in a <spanx style="verb">sub</spanx> Claim.
 	Comparing Unicode <xref target="UNICODE"/> strings,
 	however, has significant security implications.
       </t>
@@ -7722,14 +7895,176 @@ HTTP/1.1 302 Found
           as mandated in <xref target="fetching-es"/>.
 	</t>
       </section>
-          <section anchor="anchor_resolver" title="Trust Anchors and Resolvers Go Together">
+
+      <section title="Federation Discovery and Trust Chain Resolution Patterns" anchor="discovery_patterns">
+	<t>
+	  This section describes different patterns that implementations may use for discovering
+	  entities within a federation and for resolving Trust Chains. It is important to distinguish
+	  between two related but distinct concepts:
+	  <list style="symbols">
+	    <t>
+	      <strong>Discovery</strong>: The process of finding entities that are part of a federation,
+	      typically to build directories or catalogs of available service providers.
+	    </t>
+	    <t>
+	      <strong>Trust Chain Resolution</strong>: The process of building and validating a Trust Chain
+	      from a known entity to a Trust Anchor, as described in <xref target="resolving_trust"/>.
+	      This process is also known as Federation Entity Discovery in this specification
+	      (per the definition in <xref target="Terminology"/>).
+	    </t>
+	  </list>
+	</t>
+
+	<t>
+	  While these patterns may involve both discovery and Trust Chain resolution, they serve different
+	  purposes and may be used independently, depending on the use case. For example, a discovery service
+	  building a directory of OpenID Providers may collect entity identifiers without necessarily
+	  resolving Trust Chains for all discovered entities, since the actual Trust Chain resolution
+	  may occur later on, for example, when an RP and OP engage in an authentication transaction,
+          and use the Trust Chain resolution process described in <xref target="resolving_trust"/>.
+	</t>
+
+	<t>
+	  Implementations may support one or more of the following patterns:
+	  <list style="symbols">
+	    <t>
+	      <xref target="bottom_up_discovery">Bottom-Up Trust Chain Resolution</xref>: Resolving Trust Chains
+	      starting from a known entity identifier, as described in <xref target="resolving_trust"/>.
+	    </t>
+	    <t>
+	      <xref target="top_down_discovery">Top-Down Discovery</xref>: Finding entities within a federation
+	      by starting from a Trust Anchor and traversing down the hierarchy.
+	    </t>
+	    <t>
+	      <xref target="single_point_discovery">Single Point of Trust Resolution</xref>: Delegating Trust Chain
+	      resolution to a trusted resolver implementing the Resolve Endpoint.
+	    </t>
+	  </list>
+	</t>
+
+	<t>
+	  Federation operators may choose to support multiple patterns to accommodate different use cases
+	  and integration scenarios. The choice of supported patterns affects the federation's usability
+	  and the types of applications that can effectively integrate with it.
+	</t>
+
+	<section title="Bottom-Up Trust Chain Resolution" anchor="bottom_up_discovery">
+	  <t>
+	    Bottom-up Trust Chain resolution is the process described in <xref target="resolving_trust"/>,
+	    also known as Federation Entity Discovery (see the definition in the Terminology section).
+	    This process starts with a known Entity Identifier and builds a Trust Chain by traversing up the
+	    federation hierarchy until reaching a Trust Anchor. This pattern is not discovery in the sense of
+	    finding unknown entities, but rather trust resolution for a known entity.
+	  </t>
+
+	  <t>
+	    This pattern is used when an entity needs to verify the trustworthiness of another entity whose
+	    Entity Identifier is already known. This is typically used for:
+	    <list style="symbols">
+	      <t>OpenID Providers verifying Relying Parties during authentication requests,</t>
+	      <t>Resource servers verifying Client trustworthiness,</t>
+	      <t>Any Entity validating incoming requests from known parties, and</t>
+	      <t>Dynamic trust establishment in federated environments.</t>
+	    </list>
+	  </t>
+
+	  <t>
+	    The bottom-up Trust Chain resolution process follows these steps, as described in <xref target="resolving_trust"/>:
+	    <list style="numbers">
+	      <t>Start with the subject entity's Entity Configuration (provided or fetched using the process defined in <xref target="federation_configuration"/>).</t>
+	      <t>Use <spanx style="verb">authority_hints</spanx> to identify immediate superior entities.</t>
+	      <t>Fetch Entity Configuration for each Superior Entity.</t>
+	      <t>Use Fetch Endpoints (as defined in <xref target="fetch_statement"/>) to obtain Subordinate Statements about the subject entity.</t>
+	      <t>Recursively traverse up the hierarchy until reaching a Trust Anchor.</t>
+	      <t>Build and validate the complete Trust Chain.</t>
+	      <t>Apply federation policies to derive resolved metadata.</t>
+	    </list>
+	  </t>
+	</section>
+
+	<section title="Top-Down Discovery" anchor="top_down_discovery">
+	  <t>
+	    Top-down discovery is the process of finding entities that are part of a federation by starting
+	    from a known Trust Anchor and traversing down the federation hierarchy. This pattern is used
+	    when the goal is to discover available entities, particularly entities of specific Entity Types,
+	    without necessarily knowing their Entity Identifiers in advance.
+	  </t>
+
+	  <t>
+	    This pattern is particularly useful for:
+	    <list style="symbols">
+	      <t>Service discovery by Relying Parties looking for OpenID Providers,</t>
+	      <t>Resource discovery by Clients looking for specific service types,</t>
+	      <t>Federation browsing and exploration, and</t>
+	      <t>Building provider directories and catalogs (e.g., WAYF services, Seamless Access).</t>
+	    </list>
+	  </t>
+
+	  <t>
+	    The top-down discovery process follows these steps:
+	    <list style="numbers">
+	      <t>Start with a known Trust Anchor that the discovering entity trusts.</t>
+	      <t>Use the list endpoint (as defined in <xref target="entity_listing"/>) to discover Immediate Subordinate entities.</t>
+	      <t>Filter by <spanx style="verb">entity_type</spanx> parameter to find protocol-specific providers (e.g., <spanx style="verb">openid_provider</spanx>).</t>
+	      <t>For Intermediate entities, recursively traverse their Subordinates.</t>
+	      <t>Collect Entity Identifiers and optionally Entity Configurations for discovered entities.</t>
+	    </list>
+	  </t>
+
+	  <t>
+	    Note that top-down discovery may or may not include Trust Chain resolution, depending on the use case.
+	    For example, when building a directory of OpenID Providers for user selection at login time, the discovery
+	    service may collect entity identifiers and basic metadata without resolving Trust Chains for all discovered
+	    entities. However, if the discovery service needs to verify that entities
+	    are properly registered in the federation before including them in the directory, it may choose to perform Trust Chain resolution as part of the discovery process.
+	  </t>
+
+	</section>
+
+	<section title="Single Point of Trust Resolution" anchor="single_point_discovery">
+	  <t>
+	    Single point of trust resolution delegates the entire Trust Chain resolution process to a trusted
+	    resolver implementing the Resolve Endpoint defined in <xref target="resolve"/>. This pattern allows
+	    entities to offload the complexity of Trust Chain resolution to a specialized service.
+	  </t>
+
+	  <t>
+	    This pattern is useful for:
+	    <list style="symbols">
+	      <t>Entities that want to offload Trust Chain resolution complexity,</t>
+	      <t>Centralized trust evaluation services,</t>
+	      <t>Performance optimization by caching resolved metadata, and</t>
+	      <t>Simplified integration for lightweight clients.</t>
+	    </list>
+	  </t>
+
+	  <t>
+	    Note that this pattern requires the Entity Identifier of the subject entity to be known in advance.
+	    It does not provide discovery functionality in the sense of finding unknown entities within a federation.
+	  </t>
+
+	  <t>
+	    The single point of trust resolution process follows these steps:
+	    <list style="numbers">
+	      <t>Identify a trusted resolver with a Resolve Endpoint.</t>
+	      <t>Submit the subject Entity Identifier and Trust Anchor to the resolver.</t>
+	      <t>The resolver performs complete Trust Chain resolution internally (following the bottom-up pattern).</t>
+	      <t>The resolver returns resolved metadata and Trust Marks.</t>
+	      <t>Optionally verify the resolver's own Trust Chain.</t>
+	      <t>Use resolved metadata for protocol operations.</t>
+	    </list>
+	  </t>
+	</section>
+      </section>
+
+      <section anchor="anchor_resolver" title="Trust Anchors and Resolvers Go Together">
         <t>
         If only one resolver is present in a federation, that entity should be
         both Trust Anchor and Resolver. If so, users of the resolver will not have to
         collect and evaluate Trust Chains for the Resolver. The Trust Anchor is by definition trusted
         and if the entity also serves as Resolver, that service will be implicitly trusted.
         </t>
-</section>
+      </section>
     <section anchor="one_service" title="One Entity, One Service">
         <t>
         Apart from letting an entity provide both the Trust Anchor and Resolver services, there is a good reason for
@@ -7742,9 +8077,9 @@ HTTP/1.1 302 Found
             When validating trust marks in an Entity Statement, it can be split into three parts.
             <list style="hanging">
                 <t hangText="Validating Trust Marks in the Context of Validating an Entity Statement">
-            <vspace/>
+                    <vspace/>
                     According to the text on Entity Statement Validation in <xref target="ESValidation"/>, validating a
-                    Trust Mark is confined to validating the syntax of the claim value,
+                    Trust Mark is confined to validating the syntax of the Claim Value,
                     including that the <spanx style="verb">trust_mark_type</spanx> value is consistent.
                 </t>
                 <t hangText="Validating a Specific Trust Mark">
@@ -7894,7 +8229,7 @@ HTTP/1.1 302 Found
 	    evaluating Trust Marks about other Entities
 	    through standard network diagnostic tools like
 	    IPv4/IPv6 addresses and DNS Whois entries.
-	    To mitigate tracking risks, implementers can use short-lived Trust Marks,
+	    To mitigate tracking risks, implementations can use short-lived Trust Marks,
 	    or use the Trust Marked Entities Listing (<xref target="tm_listing"/>)
 	    with only the <spanx style="verb">trust_mark_type</spanx> parameter
 	    and not the <spanx style="verb">sub</spanx> parameter,
@@ -7911,6 +8246,136 @@ HTTP/1.1 302 Found
 
     <section anchor="IANA" title="IANA Considerations">
 
+      <section anchor="DynRegRegistrations" title="OAuth Dynamic Client Registration Metadata Registration">
+        <t>
+          This specification registers the following client metadata entries
+          in the IANA "OAuth Dynamic Client Registration Metadata" registry
+          <xref target="IANA.OAuth.Parameters"/>
+          established by <xref target="RFC7591"/>.
+        </t>
+          <t>
+            <?rfc subcompact="yes"?>
+            <list style="symbols">
+              <t>
+                Client Metadata Name: <spanx style="verb">client_registration_types</spanx>
+              </t>
+              <t>
+                Client Metadata Description:
+                An array of strings specifying the client registration types the RP wants to use
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="RP_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>
+                Client Metadata Name: <spanx style="verb">signed_jwks_uri</spanx>
+              </t>
+              <t>
+                Client Metadata Description:
+                URL referencing a signed JWT having the client's JWK Set document as its payload
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="jwks_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+          <t>
+            <list style="symbols">
+              <t>
+                Client Metadata Name: <spanx style="verb">organization_name</spanx>
+              </t>
+              <t>
+                Client Metadata Description:
+                Human-readable name representing the organization owning this client
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="informational_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Client Metadata Name: <spanx style="verb">description</spanx>
+	      </t>
+	      <t>
+		Client Metadata Description:
+		Human-readable brief description of this client presentable to the End-User
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="informational_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Client Metadata Name: <spanx style="verb">keywords</spanx>
+	      </t>
+	      <t>
+		Client Metadata Description:
+		JSON array with one or more strings representing search keywords, tags, categories, or labels that apply to this client
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="informational_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Client Metadata Name: <spanx style="verb">information_uri</spanx>
+	      </t>
+	      <t>
+		Client Metadata Description:
+		URL for documentation of additional information about this client viewable by the End-User
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="informational_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+          <t>
+            <list style='symbols'>
+              <t>
+                Client Metadata Name: <spanx style="verb">organization_uri</spanx>
+              </t>
+              <t>
+                Client Metadata Description:
+		URL of a Web page for the organization owning this client
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="informational_metadata"/> of this specification
+              </t>
+            </list>
+          </t>
+        <?rfc subcompact="no"?>
+      </section>
+
       <section anchor="MetadataRegistry" title="OAuth Authorization Server Metadata Registration">
         <t>
           This specification registers the following metadata entries in the
@@ -7918,7 +8383,6 @@ HTTP/1.1 302 Found
           established by <xref target="RFC8414"/>.
         </t>
 
-        <section anchor='MetadataContents' title='Registry Contents'>
           <t>
             <?rfc subcompact="yes"?>
             <list style='symbols'>
@@ -8124,153 +8588,195 @@ HTTP/1.1 302 Found
               </t>
             </list>
           </t>
-        </section>
         <?rfc subcompact="no"?>
 
       </section>
 
-      <section anchor="DynRegRegistrations" title="OAuth Dynamic Client Registration Metadata Registration">
+      <section anchor="ResourceRegistrations" title="OAuth Protected Resource Metadata Registration">
+	<t>
+	  This specification registers the following protected resource metadata entries
+	  in the IANA "OAuth Protected Resource Metadata" registry
+	  <xref target="IANA.OAuth.Parameters"/>
+	  established by <xref target="RFC9728"/>.
+	</t>
+	  <t>
+	    <?rfc subcompact="yes"?>
+	    <list style="symbols">
+	      <t>
+		Metadata Name: <spanx style="verb">signed_jwks_uri</spanx>
+	      </t>
+	      <t>
+		Metadata Description:
+		URL referencing a signed JWT having the protected resource's JWK Set document as its payload
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="jwks_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Metadata Name: <spanx style="verb">jwks</spanx>
+	      </t>
+	      <t>
+		Metadata Description:
+		JSON Web Key Set document, passed by value
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="jwks_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Metadata Name: <spanx style="verb">organization_name</spanx>
+	      </t>
+	      <t>
+		Metadata Description:
+		Human-readable name representing the organization owning this protected resource
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="informational_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Metadata Name: <spanx style="verb">description</spanx>
+	      </t>
+	      <t>
+		Metadata Description:
+		Human-readable brief description of this protected resource presentable to the End-User
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="informational_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Metadata Name: <spanx style="verb">keywords</spanx>
+	      </t>
+	      <t>
+		Metadata Description:
+		JSON array with one or more strings representing search keywords, tags, categories, or labels that apply to this protected resource
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="informational_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Metadata Name: <spanx style="verb">contacts</spanx>
+	      </t>
+	      <t>
+		Metadata Description:
+		Array of strings representing ways to contact people responsible for this protected resource, typically email addresses
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="informational_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Metadata Name: <spanx style="verb">logo_uri</spanx>
+	      </t>
+	      <t>
+		Metadata Description:
+		URL that references a logo for the organization owning this protected resource
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="informational_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Metadata Name: <spanx style="verb">organization_uri</spanx>
+	      </t>
+	      <t>
+		Metadata Description:
+		URL of a Web page for the organization owning this protected resource
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="informational_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	<?rfc subcompact="no"?>
+      </section>
+
+      <section anchor="ParameterRegistry" title="OAuth Parameters Registration">
         <t>
-          This specification registers the following client metadata entries
-          in the IANA "OAuth Dynamic Client Registration Metadata" registry
-          <xref target="IANA.OAuth.Parameters"/>
-          established by <xref target="RFC7591"/>.
+          This specification registers the following parameter in the IANA "OAuth
+          Parameters" registry <xref target="IANA.OAuth.Parameters"/> established
+          by <xref target="RFC6749"/>.
         </t>
-        <section anchor="DynRegContents" title="Registry Contents">
+
           <t>
             <?rfc subcompact="yes"?>
-            <list style="symbols">
-              <t>
-                Client Metadata Name: <spanx style="verb">client_registration_types</spanx>
-              </t>
-              <t>
-                Client Metadata Description:
-                An array of strings specifying the client registration types the RP wants to use
-              </t>
-              <t>
-                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-              </t>
-              <t>
-                Specification Document(s): <xref target="RP_metadata"/> of this specification
-              </t>
-            </list>
-          </t>
-          <t>
-            <list style="symbols">
-              <t>
-                Client Metadata Name: <spanx style="verb">signed_jwks_uri</spanx>
-              </t>
-              <t>
-                Client Metadata Description:
-                URL referencing a signed JWT having the client's JWK Set document as its payload
-              </t>
-              <t>
-                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-              </t>
-              <t>
-                Specification Document(s): <xref target="jwks_metadata"/> of this specification
-              </t>
-            </list>
-          </t>
-          <t>
-            <list style="symbols">
-              <t>
-                Client Metadata Name: <spanx style="verb">organization_name</spanx>
-              </t>
-              <t>
-                Client Metadata Description:
-                Human-readable name representing the organization owning this client
-              </t>
-              <t>
-                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-              </t>
-              <t>
-                Specification Document(s): <xref target="informational_metadata"/> of this specification
-              </t>
-            </list>
-          </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Client Metadata Name: <spanx style="verb">description</spanx>
-	      </t>
-	      <t>
-		Client Metadata Description:
-		Human-readable brief description of this client presentable to the End-User
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="informational_metadata"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Client Metadata Name: <spanx style="verb">keywords</spanx>
-	      </t>
-	      <t>
-		Client Metadata Description:
-		JSON array with one or more strings representing search keywords, tags, categories, or labels that apply to this client
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="informational_metadata"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Client Metadata Name: <spanx style="verb">information_uri</spanx>
-	      </t>
-	      <t>
-		Client Metadata Description:
-		URL for documentation of additional information about this client viewable by the End-User
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="informational_metadata"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-          <t>
             <list style='symbols'>
               <t>
-                Client Metadata Name: <spanx style="verb">organization_uri</spanx>
+                Parameter Name:
+                <spanx style="verb">trust_chain</spanx>
               </t>
               <t>
-                Client Metadata Description:
-		URL of a Web page for the organization owning this client
+                Parameter Usage Location: authorization request
               </t>
               <t>
                 Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
               </t>
               <t>
-                Specification Document(s): <xref target="informational_metadata"/> of this specification
+                Specification Document(s): <xref target="trust_chain-param"/> of this specification
               </t>
             </list>
           </t>
-        </section>
-        <?rfc subcompact="no"?>
+	<?rfc subcompact="no"?>
+
       </section>
 
       <section anchor="ErrorReg" title="OAuth Extensions Error Registration">
 
         <t>
-          This section registers the following values in the
+          This specification registers the following values in the
           IANA "OAuth Extensions Error Registry" registry
           <xref target="IANA.OAuth.Parameters"/>
           established by <xref target="RFC6749"/>.
         </t>
 
-        <section title="Registry Contents" anchor="ErrorContents">
           <t>
             <?rfc subcompact="yes"?>
             <list style="symbols">
@@ -8393,18 +8899,508 @@ HTTP/1.1 302 Found
               <t>Reference: <xref target="error_response"/> of this specification</t>
             </list>
           </t>
-        </section>
         <?rfc subcompact="no"?>
+      </section>
+
+      <section anchor="JwsHeaderRegistry" title="JSON Web Signature and Encryption Header Parameters Registration">
+        <t>
+	  This specification registers the following JWS header parameters in
+	  the IANA "JSON Web Signature and Encryption Header Parameters" registry <xref target="IANA.JOSE"/>
+	  established by <xref target="RFC7515"/>.
+        </t>
+
+          <t>
+            <?rfc subcompact="yes"?>
+            <list style='symbols'>
+              <t>
+                Header Parameter Name:
+                <spanx style="verb">trust_chain</spanx>
+              </t>
+              <t>
+                Header Parameter Description: OpenID Federation Trust Chain
+              </t>
+              <t>
+                Header Parameter Usage Location: JWS
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="trust_chain_head_param"/> of this specification
+              </t>
+	    </list>
+	  </t>
+	  <t>
+            <list style='symbols'>
+              <t>
+                Header Parameter Name:
+                <spanx style="verb">peer_trust_chain</spanx>
+              </t>
+              <t>
+                Header Parameter Description: OpenID Federation Peer Trust Chain
+              </t>
+              <t>
+                Header Parameter Usage Location: JWS
+              </t>
+              <t>
+                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+              </t>
+              <t>
+                Specification Document(s): <xref target="peer_trust_chain_head_param"/> of this specification
+              </t>
+            </list>
+          </t>
+	<?rfc subcompact="no"?>
+
+      </section>
+
+      <section title="JSON Web Key Parameters Registration" anchor="JWKParamReg">
+	<t>
+	  This specification registers the following parameters in
+	  the IANA "JSON Web Key Parameters" registry <xref target="IANA.JOSE"/>
+	  established by <xref target="RFC7517"/>.
+	</t>
+
+	  <t> <?rfc subcompact="yes"?>
+	  <list style='symbols'>
+	    <t>
+	      Parameter Name: <spanx style="verb">iat</spanx>
+	    </t>
+	    <t>
+	      Parameter Description: Issued At, as defined in RFC 7519
+	    </t>
+	    <t>
+	      Used with "kty" Value(s): *
+	    </t>
+	    <t>
+	      Parameter Information Class: Public
+	    </t>
+	    <t>
+	      Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	    </t>
+	    <t>
+	      Specification Document(s): <xref target="HistKeysResp" /> of this specification
+	    </t>
+	  </list>
+	  </t>
+	  <t>
+	    <list style='symbols'>
+	      <t>
+		Parameter Name: <spanx style="verb">nbf</spanx>
+	      </t>
+	      <t>
+		Parameter Description: Not Before, as defined in RFC 7519
+	      </t>
+	      <t>
+		Used with "kty" Value(s): *
+	      </t>
+	      <t>
+		Parameter Information Class: Public
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="HistKeysResp" /> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style='symbols'>
+	      <t>
+		Parameter Name: <spanx style="verb">exp</spanx>
+	      </t>
+	      <t>
+		Parameter Description: Expiration Time, as defined in RFC 7519
+	      </t>
+	      <t>
+		Used with "kty" Value(s): *
+	      </t>
+	      <t>
+		Parameter Information Class: Public
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="HistKeysResp" /> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style='symbols'>
+	      <t>
+		Parameter Name: <spanx style="verb">revoked</spanx>
+	      </t>
+	      <t>
+		Parameter Description: Revoked Key Properties
+	      </t>
+	      <t>
+		Used with "kty" Value(s): *
+	      </t>
+	      <t>
+		Parameter Information Class: Public
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="HistKeysResp" /> of this specification
+	      </t>
+	    </list>
+	  </t>
+	<?rfc subcompact="no"?>
+      </section>
+
+      <section anchor="ClaimsRegistry" title="JSON Web Token Claims Registration">
+	<t>
+	  This specification registers the following Claims in
+	  the IANA "JSON Web Token Claims" registry <xref target="IANA.JWT.Claims"/>
+	  established by <xref target="RFC7519"/>.
+	</t>
+
+	  <t>
+	    <?rfc subcompact="yes"?>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">jwks</spanx>
+	      </t>
+	      <t>
+		Claim Description: JSON Web Key Set
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="jwksClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">metadata</spanx>
+	      </t>
+	      <t>
+		Claim Description: Metadata object
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="metadataClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">constraints</spanx>
+	      </t>
+	      <t>
+		Claim Description: Constraints object
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="constraintsClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">crit</spanx>
+	      </t>
+	      <t>
+		Claim Description: List of Claims in this JWT defined by extensions to this kind of JWT that MUST be understood and processed
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="critClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">ref</spanx>
+	      </t>
+	      <t>
+		Claim Description: Reference
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="refClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">delegation</spanx>
+	      </t>
+	      <t>
+		Claim Description: Delegation
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="delegationClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">logo_uri</spanx>
+	      </t>
+	      <t>
+		Claim Description: URI referencing a logo
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="logo_uriClaim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">authority_hints</spanx>
+	      </t>
+	      <t>
+		Claim Description: Authority Hints
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="ec-specific"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_anchor_hints</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Anchor Hints
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="ec-specific"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_marks</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Marks
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="ec-specific"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_mark_issuers</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Mark Issuers
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="ec-specific"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_mark_owners</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Mark Owners
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="ec-specific"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">metadata_policy</spanx>
+	      </t>
+	      <t>
+		Claim Description: Metadata Policy object
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="ss-specific"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">metadata_policy_crit</spanx>
+	      </t>
+	      <t>
+		Claim Description: Critical Metadata Policy Operators
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="ss-specific"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">source_endpoint</spanx>
+	      </t>
+	      <t>
+		Claim Description: Source Endpoint URL
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="ss-specific"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_chain</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Chain
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="trust_chain"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">keys</spanx>
+	      </t>
+	      <t>
+		Claim Description: Array of JWK values in a JWK Set
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="common_metadata"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_mark_type</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Mark Type Identifier
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="trust_mark_claims"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_anchor</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Anchor ID
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="trust_anchor-claim"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	<?rfc subcompact="no"?>
+      </section>
+
+      <section anchor="WellKnownRegistry" title="Well-Known URI Registration">
+	<t>
+	  This specification registers the following well-known URI in the IANA
+	  "Well-Known URIs" registry <xref target="IANA.well-known"/>
+	  established by <xref target="RFC5785"/>.
+	</t>
+
+	  <t>
+	  <?rfc subcompact="yes"?>
+	  <list style='symbols'>
+	    <t>
+	      URI suffix: <spanx style="verb">openid-federation</spanx>
+	    </t>
+	    <t>
+	      Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	    </t>
+	    <t>
+	      Specification document: <xref target="federation_configuration"/> of this specification
+	    </t>
+	    <t>
+	      Related information: (none)
+	    </t>
+	  </list>
+	  </t>
+	<?rfc subcompact="no"?>
       </section>
 
       <section title="Media Type Registration" anchor="MediaReg">
         <t>
-          This section registers the following media types <xref target="RFC2046"/>
+          This specification registers the following media types <xref target="RFC2046"/>
           in the "Media Types" registry <xref target="IANA.MediaTypes"/>
           in the manner described in <xref target="RFC6838"/>.
         </t>
 
-        <section title="Registry Contents" anchor="MediaContents">
           <t>
             <?rfc subcompact="yes"?>
             <list style="symbols">
@@ -8956,650 +9952,6 @@ HTTP/1.1 302 Found
             </list>
             <?rfc subcompact="no"?>
           </t>
-
-        </section>
-
-      </section>
-
-      <section anchor="ParameterRegistry" title="OAuth Parameters Registration">
-        <t>
-          This specification registers the following parameter name in the IANA "OAuth
-          Parameters" registry <xref target="IANA.OAuth.Parameters"/> established
-          by <xref target="RFC6749"/>.
-        </t>
-
-        <section anchor="ParameterContents" title="Registry Contents">
-          <t>
-            <?rfc subcompact="yes"?>
-            <list style='symbols'>
-              <t>
-                Parameter Name:
-                <spanx style="verb">trust_chain</spanx>
-              </t>
-              <t>
-                Parameter Usage Location: authorization request
-              </t>
-              <t>
-                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-              </t>
-              <t>
-                Specification Document(s): <xref target="trust_chain_authz"/> of this specification
-              </t>
-            </list>
-          </t>
-        </section>
-
-      </section>
-
-      <section anchor="JwsHeaderRegistry" title="JSON Web Signature and Encryption Header Parameters Registration">
-        <t>
-	  This specification registers the following JWS header parameter in
-	  the IANA "JSON Web Signature and Encryption Header Parameters" registry <xref target="IANA.JOSE"/>
-	  established by <xref target="RFC7515"/>.
-        </t>
-
-        <section anchor="HeaderContents" title="Registry Contents">
-          <t>
-            <?rfc subcompact="yes"?>
-            <list style='symbols'>
-              <t>
-                Header Parameter Name:
-                <spanx style="verb">trust_chain</spanx>
-              </t>
-              <t>
-                Header Parameter Description: OpenID Federation Trust Chain
-              </t>
-              <t>
-                Header Parameter Usage Location: JWS
-              </t>
-              <t>
-                Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-              </t>
-              <t>
-                Specification Document(s): <xref target="trust_chain"/> of this specification
-              </t>
-            </list>
-          </t>
-        </section>
-
-      </section>
-
-      <section anchor="ClaimsRegistry" title="JSON Web Token Claims Registration">
-	<t>
-	  This specification registers the following claims in
-	  the IANA "JSON Web Token Claims" registry <xref target="IANA.JWT.Claims"/>
-	  established by <xref target="RFC7519"/>.
-	</t>
-
-	<section anchor="ClaimsContents" title="Registry Contents">
-	  <t>
-	    <?rfc subcompact="yes"?>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">jwks</spanx>
-	      </t>
-	      <t>
-		Claim Description: JSON Web Key Set
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="jwksClaim"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">metadata</spanx>
-	      </t>
-	      <t>
-		Claim Description: Metadata object
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="metadataClaim"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">constraints</spanx>
-	      </t>
-	      <t>
-		Claim Description: Constraints object
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="constraintsClaim"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">crit</spanx>
-	      </t>
-	      <t>
-		Claim Description: Critical Claim
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="critClaim"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">ref</spanx>
-	      </t>
-	      <t>
-		Claim Description: Reference
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="refClaim"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">delegation</spanx>
-	      </t>
-	      <t>
-		Claim Description: Delegation
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="delegationClaim"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">logo_uri</spanx>
-	      </t>
-	      <t>
-		Claim Description: URI referencing a logo
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="logo_uriClaim"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">authority_hints</spanx>
-	      </t>
-	      <t>
-		Claim Description: Authority Hints
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="entity-statement"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">metadata_policy</spanx>
-	      </t>
-	      <t>
-		Claim Description: Metadata Policy object
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="entity-statement"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">metadata_policy_crit</spanx>
-	      </t>
-	      <t>
-		Claim Description: Critical Metadata Policy Operators
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="entity-statement"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">trust_marks</spanx>
-	      </t>
-	      <t>
-		Claim Description: Trust Marks
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="entity-statement"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">trust_mark_issuers</spanx>
-	      </t>
-	      <t>
-		Claim Description: Trust Mark Issuers
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="entity-statement"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">trust_mark_owners</spanx>
-	      </t>
-	      <t>
-		Claim Description: Trust Mark Owners
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="entity-statement"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">source_endpoint</spanx>
-	      </t>
-	      <t>
-		Claim Description: Source Endpoint URL
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="entity-statement"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">trust_chain</spanx>
-	      </t>
-	      <t>
-		Claim Description: Trust Chain
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="trust_chain"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">keys</spanx>
-	      </t>
-	      <t>
-		Claim Description: Array of JWK values in a JWK Set
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="common_metadata"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">trust_mark_type</spanx>
-	      </t>
-	      <t>
-		Claim Description: Trust Mark Type Identifier
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="trust_mark_claims"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Claim Name: <spanx style="verb">trust_anchor</spanx>
-	      </t>
-	      <t>
-		Claim Description: Trust Anchor ID
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="ExplicitRegOP"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	</section>
-	<?rfc subcompact="no"?>
-      </section>
-
-      <section title="JSON Web Key Parameters Registration" anchor="JWKParamReg">
-	<t>
-	  This specification registers the following parameters in
-	  the IANA "JSON Web Key Parameters" registry <xref target="IANA.JOSE"/>
-	  established by <xref target="RFC7517"/>.
-	</t>
-
-	<section title="Registry Contents" anchor="JWKContents">
-	  <t> <?rfc subcompact="yes"?>
-	  <list style='symbols'>
-	    <t>
-	      Parameter Name: <spanx style="verb">iat</spanx>
-	    </t>
-	    <t>
-	      Parameter Description: Issued At, as defined in RFC 7519
-	    </t>
-	    <t>
-	      Used with "kty" Value(s): *
-	    </t>
-	    <t>
-	      Parameter Information Class: Public
-	    </t>
-	    <t>
-	      Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	    </t>
-	    <t>
-	      Specification Document(s): <xref target="HistKeysResp" /> of this specification
-	    </t>
-	  </list>
-	  </t>
-	  <t>
-	    <list style='symbols'>
-	      <t>
-		Parameter Name: <spanx style="verb">nbf</spanx>
-	      </t>
-	      <t>
-		Parameter Description: Not Before, as defined in RFC 7519
-	      </t>
-	      <t>
-		Used with "kty" Value(s): *
-	      </t>
-	      <t>
-		Parameter Information Class: Public
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="HistKeysResp" /> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style='symbols'>
-	      <t>
-		Parameter Name: <spanx style="verb">exp</spanx>
-	      </t>
-	      <t>
-		Parameter Description: Expiration Time, as defined in RFC 7519
-	      </t>
-	      <t>
-		Used with "kty" Value(s): *
-	      </t>
-	      <t>
-		Parameter Information Class: Public
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="HistKeysResp" /> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style='symbols'>
-	      <t>
-		Parameter Name: <spanx style="verb">revoked</spanx>
-	      </t>
-	      <t>
-		Parameter Description: Revoked Key Properties
-	      </t>
-	      <t>
-		Used with "kty" Value(s): *
-	      </t>
-	      <t>
-		Parameter Information Class: Public
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="HistKeysResp" /> of this specification
-	      </t>
-	    </list>
-	  </t>
-	</section>
-	<?rfc subcompact="no"?>
-      </section>
-
-      <section anchor="WellKnownRegistry" title="Well-Known URI Registry">
-	<t>
-	  This specification registers the following well-known URI in the IANA
-	  "Well-Known URIs" registry <xref target="IANA.well-known"/>
-	  established by <xref target="RFC5785"/>.
-	</t>
-
-	<section anchor='WellKnownContents' title='Registry Contents'>
-	  <t> <?rfc subcompact="yes"?>
-	  <list style='symbols'>
-	    <t>
-	      URI suffix: <spanx style="verb">openid-federation</spanx>
-	    </t>
-	    <t>
-	      Change controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	    </t>
-	    <t>
-	      Specification document: <xref target="federation_configuration"/> of this specification
-	    </t>
-	    <t>
-	      Related information: (none)
-	    </t>
-	  </list>
-	  </t>
-	</section>
-	<?rfc subcompact="no"?>
-      </section>
-
-      <section anchor="ResourceRegistrations" title="OAuth Protected Resource Metadata Registration">
-	<t>
-	  This specification registers the following protected resource metadata entries
-	  in the IANA "OAuth Protected Resource Metadata" registry
-	  <xref target="IANA.OAuth.Parameters"/>
-	  established by <xref target="RFC9728"/>.
-	</t>
-	<section anchor="ResourceContents" title="Registry Contents">
-	  <t>
-	    <?rfc subcompact="yes"?>
-	    <list style="symbols">
-	      <t>
-		Metadata Name: <spanx style="verb">signed_jwks_uri</spanx>
-	      </t>
-	      <t>
-		Metadata Description:
-		URL referencing a signed JWT having the protected resource's JWK Set document as its payload
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="jwks_metadata"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Metadata Name: <spanx style="verb">jwks</spanx>
-	      </t>
-	      <t>
-		Metadata Description:
-		JSON Web Key Set document, passed by value
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="jwks_metadata"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Metadata Name: <spanx style="verb">organization_name</spanx>
-	      </t>
-	      <t>
-		Metadata Description:
-		Human-readable name representing the organization owning this protected resource
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="informational_metadata"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Metadata Name: <spanx style="verb">description</spanx>
-	      </t>
-	      <t>
-		Metadata Description:
-		Human-readable brief description of this protected resource presentable to the End-User
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="informational_metadata"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Metadata Name: <spanx style="verb">keywords</spanx>
-	      </t>
-	      <t>
-		Metadata Description:
-		JSON array with one or more strings representing search keywords, tags, categories, or labels that apply to this protected resource
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="informational_metadata"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Metadata Name: <spanx style="verb">contacts</spanx>
-	      </t>
-	      <t>
-		Metadata Description:
-		Array of strings representing ways to contact people responsible for this protected resource, typically email addresses
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="informational_metadata"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Metadata Name: <spanx style="verb">logo_uri</spanx>
-	      </t>
-	      <t>
-		Metadata Description:
-		URL that references a logo for the organization owning this protected resource
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="informational_metadata"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
-		Metadata Name: <spanx style="verb">organization_uri</spanx>
-	      </t>
-	      <t>
-		Metadata Description:
-		URL of a Web page for the organization owning this protected resource
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="informational_metadata"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	</section>
-	<?rfc subcompact="no"?>
       </section>
 
     </section>
@@ -9775,7 +10127,7 @@ HTTP/1.1 302 Found
           <title>Financial-grade API Security Profile 1.0 - Part 2: Advanced</title>
 
           <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
-            <organization abbrev="NRI">Nat Consulting</organization>
+            <organization>Nat Consulting</organization>
           </author>
 
           <author fullname="John Bradley" initials="J." surname="Bradley">
@@ -9838,6 +10190,19 @@ HTTP/1.1 302 Found
           </author>
 	  <date/>
         </front>
+      </reference>
+
+      <reference anchor="App-Fed-Linkage"
+		 target="https://connect2id.com/blog/how-to-link-an-app-protocol-to-an-openid-federation-trust-layer">
+	<front>
+	  <title>How to link an application protocol to an OpenID Federation 1.0 trust layer</title>
+
+	  <author fullname="Vladimir Dzhuvinov" initials="V." surname="Dzhuvinov">
+	    <organization>Connect2id</organization>
+	  </author>
+
+	  <date day="4" month="December" year="2024"/>
+	</front>
       </reference>
 
     </references>
@@ -11057,6 +11422,15 @@ Host: op.umu.se
       <t>[[ To be removed from the final specification ]]</t>
 
       <t>
+	-46
+	<list style="symbols">
+	  <t>
+	    TBD
+	  </t>
+	</list>
+      </t>
+
+      <t>
 	-45
 	<list style="symbols">
 	  <t>
@@ -11066,6 +11440,10 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #216: Added two more implementation considerations.
+	  </t>
+	  <t>
+	    Added Implementation Considerations section
+	    "Federation Discovery and Trust Chain Resolution Patterns".
 	  </t>
 	  <t>
 	    Fixed #237: The order of the elements resulting from merging two sets is not defined.
@@ -11078,6 +11456,27 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #243: Be explicit about what to do when server validation fails in automatic registration.
+	  </t>
+	  <t>
+	    Fixed #100: Define the <spanx style="verb">peer_trust_chain</spanx>
+	    header parameter and use it in combination with the
+	    <spanx style="verb">trust_chain</spanx> header parameter to provide
+	    the Federation Integrity and Metadata Integrity properties.
+	    This PR leaves the existing <spanx style="verb">trust_chain</spanx>
+	    request parameter for Automatic Registration and
+	    the existing Trust Chain-as-request-body syntax for Explicit Registration
+	    in place for historical reasons, but defines that the use of
+	    the <spanx style="verb">trust_chain</spanx> header parameter
+	    is RECOMMENDED over either of those more ad-hoc methods.
+	  </t>
+	  <t>
+	    Fixed #283: Provided better description of "crit" Claim in IANA registration.
+	  </t>
+	  <t>
+	    Fixed #215: Added <spanx style="verb">trust_anchor_hints</spanx> Entity Configuration Claim.
+	  </t>
+	  <t>
+	    Fixed #275: Uppercased "Claim", "Claim Name", and "Claim Value".
 	  </t>
 	</list>
       </t>
@@ -11616,12 +12015,12 @@ Host: op.umu.se
       <t>
         Addressed #2087: Metadata policy: Added an explicit description of the
         principles governing the metadata_policy and common requirements for all
-        policy operators, standard as well as additional operators that maybe
+        policy operators, standard as well as additional operators that may be
         defined in future specifications that rely on OpenID Federation 1.0. In
         particular, stated the principles in regard to the 1) hierarchy of
         Entities in Trust Chains, 2) the specificity of policies, 3) the
         granularity of policies, 4) the action types of operators, 5) that
-        metadata policy enforcement is integral to the trust chain, 6) the
+        metadata policy enforcement is integral to the Trust Chain, 6) the
         determinism of the metadata policy specification.
       </t>
       <t>
@@ -11853,7 +12252,7 @@ Host: op.umu.se
       </t>
       <t>
         Fixed #1957: Explicit Registration: Clarifies OP processing of Explicit
-        Registration requests with a trust chain.
+        Registration requests with a Trust Chain.
       </t>
       <t>
         Addressed #1655: Explicit Registration: Simplifies the expression of
@@ -12659,6 +13058,7 @@ Host: op.umu.se
 	The authors wish to acknowledge the contributions of the following
 	individuals and organizations to this specification:
 	Marcus Almgren,
+	Patrick Amrein,
 	Pasquale Barbaro,
 	Brian Campbell,
 	David Chadwick,
@@ -12674,10 +13074,14 @@ Host: op.umu.se
 	Łukasz Jaromin,
 	Takahiko Kawasaki,
 	Torsten Lodderstedt,
+	Josh Mandel,
 	Francesco Marino,
 	John Melati,
 	Alexey Melnikov,
+	Henri Mikkonen,
+	Aaron Parecki,
 	Eduardo Perottoni,
+	Chris Phillips,
 	Roberto Polli,
 	Justin Richer,
 	Jouke Roorda,
