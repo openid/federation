@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="24" month="November" year="2025"/>
+    <date day="29" month="November" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -509,7 +509,7 @@
           and use additional Claims.
         </t>
 
-	<section title="Claims that MUST or MAY appear in both Entity Configurations and Subordinate Statements"
+	<section title="Claims that MUST or MAY Appear in both Entity Configurations and Subordinate Statements"
 		 anchor="common-claims">
 
         <t>
@@ -619,7 +619,7 @@
       </section>
 
       <section anchor="ec-specific"
-	       title="Claims that MUST or MAY appear in Entity Configurations but not Subordinate Statements">
+	       title="Claims that MUST or MAY Appear in Entity Configurations but not Subordinate Statements">
 	<t>
 	  <list style="hanging">
             <t hangText="authority_hints" anchor="authority_hints">
@@ -710,7 +710,7 @@
       </section>
 
       <section anchor="ss-specific"
-	       title="Claims that MUST or MAY appear in Subordinate Statements but not Entity Configurations">
+	       title="Claims that MUST or MAY Appear in Subordinate Statements but not Entity Configurations">
 	<t>
 	  <list style="hanging">
             <t hangText="constraints">
@@ -766,16 +766,38 @@
 	</t>
       </section>
 
-	<section title="Claims Specific to Explicit Registration Responses"
+	<section title="Claims Used in Explicit Registration Requests"
+		 anchor="explicit-reg-request-specific">
+	  <list style="hanging">
+	    <t hangText="aud">
+	      <vspace/>
+	      OPTIONAL.
+	      The "aud" (audience) value MUST be the Entity Identifier of the OP
+	      and MUST NOT include any other values.
+	      This Claim is used in Explicit Registration requests
+	      and is not a general Entity Statement Claim.
+	    </t>
+	  </list>
+	</section>
+
+	<section title="Claims Used in Explicit Registration Responses"
 		 anchor="explicit-reg-response-specific">
 	  <list style="hanging">
+	    <t hangText="aud">
+	      <vspace/>
+	      OPTIONAL.
+	      The "aud" (audience) value MUST be the Entity Identifier of the RP
+	      and MUST NOT include any other values.
+	      This Claim is used in Explicit Registration responses
+	      and is not a general Entity Statement Claim.
+	    </t>
             <t hangText="trust_anchor">
               <vspace/>
               OPTIONAL.  Its value MUST be the Entity Identifier of the Trust Anchor
                 that the OP selected to process the Explicit Registration request,
 		as specified in <xref target="trust_anchor-claim"/>.
-                This Claim is specific to Explicit Registration responses and is not a
-                general Entity Statement Claim.
+		This Claim is specific to Explicit Registration responses
+		and is not a general Entity Statement Claim.
             </t>
           </list>
         </section>
@@ -953,6 +975,16 @@
 		Implementations MAY also make a fetch call to the URL
 		to validate that this is the fetch endpoint
 		from which the Entity Statement was issued.
+	      </t>
+	      <t>
+		If the <spanx style="verb">aud</spanx> Claim is present,
+		if the Entity Statement is an Explicit Registration request,
+		validate that the value is the Entity Identifier for an OP,
+		or if the Entity Statement is an Explicit Registration request,
+		validate that the value is the Entity Identifier for an RP.
+		This Claim MUST NOT be present in Entity Statements that are not
+		Explicit Registration requests or responses
+		unless its use is otherwise specified in an extension being employed.
 	      </t>
 	      <t>
 		If the <spanx style="verb">trust_anchor</spanx> Claim is present,
@@ -6376,8 +6408,8 @@ Content-Type: application/json
               <list style="hanging">
                 <t hangText="aud">
                   <vspace/>
-                  REQUIRED. The Audience (aud) value MUST be
-                  the OP's Entity Identifier
+		  REQUIRED. The "aud" (audience) value MUST be
+		  the Entity Identifier of the OP
 		  and MUST NOT include any other values.
                 </t>
                 <t hangText="client_id">
@@ -6653,7 +6685,7 @@ GET /authorize?
                   for <spanx style="verb">private_key_jwt</spanx> in Section 9 of
                   <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
 		  In this case, the audience of the client authentication JWT
-		  MUST be the OP's Entity Identifier
+		  MUST be the Entity Identifier of the OP
 		  and MUST NOT include any other values.
                 </t>
                 <t>
@@ -7038,9 +7070,10 @@ HTTP/1.1 302 Found
                 <t hangText="aud">
                   <vspace/>
                   REQUIRED.
-                  Its value MUST be the Entity Identifier of the OP.
-		  This Claim is only used in Explicit Registration requests,
-		  since it is not a general Entity Statement Claim.
+		  The "aud" (audience) value MUST be the Entity Identifier of the OP
+		  and MUST NOT include any other values.
+		  This Claim is used in Explicit Registration requests
+		  and is not a general Entity Statement Claim.
                 </t>
                 <t hangText="authority_hints">
                   <vspace/>
@@ -7295,10 +7328,10 @@ HTTP/1.1 302 Found
                   <t hangText="aud">
                     <vspace/>
                     REQUIRED.
-                    Its value MUST be the RP's Entity Identifier
+                    The "aud" (audience) value MUST be the Entity Identifier of the RP
 		    and MUST NOT include any other values.
 		    This Claim is used in Explicit Registration responses
-		    but is not a general Entity Statement Claim.
+		    and is not a general Entity Statement Claim.
                   </t>
                   <t hangText="trust_anchor" anchor="trust_anchor-claim">
                     <vspace/>
@@ -11418,7 +11451,8 @@ Host: op.umu.se
 	-46
 	<list style="symbols">
 	  <t>
-	    TBD
+	    Describe the use of the "aud" (audience) claim
+	    in Explicit Registration requests and responses.
 	  </t>
 	</list>
       </t>
