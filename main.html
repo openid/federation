@@ -1249,7 +1249,7 @@ li > p:last-of-type:only-child {
 <thead><tr>
 <td class="left"></td>
 <td class="center">OpenID Federation</td>
-<td class="right">November 2025</td>
+<td class="right">December 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Hedberg, et al.</td>
@@ -1264,7 +1264,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-11-25" class="published">25 November 2025</time>
+<time datetime="2025-12-02" class="published">2 December 2025</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -3298,11 +3298,16 @@ li > p:last-of-type:only-child {
           The <code>trust_chain</code> JWS header parameter is a
           JSON array containing the sequence of Entity Statements
    that comprise the Trust Chain between
-   the Entity that is the subject of the JWT and the selected Trust Anchor.
-   The subject of the JWT MUST be the Entity Identifier of the
-   Entity at the beginning of the Trust Chain.
+   an Entity and the selected Trust Anchor.
+   The Trust Chain typically begins with the Entity Configuration
+   of the subject of the JWT in which this header parameter occurs;
+   however, in some cases, the Trust Chain will begin with
+   the Entity Configuration of a different Entity,
+   such as the issuer, which is the case for
+   the Resolve Response defined in <a href="#resolve-response" class="auto internal xref">Section 8.3.2</a>.
           The issuer of the JWT SHOULD select a Trust Anchor
-   that the subject has in common with the audience of the JWT.
+   that the Entity at the beginning of the Trust Chain
+   has in common with the audience of the JWT.
    Otherwise, the issuer is free to select the Trust Anchor to use.
           Most signed JWTs MAY include the
           <code>trust_chain</code> JWS header parameter,
@@ -14036,7 +14041,7 @@ Host: op.umu.se
 </li>
         <li class="normal" id="appendix-C-3.2">
           <p id="appendix-C-3.2.1">
-      Fixed #295: Removed unnecessary
+     Fixed #295: Removed unnecessary
      "sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>" phrases.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.3">
@@ -14045,11 +14050,17 @@ Host: op.umu.se
 </li>
         <li class="normal" id="appendix-C-3.4">
           <p id="appendix-C-3.4.1">
-      Fixed #297: Made statement about non-interoperable JSON a note.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
+     Fixed #297: Made statement about non-interoperable JSON a note.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-3.5">
           <p id="appendix-C-3.5.1">
-      Fixed #298: Referenced RFC 9525 for Web PKI.<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
+     Fixed #298: Referenced RFC 9525 for Web PKI.<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.6">
+          <p id="appendix-C-3.6.1">
+     Allow the Trust Chain in the
+     <code>trust_chain</code> header parameter
+     to begin with an Entity other than the JWT's subject.<a href="#appendix-C-3.6.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
