@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="25" month="November" year="2025"/>
+    <date day="2" month="December" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -1328,11 +1328,16 @@
           The <spanx style="verb">trust_chain</spanx> JWS header parameter is a
           JSON array containing the sequence of Entity Statements
 	  that comprise the Trust Chain between
-	  the Entity that is the subject of the JWT and the selected Trust Anchor.
-	  The subject of the JWT MUST be the Entity Identifier of the
-	  Entity at the beginning of the Trust Chain.
+	  an Entity and the selected Trust Anchor.
+	  The Trust Chain typically begins with the Entity Configuration
+	  of the subject of the JWT in which this header parameter occurs;
+	  however, in some cases, the Trust Chain will begin with
+	  the Entity Configuration of a different Entity,
+	  such as the issuer, which is the case for
+	  the Resolve Response defined in <xref target="resolve-response"/>.
           The issuer of the JWT SHOULD select a Trust Anchor
-	  that the subject has in common with the audience of the JWT.
+	  that the Entity at the beginning of the Trust Chain
+	  has in common with the audience of the JWT.
 	  Otherwise, the issuer is free to select the Trust Anchor to use.
           Most signed JWTs MAY include the
           <spanx style="verb">trust_chain</spanx> JWS header parameter,
@@ -11420,24 +11425,29 @@ Host: op.umu.se
 	  <t>
 	    Fixed #293: Said that ECs and ESs MUST NOT contain the
 	    <spanx style="verb">peer_trust_chain</spanx> header parameter.
-    </t>
+	  </t>
 	  <t>
-      Fixed #295: Removed unnecessary
+	    Fixed #295: Removed unnecessary
 	    "sorted as specified in <xref target="trust_chain"/>" phrases.
 	  </t>
-    <t>
+	  <t>
 	    Fixed #296: Reworded odd language about operators that can be combined.
-    </t>
-    <t>
-      Fixed #297: Made statement about non-interoperable JSON a note.
-    </t>
-    <t>
-      Fixed #298: Referenced RFC 9525 for Web PKI.
-    </t>
+	  </t>
+	  <t>
+	    Fixed #297: Made statement about non-interoperable JSON a note.
+	  </t>
+	  <t>
+	    Fixed #298: Referenced RFC 9525 for Web PKI.
+	  </t>
+	  <t>
+	    Allow the Trust Chain in the
+	    <spanx style="verb">trust_chain</spanx> header parameter
+	    to begin with an Entity other than the JWT's subject.
+	  </t>
 	</list>
-</t>
+      </t>
 
-<t>
+      <t>
 	-45
 	<list style="symbols">
 	  <t>
