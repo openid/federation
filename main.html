@@ -2318,8 +2318,9 @@ li > p:last-of-type:only-child {
  (typically a Leaf Entity) is a member of
         the federation rooted at the Trust Anchor.<a href="#section-2-3" class="pilcrow">¶</a></p>
 <p id="section-2-4">
-        The chain that links the statements to one another is verified with
-        the signature of each statement, as described in <a href="#trust_chain" class="auto internal xref">Section 4</a>.<a href="#section-2-4" class="pilcrow">¶</a></p>
+        The Trust Chain that links the Entity Configurations to one another
+ is verified with the signature of each Entity Configuration,
+ as described in <a href="#trust_chain" class="auto internal xref">Section 4</a>.<a href="#section-2-4" class="pilcrow">¶</a></p>
 <p id="section-2-5">
         Once there is a verified Trust Chain, the federation policy is applied
         and the metadata for the Trust Chain subject
@@ -3296,9 +3297,8 @@ li > p:last-of-type:only-child {
 <p id="section-4.3-1">
           The <code>trust_chain</code> JWS header parameter is a
           JSON array containing the sequence of Entity Statements
-          that proves the trust relationship between the subject of the JWT
-          and the selected Trust Anchor,
-   sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
+   that comprise the Trust Chain between
+   the Entity that is the subject of the JWT and the selected Trust Anchor.
    The subject of the JWT MUST be the Entity Identifier of the
    Entity at the beginning of the Trust Chain.
           The issuer of the JWT SHOULD select a Trust Anchor
@@ -3346,8 +3346,7 @@ li > p:last-of-type:only-child {
      JSON array containing the sequence of Entity Statements
      that comprise the Trust Chain between
      an Entity that this Entity is establishing trust with
-     and the selected Trust Anchor,
-     sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
+     and the selected Trust Anchor.
      If the <code>trust_chain</code> header parameter
      is also present,
      the Trust Anchor for both Trust Chains SHOULD be the same.
@@ -6726,8 +6725,7 @@ Host: openid.sunet.se
 <p id="section-8.3.2-4">
             The resolve response JWT MUST return the Trust Chain
      from the subject to the Trust Anchor
-     in its <code>trust_chain</code> parameter,
-            sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.<a href="#section-8.3.2-4" class="pilcrow">¶</a></p>
+     in its <code>trust_chain</code> parameter.<a href="#section-8.3.2-4" class="pilcrow">¶</a></p>
 <p id="section-8.3.2-5">
             The resolve response MAY also return the Trust Chain
             from its issuer to the Trust Anchor
@@ -6796,8 +6794,7 @@ Host: openid.sunet.se
             <dd style="margin-left: 1.5em" id="section-8.3.2-9.12">
                 REQUIRED. Array containing the sequence of Entity Statements
                 that compose the Trust Chain, starting with the subject and
-                ending with the selected Trust Anchor,
-                sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.<a href="#section-8.3.2-9.12" class="pilcrow">¶</a>
+                ending with the selected Trust Anchor.<a href="#section-8.3.2-9.12" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-8.3.2-9.13">trust_marks</dt>
@@ -8550,8 +8547,7 @@ Content-Type: application/json
                 <p id="section-12.1.1.1-2.16.1">
                   OPTIONAL. Array containing the sequence of Entity Statements
                   that comprise the Trust Chain between the RP making
-                  the request and the selected Trust Anchor,
-                  sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
+                  the request and the selected Trust Anchor.
                   When the RP and the OP are part of the same federation,
                   the RP MUST select a Trust Anchor that it has in common
                   with the OP; otherwise, the RP is free to select the
@@ -14035,6 +14031,11 @@ Host: op.umu.se
           <p id="appendix-C-3.1.1">
      Fixed #293: Said that ECs and ESs MUST NOT contain the
      <code>peer_trust_chain</code> header parameter.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.2">
+          <p id="appendix-C-3.2.1">
+      Fixed #295: Removed unnecessary
+     "sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>" phrases.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
