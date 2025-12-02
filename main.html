@@ -1350,7 +1350,7 @@ li > p:last-of-type:only-child {
                 <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-claims-that-must-or-may-app" class="internal xref">Claims that MUST or MAY appear in both Entity Configurations and Subordinate Statements</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
-                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-claims-that-must-or-may-appe" class="internal xref">Claims that MUST or MAY appear in Entity Configurations but not Subordinate Statements</a></p>
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-claims-that-must-or-may-appe" class="internal xref">Claims that MUST or MAY appear in Entity Configurations but not in Subordinate Statements</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
                 <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-claims-that-must-or-may-appea" class="internal xref">Claims that MUST or MAY appear in Subordinate Statements but not Entity Configurations</a></p>
@@ -2377,16 +2377,16 @@ li > p:last-of-type:only-child {
           The subject of the JWT is the Entity itself.
           The issuer of the JWT is the party that issued the Entity Statement.
           All Entities in a federation publish an Entity Statement about themselves
-   called an Entity Configuration.
-   Superior Entities in a federation publish Entity Statements about
-   their Immediate Subordinate Entities called Subordinate Statements.<a href="#section-3-1" class="pilcrow">¶</a></p>
+          called an Entity Configuration.
+          Superior Entities in a federation publish Entity Statements about
+          their Immediate Subordinate Entities called Subordinate Statements.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <p id="section-3-2">
           Entity Statement JWTs MUST be explicitly typed, by setting the
           <code>typ</code> header parameter to
           <code>entity-statement+jwt</code> to prevent
           cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.
-   Entity Statements without a <code>typ</code> header parameter
-   or with a different <code>typ</code> value MUST be rejected.<a href="#section-3-2" class="pilcrow">¶</a></p>
+          Entity Statements without a <code>typ</code> header parameter
+          or with a different <code>typ</code> value MUST be rejected.<a href="#section-3-2" class="pilcrow">¶</a></p>
 <p id="section-3-3">
           The Entity Statement is signed using one of the private keys of the issuer
           Entity in the form of a <span><a href="#RFC7515" class="internal xref">JSON Web Signature
@@ -2454,8 +2454,8 @@ li > p:last-of-type:only-child {
        to sign Subordinate Statements about their Immediate Subordinates,
        and for other signatures made by Federation Entities,
        such as Trust Mark signatures.
-              This Claim is only OPTIONAL for the Entity Statement returned
-              from an OP when the client is doing Explicit Registration;
+              However, this claim is OPTIONAL for the Entity Statement returned
+              as an Explicit Registration Response, as defined in <a href="#cliregresp" class="auto internal xref">Section 12.2.3</a>;
               in all other cases, it is REQUIRED.
               Every JWK in the JWK Set MUST have a unique <code>kid</code> (Key ID) value.
               It is RECOMMENDED that the Key ID be the JWK Thumbprint <span>[<a href="#RFC7638" class="cite xref">RFC7638</a>]</span>
@@ -2475,9 +2475,9 @@ li > p:last-of-type:only-child {
           <dd style="margin-left: 1.5em" id="section-3.1-1.12">
             <p id="section-3.1-1.12.1">
               OPTIONAL.
-       JSON object that declares roles that the Entity plays -
-       its Entity Types - and that contains metadata for those Entity Types.
-       Each member name of the JSON
+              JSON object that declares roles that the Entity plays -
+              its Entity Types - and that contains metadata for those Entity Types.
+              Each member name of the JSON
               object is an Entity Type Identifier, and each value MUST be a JSON
               object containing metadata parameters according to the metadata
               schema of the Entity Type.<a href="#section-3.1-1.12.1" class="pilcrow">¶</a></p>
@@ -2527,7 +2527,7 @@ li > p:last-of-type:only-child {
 <div id="ec-specific">
 <section id="section-3.2">
         <h3 id="name-claims-that-must-or-may-appe">
-<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-claims-that-must-or-may-appe" class="section-name selfRef">Claims that MUST or MAY appear in Entity Configurations but not Subordinate Statements</a>
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-claims-that-must-or-may-appe" class="section-name selfRef">Claims that MUST or MAY appear in Entity Configurations but not in Subordinate Statements</a>
         </h3>
 <span class="break"></span><dl class="dlNewline" id="section-3.2-1">
           <dt id="section-3.2-1.1">authority_hints</dt>
@@ -2573,7 +2573,7 @@ li > p:last-of-type:only-child {
                   The value of this Claim MUST be the same as the value of the
                   <code>trust_mark_type</code>
                   Claim contained in the Trust Mark JWT that is the value of the
-   <code>trust_mark</code> Claim in this object.<a href="#section-3.2-1.6.2.2" class="pilcrow">¶</a>
+               <code>trust_mark</code> Claim in this object.<a href="#section-3.2-1.6.2.2" class="pilcrow">¶</a>
 </dd>
               <dd class="break"></dd>
 <dt id="section-3.2-1.6.2.3">trust_mark</dt>
@@ -2595,8 +2595,8 @@ li > p:last-of-type:only-child {
               for an Entity that is not a Trust Anchor.
               It is a JSON object with member names that are Trust Mark type identifiers and
               each corresponding value being an array of Entity Identifiers
-       that are trusted to represent the accreditation authority
-       for Trust Marks with that identifier.
+              that are trusted to represent the accreditation authority
+              for Trust Marks with that identifier.
               If the array following a Trust Mark type identifier is empty,
               anyone MAY issue Trust Marks with that identifier.
               Trust Marks are described in <a href="#trust_marks" class="auto internal xref">Section 7</a>.<a href="#section-3.2-1.8" class="pilcrow">¶</a>
@@ -7043,8 +7043,8 @@ trust_mark=eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6 ...
           <dd class="break"></dd>
 </dl>
 <p id="section-8.4.2-6">
-     Additional Trust Mark Status Claims MAY be defined and used
-     in addition to the one above.<a href="#section-8.4.2-6" class="pilcrow">¶</a></p>
+     Additional Trust Mark Status JWT Claims MAY be defined and used
+     in addition to those listed above.<a href="#section-8.4.2-6" class="pilcrow">¶</a></p>
 <p id="section-8.4.2-7" class="keepWithNext">
                 The following is a non-normative example of the JWT Claims Set for
  a response with the status <code>active</code>:<a href="#section-8.4.2-7" class="pilcrow">¶</a></p>
@@ -9181,8 +9181,8 @@ HTTP/1.1 302 Found
             <dd style="margin-left: 1.5em" id="section-12.2.1-4.12">
                   REQUIRED.
                   Its value MUST be the Entity Identifier of the OP.
-   This Claim is only used in Explicit Registration requests,
-   since it is not a general Entity Statement Claim.<a href="#section-12.2.1-4.12" class="pilcrow">¶</a>
+                  This Claim is used in Explicit Registration requests; it is not
+                  a general Entity Statement Claim.<a href="#section-12.2.1-4.12" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-12.2.1-4.13">authority_hints</dt>
@@ -9504,7 +9504,7 @@ HTTP/1.1 302 Found
  <code>explicit-registration-response+jwt</code>
  (and not <code>entity-statement+jwt</code>)
  to prevent confusion between the Explicit Registration response
- and normal Entity Statements.<a href="#section-12.2.3-9" class="pilcrow">¶</a></p>
+ and other kinds of Entity Statements.<a href="#section-12.2.3-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ExplicitError">
@@ -9540,8 +9540,8 @@ HTTP/1.1 302 Found
 </li>
             <li id="section-12.2.5-1.2">
               <p id="section-12.2.5-1.2.1">
-     The RP MUST verify that the <code>aud</code> (audience)
-     Claim Value is its Entity Identifier.<a href="#section-12.2.5-1.2.1" class="pilcrow">¶</a></p>
+                    The RP MUST verify that the <code>aud</code> (audience)
+                    Claim Value is its Entity Identifier.<a href="#section-12.2.5-1.2.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-12.2.5-1.3">
               <p id="section-12.2.5-1.3.1">
