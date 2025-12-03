@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="24" month="November" year="2025"/>
+    <date day="2" month="December" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -416,8 +416,9 @@
         the federation rooted at the Trust Anchor.
       </t>
       <t>
-        The chain that links the statements to one another is verified with
-        the signature of each statement, as described in <xref target="trust_chain"/>.
+        The Trust Chain that links the Entity Configurations to one another
+	is verified with the signature of each Entity Configuration,
+	as described in <xref target="trust_chain"/>.
       </t>
       <t>
         Once there is a verified Trust Chain, the federation policy is applied
@@ -454,10 +455,10 @@
 	</t>
 	<t>
 	  Note that this cryptographic trust mechanism intentionally does not rely on
-	  Web PKI / TLS certificates for signing keys.
+	  Web PKI / TLS <xref target="RFC9525"/> certificates for signing keys.
 	  Which TLS certificates are considered trusted can vary considerably between systems
 	  depending upon which certificate authorities are considered trusted
-	  and there are have been notable examples of ostensibly trusted certificates being compromised.
+	  and there have been notable examples of ostensibly trusted certificates being compromised.
 	  For those reasons, this specification explicitly eschews reliance on Web PKI
 	  in favor of self-managed public keys, in this case,
 	  keys represented as JSON Web Keys (JWKs) <xref target="RFC7517"/>.
@@ -473,17 +474,17 @@
           The subject of the JWT is the Entity itself.
           The issuer of the JWT is the party that issued the Entity Statement.
           All Entities in a federation publish an Entity Statement about themselves
-	  called an Entity Configuration.
-	  Superior Entities in a federation publish Entity Statements about
-	  their Immediate Subordinate Entities called Subordinate Statements.
+          called an Entity Configuration.
+          Superior Entities in a federation publish Entity Statements about
+          their Immediate Subordinate Entities called Subordinate Statements.
         </t>
         <t>
           Entity Statement JWTs MUST be explicitly typed, by setting the
           <spanx style="verb">typ</spanx> header parameter to
           <spanx style="verb">entity-statement+jwt</spanx> to prevent
           cross-JWT confusion, per Section 3.11 of <xref target="RFC8725"/>.
-	  Entity Statements without a <spanx style="verb">typ</spanx> header parameter
-	  or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
+          Entity Statements without a <spanx style="verb">typ</spanx> header parameter
+          or with a different <spanx style="verb">typ</spanx> value MUST be rejected.
         </t>
         <t>
           The Entity Statement is signed using one of the private keys of the issuer
@@ -550,8 +551,8 @@
 	      to sign Subordinate Statements about their Immediate Subordinates,
 	      and for other signatures made by Federation Entities,
 	      such as Trust Mark signatures.
-              This Claim is only OPTIONAL for the Entity Statement returned
-              from an OP when the client is doing Explicit Registration;
+              However, this claim is OPTIONAL for the Entity Statement returned
+              as an Explicit Registration Response, as defined in <xref target="cliregresp"/>;
               in all other cases, it is REQUIRED.
               Every JWK in the JWK Set MUST have a unique <spanx style="verb">kid</spanx> (Key ID) value.
               It is RECOMMENDED that the Key ID be the JWK Thumbprint <xref target="RFC7638"/>
@@ -566,12 +567,12 @@
 	      <spanx style="verb">openid_relying_party</spanx>
 	      Entity Type Identifiers.)
             </t>
-	    <t hangText="metadata">
+            <t hangText="metadata">
               <vspace/>
               OPTIONAL.
-	      JSON object that declares roles that the Entity plays -
-	      its Entity Types - and that contains metadata for those Entity Types.
-	      Each member name of the JSON
+              JSON object that declares roles that the Entity plays -
+              its Entity Types - and that contains metadata for those Entity Types.
+              Each member name of the JSON
               object is an Entity Type Identifier, and each value MUST be a JSON
               object containing metadata parameters according to the metadata
               schema of the Entity Type.
@@ -619,7 +620,7 @@
       </section>
 
       <section anchor="ec-specific"
-	       title="Claims that MUST or MAY appear in Entity Configurations but not Subordinate Statements">
+	       title="Claims that MUST or MAY appear in Entity Configurations but not in Subordinate Statements">
 	<t>
 	  <list style="hanging">
             <t hangText="authority_hints" anchor="authority_hints">
@@ -657,7 +658,7 @@
                   The value of this Claim MUST be the same as the value of the
                   <spanx style="verb">trust_mark_type</spanx>
                   Claim contained in the Trust Mark JWT that is the value of the
-		  <spanx style="verb">trust_mark</spanx> Claim in this object.
+		              <spanx style="verb">trust_mark</spanx> Claim in this object.
                 </t>
                 <t hangText="trust_mark">
                   REQUIRED. A signed JSON Web Token that represents a Trust Mark.
@@ -674,8 +675,8 @@
               for an Entity that is not a Trust Anchor.
               It is a JSON object with member names that are Trust Mark type identifiers and
               each corresponding value being an array of Entity Identifiers
-	      that are trusted to represent the accreditation authority
-	      for Trust Marks with that identifier.
+              that are trusted to represent the accreditation authority
+              for Trust Marks with that identifier.
               If the array following a Trust Mark type identifier is empty,
               anyone MAY issue Trust Marks with that identifier.
               Trust Marks are described in <xref target="trust_marks"/>.
@@ -893,13 +894,13 @@
 	      </t>
 	      <t>
 		If the <spanx style="verb">metadata_policy</spanx> Claim is present,
-		the Entity Statement be a Subordinate Statement.
+		the Entity Statement MUST be a Subordinate Statement.
 		Verify that its value is syntactically correct,
 		as specified in <xref target="metadata_policy"/>.
 	      </t>
 	      <t>
 		If the <spanx style="verb">metadata_policy_crit</spanx> Claim is present,
-		the Entity Statement be a Subordinate Statement.
+		the Entity Statement MUST be a Subordinate Statement.
 		Each array element in this Claim's value
 		MUST be a string representing a Metadata Policy operator
 		that is not defined by this specification
@@ -908,7 +909,7 @@
 	      </t>
 	      <t>
 		If the <spanx style="verb">constraints</spanx> Claim is present,
-		the Entity Statement be a Subordinate Statement.
+		the Entity Statement MUST be a Subordinate Statement.
 		Verify that its value is syntactically correct,
 		as specified in <xref target="chain_constraints"/>.
 	      </t>
@@ -954,7 +955,7 @@
 		to validate that this is the fetch endpoint
 		from which the Entity Statement was issued.
 	      </t>
-	      <t>
+        <t>
 		If the <spanx style="verb">trust_anchor</spanx> Claim is present,
 		validate that its value is a URL
 		using the <spanx style="verb">https</spanx> scheme.
@@ -1326,13 +1327,17 @@
          <t>
           The <spanx style="verb">trust_chain</spanx> JWS header parameter is a
           JSON array containing the sequence of Entity Statements
-          that proves the trust relationship between the subject of the JWT
-          and the selected Trust Anchor,
-	  sorted as specified in <xref target="trust_chain"/>.
-	  The subject of the JWT MUST be the Entity Identifier of the
-	  Entity at the beginning of the Trust Chain.
+	  that comprise the Trust Chain between
+	  an Entity and the selected Trust Anchor.
+	  The Trust Chain typically begins with the Entity Configuration
+	  of the subject of the JWT in which this header parameter occurs;
+	  however, in some cases, the Trust Chain will begin with
+	  the Entity Configuration of a different Entity,
+	  such as the issuer, which is the case for
+	  the Resolve Response defined in <xref target="resolve-response"/>.
           The issuer of the JWT SHOULD select a Trust Anchor
-	  that the subject has in common with the audience of the JWT.
+	  that the Entity at the beginning of the Trust Chain
+	  has in common with the audience of the JWT.
 	  Otherwise, the issuer is free to select the Trust Anchor to use.
           Most signed JWTs MAY include the
           <spanx style="verb">trust_chain</spanx> JWS header parameter,
@@ -1374,14 +1379,16 @@
 	    JSON array containing the sequence of Entity Statements
 	    that comprise the Trust Chain between
 	    an Entity that this Entity is establishing trust with
-	    and the selected Trust Anchor,
-	    sorted as specified in <xref target="trust_chain"/>.
+	    and the selected Trust Anchor.
 	    If the <spanx style="verb">trust_chain</spanx> header parameter
 	    is also present,
 	    the Trust Anchor for both Trust Chains SHOULD be the same.
 	    Inclusion of both Trust Chains enables achieving
 	    the Federation Integrity and Metadata Integrity properties,
 	    as defined in <xref target="App-Fed-Linkage"/>.
+	    Entity Configurations and Subordinate Statements MUST NOT
+	    contain the <spanx style="verb">peer_trust_chain</spanx> header parameter,
+	    as they are integral components of a Trust Chain.
 	    Use of this header parameter is OPTIONAL.
 	  </t>
 	</section>
@@ -2250,10 +2257,10 @@
                 <vspace/>
                 The third level contains one or more members, each representing
                 an operator that checks or modifies the metadata parameter, as
-                described in <xref target="metadata_policy_operators"/>. Only
-                operators that are allowed to be combined with one another MUST
-                be included, as described in the specification for each
-                operator.
+                described in <xref target="metadata_policy_operators"/>.
+		Only operators that are allowed to be combined with one another,
+		as defined in the specifications for each operator,
+		can be included together here.
               </t>
             </list>
           </t>
@@ -2351,15 +2358,15 @@
                 An operator MUST NOT output a metadata parameter with the
                 <spanx style="verb">null</spanx> value.
               </t>
-              <t>
-                Metadata parameters and policies that conform to the JSON
-                grammar but do not represent interoperable uses of JSON,
-                as per Sections 4 and 8 of <xref target="RFC8259"/>,
-                can cause unpredictable behavior.
-              </t>
-
             </list>
           </t>
+
+	  <t>
+	    Note that metadata parameters and policies that conform to
+	    the JSON grammar but do not represent interoperable uses of JSON,
+	    as per Sections 4 and 8 of <xref target="RFC8259"/>,
+	    can cause unpredictable behaviors.
+	  </t>
 
           <section title="Standard Operators" anchor="standard_metadata_policy_operators">
 
@@ -4626,8 +4633,7 @@ Host: openid.sunet.se
           <t>
             The resolve response JWT MUST return the Trust Chain
 	    from the subject to the Trust Anchor
-	    in its <spanx style="verb">trust_chain</spanx> parameter,
-            sorted as specified in <xref target="trust_chain"/>.
+	    in its <spanx style="verb">trust_chain</spanx> parameter.
 	  </t>
           <t>
             The resolve response MAY also return the Trust Chain
@@ -4651,7 +4657,8 @@ Host: openid.sunet.se
 	  <t>
             The response SHOULD contain the
             <spanx style="verb">aud</spanx> Claim only
-            if the requesting party is authenticated,
+            if the requesting party is authenticated
+	    as described in <xref target="ClientAuthentication"/>,
 	    in which case, the value MUST be the Entity Identifier
 	    of the requesting party
 	    and MUST NOT include any other values.
@@ -4698,8 +4705,7 @@ Host: openid.sunet.se
                 <vspace/>
                 REQUIRED. Array containing the sequence of Entity Statements
                 that compose the Trust Chain, starting with the subject and
-                ending with the selected Trust Anchor,
-                sorted as specified in <xref target="trust_chain"/>.
+                ending with the selected Trust Anchor.
               </t>
               <t hangText="trust_marks">
                 <vspace/>
@@ -4937,8 +4943,8 @@ trust_mark=eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6 ...
 	    </list>
 	  </t>
 	  <t>
-	    Additional Trust Mark Status Claims MAY be defined and used
-	    in addition to the one above.
+	    Additional Trust Mark Status JWT Claims MAY be defined and used
+	    in addition to those listed above.
 	  </t>
 
           <t>
@@ -6240,7 +6246,7 @@ Content-Type: application/json
           It is RECOMMENDED that Federation Operators provide a means of retrieving the public keys
           for the Trust Anchors it administers that is independent of those Trust Anchors' Entity Configurations.
           This is intended to provide redundancy in the eventuality of the compromise of
-          the Web PKI infrastructure underlying retrieval of public keys from Entity Configurations.
+          the Web PKI <xref target="RFC9525"/> infrastructure underlying retrieval of public keys from Entity Configurations.
         </t>
         <t>
           The keys retrieved via the independent mechanism specified by the Federation Operator
@@ -6423,8 +6429,7 @@ Content-Type: application/json
                   <vspace/>
                   OPTIONAL. Array containing the sequence of Entity Statements
                   that comprise the Trust Chain between the RP making
-                  the request and the selected Trust Anchor,
-                  sorted as specified in <xref target="trust_chain"/>.
+                  the request and the selected Trust Anchor.
                   When the RP and the OP are part of the same federation,
                   the RP MUST select a Trust Anchor that it has in common
                   with the OP; otherwise, the RP is free to select the
@@ -7040,8 +7045,8 @@ HTTP/1.1 302 Found
                   <vspace/>
                   REQUIRED.
                   Its value MUST be the Entity Identifier of the OP.
-		  This Claim is only used in Explicit Registration requests,
-		  since it is not a general Entity Statement Claim.
+                  This Claim is used in Explicit Registration requests; it is not
+                  a general Entity Statement Claim.
                 </t>
                 <t hangText="authority_hints">
                   <vspace/>
@@ -7344,7 +7349,7 @@ HTTP/1.1 302 Found
 		<spanx style="verb">explicit-registration-response+jwt</spanx>
 		(and not <spanx style="verb">entity-statement+jwt</spanx>)
 		to prevent confusion between the Explicit Registration response
-		and normal Entity Statements.
+		and other kinds of Entity Statements.
               </t>
 	    </section>
 
@@ -7372,10 +7377,10 @@ HTTP/1.1 302 Found
                     in a Trust Chain that the RP successfully resolved for the
                     OP when it prepared the Explicit Registration request.
                   </t>
-		  <t>
-		    The RP MUST verify that the <spanx style="verb">aud</spanx> (audience)
-		    Claim Value is its Entity Identifier.
-		  </t>
+                  <t>
+                    The RP MUST verify that the <spanx style="verb">aud</spanx> (audience)
+                    Claim Value is its Entity Identifier.
+                  </t>
                   <t>
                     The RP MUST verify that the
                     <spanx style="verb">trust_anchor</spanx> represents one
@@ -9297,22 +9302,6 @@ HTTP/1.1 302 Found
 	  <t>
 	    <list style="symbols">
 	      <t>
-		Claim Name: <spanx style="verb">trust_chain</spanx>
-	      </t>
-	      <t>
-		Claim Description: Trust Chain
-	      </t>
-	      <t>
-		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
-	      </t>
-	      <t>
-		Specification Document(s): <xref target="trust_chain"/> of this specification
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    <list style="symbols">
-	      <t>
 		Claim Name: <spanx style="verb">keys</spanx>
 	      </t>
 	      <t>
@@ -9322,7 +9311,7 @@ HTTP/1.1 302 Found
 		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
 	      </t>
 	      <t>
-		Specification Document(s): <xref target="common_metadata"/> of this specification
+		Specification Document(s): <xref target="jwks_metadata"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -9339,6 +9328,22 @@ HTTP/1.1 302 Found
 	      </t>
 	      <t>
 		Specification Document(s): <xref target="trust_mark_claims"/> of this specification
+	      </t>
+	    </list>
+	  </t>
+	  <t>
+	    <list style="symbols">
+	      <t>
+		Claim Name: <spanx style="verb">trust_chain</spanx>
+	      </t>
+	      <t>
+		Claim Description: Trust Chain
+	      </t>
+	      <t>
+		Change Controller: OpenID Foundation Artifact Binding Working Group - openid-specs-ab@lists.openid.net
+	      </t>
+	      <t>
+		Specification Document(s): <xref target="resolve-response"/> of this specification
 	      </t>
 	    </list>
 	  </t>
@@ -10114,6 +10119,7 @@ HTTP/1.1 302 Found
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.5785.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.6838.xml"/>
       <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.8725.xml"/>
+      <xi:include href="https://bib.ietf.org/public/rfc/bibxml/reference.RFC.9525.xml"/>
 
       <reference anchor="FAPI"
                  target="https://openid.net/specs/openid-financial-api-part-2-1_0.html">
@@ -11419,7 +11425,30 @@ Host: op.umu.se
 	-46
 	<list style="symbols">
 	  <t>
-	    TBD
+	    Fixed #293: Said that ECs and ESs MUST NOT contain the
+	    <spanx style="verb">peer_trust_chain</spanx> header parameter.
+	  </t>
+	  <t>
+	    Fixed #295: Removed unnecessary
+	    "sorted as specified in <xref target="trust_chain"/>" phrases.
+	  </t>
+	  <t>
+	    Fixed #296: Reworded odd language about operators that can be combined.
+	  </t>
+	  <t>
+	    Fixed #297: Made statement about non-interoperable JSON a note.
+	  </t>
+	  <t>
+	    Fixed #298: Referenced RFC 9525 for Web PKI.
+	  </t>
+	  <t>
+	    Allow the Trust Chain in the
+	    <spanx style="verb">trust_chain</spanx> header parameter
+	    to begin with an Entity other than the JWT's subject.
+	  </t>
+	  <t>
+	    Added reference to Client Authentication section
+	    to clarify statement about whether the caller is authenticated.
 	  </t>
 	</list>
       </t>
@@ -13054,6 +13083,7 @@ Host: op.umu.se
 	Marcus Almgren,
 	Patrick Amrein,
 	Pasquale Barbaro,
+	Peter Brand,
 	Brian Campbell,
 	David Chadwick,
 	Michele D'Amico,
@@ -13083,7 +13113,6 @@ Host: op.umu.se
 	Mischa Sallé,
 	Stefan Santesson,
 	Marcos Sanz,
-	Peter Brand,
 	Michael Schwartz,
 	Giada Sciarretta,
 	Amir Sharif,
