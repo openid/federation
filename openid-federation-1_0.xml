@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="2" month="December" year="2025"/>
+    <date day="4" month="December" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -157,10 +157,15 @@
 	<preamble>
 	  Below is an example of two federations rooted at two different
 	  Trust Anchors with some members in common.
-
 	  Every Entity is able to establish mutual trust with any
 	  other Entity by means of having at least one
 	  common Trust Anchor between them.
+	  These abbreviations are used in the diagram:
+	  OpenID Provider (OP),
+	  Relying Party (RP),
+	  Resource Server (RS),
+	  and
+	  Authorization Server (AS).
 	</preamble>
 	<name>
 	  Two Coexisting Federations with Some Members in Common
@@ -225,10 +230,10 @@
           defined by <xref target="RFC7519">JSON Web Token (JWT)</xref>,
           the terms "OpenID Provider (OP)" and "Relying Party (RP)" defined
           by <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>, and
-	  the terms "Authorization Endpoint", "Authorization Server",
+	  the terms "Authorization Endpoint", "Authorization Server (AS)",
 	  "Client", "Client Authentication", "Client Identifier", "Client Secret",
 	  "Grant Type", "Protected Resource", "Redirection URI", "Refresh Token",
-	  and "Token Endpoint"
+	  "Resource Server (RS)", and "Token Endpoint"
 	  defined by <xref target="RFC6749">OAuth 2.0</xref>.
 
         </t>
@@ -510,7 +515,7 @@
           and use additional Claims.
         </t>
 
-	<section title="Claims that MUST or MAY appear in both Entity Configurations and Subordinate Statements"
+	<section title="Claims that MUST or MAY Appear in both Entity Configurations and Subordinate Statements"
 		 anchor="common-claims">
 
         <t>
@@ -620,7 +625,7 @@
       </section>
 
       <section anchor="ec-specific"
-	       title="Claims that MUST or MAY appear in Entity Configurations but not in Subordinate Statements">
+	       title="Claims that MUST or MAY Appear in Entity Configurations but Not in Subordinate Statements">
 	<t>
 	  <list style="hanging">
             <t hangText="authority_hints" anchor="authority_hints">
@@ -711,7 +716,7 @@
       </section>
 
       <section anchor="ss-specific"
-	       title="Claims that MUST or MAY appear in Subordinate Statements but not Entity Configurations">
+	       title="Claims that MUST or MAY Appear in Subordinate Statements but Not in Entity Configurations">
 	<t>
 	  <list style="hanging">
             <t hangText="constraints">
@@ -767,16 +772,38 @@
 	</t>
       </section>
 
-	<section title="Claims Specific to Explicit Registration Responses"
+	<section title="Claims Used in Explicit Registration Requests"
+		 anchor="explicit-reg-request-specific">
+	  <list style="hanging">
+	    <t hangText="aud">
+	      <vspace/>
+	      OPTIONAL.
+	      The "aud" (audience) value MUST be the Entity Identifier of the OP
+	      and MUST NOT include any other values.
+	      This Claim is used in Explicit Registration requests;
+	      it is not a general Entity Statement Claim.
+	    </t>
+	  </list>
+	</section>
+
+	<section title="Claims Used in Explicit Registration Responses"
 		 anchor="explicit-reg-response-specific">
 	  <list style="hanging">
+	    <t hangText="aud">
+	      <vspace/>
+	      OPTIONAL.
+	      The "aud" (audience) value MUST be the Entity Identifier of the RP
+	      and MUST NOT include any other values.
+	      This Claim is used in Explicit Registration responses;
+	      it is not a general Entity Statement Claim.
+	    </t>
             <t hangText="trust_anchor">
               <vspace/>
               OPTIONAL.  Its value MUST be the Entity Identifier of the Trust Anchor
                 that the OP selected to process the Explicit Registration request,
 		as specified in <xref target="trust_anchor-claim"/>.
-                This Claim is specific to Explicit Registration responses and is not a
-                general Entity Statement Claim.
+		This Claim is specific to Explicit Registration responses;
+		it is not a general Entity Statement Claim.
             </t>
           </list>
         </section>
@@ -955,7 +982,17 @@
 		to validate that this is the fetch endpoint
 		from which the Entity Statement was issued.
 	      </t>
-        <t>
+	      <t>
+		If the <spanx style="verb">aud</spanx> Claim is present,
+		if the Entity Statement is an Explicit Registration request,
+		validate that the value is the Entity Identifier for an OP,
+		or if the Entity Statement is an Explicit Registration request,
+		validate that the value is the Entity Identifier for an RP.
+		This Claim MUST NOT be present in Entity Statements that are not
+		Explicit Registration requests or responses
+		unless its use is otherwise specified in an extension being employed.
+	      </t>
+	      <t>
 		If the <spanx style="verb">trust_anchor</spanx> Claim is present,
 		validate that its value is a URL
 		using the <spanx style="verb">https</spanx> scheme.
@@ -4690,8 +4727,9 @@ Host: openid.sunet.se
                 <vspace/>
                 REQUIRED. Number. Time when this resolution is no longer valid.
                 This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
-                It MUST correspond to the <spanx style="verb">exp</spanx> value of
-                the Trust Chain from which the resolve response was derived.
+                It MUST be the minimum of the <spanx style="verb">exp</spanx> value of
+                the Trust Chain from which the resolve response was derived,
+                as well as any Trust Mark included in the response.
               </t>
               <t hangText="metadata">
                 <vspace/>
@@ -6382,8 +6420,8 @@ Content-Type: application/json
               <list style="hanging">
                 <t hangText="aud">
                   <vspace/>
-                  REQUIRED. The Audience (aud) value MUST be
-                  the OP's Entity Identifier
+		  REQUIRED. The "aud" (audience) value MUST be
+		  the Entity Identifier of the OP
 		  and MUST NOT include any other values.
                 </t>
                 <t hangText="client_id">
@@ -6658,7 +6696,7 @@ GET /authorize?
                   for <spanx style="verb">private_key_jwt</spanx> in Section 9 of
                   <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>.
 		  In this case, the audience of the client authentication JWT
-		  MUST be the OP's Entity Identifier
+		  MUST be the Entity Identifier of the OP
 		  and MUST NOT include any other values.
                 </t>
                 <t>
@@ -7043,9 +7081,10 @@ HTTP/1.1 302 Found
                 <t hangText="aud">
                   <vspace/>
                   REQUIRED.
-                  Its value MUST be the Entity Identifier of the OP.
-                  This Claim is used in Explicit Registration requests; it is not
-                  a general Entity Statement Claim.
+		  The "aud" (audience) value MUST be the Entity Identifier of the OP
+		  and MUST NOT include any other values.
+                  This Claim is used in Explicit Registration requests;
+		  it is not a general Entity Statement Claim.
                 </t>
                 <t hangText="authority_hints">
                   <vspace/>
@@ -7300,10 +7339,10 @@ HTTP/1.1 302 Found
                   <t hangText="aud">
                     <vspace/>
                     REQUIRED.
-                    Its value MUST be the RP's Entity Identifier
+                    The "aud" (audience) value MUST be the Entity Identifier of the RP
 		    and MUST NOT include any other values.
-		    This Claim is used in Explicit Registration responses
-		    but is not a general Entity Statement Claim.
+		    This Claim is used in Explicit Registration responses;
+		    it is not a general Entity Statement Claim.
                   </t>
                   <t hangText="trust_anchor" anchor="trust_anchor-claim">
                     <vspace/>
@@ -7314,8 +7353,8 @@ HTTP/1.1 302 Found
 		    were provided in the request and/or by using the
 		    <spanx style="verb">peer_trust_chain</spanx> header parameter,
 		    this MUST match the Trust Anchors at the roots of those Trust Chains.
-		    This Claim is specific to Explicit Registration responses
-		    and is not a general Entity Statement Claim.
+		    This Claim is specific to Explicit Registration responses;
+		    it is not a general Entity Statement Claim.
                   </t>
                   <t hangText="authority_hints">
                     <vspace/>
@@ -11441,7 +11480,7 @@ Host: op.umu.se
 	    Fixed #298: Referenced RFC 9525 for Web PKI.
 	  </t>
 	  <t>
-	    Allow the Trust Chain in the
+	    Allowed the Trust Chain in the
 	    <spanx style="verb">trust_chain</spanx> header parameter
 	    to begin with an Entity other than the JWT's subject.
 	  </t>
@@ -11450,7 +11489,15 @@ Host: op.umu.se
 	    to clarify statement about whether the caller is authenticated.
 	  </t>
 	  <t>
-	    Fixed #292: Include the Trust Chain in the description of the Resolve Endpoint.
+	    Described the use of the "aud" (audience) claim
+	    in Explicit Registration requests and responses.
+	  </t>
+	  <t>
+	    Fixed #311: Clarified that the expiration of a resolve response is the minimum
+	    of the expiration of the Trust Chain and the expiration of any included Trust Mark.
+	  </t>
+	  <t>
+	    Fixed #292: Included the Trust Chain in the description of the Resolve Endpoint.
 	  </t>
 	</list>
       </t>
@@ -13085,10 +13132,12 @@ Host: op.umu.se
 	Marcus Almgren,
 	Patrick Amrein,
 	Pasquale Barbaro,
+	Ralph Bragg,
 	Peter Brand,
 	Brian Campbell,
 	David Chadwick,
 	Michele D'Amico,
+	Kushal Das,
 	Andrii Deinega,
 	Erick Domingues,
 	Heather Flanagan,
@@ -13098,7 +13147,9 @@ Host: op.umu.se
 	Pedram Hosseyni,
 	Marko Ivančić,
 	Łukasz Jaromin,
+	Leif Johansson,
 	Takahiko Kawasaki,
+	Ralf Küsters,
 	Torsten Lodderstedt,
 	Josh Mandel,
 	Francesco Marino,
@@ -13119,12 +13170,14 @@ Host: op.umu.se
 	Giada Sciarretta,
 	Amir Sharif,
 	Sean Turner,
+	Davide Vaghetti,
 	Niels van Dijk,
 	Tim Würtele,
 	Kristina Yasuda,
 	Gabriel Zachmann,
+	the JRA3T3 task force of GEANT4-2,
 	and
-	the JRA3T3 task force of GEANT4-2.
+	the SIROS Foundation.
       </t>
     </section>
 
