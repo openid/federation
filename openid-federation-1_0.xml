@@ -4722,8 +4722,9 @@ Host: openid.sunet.se
                 <vspace/>
                 REQUIRED. Number. Time when this resolution is no longer valid.
                 This is expressed as Seconds Since the Epoch, per <xref target="RFC7519"/>.
-                It MUST correspond to the <spanx style="verb">exp</spanx> value of
-                the Trust Chain from which the resolve response was derived.
+                It MUST be the minimum of the <spanx style="verb">exp</spanx> value of
+                the Trust Chain from which the resolve response was derived,
+                as well as any Trust Mark included in the response.
               </t>
               <t hangText="metadata">
                 <vspace/>
@@ -11485,6 +11486,10 @@ Host: op.umu.se
 	  <t>
 	    Describe the use of the "aud" (audience) claim
 	    in Explicit Registration requests and responses.
+    </t>
+	  <t>
+      Fixed #311: Clarified that the expiration of a resolve response is the minimum
+      of the expiration of the Trust Chain and the expiration of any included Trust Mark.
 	  </t>
 	</list>
       </t>
