@@ -1249,7 +1249,7 @@ li > p:last-of-type:only-child {
 <thead><tr>
 <td class="left"></td>
 <td class="center">OpenID Federation</td>
-<td class="right">November 2025</td>
+<td class="right">December 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Hedberg, et al.</td>
@@ -1264,7 +1264,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-11-29" class="published">29 November 2025</time>
+<time datetime="2025-12-04" class="published">4 December 2025</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -1350,7 +1350,7 @@ li > p:last-of-type:only-child {
                 <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-claims-that-must-or-may-app" class="internal xref">Claims that MUST or MAY Appear in both Entity Configurations and Subordinate Statements</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
-                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-claims-that-must-or-may-appe" class="internal xref">Claims that MUST or MAY Appear in Entity Configurations but not Subordinate Statements</a></p>
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-claims-that-must-or-may-appe" class="internal xref">Claims that MUST or MAY Appear in Entity Configurations but Not in Subordinate Statements</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
                 <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-claims-that-must-or-may-appea" class="internal xref">Claims that MUST or MAY Appear in Subordinate Statements but not Entity Configurations</a></p>
@@ -2321,8 +2321,9 @@ li > p:last-of-type:only-child {
  (typically a Leaf Entity) is a member of
         the federation rooted at the Trust Anchor.<a href="#section-2-3" class="pilcrow">¶</a></p>
 <p id="section-2-4">
-        The chain that links the statements to one another is verified with
-        the signature of each statement, as described in <a href="#trust_chain" class="auto internal xref">Section 4</a>.<a href="#section-2-4" class="pilcrow">¶</a></p>
+        The Trust Chain that links the Entity Configurations to one another
+ is verified with the signature of each Entity Configuration,
+ as described in <a href="#trust_chain" class="auto internal xref">Section 4</a>.<a href="#section-2-4" class="pilcrow">¶</a></p>
 <p id="section-2-5">
         Once there is a verified Trust Chain, the federation policy is applied
         and the metadata for the Trust Chain subject
@@ -2357,10 +2358,10 @@ li > p:last-of-type:only-child {
    research and academic federations for over a decade.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 <p id="section-2.1-2">
    Note that this cryptographic trust mechanism intentionally does not rely on
-   Web PKI / TLS certificates for signing keys.
+   Web PKI / TLS <span>[<a href="#RFC9525" class="cite xref">RFC9525</a>]</span> certificates for signing keys.
    Which TLS certificates are considered trusted can vary considerably between systems
    depending upon which certificate authorities are considered trusted
-   and there are have been notable examples of ostensibly trusted certificates being compromised.
+   and there have been notable examples of ostensibly trusted certificates being compromised.
    For those reasons, this specification explicitly eschews reliance on Web PKI
    in favor of self-managed public keys, in this case,
    keys represented as JSON Web Keys (JWKs) <span>[<a href="#RFC7517" class="cite xref">RFC7517</a>]</span>.<a href="#section-2.1-2" class="pilcrow">¶</a></p>
@@ -2380,16 +2381,16 @@ li > p:last-of-type:only-child {
           The subject of the JWT is the Entity itself.
           The issuer of the JWT is the party that issued the Entity Statement.
           All Entities in a federation publish an Entity Statement about themselves
-   called an Entity Configuration.
-   Superior Entities in a federation publish Entity Statements about
-   their Immediate Subordinate Entities called Subordinate Statements.<a href="#section-3-1" class="pilcrow">¶</a></p>
+          called an Entity Configuration.
+          Superior Entities in a federation publish Entity Statements about
+          their Immediate Subordinate Entities called Subordinate Statements.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <p id="section-3-2">
           Entity Statement JWTs MUST be explicitly typed, by setting the
           <code>typ</code> header parameter to
           <code>entity-statement+jwt</code> to prevent
           cross-JWT confusion, per Section 3.11 of <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.
-   Entity Statements without a <code>typ</code> header parameter
-   or with a different <code>typ</code> value MUST be rejected.<a href="#section-3-2" class="pilcrow">¶</a></p>
+          Entity Statements without a <code>typ</code> header parameter
+          or with a different <code>typ</code> value MUST be rejected.<a href="#section-3-2" class="pilcrow">¶</a></p>
 <p id="section-3-3">
           The Entity Statement is signed using one of the private keys of the issuer
           Entity in the form of a <span><a href="#RFC7515" class="internal xref">JSON Web Signature
@@ -2457,8 +2458,8 @@ li > p:last-of-type:only-child {
        to sign Subordinate Statements about their Immediate Subordinates,
        and for other signatures made by Federation Entities,
        such as Trust Mark signatures.
-              This Claim is only OPTIONAL for the Entity Statement returned
-              from an OP when the client is doing Explicit Registration;
+              However, this claim is OPTIONAL for the Entity Statement returned
+              as an Explicit Registration Response, as defined in <a href="#cliregresp" class="auto internal xref">Section 12.2.3</a>;
               in all other cases, it is REQUIRED.
               Every JWK in the JWK Set MUST have a unique <code>kid</code> (Key ID) value.
               It is RECOMMENDED that the Key ID be the JWK Thumbprint <span>[<a href="#RFC7638" class="cite xref">RFC7638</a>]</span>
@@ -2478,9 +2479,9 @@ li > p:last-of-type:only-child {
           <dd style="margin-left: 1.5em" id="section-3.1-1.12">
             <p id="section-3.1-1.12.1">
               OPTIONAL.
-       JSON object that declares roles that the Entity plays -
-       its Entity Types - and that contains metadata for those Entity Types.
-       Each member name of the JSON
+              JSON object that declares roles that the Entity plays -
+              its Entity Types - and that contains metadata for those Entity Types.
+              Each member name of the JSON
               object is an Entity Type Identifier, and each value MUST be a JSON
               object containing metadata parameters according to the metadata
               schema of the Entity Type.<a href="#section-3.1-1.12.1" class="pilcrow">¶</a></p>
@@ -2530,7 +2531,7 @@ li > p:last-of-type:only-child {
 <div id="ec-specific">
 <section id="section-3.2">
         <h3 id="name-claims-that-must-or-may-appe">
-<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-claims-that-must-or-may-appe" class="section-name selfRef">Claims that MUST or MAY Appear in Entity Configurations but not Subordinate Statements</a>
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-claims-that-must-or-may-appe" class="section-name selfRef">Claims that MUST or MAY Appear in Entity Configurations but Not in Subordinate Statements</a>
         </h3>
 <span class="break"></span><dl class="dlNewline" id="section-3.2-1">
           <dt id="section-3.2-1.1">authority_hints</dt>
@@ -2576,7 +2577,7 @@ li > p:last-of-type:only-child {
                   The value of this Claim MUST be the same as the value of the
                   <code>trust_mark_type</code>
                   Claim contained in the Trust Mark JWT that is the value of the
-   <code>trust_mark</code> Claim in this object.<a href="#section-3.2-1.6.2.2" class="pilcrow">¶</a>
+               <code>trust_mark</code> Claim in this object.<a href="#section-3.2-1.6.2.2" class="pilcrow">¶</a>
 </dd>
               <dd class="break"></dd>
 <dt id="section-3.2-1.6.2.3">trust_mark</dt>
@@ -2598,8 +2599,8 @@ li > p:last-of-type:only-child {
               for an Entity that is not a Trust Anchor.
               It is a JSON object with member names that are Trust Mark type identifiers and
               each corresponding value being an array of Entity Identifiers
-       that are trusted to represent the accreditation authority
-       for Trust Marks with that identifier.
+              that are trusted to represent the accreditation authority
+              for Trust Marks with that identifier.
               If the array following a Trust Mark type identifier is empty,
               anyone MAY issue Trust Marks with that identifier.
               Trust Marks are described in <a href="#trust_marks" class="auto internal xref">Section 7</a>.<a href="#section-3.2-1.8" class="pilcrow">¶</a>
@@ -2709,8 +2710,8 @@ li > p:last-of-type:only-child {
        OPTIONAL.
        The "aud" (audience) value MUST be the Entity Identifier of the OP
        and MUST NOT include any other values.
-       This Claim is used in Explicit Registration requests
-       and is not a general Entity Statement Claim.<a href="#section-3.4-1.2" class="pilcrow">¶</a>
+       This Claim is used in Explicit Registration requests;
+       it is not a general Entity Statement Claim.<a href="#section-3.4-1.2" class="pilcrow">¶</a>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -2727,8 +2728,8 @@ li > p:last-of-type:only-child {
        OPTIONAL.
        The "aud" (audience) value MUST be the Entity Identifier of the RP
        and MUST NOT include any other values.
-       This Claim is used in Explicit Registration responses
-       and is not a general Entity Statement Claim.<a href="#section-3.5-1.2" class="pilcrow">¶</a>
+       This Claim is used in Explicit Registration responses;
+       it is not a general Entity Statement Claim.<a href="#section-3.5-1.2" class="pilcrow">¶</a>
 </dd>
           <dd class="break"></dd>
 <dt id="section-3.5-1.3">trust_anchor</dt>
@@ -2736,8 +2737,8 @@ li > p:last-of-type:only-child {
               OPTIONAL.  Its value MUST be the Entity Identifier of the Trust Anchor
                 that the OP selected to process the Explicit Registration request,
  as specified in <a href="#trust_anchor-claim" class="auto internal xref">Section 12.2.3</a>.
- This Claim is specific to Explicit Registration responses
- and is not a general Entity Statement Claim.<a href="#section-3.5-1.4" class="pilcrow">¶</a>
+ This Claim is specific to Explicit Registration responses;
+ it is not a general Entity Statement Claim.<a href="#section-3.5-1.4" class="pilcrow">¶</a>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -2877,14 +2878,14 @@ li > p:last-of-type:only-child {
           <li id="section-3.6-2.17">
             <p id="section-3.6-2.17.1">
  If the <code>metadata_policy</code> Claim is present,
- the Entity Statement be a Subordinate Statement.
+ the Entity Statement MUST be a Subordinate Statement.
  Verify that its value is syntactically correct,
  as specified in <a href="#metadata_policy" class="auto internal xref">Section 6.1</a>.<a href="#section-3.6-2.17.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.6-2.18">
             <p id="section-3.6-2.18.1">
  If the <code>metadata_policy_crit</code> Claim is present,
- the Entity Statement be a Subordinate Statement.
+ the Entity Statement MUST be a Subordinate Statement.
  Each array element in this Claim's value
  MUST be a string representing a Metadata Policy operator
  that is not defined by this specification
@@ -2894,7 +2895,7 @@ li > p:last-of-type:only-child {
           <li id="section-3.6-2.19">
             <p id="section-3.6-2.19.1">
  If the <code>constraints</code> Claim is present,
- the Entity Statement be a Subordinate Statement.
+ the Entity Statement MUST be a Subordinate Statement.
  Verify that its value is syntactically correct,
  as specified in <a href="#chain_constraints" class="auto internal xref">Section 6.2</a>.<a href="#section-3.6-2.19.1" class="pilcrow">¶</a></p>
 </li>
@@ -3337,13 +3338,17 @@ li > p:last-of-type:only-child {
 <p id="section-4.3-1">
           The <code>trust_chain</code> JWS header parameter is a
           JSON array containing the sequence of Entity Statements
-          that proves the trust relationship between the subject of the JWT
-          and the selected Trust Anchor,
-   sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
-   The subject of the JWT MUST be the Entity Identifier of the
-   Entity at the beginning of the Trust Chain.
+   that comprise the Trust Chain between
+   an Entity and the selected Trust Anchor.
+   The Trust Chain typically begins with the Entity Configuration
+   of the subject of the JWT in which this header parameter occurs;
+   however, in some cases, the Trust Chain will begin with
+   the Entity Configuration of a different Entity,
+   such as the issuer, which is the case for
+   the Resolve Response defined in <a href="#resolve-response" class="auto internal xref">Section 8.3.2</a>.
           The issuer of the JWT SHOULD select a Trust Anchor
-   that the subject has in common with the audience of the JWT.
+   that the Entity at the beginning of the Trust Chain
+   has in common with the audience of the JWT.
    Otherwise, the issuer is free to select the Trust Anchor to use.
           Most signed JWTs MAY include the
           <code>trust_chain</code> JWS header parameter,
@@ -3387,14 +3392,16 @@ li > p:last-of-type:only-child {
      JSON array containing the sequence of Entity Statements
      that comprise the Trust Chain between
      an Entity that this Entity is establishing trust with
-     and the selected Trust Anchor,
-     sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
+     and the selected Trust Anchor.
      If the <code>trust_chain</code> header parameter
      is also present,
      the Trust Anchor for both Trust Chains SHOULD be the same.
      Inclusion of both Trust Chains enables achieving
      the Federation Integrity and Metadata Integrity properties,
      as defined in <span>[<a href="#App-Fed-Linkage" class="cite xref">App-Fed-Linkage</a>]</span>.
+     Entity Configurations and Subordinate Statements MUST NOT
+     contain the <code>peer_trust_chain</code> header parameter,
+     as they are integral components of a Trust Chain.
      Use of this header parameter is OPTIONAL.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -4314,10 +4321,10 @@ li > p:last-of-type:only-child {
 <p id="section-6.1.2-2.3.2">
                 The third level contains one or more members, each representing
                 an operator that checks or modifies the metadata parameter, as
-                described in <a href="#metadata_policy_operators" class="auto internal xref">Section 6.1.3</a>. Only
-                operators that are allowed to be combined with one another MUST
-                be included, as described in the specification for each
-                operator.<a href="#section-6.1.2-2.3.2" class="pilcrow">¶</a></p>
+                described in <a href="#metadata_policy_operators" class="auto internal xref">Section 6.1.3</a>.
+ Only operators that are allowed to be combined with one another,
+ as defined in the specifications for each operator,
+ can be included together here.<a href="#section-6.1.2-2.3.2" class="pilcrow">¶</a></p>
 </li>
           </ol>
 <p id="section-6.1.2-3">
@@ -4419,14 +4426,12 @@ li > p:last-of-type:only-child {
                 An operator MUST NOT output a metadata parameter with the
                 <code>null</code> value.<a href="#section-6.1.3-2.8.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-6.1.3-2.9">
-              <p id="section-6.1.3-2.9.1">
-                Metadata parameters and policies that conform to the JSON
-                grammar but do not represent interoperable uses of JSON,
-                as per Sections 4 and 8 of <span>[<a href="#RFC8259" class="cite xref">RFC8259</a>]</span>,
-                can cause unpredictable behavior.<a href="#section-6.1.3-2.9.1" class="pilcrow">¶</a></p>
-</li>
           </ul>
+<p id="section-6.1.3-3">
+     Note that metadata parameters and policies that conform to
+     the JSON grammar but do not represent interoperable uses of JSON,
+     as per Sections 4 and 8 of <span>[<a href="#RFC8259" class="cite xref">RFC8259</a>]</span>,
+     can cause unpredictable behaviors.<a href="#section-6.1.3-3" class="pilcrow">¶</a></p>
 <div id="standard_metadata_policy_operators">
 <section id="section-6.1.3.1">
             <h5 id="name-standard-operators">
@@ -6764,8 +6769,7 @@ Host: openid.sunet.se
 <p id="section-8.3.2-4">
             The resolve response JWT MUST return the Trust Chain
      from the subject to the Trust Anchor
-     in its <code>trust_chain</code> parameter,
-            sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.<a href="#section-8.3.2-4" class="pilcrow">¶</a></p>
+     in its <code>trust_chain</code> parameter.<a href="#section-8.3.2-4" class="pilcrow">¶</a></p>
 <p id="section-8.3.2-5">
             The resolve response MAY also return the Trust Chain
             from its issuer to the Trust Anchor
@@ -6786,7 +6790,8 @@ Host: openid.sunet.se
 <p id="section-8.3.2-7">
             The response SHOULD contain the
             <code>aud</code> Claim only
-            if the requesting party is authenticated,
+            if the requesting party is authenticated
+     as described in <a href="#ClientAuthentication" class="auto internal xref">Section 8.8</a>,
      in which case, the value MUST be the Entity Identifier
      of the requesting party
      and MUST NOT include any other values.<a href="#section-8.3.2-7" class="pilcrow">¶</a></p>
@@ -6834,8 +6839,7 @@ Host: openid.sunet.se
             <dd style="margin-left: 1.5em" id="section-8.3.2-9.12">
                 REQUIRED. Array containing the sequence of Entity Statements
                 that compose the Trust Chain, starting with the subject and
-                ending with the selected Trust Anchor,
-                sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.<a href="#section-8.3.2-9.12" class="pilcrow">¶</a>
+                ending with the selected Trust Anchor.<a href="#section-8.3.2-9.12" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-8.3.2-9.13">trust_marks</dt>
@@ -7084,8 +7088,8 @@ trust_mark=eyJ0eXAiOiJ0cnVzdC1tYXJrK2p3dCIsImFsZyI6 ...
           <dd class="break"></dd>
 </dl>
 <p id="section-8.4.2-6">
-     Additional Trust Mark Status Claims MAY be defined and used
-     in addition to the one above.<a href="#section-8.4.2-6" class="pilcrow">¶</a></p>
+     Additional Trust Mark Status JWT Claims MAY be defined and used
+     in addition to those listed above.<a href="#section-8.4.2-6" class="pilcrow">¶</a></p>
 <p id="section-8.4.2-7" class="keepWithNext">
                 The following is a non-normative example of the JWT Claims Set for
  a response with the status <code>active</code>:<a href="#section-8.4.2-7" class="pilcrow">¶</a></p>
@@ -8392,7 +8396,7 @@ Content-Type: application/json
           It is RECOMMENDED that Federation Operators provide a means of retrieving the public keys
           for the Trust Anchors it administers that is independent of those Trust Anchors' Entity Configurations.
           This is intended to provide redundancy in the eventuality of the compromise of
-          the Web PKI infrastructure underlying retrieval of public keys from Entity Configurations.<a href="#section-11.3-1" class="pilcrow">¶</a></p>
+          the Web PKI <span>[<a href="#RFC9525" class="cite xref">RFC9525</a>]</span> infrastructure underlying retrieval of public keys from Entity Configurations.<a href="#section-11.3-1" class="pilcrow">¶</a></p>
 <p id="section-11.3-2">
           The keys retrieved via the independent mechanism specified by the Federation Operator
           SHOULD be compared to those retrieved via the Trust Anchor's Entity Configuration.
@@ -8588,8 +8592,7 @@ Content-Type: application/json
                 <p id="section-12.1.1.1-2.16.1">
                   OPTIONAL. Array containing the sequence of Entity Statements
                   that comprise the Trust Chain between the RP making
-                  the request and the selected Trust Anchor,
-                  sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>.
+                  the request and the selected Trust Anchor.
                   When the RP and the OP are part of the same federation,
                   the RP MUST select a Trust Anchor that it has in common
                   with the OP; otherwise, the RP is free to select the
@@ -9223,8 +9226,8 @@ HTTP/1.1 302 Found
                   REQUIRED.
    The "aud" (audience) value MUST be the Entity Identifier of the OP
    and MUST NOT include any other values.
-   This Claim is used in Explicit Registration requests
-   and is not a general Entity Statement Claim.<a href="#section-12.2.1-4.12" class="pilcrow">¶</a>
+                  This Claim is used in Explicit Registration requests;
+   it is not a general Entity Statement Claim.<a href="#section-12.2.1-4.12" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-12.2.1-4.13">authority_hints</dt>
@@ -9494,8 +9497,8 @@ HTTP/1.1 302 Found
                     REQUIRED.
                     The "aud" (audience) value MUST be the Entity Identifier of the RP
      and MUST NOT include any other values.
-     This Claim is used in Explicit Registration responses
-     and is not a general Entity Statement Claim.<a href="#section-12.2.3-8.12" class="pilcrow">¶</a>
+     This Claim is used in Explicit Registration responses;
+     it is not a general Entity Statement Claim.<a href="#section-12.2.3-8.12" class="pilcrow">¶</a>
 </dd>
             <dd class="break"></dd>
 <dt id="section-12.2.3-8.13">trust_anchor</dt>
@@ -9508,8 +9511,8 @@ HTTP/1.1 302 Found
      were provided in the request and/or by using the
      <code>peer_trust_chain</code> header parameter,
      this MUST match the Trust Anchors at the roots of those Trust Chains.
-     This Claim is specific to Explicit Registration responses
-     and is not a general Entity Statement Claim.<a href="#trust_anchor-claim" class="pilcrow">¶</a>
+     This Claim is specific to Explicit Registration responses;
+     it is not a general Entity Statement Claim.<a href="#trust_anchor-claim" class="pilcrow">¶</a>
 </div>
             </dd>
 <dd class="break"></dd>
@@ -9546,7 +9549,7 @@ HTTP/1.1 302 Found
  <code>explicit-registration-response+jwt</code>
  (and not <code>entity-statement+jwt</code>)
  to prevent confusion between the Explicit Registration response
- and normal Entity Statements.<a href="#section-12.2.3-9" class="pilcrow">¶</a></p>
+ and other kinds of Entity Statements.<a href="#section-12.2.3-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ExplicitError">
@@ -9582,8 +9585,8 @@ HTTP/1.1 302 Found
 </li>
             <li id="section-12.2.5-1.2">
               <p id="section-12.2.5-1.2.1">
-     The RP MUST verify that the <code>aud</code> (audience)
-     Claim Value is its Entity Identifier.<a href="#section-12.2.5-1.2.1" class="pilcrow">¶</a></p>
+                    The RP MUST verify that the <code>aud</code> (audience)
+                    Claim Value is its Entity Identifier.<a href="#section-12.2.5-1.2.1" class="pilcrow">¶</a></p>
 </li>
             <li id="section-12.2.5-1.3">
               <p id="section-12.2.5-1.3.1">
@@ -11827,11 +11830,11 @@ HTTP/1.1 302 Found
 <ul class="compact">
 <li class="compact" id="section-20.8-17.1">
             <p id="section-20.8-17.1.1">
- Claim Name: <code>trust_chain</code><a href="#section-20.8-17.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>keys</code><a href="#section-20.8-17.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="compact" id="section-20.8-17.2">
             <p id="section-20.8-17.2.1">
- Claim Description: Trust Chain<a href="#section-20.8-17.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Array of JWK values in a JWK Set<a href="#section-20.8-17.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="compact" id="section-20.8-17.3">
             <p id="section-20.8-17.3.1">
@@ -11839,17 +11842,17 @@ HTTP/1.1 302 Found
 </li>
           <li class="compact" id="section-20.8-17.4">
             <p id="section-20.8-17.4.1">
- Specification Document(s): <a href="#trust_chain" class="auto internal xref">Section 4</a> of this specification<a href="#section-20.8-17.4.1" class="pilcrow">¶</a></p>
+ Specification Document(s): <a href="#jwks_metadata" class="auto internal xref">Section 5.2.1</a> of this specification<a href="#section-20.8-17.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <ul class="compact">
 <li class="compact" id="section-20.8-18.1">
             <p id="section-20.8-18.1.1">
- Claim Name: <code>keys</code><a href="#section-20.8-18.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>trust_mark_type</code><a href="#section-20.8-18.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="compact" id="section-20.8-18.2">
             <p id="section-20.8-18.2.1">
- Claim Description: Array of JWK values in a JWK Set<a href="#section-20.8-18.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Trust Mark Type Identifier<a href="#section-20.8-18.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="compact" id="section-20.8-18.3">
             <p id="section-20.8-18.3.1">
@@ -11857,17 +11860,17 @@ HTTP/1.1 302 Found
 </li>
           <li class="compact" id="section-20.8-18.4">
             <p id="section-20.8-18.4.1">
- Specification Document(s): <a href="#common_metadata" class="auto internal xref">Section 5.2</a> of this specification<a href="#section-20.8-18.4.1" class="pilcrow">¶</a></p>
+ Specification Document(s): <a href="#trust_mark_claims" class="auto internal xref">Section 7.1</a> of this specification<a href="#section-20.8-18.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <ul class="compact">
 <li class="compact" id="section-20.8-19.1">
             <p id="section-20.8-19.1.1">
- Claim Name: <code>trust_mark_type</code><a href="#section-20.8-19.1.1" class="pilcrow">¶</a></p>
+ Claim Name: <code>trust_chain</code><a href="#section-20.8-19.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="compact" id="section-20.8-19.2">
             <p id="section-20.8-19.2.1">
- Claim Description: Trust Mark Type Identifier<a href="#section-20.8-19.2.1" class="pilcrow">¶</a></p>
+ Claim Description: Trust Chain<a href="#section-20.8-19.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="compact" id="section-20.8-19.3">
             <p id="section-20.8-19.3.1">
@@ -11875,7 +11878,7 @@ HTTP/1.1 302 Found
 </li>
           <li class="compact" id="section-20.8-19.4">
             <p id="section-20.8-19.4.1">
- Specification Document(s): <a href="#trust_mark_claims" class="auto internal xref">Section 7.1</a> of this specification<a href="#section-20.8-19.4.1" class="pilcrow">¶</a></p>
+ Specification Document(s): <a href="#resolve-response" class="auto internal xref">Section 8.3.2</a> of this specification<a href="#section-20.8-19.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <ul class="compact">
@@ -12805,8 +12808,12 @@ HTTP/1.1 302 Found
 <span class="refAuthor">Freed, N.</span>, <span class="refAuthor">Klensin, J.</span>, and <span class="refAuthor">T. Hansen</span>, <span class="refTitle">"Media Type Specifications and Registration Procedures"</span>, <span class="seriesInfo">BCP 13</span>, <span class="seriesInfo">RFC 6838</span>, <span class="seriesInfo">DOI 10.17487/RFC6838</span>, <time datetime="2013-01" class="refDate">January 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6838">https://www.rfc-editor.org/info/rfc6838</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8725">[RFC8725]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Sheffer, Y.</span>, <span class="refAuthor">Hardt, D.</span>, and <span class="refAuthor">M. Jones</span>, <span class="refTitle">"JSON Web Token Best Current Practices"</span>, <span class="seriesInfo">BCP 225</span>, <span class="seriesInfo">RFC 8725</span>, <span class="seriesInfo">DOI 10.17487/RFC8725</span>, <time datetime="2020-02" class="refDate">February 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8725">https://www.rfc-editor.org/info/rfc8725</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9525">[RFC9525]</dt>
+      <dd>
+<span class="refAuthor">Saint-Andre, P.</span> and <span class="refAuthor">R. Salz</span>, <span class="refTitle">"Service Identity in TLS"</span>, <span class="seriesInfo">RFC 9525</span>, <span class="seriesInfo">DOI 10.17487/RFC9525</span>, <time datetime="2023-11" class="refDate">November 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9525">https://www.rfc-editor.org/info/rfc9525</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
@@ -14072,8 +14079,41 @@ Host: op.umu.se
 <ul class="normal">
 <li class="normal" id="appendix-C-3.1">
           <p id="appendix-C-3.1.1">
+     Fixed #293: Said that ECs and ESs MUST NOT contain the
+     <code>peer_trust_chain</code> header parameter.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.2">
+          <p id="appendix-C-3.2.1">
+     Fixed #295: Removed unnecessary
+     "sorted as specified in <a href="#trust_chain" class="auto internal xref">Section 4</a>" phrases.<a href="#appendix-C-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.3">
+          <p id="appendix-C-3.3.1">
+     Fixed #296: Reworded odd language about operators that can be combined.<a href="#appendix-C-3.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.4">
+          <p id="appendix-C-3.4.1">
+     Fixed #297: Made statement about non-interoperable JSON a note.<a href="#appendix-C-3.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.5">
+          <p id="appendix-C-3.5.1">
+     Fixed #298: Referenced RFC 9525 for Web PKI.<a href="#appendix-C-3.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.6">
+          <p id="appendix-C-3.6.1">
+     Allow the Trust Chain in the
+     <code>trust_chain</code> header parameter
+     to begin with an Entity other than the JWT's subject.<a href="#appendix-C-3.6.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.7">
+          <p id="appendix-C-3.7.1">
+     Added reference to Client Authentication section
+     to clarify statement about whether the caller is authenticated.<a href="#appendix-C-3.7.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-C-3.8">
+          <p id="appendix-C-3.8.1">
      Describe the use of the "aud" (audience) claim
-     in Explicit Registration requests and responses.<a href="#appendix-C-3.1.1" class="pilcrow">¶</a></p>
+     in Explicit Registration requests and responses.<a href="#appendix-C-3.8.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-C-4">
@@ -16007,9 +16047,12 @@ Host: op.umu.se
  Marcus Almgren,
  Patrick Amrein,
  Pasquale Barbaro,
+ Ralph Bragg,
+ Peter Brand,
  Brian Campbell,
  David Chadwick,
  Michele D'Amico,
+ Kushal Das,
  Andrii Deinega,
  Erick Domingues,
  Heather Flanagan,
@@ -16019,7 +16062,9 @@ Host: op.umu.se
  Pedram Hosseyni,
  Marko Ivančić,
  Łukasz Jaromin,
+ Leif Johansson,
  Takahiko Kawasaki,
+ Ralf Küsters,
  Torsten Lodderstedt,
  Josh Mandel,
  Francesco Marino,
@@ -16036,17 +16081,18 @@ Host: op.umu.se
  Mischa Sallé,
  Stefan Santesson,
  Marcos Sanz,
- Peter Brand,
  Michael Schwartz,
  Giada Sciarretta,
  Amir Sharif,
  Sean Turner,
+ Davide Vaghetti,
  Niels van Dijk,
  Tim Würtele,
  Kristina Yasuda,
  Gabriel Zachmann,
+ the JRA3T3 task force of GEANT4-2,
  and
- the JRA3T3 task force of GEANT4-2.<a href="#appendix-D-1" class="pilcrow">¶</a></p>
+ the SIROS Foundation.<a href="#appendix-D-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">
