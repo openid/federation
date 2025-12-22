@@ -1264,7 +1264,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Connect Working Group</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-12-21" class="published">21 December 2025</time>
+<time datetime="2025-12-22" class="published">22 December 2025</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -1679,7 +1679,7 @@ li > p:last-of-type:only-child {
             <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-updating-metadata-key-rollo" class="internal xref">Updating Metadata, Key Rollover, and Revocation</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.1">
-                <p id="section-toc.1-1.11.2.1.1"><a href="#section-11.1" class="auto internal xref">11.1</a>.  <a href="#name-protocol-key-rollover" class="internal xref">Protocol Key Rollover</a></p>
+                <p id="section-toc.1-1.11.2.1.1"><a href="#section-11.1" class="auto internal xref">11.1</a>.  <a href="#name-federation-key-rollover" class="internal xref">Federation Key Rollover</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2">
                 <p id="section-toc.1-1.11.2.2.1"><a href="#section-11.2" class="auto internal xref">11.2</a>.  <a href="#name-key-rollover-for-a-trust-an" class="internal xref">Key Rollover for a Trust Anchor</a></p>
@@ -8357,15 +8357,14 @@ Content-Type: application/json
         how quickly it wants to find out that something has changed.<a href="#section-11-2" class="pilcrow">¶</a></p>
 <div id="key-rollover">
 <section id="section-11.1">
-        <h3 id="name-protocol-key-rollover">
-<a href="#section-11.1" class="section-number selfRef">11.1. </a><a href="#name-protocol-key-rollover" class="section-name selfRef">Protocol Key Rollover</a>
+        <h3 id="name-federation-key-rollover">
+<a href="#section-11.1" class="section-number selfRef">11.1. </a><a href="#name-federation-key-rollover" class="section-name selfRef">Federation Key Rollover</a>
         </h3>
 <p id="section-11.1-1">
-          If a Leaf Entity publishes its public keys in its metadata
-          using <code>jwks</code>, the expiration time of
-          its Entity Configuration
-   can be used to control how often the receiving Entity
-          needs to fetch an updated set of public keys.<a href="#section-11.1-1" class="pilcrow">¶</a></p>
+   The expiration time (<code>exp</code>)
+   of an Entity Configuration is used to control how often it
+   needs to be retrieved to fetch an updated set of Federation Keys
+   from its <code>jwks</code> member.<a href="#section-11.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="key_rollover_anchor">
@@ -8375,7 +8374,7 @@ Content-Type: application/json
         </h3>
 <p id="section-11.2-1">
           A Trust Anchor MUST publish an Entity Configuration about itself.
-          The expiration time (exp) set on this Entity Configuration should be chosen
+          The expiration time (<code>exp</code>) set on this Entity Configuration should be chosen
           such that it ensures that federation participants re-fetch it at reasonable intervals.
           When a Trust Anchor rolls over its signing keys, it needs to:<a href="#section-11.2-1" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-11.2-2">
