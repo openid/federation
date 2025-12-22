@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="21" month="December" year="2025"/>
+    <date day="22" month="December" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -6236,13 +6236,12 @@ Content-Type: application/json
         how quickly it wants to find out that something has changed.
       </t>
 
-      <section anchor="key-rollover" title="Protocol Key Rollover">
+      <section anchor="key-rollover" title="Federation Key Rollover">
         <t>
-          If a Leaf Entity publishes its public keys in its metadata
-          using <spanx style="verb">jwks</spanx>, the expiration time of
-          its Entity Configuration
-	  can be used to control how often the receiving Entity
-          needs to fetch an updated set of public keys.
+	  The expiration time (<spanx style="verb">exp</spanx>)
+	  of an Entity Configuration is used to control how often it
+	  needs to be retrieved to fetch an updated set of Federation Keys
+	  from its <spanx style="verb">jwks</spanx> member.
         </t>
       </section>
 
@@ -6250,7 +6249,7 @@ Content-Type: application/json
                anchor="key_rollover_anchor">
         <t>
           A Trust Anchor MUST publish an Entity Configuration about itself.
-          The expiration time (exp) set on this Entity Configuration should be chosen
+          The expiration time (<spanx style="verb">exp</spanx>) set on this Entity Configuration should be chosen
           such that it ensures that federation participants re-fetch it at reasonable intervals.
           When a Trust Anchor rolls over its signing keys, it needs to:
         </t>
