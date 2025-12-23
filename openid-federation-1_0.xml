@@ -38,7 +38,7 @@
     </author>
 
     <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
-      <organization abbrev="Self-Issued Consulting">Self-Issued Consulting</organization>
+      <organization>Self-Issued Consulting</organization>
       <address>
         <email>michael_b_jones@hotmail.com</email>
         <uri>https://self-issued.info/</uri>
@@ -58,7 +58,7 @@
       <organization abbrev="Yubico">Yubico</organization>
       <address>
         <email>ve7jtb@ve7jtb.com</email>
-        <uri>http://www.thread-safe.com/</uri>
+        <uri>https://www.linkedin.com/in/ve7jtb/</uri>
       </address>
     </author>
 
@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="13" month="December" year="2025"/>
+    <date day="22" month="December" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -1376,6 +1376,8 @@
 	  that the Entity at the beginning of the Trust Chain
 	  has in common with the audience of the JWT.
 	  Otherwise, the issuer is free to select the Trust Anchor to use.
+	 </t>
+	 <t>
           Most signed JWTs MAY include the
           <spanx style="verb">trust_chain</spanx> JWS header parameter,
           with a few exceptions.
@@ -1423,6 +1425,8 @@
 	    Inclusion of both Trust Chains enables achieving
 	    the Federation Integrity and Metadata Integrity properties,
 	    as defined in <xref target="App-Fed-Linkage"/>.
+	  </t>
+	  <t>
 	    Entity Configurations and Subordinate Statements MUST NOT
 	    contain the <spanx style="verb">peer_trust_chain</spanx> header parameter,
 	    as they are integral components of a Trust Chain.
@@ -1885,7 +1889,7 @@
         </t>
 
 	<section anchor="jwks_metadata"
-		 title="Extensions for JWK Sets in Entity Metadata">
+		 title="Parameters for JWK Sets in Entity Metadata">
 	  <t>
 	    The following metadata parameters define ways of obtaining
 	    JWK Sets for an Entity Type of the Entity.
@@ -1893,7 +1897,7 @@
 	    used to sign Entity Statements, which are in
 	    the <spanx style="verb">jwks</spanx> Claim of the Entity Statement,
 	    and not within the <spanx style="verb">metadata</spanx> Claim.
-	    These extensions for JWK Sets MUST NOT be used in
+	    These parameters for JWK Sets MUST NOT be used in
 	    <spanx style="verb">federation_entity</spanx> Entity Type metadata.
 	  </t>
 	  <t>
@@ -2065,7 +2069,7 @@
 	  </section>
 	</section>
 
-	<section anchor="informational_metadata" title="Informational Metadata Extensions">
+	<section anchor="informational_metadata" title="Informational Metadata Parameters">
 	  <t>
 	    The following metadata parameters define ways of obtaining
 	    information about the Entity for an Entity Type.
@@ -3521,7 +3525,7 @@
           MUST be considered invalid.
         </t>
 
-        <section title="Max Path Length" anchor="max_path_length">
+        <section title="Max Path Length Constraint" anchor="max_path_length">
           <t>
             The <spanx style="verb">max_path_length</spanx> constraint specifies
             the maximum allowed number of Intermediate Entities in a Trust Chain
@@ -4138,8 +4142,7 @@
               in the Trust Mark, whose value is a signed JWT.
             </preamble>
 	    <name>
-	      Example of a Trust Mark using delegation. Only the JWT Claims Set of the
-          Trust Mark is shown.
+	      Example JWT Claims Set of a Trust Mark using Delegation
 	    </name>
             <artwork><![CDATA[
 {
@@ -4168,10 +4171,10 @@
           <figure>
             <preamble>
               JWS Header Parameters for the Trust Mark delegation JWT in
-              the "delegation" Claim above
+              the "delegation" Claim above:
             </preamble>
 	    <name>
-	      Trust Mark delegation JWT JWS Header Parameters
+	      Trust Mark Delegation JWT JWS Header Parameters
 	    </name>
             <artwork><![CDATA[
 {
@@ -4183,10 +4186,10 @@
           </figure>
 	  <figure>
 	    <preamble>
-	      JWT Claims Set of the Trust Mark delegation JWT in the "delegation" Claim above
+	      JWT Claims Set of the Trust Mark delegation JWT in the "delegation" Claim above:
 	    </preamble>
 	    <name>
-	      Trust Mark delegation JWT Claim Set
+	      Trust Mark Delegation JWT Claim Set
 	    </name>
             <artwork><![CDATA[
 {
@@ -4354,7 +4357,7 @@ Host: edugain.org
         </section>
       </section>
 
-      <section title="Subordinate Listings" anchor="entity_listing">
+      <section title="Subordinate Listing" anchor="entity_listing">
         <t>
 	  The listing endpoint is exposed by Federation Entities
 	  acting as a Trust Anchor, Intermediate, or Trust Mark Issuer.
@@ -4633,7 +4636,7 @@ Content-Type: application/json
               The following is a non-normative example of a Resolve Request:
             </preamble>
             <name>
-              Example Resolve Request
+              Resolve Request
             </name>
             <artwork><![CDATA[
 GET /resolve?
@@ -4841,7 +4844,7 @@ Host: openid.sunet.se
         <section anchor="trust-considerations" title="Trust Considerations">
           <t>
             The basic assumption of this specification is that an Entity
-            should have direct trust in no one except the Trust Anchor
+            should have direct trust in no party except the Trust Anchor
             and its own capabilities.
             However, Entities MAY establish a kind of
             transitive trust in other Entities. For example, the
@@ -5675,7 +5678,7 @@ Host: trust-anchor.example.com
 	      <spanx style="verb">federation_trust_mark_endpoint</spanx>:
             </preamble>
             <name>
-              Declaring that client authentication is REQUIRED at an endpoint
+              Declaring that Client Authentication is REQUIRED at an Endpoint
             </name>
             <artwork><![CDATA[
 "federation_trust_mark_endpoint_auth_methods": ["private_key_jwt"]
@@ -6203,7 +6206,7 @@ Content-Type: application/json
       <section title="Transient Trust Chain Validation Errors"
                anchor="transient_trust_chain_validation_errors">
         <t>
-          If the federation topology is being updated, for example when a set
+          If the federation topology is being updated, for example, when a set
           of Leaf Entities is moved to a new Intermediate Entity, the Trust Chain
           validation may fail in a transient manner. Retrying after a period of
           time may resolve the situation.
@@ -6237,13 +6240,12 @@ Content-Type: application/json
         how quickly it wants to find out that something has changed.
       </t>
 
-      <section anchor="key-rollover" title="Protocol Key Rollover">
+      <section anchor="key-rollover" title="Federation Key Rollover">
         <t>
-          If a Leaf Entity publishes its public keys in its metadata
-          using <spanx style="verb">jwks</spanx>, the expiration time of
-          its Entity Configuration
-	  can be used to control how often the receiving Entity
-          needs to fetch an updated set of public keys.
+	  The expiration time (<spanx style="verb">exp</spanx>)
+	  of an Entity Configuration is used to control how often it
+	  needs to be retrieved to fetch an updated set of Federation Keys
+	  from its <spanx style="verb">jwks</spanx> member.
         </t>
       </section>
 
@@ -6251,7 +6253,7 @@ Content-Type: application/json
                anchor="key_rollover_anchor">
         <t>
           A Trust Anchor MUST publish an Entity Configuration about itself.
-          The expiration time (exp) set on this Entity Configuration should be chosen
+          The expiration time (<spanx style="verb">exp</spanx>) set on this Entity Configuration should be chosen
           such that it ensures that federation participants re-fetch it at reasonable intervals.
           When a Trust Anchor rolls over its signing keys, it needs to:
         </t>
@@ -6542,7 +6544,7 @@ Content-Type: application/json
                 (with line wraps within values for display purposes only):
               </preamble>
 	      <name>
-		Authentication Request Using Request Object
+		Authentication Request using Request Object
 	      </name>
               <artwork><![CDATA[
 Host: server.example.com
@@ -7231,12 +7233,12 @@ HTTP/1.1 302 Found
                     registration is to make a new Explicit Registration
                     request. If the RP is provisioned with a
                     <spanx style="verb">registration_access_token</spanx> for
-                    some purpose, for example to let it independently check its
+                    some purpose, for example, to let it independently check its
                     registered metadata, the token MUST NOT allow modification
                     of the registration.
                     <vspace blankLine="1"/>
 
-                    The OP MAY modify the received RP metadata, for example by
+                    The OP MAY modify the received RP metadata, for example, by
                     substituting an invalid or unsupported parameter,
                     to make it compliant with its own OP metadata and other
                     policies. If the OP does not accept the RP metadata or is
@@ -7285,7 +7287,7 @@ HTTP/1.1 302 Found
 		    The parameters MUST include the
                     <spanx style="verb">client_id</spanx> that was provisioned
                     for the RP. If the RP was provisioned with credentials,
-                    for example a <spanx style="verb">client_secret</spanx>,
+                    for example, a <spanx style="verb">client_secret</spanx>,
                     these MUST be included as well.
 		  </t>
 		  <t>
@@ -7452,7 +7454,7 @@ HTTP/1.1 302 Found
                     If the received registration Entity Statement does not pass the above
                     checks, the RP MUST reject it. The RP MAY choose to retry
                     the Explicit Registration request to work around a
-                    transient exception, for example due to a recent change of
+                    transient exception, for example, due to a recent change of
                     Entity metadata or metadata policy causing temporary
                     misalignment of metadata.
                   </t>
@@ -7460,15 +7462,14 @@ HTTP/1.1 302 Found
               </t>
             </section>
 
-        <section title="After an Explicit Client Registration" anchor="AfterExplicitReg">
+        <section title="Explicit Client Registration Lifetime" anchor="AfterExplicitReg">
           <t>
             An RP can utilize the <spanx style="verb">exp</spanx> Claim of the
             registration Entity Statement to devise a suitable strategy for
             renewing its client registration. RP implementers should note that
-            if the OP expiration of the <spanx style="verb">client_id</spanx>
-            coincides with an OAuth 2.0 flow that was just initiated by the RP, this
-            may cause OpenID Connect authentication requests, token requests, or
-            UserInfo requests to suddenly fail. Renewing the RP registration
+            if the the RP's registration has expired at the OP,
+	    this can cause OpenID Connect authentication requests, token requests,
+	    and/or UserInfo requests to fail. Renewing the RP's registration
             prior to its expiration can prevent such errors from
             occurring and ensure the end-user experience is not disrupted.
           </t>
@@ -7531,7 +7532,7 @@ HTTP/1.1 302 Found
         </t>
       </section>
 
-      <section title="Rationale for the Trust Chain in the Request" anchor="TrustChainParamRationale">
+      <section title="Rationale for Trust Chains in the Request" anchor="TrustChainRationale">
         <t>
           Both Automatic and Explicit Client Registration support
           the submission of the Trust Chain embedded in the Request,
@@ -7570,6 +7571,15 @@ HTTP/1.1 302 Found
 
 	  </list>
         </t>
+	<t>
+	  Both also support the submission of the Peer Trust Chain,
+	  which provides a Trust Chain between the OP
+	  and the Trust Anchor the RP selected.
+	  As described in <xref target="peer_trust_chain_head_param"/>,
+	  inclusion of both Trust Chains enables achieving
+	  the Federation Integrity and Metadata Integrity properties,
+	  as defined in <xref target="App-Fed-Linkage"/>.
+	</t>
       </section>
 
     </section>
@@ -7896,7 +7906,7 @@ HTTP/1.1 302 Found
 	    Consider the following Federation topology:
 	  </preamble>
 	  <name>
-	    Example topology with multiple trust paths between Entities
+	    Example Topology with Multiple Trust Paths between Entities
 	  </name>
 	  <artwork><![CDATA[
               .--------------.
@@ -8255,19 +8265,21 @@ HTTP/1.1 302 Found
 
     <section anchor="privacy" title="Privacy Considerations">
       <t>
-        Implementers should be aware of these privacy considerations:
+        Implementers should be aware of these privacy considerations.
       </t>
-      <t>
-        <list style="hanging">
-          <t hangText="Entity Statements">
-            <vspace/>
+      <section title="Entity Statement Privacy Considerations"
+	       anchor="Entity-Statement-privacy">
+	<t>
             Entity Statements are designed to establish trust relationships between organizational entities within a federation, rather than between individuals or for specific business applications. Trust and reputation assessments for individuals or legal entities, such as those required for Know Your Customer and Anti-Money Laundering processes, should be managed through specialized platforms tailored for those purposes. Given that Entity Statements facilitate trust relationships using a public infrastructure, they should be limited to the essential information necessary for federation operations and organizational trust establishment.
-          </t>
-          <t hangText="Trust Mark Status">
-            <vspace/>
+	</t>
+      </section>
+
+      <section title="Trust Mark Status Privacy Considerations"
+	       anchor="Trust-Mark-Status-privacy">
+	<t>
 	    The Trust Mark Status endpoint enables querying the status
 	    of Trust Marks in real time.
-	    Similar to the Federation Fetch endpoint,
+	    Similar to the Fetch endpoint,
 	    in cases where the Trust Mark Status endpoint is not protected
 	    by any client authentication method,
 	    requests to validate Trust Marks may not necessarily indicate
@@ -8282,13 +8294,19 @@ HTTP/1.1 302 Found
 	    with only the <spanx style="verb">trust_mark_type</spanx> parameter
 	    and not the <spanx style="verb">sub</spanx> parameter,
 	    reducing the need to use the Trust Mark Status endpoint.
-          </t>
-          <t hangText="Federation Fetch Endpoint">
-            <vspace/>
-            The Federation Fetch endpoint enables querying Subordinate Statements in real time. Similar to Trust Mark Status validation, in the cases where the federation infrastructure is public and widely browsable and endpoints are not protected by any client authentication method, requests to fetch Subordinate Statements may not necessarily indicate an actual interaction or relationship between Entities, as they could simply be part of routine network inspection or discovery processes. However, this could potentially enable Trust Anchors or Intermediates to track Entities evaluating trust relationships with other Entities through standard network diagnostic tools like IPv4/IPv6 addresses and DNS Whois entries. To mitigate tracking risks around Entities inspecting and interacting with other Entities, implementers should consider using static and short-lived Trust Chains where appropriate, which can reduce the need for real-time fetching of Subordinate Statements.
-          </t>
-        </list>
-      </t>
+	</t>
+      </section>
+
+      <section title="Fetch Endpoint Privacy Considerations"
+	       anchor="Fetch-privacy">
+	<t>
+	  The Fetch endpoint enables querying Subordinate Statements in real time.
+	  Similar to Trust Mark Status validation, in the cases where the federation infrastructure is public and widely browsable and endpoints are not protected by any client authentication method, requests to fetch Subordinate Statements may not necessarily indicate an actual interaction or relationship between Entities, as they could simply be part of routine network inspection or discovery processes.
+	  However, this could potentially enable Trust Anchors or Intermediates to track Entities evaluating trust relationships with other Entities through standard network diagnostic tools like IPv4/IPv6 addresses and DNS Whois entries.
+	  To mitigate tracking risks around Entities inspecting and interacting with other Entities, implementers should consider using static and short-lived Trust Chains where appropriate, which can reduce the need for real-time fetching of Subordinate Statements.
+	</t>
+      </section>
+
     </section>
 
 
@@ -9445,7 +9463,7 @@ HTTP/1.1 302 Found
       <section title="Media Type Registration" anchor="MediaReg">
         <t>
           This specification registers the following media types <xref target="RFC2046"/>
-          in the "Media Types" registry <xref target="IANA.MediaTypes"/>
+          in the IANA "Media Types" registry <xref target="IANA.MediaTypes"/>
           in the manner described in <xref target="RFC6838"/>.
         </t>
 
@@ -10122,7 +10140,7 @@ HTTP/1.1 302 Found
 	    <organization abbrev="Yubico">Yubico</organization>
 	    <address>
 	      <email>ve7jtb@ve7jtb.com</email>
-	      <uri>http://www.thread-safe.com/</uri>
+	      <uri>https://www.linkedin.com/in/ve7jtb/</uri>
 	    </address>
 	  </author>
 
@@ -10133,7 +10151,7 @@ HTTP/1.1 302 Found
 	    </address>
 	  </author>
 
-          <date day="24" month="April" year="2025"/>
+          <date day="19" month="September" year="2025"/>
 	</front>
       </reference>
 
@@ -10268,7 +10286,7 @@ HTTP/1.1 302 Found
 	  The following depicts a federation under the eduGAIN Trust Anchor:
         </preamble>
 	<name>
-          Participants Within the eduGAIN Federation
+          Participants in the eduGAIN Federation
 	</name>
         <artwork><![CDATA[
                        eduGAIN
@@ -11016,12 +11034,10 @@ Host: geant.org
         </section>
       </section>
 
-      <section anchor="ClientRegExample" title="Examples of the Two Ways of Doing Client Registration">
+      <section anchor="ClientRegExample" title="Client Registration Method Examples">
         <t>
-          As described in
-          <xref target="client_registration"/>,
-          there are two
-          ways that can be used to do client registration:
+          <xref target="client_registration"/> defines
+          two methods for performing client registration:
           <list style="hanging">
             <t hangText="Automatic">
               <vspace/>
@@ -11051,7 +11067,7 @@ Host: geant.org
 	      Here is an example of such an Authentication Request:
 	    </preamble>
 	    <name>
-	      Authentication Request Using Automatic Client Registration
+	      Authentication Request using Automatic Client Registration
 	    </name>
             <artwork><![CDATA[
 GET /openid/authorization?
@@ -11200,7 +11216,7 @@ Host: op.umu.se
 		Next, combine these and apply them to the metadata for wiki.ligo.org:
 	      </preamble>
 	      <name>
-		Combined Metadata with Metadata Policy yet to be applied
+		Combined Metadata with Metadata Policy Yet to be Applied
 	      </name>
               <artwork><![CDATA[
 "metadata": {
@@ -11480,6 +11496,9 @@ Host: op.umu.se
 	    Added description of how to enable the use of
 	    the <spanx style="verb">crit</spanx> (critical) Claim
 	    within the definition of a kind of JWT.
+	  </t>
+	  <t>
+	    Made section and figure titles more consistent.
 	  </t>
 	</list>
       </t>
