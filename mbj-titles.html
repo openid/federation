@@ -1766,7 +1766,7 @@ li > p:last-of-type:only-child {
                 <p id="section-toc.1-1.12.2.4.1"><a href="#section-12.4" class="auto internal xref">12.4</a>.  <a href="#name-differences-between-automat" class="internal xref">Differences between Automatic Registration and Explicit Registration</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.5">
-                <p id="section-toc.1-1.12.2.5.1"><a href="#section-12.5" class="auto internal xref">12.5</a>.  <a href="#name-rationale-for-the-trust-cha" class="internal xref">Rationale for the Trust Chain in the Request</a></p>
+                <p id="section-toc.1-1.12.2.5.1"><a href="#section-12.5" class="auto internal xref">12.5</a>.  <a href="#name-rationale-for-trust-chains-" class="internal xref">Rationale for Trust Chains in the Request</a></p>
 </li>
             </ul>
 </li>
@@ -3365,19 +3365,20 @@ li > p:last-of-type:only-child {
           The issuer of the JWT SHOULD select a Trust Anchor
    that the Entity at the beginning of the Trust Chain
    has in common with the audience of the JWT.
-   Otherwise, the issuer is free to select the Trust Anchor to use.
+   Otherwise, the issuer is free to select the Trust Anchor to use.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">
           Most signed JWTs MAY include the
           <code>trust_chain</code> JWS header parameter,
           with a few exceptions.
           Entity Configurations and Subordinate Statements MUST NOT
           contain the <code>trust_chain</code> header parameter,
           as they are integral components of a Trust Chain.
-          Use of this header parameter is OPTIONAL.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
-<p id="section-4.3-2" class="keepWithNext">
+          Use of this header parameter is OPTIONAL.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3-3" class="keepWithNext">
        The following is a non-normative example of a JWS header with
-       the <code>trust_chain</code> parameter.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+       the <code>trust_chain</code> parameter.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
 <span id="name-example-jws-header-with-a-t"></span><figure id="figure-6">
-          <div class="alignLeft art-text artwork" id="section-4.3-3.1">
+          <div class="alignLeft art-text artwork" id="section-4.3-4.1">
 <pre>
 {
   "typ": "...",
@@ -3414,11 +3415,12 @@ li > p:last-of-type:only-child {
      the Trust Anchor for both Trust Chains SHOULD be the same.
      Inclusion of both Trust Chains enables achieving
      the Federation Integrity and Metadata Integrity properties,
-     as defined in <span>[<a href="#App-Fed-Linkage" class="cite xref">App-Fed-Linkage</a>]</span>.
+     as defined in <span>[<a href="#App-Fed-Linkage" class="cite xref">App-Fed-Linkage</a>]</span>.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
+<p id="section-4.4-2">
      Entity Configurations and Subordinate Statements MUST NOT
      contain the <code>peer_trust_chain</code> header parameter,
      as they are integral components of a Trust Chain.
-     Use of this header parameter is OPTIONAL.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
+     Use of this header parameter is OPTIONAL.<a href="#section-4.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -9727,10 +9729,10 @@ HTTP/1.1 302 Found
         </ul>
 </section>
 </div>
-<div id="TrustChainParamRationale">
+<div id="TrustChainRationale">
 <section id="section-12.5">
-        <h3 id="name-rationale-for-the-trust-cha">
-<a href="#section-12.5" class="section-number selfRef">12.5. </a><a href="#name-rationale-for-the-trust-cha" class="section-name selfRef">Rationale for the Trust Chain in the Request</a>
+        <h3 id="name-rationale-for-trust-chains-">
+<a href="#section-12.5" class="section-number selfRef">12.5. </a><a href="#name-rationale-for-trust-chains-" class="section-name selfRef">Rationale for Trust Chains in the Request</a>
         </h3>
 <p id="section-12.5-1">
           Both Automatic and Explicit Client Registration support
@@ -9768,6 +9770,14 @@ HTTP/1.1 302 Found
             endpoint.<a href="#section-12.5-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
+<p id="section-12.5-3">
+   Both also support the submission of the Peer Trust Chain,
+   which provides a Trust Chain between the OP
+   and the Trust Anchor the RP selected.
+   As described in <a href="#peer_trust_chain_head_param" class="auto internal xref">Section 4.4</a>,
+   inclusion of both Trust Chains enables achieving
+   the Federation Integrity and Metadata Integrity properties,
+   as defined in <span>[<a href="#App-Fed-Linkage" class="cite xref">App-Fed-Linkage</a>]</span>.<a href="#section-12.5-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
