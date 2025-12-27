@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="13" month="December" year="2025"/>
+    <date day="27" month="December" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -983,6 +983,24 @@
 		from which the Entity Statement was issued.
 	      </t>
 	      <t>
+		If the <spanx style="verb">trust_chain</spanx> header parameter is present,
+		validate that its value is a syntactically valid Trust Chain,
+		as specified in <xref target="trust_chain"/>.
+		The first entry in the Trust Chain
+		MUST be an Entity Configuration for this Entity.
+		Implementations SHOULD validate that the Entity Identifier
+		for the Trust Anchor at the end of the Trust Chain matches
+		one of the Trust Anchors configured for the deployment.
+	      </t>
+	      <t>
+		If the <spanx style="verb">peer_trust_chain</spanx> header parameter is present,
+		validate that its value is a syntactically valid Trust Chain,
+		as specified in <xref target="trust_chain"/>.
+		Implementations SHOULD validate that the Entity Identifier
+		for the Trust Anchor at the end of the Trust Chain matches
+		one of the Trust Anchors configured for the deployment.
+	      </t>
+	      <t>
 		If the <spanx style="verb">aud</spanx> Claim is present,
 		if the Entity Statement is an Explicit Registration request,
 		validate that the value is the Entity Identifier for an OP,
@@ -1005,24 +1023,6 @@
 		This Claim MUST NOT be present in Entity Statements that are not
 		Explicit Registration responses
 		unless its use is otherwise specified in an extension being employed.
-	      </t>
-	      <t>
-		If the <spanx style="verb">trust_chain</spanx> header parameter is present,
-		validate that its value is a syntactically valid Trust Chain,
-		as specified in <xref target="trust_chain"/>.
-		The first entry in the Trust Chain
-		MUST be an Entity Configuration for this Entity.
-		Implementations SHOULD validate that the Entity Identifier
-		for the Trust Anchor at the end of the Trust Chain matches
-		one of the Trust Anchors configured for the deployment.
-	      </t>
-	      <t>
-		If the <spanx style="verb">peer_trust_chain</spanx> header parameter is present,
-		validate that its value is a syntactically valid Trust Chain,
-		as specified in <xref target="trust_chain"/>.
-		Implementations SHOULD validate that the Entity Identifier
-		for the Trust Anchor at the end of the Trust Chain matches
-		one of the Trust Anchors configured for the deployment.
 	      </t>
 	    </list>
 	  </t>
@@ -11480,6 +11480,10 @@ Host: op.umu.se
 	    Added description of how to enable the use of
 	    the <spanx style="verb">crit</spanx> (critical) Claim
 	    within the definition of a kind of JWT.
+	  </t>
+	  <t>
+	    Reordered some text to group protocol-independent text together
+	    and protocol-specific text together.
 	  </t>
 	</list>
       </t>
