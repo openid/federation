@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="13" month="December" year="2025"/>
+    <date day="27" month="December" year="2025"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -1095,53 +1095,6 @@
   "metadata_policy_crit": ["regexp"],
   "source_endpoint": "https://feide.no/federation_api/fetch",
   "jti": "7l2lncFdY6SlhNia"
-}
-]]></artwork>
-        </figure>
-
-        <figure>
-          <preamble>
-            The following is a non-normative example of
-            a <spanx style="verb">trust_mark_owners</spanx> Claim Value:
-          </preamble>
-          <name>
-            Example <spanx style="verb">trust_mark_owners</spanx> Claim Value
-          </name>
-          <artwork><![CDATA[
-{
-  "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf":
-    {
-      "sub": "https://refeds.org/sirtfi",
-      "jwks" : {
-        "keys": [
-          {
-            "alg": "RS256",
-            "e": "AQAB",
-            "kid": "key1",
-            "kty": "RSA",
-            "n": "pnXBOusEANuug6ewezb9J_...",
-            "use": "sig"
-          }
-        ]
-      }
-    }
-}
-]]></artwork>
-        </figure>
-
-        <figure>
-          <preamble>
-            The following is a non-normative example of
-            a <spanx style="verb">trust_mark_issuers</spanx> Claim Value:
-          </preamble>
-          <name>
-            Example <spanx style="verb">trust_mark_issuers</spanx> Claim Value
-          </name>
-          <artwork><![CDATA[
-{
-  "https://openid.net/certification/op": [],
-  "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf":
-    ["https://swamid.se"]
 }
 ]]></artwork>
         </figure>
@@ -3683,6 +3636,24 @@
 	  or an unrecognized <spanx style="verb">typ</spanx> value MUST be rejected.
         </t>
 
+        <figure>
+          <preamble>
+            The following is a non-normative example of
+            a <spanx style="verb">trust_mark_issuers</spanx> Claim:
+          </preamble>
+          <name>
+            Example <spanx style="verb">trust_mark_issuers</spanx> Claim
+          </name>
+          <artwork><![CDATA[
+"trust_mark_issuers":
+{
+  "https://openid.net/certification/op": [],
+  "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf":
+    ["https://swamid.se"]
+}
+]]></artwork>
+        </figure>
+
         <section title="Trust Mark Claims" anchor="trust_mark_claims">
           <t>
 	    The Claims in a Trust Mark are:
@@ -3784,6 +3755,37 @@
             <spanx style="verb">trust_mark_owners</spanx> Claim in
 	    the Trust Anchor's Entity Configuration.
           </t>
+
+        <figure>
+          <preamble>
+            The following is a non-normative example of
+            a <spanx style="verb">trust_mark_owners</spanx> Claim:
+          </preamble>
+          <name>
+            Example <spanx style="verb">trust_mark_owners</spanx> Claim
+          </name>
+          <artwork><![CDATA[
+"trust_mark_owners":
+{
+  "https://refeds.org/wp-content/uploads/2016/01/Sirtfi-1.0.pdf":
+  {
+    "sub": "https://refeds.org/sirtfi",
+    "jwks" : {
+      "keys": [
+        {
+          "alg": "RS256",
+          "e": "AQAB",
+          "kid": "key1",
+          "kty": "RSA",
+          "n": "pnXBOusEANuug6ewezb9J_...",
+          "use": "sig"
+        }
+      ]
+    }
+  }
+}
+]]></artwork>
+        </figure>
 
 	  <section title="Trust Mark Delegation JWT" anchor="delegation_jwt">
 	    <t>
