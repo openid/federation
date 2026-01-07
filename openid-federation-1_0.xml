@@ -509,6 +509,9 @@
 	  <spanx style="verb">kid</spanx> (Key ID) header parameter
 	  with its value being the Key ID of the signing key used.
 	</t>
+
+	<section anchor="ESClaims" title="Entity Statement Claims">
+
         <t>
           The Claims in an Entity Statement are listed below.
           Applications and protocols utilizing Entity Statements MAY specify
@@ -808,6 +811,8 @@
           </list>
         </section>
 
+	</section>
+
 	<section anchor="ESValidation" title="Entity Statement Validation">
 	  <t>
 	    Entity Statements MUST be validated in the following manner.
@@ -983,6 +988,24 @@
 		from which the Entity Statement was issued.
 	      </t>
 	      <t>
+		If the <spanx style="verb">trust_chain</spanx> header parameter is present,
+		validate that its value is a syntactically valid Trust Chain,
+		as specified in <xref target="trust_chain"/>.
+		The first entry in the Trust Chain
+		MUST be an Entity Configuration for this Entity.
+		Implementations SHOULD validate that the Entity Identifier
+		for the Trust Anchor at the end of the Trust Chain matches
+		one of the Trust Anchors configured for the deployment.
+	      </t>
+	      <t>
+		If the <spanx style="verb">peer_trust_chain</spanx> header parameter is present,
+		validate that its value is a syntactically valid Trust Chain,
+		as specified in <xref target="trust_chain"/>.
+		Implementations SHOULD validate that the Entity Identifier
+		for the Trust Anchor at the end of the Trust Chain matches
+		one of the Trust Anchors configured for the deployment.
+	      </t>
+	      <t>
 		If the <spanx style="verb">aud</spanx> Claim is present,
 		if the Entity Statement is an Explicit Registration request,
 		validate that the value is the Entity Identifier for an OP,
@@ -1005,24 +1028,6 @@
 		This Claim MUST NOT be present in Entity Statements that are not
 		Explicit Registration responses
 		unless its use is otherwise specified in an extension being employed.
-	      </t>
-	      <t>
-		If the <spanx style="verb">trust_chain</spanx> header parameter is present,
-		validate that its value is a syntactically valid Trust Chain,
-		as specified in <xref target="trust_chain"/>.
-		The first entry in the Trust Chain
-		MUST be an Entity Configuration for this Entity.
-		Implementations SHOULD validate that the Entity Identifier
-		for the Trust Anchor at the end of the Trust Chain matches
-		one of the Trust Anchors configured for the deployment.
-	      </t>
-	      <t>
-		If the <spanx style="verb">peer_trust_chain</spanx> header parameter is present,
-		validate that its value is a syntactically valid Trust Chain,
-		as specified in <xref target="trust_chain"/>.
-		Implementations SHOULD validate that the Entity Identifier
-		for the Trust Anchor at the end of the Trust Chain matches
-		one of the Trust Anchors configured for the deployment.
 	      </t>
 	    </list>
 	  </t>
@@ -7840,16 +7845,6 @@ HTTP/1.1 302 Found
 	</t>
       </section>
 
-      <section anchor="explicit-registration-response+jwt"
-	       title='"application/explicit-registration-response+jwt" Media Type'>
-	<t>
-	  The <spanx style="verb">application/explicit-registration-response+jwt</spanx>
-	  media type is used to specify that the associated content is
-	  an Explicit Registration response, as defined in <xref target="cliregresp"/>.
-	  No parameters are used with this media type.
-	</t>
-      </section>
-
       <section anchor="trust-mark-status-response+jwt"
 	       title='"application/trust-mark-status-response+jwt" Media Type'>
 	<t>
@@ -7857,6 +7852,16 @@ HTTP/1.1 302 Found
 	  media type is used to specify that the associated content is
 	  a Trust Mark Status Response,
 	  as defined in <xref target="tm-status-response"/>.
+	  No parameters are used with this media type.
+	</t>
+      </section>
+
+      <section anchor="explicit-registration-response+jwt"
+	       title='"application/explicit-registration-response+jwt" Media Type'>
+	<t>
+	  The <spanx style="verb">application/explicit-registration-response+jwt</spanx>
+	  media type is used to specify that the associated content is
+	  an Explicit Registration response, as defined in <xref target="cliregresp"/>.
 	  No parameters are used with this media type.
 	</t>
       </section>
@@ -11510,6 +11515,10 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Made section and figure titles more consistent.
+    </t>
+	  <t>
+      Reordered some text to group protocol-independent text together
+	    and protocol-specific text together.
 	  </t>
 	  <t>
 	    Applied suggestions from Nat Sakimura improving the descriptions of
