@@ -2195,7 +2195,7 @@
                   </t>
                   <t>
                     A Trust Chain with Entity metadata that does not comply with
-                    the resolved metadata policies is deemed invalid.
+                    the Resolved Metadata policies is deemed invalid.
                   </t>
                 </list>
               </t>
@@ -3161,7 +3161,7 @@
                 contains a <spanx style="verb">metadata</spanx> Claim, this MUST
                 first be applied, as described in the Claim definition in
                 <xref target="common-claims"/>, and only then it can be
-                proceeded with applying the resolved metadata policy.
+                proceeded with applying the Resolved Metadata policy.
               </t>
 
               <t>
@@ -3382,10 +3382,10 @@
               Intermediate Entity for its Immediate Subordinates are applied to
               the Trust Chain subject <spanx style="verb">metadata</spanx>.
               After that, the merged metadata policy is applied, to produce the
-              following resulting resolved RP metadata:
+              following resulting RP Resolved Metadata:
             </preamble>
             <name>
-              The Resulting Resolved RP Metadata for the Trust Chain Subject
+              The Resulting RP Resolved Metadata for the Trust Chain Subject
             </name>
             <artwork><![CDATA[
 {
@@ -4743,7 +4743,7 @@ Host: openid.sunet.se
               </t>
               <t hangText="metadata">
                 <vspace/>
-                REQUIRED. JSON object containing the resolved subject metadata,
+                REQUIRED. JSON object containing the subject's Resolved Metadata,
                 according to the requested <spanx style="verb">type</spanx>
                 and expressed in the <spanx style="verb">metadata</spanx> format
                 defined in <xref target="common-claims"/>.
@@ -7008,7 +7008,7 @@ HTTP/1.1 302 Found
                   <vspace blankLine="1"/>
 
                   The RP SHOULD select its metadata parameters to comply with
-                  the resolved OP metadata and thus ensure a successful
+                  the OP's Resolved Metadata and thus ensure a successful
                   registration with the OP. Note that if the submitted RP
                   metadata is not compliant with the metadata of the OP, the
                   OP may choose to modify it to make it compliant
@@ -7447,7 +7447,7 @@ HTTP/1.1 302 Found
                   </t>
                   <t>
                     The RP MUST first ensure that the information it was registered with
-                    at the OP contains the same set of entity_types as the request does.
+                    at the OP contains the same set of Entity Types as the request does.
                     After having collected a Trust Chain using the response Claim
                     <spanx style="verb">trust_anchor</spanx> as the
                     Entity Identifier for the Trust Anchor and
@@ -8053,7 +8053,7 @@ HTTP/1.1 302 Found
 	      <t>Use Fetch Endpoints (as defined in <xref target="fetch_statement"/>) to obtain Subordinate Statements about the subject entity.</t>
 	      <t>Recursively traverse up the hierarchy until reaching a Trust Anchor.</t>
 	      <t>Build and validate the complete Trust Chain.</t>
-	      <t>Apply federation policies to derive resolved metadata.</t>
+	      <t>Apply federation policies to derive Resolved Metadata.</t>
 	    </list>
 	  </t>
 	</section>
@@ -8109,7 +8109,7 @@ HTTP/1.1 302 Found
 	    <list style="symbols">
 	      <t>Entities that want to offload Trust Chain resolution complexity,</t>
 	      <t>Centralized trust evaluation services,</t>
-	      <t>Performance optimization by caching resolved metadata, and</t>
+	      <t>Performance optimization by caching Resolved Metadata, and</t>
 	      <t>Simplified integration for lightweight clients.</t>
 	    </list>
 	  </t>
@@ -8125,9 +8125,9 @@ HTTP/1.1 302 Found
 	      <t>Identify a trusted resolver with a Resolve Endpoint.</t>
 	      <t>Submit the subject Entity Identifier and Trust Anchor to the resolver.</t>
 	      <t>The resolver performs complete Trust Chain resolution internally (following the bottom-up pattern).</t>
-	      <t>The resolver returns resolved metadata and Trust Marks.</t>
+	      <t>The resolver returns Resolved Metadata and Trust Marks.</t>
 	      <t>Optionally verify the resolver's own Trust Chain.</t>
-	      <t>Use resolved metadata for protocol operations.</t>
+	      <t>Use Resolved Metadata for protocol operations.</t>
 	    </list>
 	  </t>
 	</section>
@@ -8228,7 +8228,7 @@ HTTP/1.1 302 Found
         </t>
         <t>
           Entities may be required to include a
-          <xref target="trust_chain_head_param">Trust Chain</xref>
+          Trust Chain
           in their requests, as explained in <xref target="UsingAuthzRequestObject"/>.
           The static Trust Chain gives a predefined trust path,
           meaning that Federation Entity Discovery need not be performed.
@@ -10292,7 +10292,7 @@ HTTP/1.1 302 Found
 
     </references>
 
-    <section anchor="ChainBuildingExample" title="Example OpenID Provider Information Discovery and Client Registration">
+    <section anchor="FederationExamples" title="Examples Building and Using Trust Chains">
       <t>
         Let us assume the following: The project LIGO would like to offer access
         to its wiki to all OPs in eduGAIN. LIGO is registered with the InCommon
@@ -10983,7 +10983,7 @@ Host: geant.org
           </t>
         </section>
 
-        <section anchor="metadata-for-op" title="Verified Metadata for https://op.umu.se">
+        <section anchor="metadata-for-op" title="OP Resolved Metadata for https://op.umu.se">
           <t>Having verified the chain, the LIGO Wiki RP can proceed with the
             next step.
           </t>
@@ -10993,10 +10993,12 @@ Host: geant.org
 	      have by
 	      Immediate Superiors about their Immediate Subordinates and applying the combined policy
 	      to the
-	      metadata statement that the Leaf Entity presented, we get:
+	      metadata statement that the Leaf Entity presented, we get
+	      the following Resolved Metadata for the
+	      <spanx style="verb">openid_provider</spanx> Entity Type:
 	    </preamble>
 	    <name>
-	      Resolved Metadata Derived from Trust Chain by Applying Metadata Policies
+	      OP Resolved Metadata Derived from Trust Chain by Applying Metadata Policies
 	    </name>
             <artwork><![CDATA[
 {
@@ -11528,6 +11530,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Fixed #317: Corrected Trust Chain example.
+	  </t>
+	  <t>
+	    Applied clarifications identified while splitting the 1.1 specs.
 	  </t>
 	</list>
       </t>
