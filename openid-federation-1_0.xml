@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="11" month="January" year="2026"/>
+    <date day="14" month="January" year="2026"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -3884,7 +3884,8 @@
                 in the delegation.</t>
             <t>The current time MUST be after the time represented by the iat (issued at) Claim in the delegation
                 (possibly allowing for some small leeway to account for clock skew).</t>
-            <t>The current time MUST be before the time represented by the exp (expiration) Claim in the delegation
+            <t>If the <spanx style="verb">exp</spanx> (expiration) Claim is present in the delegation,
+                the current time MUST be before the time it represents
                 (possibly allowing for some small leeway to account for clock skew).</t>
             <t>
                 The value of the Claim <spanx style="verb">trust_mark_type</spanx> in the delegation MUST be the same
@@ -8194,7 +8195,7 @@ HTTP/1.1 302 Found
         <t>
           Some of the interfaces defined in this specification could be used for
           Denial-of-Service attacks (DoS), most notably, the resolve endpoint
-          (<xref target="entity_listing"/>), Explicit Client Registration
+          (<xref target="resolve"/>), Explicit Client Registration
           (<xref target="explicit"/>), and
           Automatic Client Registration (<xref target="automatic"/>) can
           be exploited as vectors of HTTP propagation attacks.
@@ -11533,6 +11534,9 @@ Host: op.umu.se
 	  </t>
 	  <t>
 	    Applied clarifications identified while splitting the 1.1 specs.
+	  </t>
+	  <t>
+	    Fixed Trust Mark Delegation validation to handle optional <spanx style="verb">exp</spanx> Claim.
 	  </t>
 	</list>
       </t>
