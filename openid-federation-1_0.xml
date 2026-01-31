@@ -26,7 +26,7 @@
 
   <front>
     <title abbrev="OpenID Federation">OpenID Federation 1.0 -
-      draft 47
+      draft 48
     </title>
 
     <author fullname="Roland Hedberg" initials="R." role="editor"
@@ -78,7 +78,7 @@
       </address>
     </author>
 
-    <date day="20" month="January" year="2026"/>
+    <date day="1" month="February" year="2026"/>
 
     <workgroup>OpenID Connect Working Group</workgroup>
 
@@ -232,7 +232,7 @@
           by <xref target="OpenID.Core">OpenID Connect Core 1.0</xref>, and
 	  the terms "Authorization Endpoint", "Authorization Server (AS)",
 	  "Client", "Client Authentication", "Client Identifier", "Client Secret",
-	  "Grant Type", "Protected Resource", "Redirection URI", "Refresh Token",
+	  "Protected Resource", "Redirection URI", "Refresh Token",
 	  "Resource Server (RS)", and "Token Endpoint"
 	  defined by <xref target="RFC6749">OAuth 2.0</xref>.
 
@@ -1117,7 +1117,9 @@
             </t>
             <t hangText="Leaf">
               <vspace/>
-              In an OpenID Connect identity federation, an RP or an OP,
+	      An Entity with no Subordinate Entities,
+	      which typically plays a protocol role.
+              For instance, in an OpenID Connect identity federation, an RP or an OP,
 	      or in an OAuth 2.0 federation, a Client, Authorization Server, or Protected Resource.
             </t>
             <t hangText="Intermediate">
@@ -1422,13 +1424,13 @@
 	<t>
       The Entity Type Identifier uniquely identifies the Entity Type of a
       federation participant and the metadata format for that Entity Type. This
-      section defines a <spanx style="verb">federation_entity</spanx> Entity
+      section defines the <spanx style="verb">federation_entity</spanx> Entity
       Type Identifier as well as identifiers for OpenID Connect and OAuth 2.0
       Federation Entities.
 	</t>
 	<t>
 	  Additional Entity Type Identifiers MAY be defined to
-	  support use cases outside OpenID Connect and OAuth 2.0 federations.
+	  support use cases for other protocols.
 	</t>
 
       <section anchor="federation_entity" title="Federation Entity">
@@ -6733,7 +6735,7 @@ GET /authorize?
 	      a client authentication method for the PAR endpoint
 	      MUST be used that proves possession of one of the RP's private keys.
 	      Furthermore, the corresponding public key MUST be in the
-	      Entity's RP JWK Set.
+	      Entity's RP JWK Set <xref target="RFC7517"/>.
 	    </t>
             <t>
               The two applicable PAR client authentication methods are:
@@ -7433,8 +7435,9 @@ HTTP/1.1 302 Found
 		value in the response MUST be
 		<spanx style="verb">explicit-registration-response+jwt</spanx>
 		(and not <spanx style="verb">entity-statement+jwt</spanx>)
-		to prevent confusion between the Explicit Registration response
-		and other kinds of Entity Statements.
+		to prevent cross-JWT confusion between the Explicit Registration response
+		and other kinds of Entity Statements,
+		per Section 3.11 of <xref target="RFC8725"/>.
               </t>
 	    </section>
 
@@ -10405,7 +10408,7 @@ HTTP/1.1 302 Found
 	    </address>
 	  </author>
 
-          <date day="20" month="January" year="2026"/>
+          <date day="1" month="February" year="2026"/>
         </front>
       </reference>
 
@@ -10461,7 +10464,7 @@ HTTP/1.1 302 Found
 	    </address>
 	  </author>
 
-          <date day="20" month="January" year="2026"/>
+          <date day="1" month="February" year="2026"/>
         </front>
       </reference>
 
@@ -11676,6 +11679,15 @@ Host: op.umu.se
 
     <section anchor="History" title="Document History">
       <t>[[ To be removed from the final specification ]]</t>
+
+      <t>
+	-48
+	<list style="symbols">
+	  <t>
+	    Applied editorial improvements originally made in the 1.1 specifications.
+	  </t>
+	</list>
+      </t>
 
       <t>
 	-47
